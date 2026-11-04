@@ -1,0 +1,11 @@
+{
+  "UI_ZB_Install_Windows": "<H1> ZombieBuddy не установлен! <LINE> <LINE> <H2> Автоматическая установка: <LINE> <TEXT> 1. Скачай ZombieBuddyInstaller.exe: <LINE> <INDENT:40>%1<INDENT:0><LINE> 2. Запусти установщик и перезапусти Steam. <LINE> <LINE> <H2> Ручная установка: <LINE> <TEXT> Скопируй файлы из %2 в %3 и добавь %4 в параметры запуска Steam. <LINE> <IMAGECENTRE:SCREENSHOT_PLACEHOLDER>",
+  "UI_ZB_Install_Unix": "<H1> ZombieBuddy нужно установить вручную. <LINE> <LINE> <H2> Скопируй файлы: <LINE> <TEXT> %4 <LINE> <H2> из папки: <LINE> <TEXT> %1 <LINE> <H2> в папку: <LINE> <TEXT> %2 <LINE> <LINE> <H2> Затем добавь в параметры запуска Steam: <LINE> <TEXT> %3 <LINE> <IMAGECENTRE:SCREENSHOT_PLACEHOLDER>",
+  "UI_ZB_AutoFixModOrder": "Исправлять порядок модов при запуске",
+  "UI_ZB_FixApprovalDialogCursor": "Исправлять курсор в окне разрешения модов",
+  "UI_ZB_SuppressSandboxLog": "Не записывать все настройки песочницы в журнал",
+  "UI_ZB_WatermarkOpacity": "Непрозрачность надписи ZombieBuddy",
+  "UI_ZB_AutoFixModOrder_desc": "Перемещает zdk и ZModUnbork, если они установлены, в начало списка, чтобы устаревшие или неисправные моды не мешали запуску игры.",
+  "UI_ZB_FixApprovalDialogCursor_desc": "Показывает курсор в окне разрешения Java-модов и исправляет невидимый курсор или неработающие нажатия.",
+  "UI_ZB_SuppressSandboxLog_desc": "Скрывает стандартный вывод всех настроек песочницы в журнал при запуске."
+}

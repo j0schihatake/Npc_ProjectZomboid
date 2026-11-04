@@ -59,6 +59,16 @@ Workshop-моды перечислены в `~/Zomboid/mods/default.txt`.
 Подтверждён запуск до главного меню со всеми 16 модами, загрузкой Java-ядра и экспортом PersonalKnoxAPI в Lua.
 Подробности и следующие этапы — в [ROADMAP.md](ROADMAP.md).
 
+## Русский интерфейс
+
+Язык игры — RU. Перевод Knox включён отдельным модом `KnoxEventExpandedNpcRU`.
+У Better Sorting, Has Been Read, Customizable Wood Weight и Map Symbol Size Slider русский встроен.
+Для Viewpoint 0.1.6.1 и QOL установлен Workshop-перевод `aparosa_ViewpointI18n` (3822634333).
+Наше дополнение добавляет недостающие переводы настроек веса патронов и ZombieBuddy
+через `common/media/lua/shared/Translate/RU/`. Эти файлы меняют только отображаемый текст.
+Для применения переводов нужен перезапуск игры; в существующем мире перевод Viewpoint
+должен быть включён также в списке модов этого сохранения.
+
 ## Границы изменений
 
 Наши Java-классы не наследуют и не изменяют классы Knox. Lua вызывает существующие команды его API.
