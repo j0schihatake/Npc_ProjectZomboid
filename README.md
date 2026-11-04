@@ -31,6 +31,13 @@ python3 tools/build.py
 Команда собирает Java, запускает проверки и обновляет `42/media/java/client/PersonalKnox.jar`.
 Изменившийся JAR ZombieBuddy попросит разрешить повторно.
 
+Дополнительная проверка Lua-адаптеров (в отдельном Python-окружении):
+
+```sh
+python3 -m pip install -r tools/requirements-checks.txt
+python3 tools/check_lua.py
+```
+
 База реплик: `db/dialogues.sqlite3`, таблица `dialogue(id, topic, condition, text_ru)`.
 Её можно редактировать любым SQLite-редактором. После изменений запусти сборку.
 Сборка переносит фразы в TSV-ресурс JAR. Во время игры SQLite и сетевой сервис не нужны.
@@ -49,6 +56,7 @@ Workshop-моды перечислены в `~/Zomboid/mods/default.txt`.
 
 Установленные моды и наш прототип нельзя считать проверенными на отсутствие вылетов:
 проверки Java не заменяют сцену с NPC, выстрелами и сбором предметов в игре.
+Подтверждён запуск до главного меню со всеми 16 модами, загрузкой Java-ядра и экспортом PersonalKnoxAPI в Lua.
 Подробности и следующие этапы — в [ROADMAP.md](ROADMAP.md).
 
 ## Границы изменений
