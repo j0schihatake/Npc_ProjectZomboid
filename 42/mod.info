@@ -1,0 +1,11 @@
+name=Personal Knox — наш отряд
+id=PersonalKnox
+modversion=0.1.0
+versionMin=42.21
+versionMax=42.21
+require=\ZombieBuddy,\KnoxEventExpandedNpc
+loadModAfter=\KnoxEventExpandedNpc,\KnoxEventExpandedNpcRU
+javaJarFile=media/java/client/PersonalKnox.jar
+javaPkgName=personal.knox
+ZBVersionMin=2.3.4
+description=Личное Java-дополнение: русские реплики, приоритеты работы и диагностика стрельбы с высоты. Lua используется для меню и событий игры.
