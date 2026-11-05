@@ -56,12 +56,19 @@ Lua (`Care.lua`, `Upkeep.lua`). Опрос: 2 с лечение, 5 с прочн
 
 В `mods/default.txt` и списке текущего сохранения отключены:
 
-- `ViewpointTactical` — падение `SettingsWindow.render`/ImGui (альфа-патч этого метода);
-- `ProjectViewpointParkour` — сырой `%` в переводах `parkour_Desc`/`FreerunnerDesc` вызывает
-  `UnknownFormatConversionException` при построении страницы настроек Viewpoint;
+- `ViewpointFPS` — строка «1% low» в описании опции не экранирована (`% l`), из-за чего
+  `addModOptionsPanel` падает с `UnknownFormatConversionException`; после отключения ошибка
+  построения страницы Viewpoint ушла;
+- `ProjectViewpointParkour` — та же ошибка с «15% less» в `parkour_Desc`/`FreerunnerDesc`;
+- `ViewpointTactical` — альфа-патч `SettingsWindow.render`; оставлен отключённым, потому что
+  падение ImGui могло быть следствием сломанной страницы настроек;
 - `AddSlopFacesNeckFixTombBodyTexNUDE` — нет зависимости `TombBodyTexNUDE`;
 - `AutoEat`, `AutoDrinkAnimation`, `[B42.19]AutoDrinkRevert`, `UngodlyAutoMedic`,
   `NepInfiniteAmmo`, `IWD` — заменены модулями 0.4.6.
+
+Запуск 16:22–16:34: мир загрузился, `[capabilities]` есть, `[care]`/`[upkeep]`/`[probe]` — 0.
+Это не ошибка: не было голода/жажды/кровотечения/износа оружия и выстрелов. Для проверки
+нужен триггер (потребность, ранение, износ или стрельба) либо ручная диагностика.
 
 ## Установленная 0.4.4 — новый запуск ещё не проверен
 
