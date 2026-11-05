@@ -22,6 +22,11 @@ public record OwnNpcAgent(String id, String factionId, double x, double y, doubl
         return new OwnNpcAgent(id, factionId, x, y, z, targetX, targetY, supplies, next);
     }
 
+    public OwnNpcAgent withSupplies(int value) {
+        if (value < 0) throw new IllegalArgumentException("Invalid supplies");
+        return new OwnNpcAgent(id, factionId, x, y, z, targetX, targetY, value, state);
+    }
+
     public OwnNpcAgent withTarget(double tx, double ty) {
         return new OwnNpcAgent(id, factionId, x, y, z, tx, ty, supplies, state);
     }

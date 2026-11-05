@@ -94,6 +94,17 @@ public final class OwnNpcLayer {
                 agents.put(agent.id(), agent);
             }
             var nextState = NpcNeeds.tick(agent.state(), hours, needRate);
+            int supplies = agent.supplies();
+            if (nextState.hunger() >= 0.6 && supplies > 0) {
+                nextState = nextState.withNeeds(Math.max(0, nextState.hunger() - 0.5),
+                        nextState.thirst(), nextState.fatigue());
+                supplies--;
+            }
+            if (nextState.thirst() >= 0.6 && supplies > 0) {
+                nextState = nextState.withNeeds(nextState.hunger(),
+                        Math.max(0, nextState.thirst() - 0.5), nextState.fatigue());
+                supplies--;
+            }
             double dx = agent.targetX() - agent.x();
             double dy = agent.targetY() - agent.y();
             double length = Math.hypot(dx, dy);
@@ -104,7 +115,7 @@ public final class OwnNpcLayer {
                 nx += dx / length * step;
                 ny += dy / length * step;
             }
-            var updated = agent.moved(nx, ny, agent.z()).withState(nextState);
+            var updated = agent.moved(nx, ny, agent.z()).withState(nextState).withSupplies(supplies);
             agents.put(agent.id(), updated);
             events.add(new OwnNpcEvent(OwnNpcEvent.Type.NEEDS, agent.id(), nx, ny, agent.z(),
                     String.format(java.util.Locale.ROOT, "hunger=%.3f thirst=%.3f", nextState.hunger(), nextState.thirst())));

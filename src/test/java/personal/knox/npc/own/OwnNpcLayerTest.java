@@ -20,6 +20,14 @@ public final class OwnNpcLayerTest {
         assert layer.agent("n1").targetX() == 60 && layer.agent("n1").targetY() == 60;
         layer.order("n1", 50, 0);
         assert layer.agent("n1").targetX() == 50;
+        var hungryState = new NpcState(100, 0.9, 0.9, 0.1, 0.8, false, false,
+                NpcState.Role.SCAVENGER, NpcState.Task.FOLLOW);
+        var hungry = new OwnNpcAgent("n2", "own", 0, 0, 0, 0, 0, 2, hungryState);
+        layer.spawn(hungry);
+        layer.tick(0.01, 8);
+        assert layer.agent("n2").state().hunger() < 0.9 : "Hunger reduced by supplies";
+        assert layer.agent("n2").supplies() < 2 : "Supplies consumed";
+        layer.remove("n2");
         assert layer.remove("n1").type() == OwnNpcEvent.Type.REMOVED;
         assert layer.count() == 0;
         var saved = OwnNpcCodec.encode(java.util.List.of(agent));
