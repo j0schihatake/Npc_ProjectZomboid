@@ -5,7 +5,7 @@ local Perf = require "PersonalKnox/Perf"
 local Util = require "PersonalKnox/Util"
 
 local deps
-local INTERVAL_MS, LOG_MS = 10000, 60000
+local INTERVAL_MS, LOG_MS = 2000, 60000
 local last, lastLog, logged, lastSave = 0, 0, false, 0
 
 local function tick()
