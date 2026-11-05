@@ -69,3 +69,14 @@ A-Life события, задания и сумки — нужен загруж�
 - Причина ложных «вылетов»: запуск через `timeout 300`; загрузка сейва дольше 5 минут.
   Запускать `tools/launch_game.sh` без таймаута.
 - Knox пока обязателен: своего pathfinding/боя/приказов/группы нет.
+
+## Dev-сценарий и F10 (проверено 06.11)
+
+- `tools/launch_dev.sh --detach` поднимает отдельный cachedir; если игра на паузе, снять её **F2**.
+- F10 в игре создаёт своих NPC:
+  `[PersonalKnox] Own body visual copied from player`,
+  `[own-debug] id=debug#1 bodies=1`, `debug#2 bodies=2`.
+- Тела используют внешность игрока; позиции разносятся по сетке 0.9 м.
+- В dev-профиле сценарий завершился `status=OK reason=world_player_api_ticks_knox_saved`.
+- Обнаружен баг launcher: `mods/default.txt` оказался пустым (0 модов). После ручной записи
+  списка ZombieBuddy/Viewpoint/Knox/KnoxRU/PersonalKnox загрузились 6 модов и Java core 0.8.7.
