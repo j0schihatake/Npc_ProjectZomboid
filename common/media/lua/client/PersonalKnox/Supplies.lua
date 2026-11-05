@@ -1,5 +1,6 @@
 -- Game adapters only: inventories, context menus and dispatch to Knox's own loot command.
 local Core = require "PersonalKnox/Core"
+local Items = require "PersonalKnox/SupplyItems"
 local Supply = { enabled = {}, pending = {}, visited = {} }
 local deps
 
@@ -19,24 +20,14 @@ local function inventorySnapshot(body)
     local result = {food=0, water=0, medicine=0, weapon=false, foodUnknown=0, waterUnknown=0}
     local java = PersonalKnoxAPI.getInstance()
     local function readyFood(item)
-        if not instanceof(item, "Food") then return false end
-        local ok, ready = pcall(function()
-            return java:isSupplyFood(item:getHungerChange(), not item:getScriptItem():isCantEat(),
-                item:isRotten(), item:isBurnt(), item:isbDangerousUncooked(), item:isCooked(),
-                body:isKnownPoison(item))
-        end)
-        if not ok then result.foodUnknown=result.foodUnknown+1 end
-        return ok and ready == true
+        local ready, unknown = Items.food(body,item,java)
+        if unknown then result.foodUnknown=result.foodUnknown+1 end
+        return ready
     end
     local function readyWater(item)
-        local ok, ready = pcall(function()
-            if not item:isWaterSource() then return false end
-            local fluid = item:getFluidContainer()
-            if not fluid then return false end -- Legacy/unknown contents do not prove a drinkable reserve.
-            return java:isSupplyWater(fluid:getAmount(), fluid:isPureFluid(Fluid.Water), fluid:isTainted())
-        end)
-        if not ok then result.waterUnknown=result.waterUnknown+1 end
-        return ok and ready == true
+        local ready, unknown = Items.water(item,java)
+        if unknown then result.waterUnknown=result.waterUnknown+1 end
+        return ready
     end
     local function inspect(container, depth)
         if not container or depth > 4 then return end
