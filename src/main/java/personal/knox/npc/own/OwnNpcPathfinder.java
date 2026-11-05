@@ -36,10 +36,13 @@ public final class OwnNpcPathfinder {
             if (!closed.add(current.point)) continue;
             visited++;
             if (current.point.equals(target)) return reconstruct(came, target);
-            for (var step : new int[][]{{1,0},{-1,0},{0,1},{0,-1}}) {
+            for (var step : new int[][]{{1,0},{-1,0},{0,1},{0,-1},{1,1},{1,-1},{-1,1},{-1,-1}}) {
                 var next = new Point(current.point.x + step[0], current.point.y + step[1]);
                 if (closed.contains(next) || !grid.canStep(current.point.x, current.point.y, next.x, next.y)) continue;
-                double g = current.g + 1.0 + grid.cost(next.x, next.y);
+                if (step[0] != 0 && step[1] != 0
+                        && (!grid.canStep(current.point.x, current.point.y, current.point.x + step[0], current.point.y)
+                        || !grid.canStep(current.point.x, current.point.y, current.point.x, current.point.y + step[1]))) continue;
+                double g = current.g + (step[0] != 0 && step[1] != 0 ? 1.41421356237 : 1.0) + grid.cost(next.x, next.y);
                 if (g >= best.getOrDefault(next, Double.MAX_VALUE)) continue;
                 best.put(next, g);
                 came.put(next, current.point);

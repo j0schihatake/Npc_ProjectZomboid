@@ -7,6 +7,8 @@ public final class OwnNpcPathfinderTest {
         };
         var straight = OwnNpcPathfinder.find(0, 0, 3, 0, open, 100);
         assert straight.size() == 4 && straight.get(3).x() == 3;
+        var diagonal = OwnNpcPathfinder.find(0, 0, 2, 2, open, 100);
+        assert diagonal.size() == 3 && diagonal.get(2).equals(new OwnNpcPathfinder.Point(2, 2)) : diagonal;
         var wall = new OwnNpcPathfinder.Grid() {
             public boolean passable(int x, int y) { return !(x == 1 && y != 2); }
         };
