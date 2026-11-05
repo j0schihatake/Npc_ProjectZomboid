@@ -22,6 +22,8 @@ public final class QuestLogTest {
         assert markerLog.marker("qm").label().equals("Key zombie");
         markerLog.complete("qm");
         assert markerLog.marker("qm") == null : "Completed marker removed";
+        assert markerLog.completed().size() == 1 && markerLog.active().isEmpty();
+        assert markerLog.failed().isEmpty();
         try { log.offer(q); throw new AssertionError("Duplicate quest accepted"); }
         catch (IllegalArgumentException expected) { }
         try { log.accept("missing"); throw new AssertionError("Unknown quest accepted"); }

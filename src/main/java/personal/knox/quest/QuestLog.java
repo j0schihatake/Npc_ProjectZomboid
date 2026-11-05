@@ -32,6 +32,17 @@ public final class QuestLog {
         return List.copyOf(result);
     }
 
+    public List<Quest> withState(Quest.State state) {
+        if (state == null) throw new IllegalArgumentException("Missing state");
+        var result = new ArrayList<Quest>();
+        for (var quest : quests.values()) if (quest.state() == state) result.add(quest);
+        return List.copyOf(result);
+    }
+
+    public List<Quest> completed() { return withState(Quest.State.COMPLETED); }
+    public List<Quest> failed() { return withState(Quest.State.FAILED); }
+    public List<Quest> declined() { return withState(Quest.State.DECLINED); }
+
     public List<Quest> all() { return List.copyOf(quests.values()); }
 
     public void accept(String id) { replace(id, QuestPolicy.accept(require(id))); }
