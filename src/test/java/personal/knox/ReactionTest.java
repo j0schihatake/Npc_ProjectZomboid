@@ -5,6 +5,10 @@ public final class ReactionTest {
         return director.observe(key,time,hp,100,false,enemies,rain,false,false);
     }
 
+    private static String need(ReactionDirector director, long time, int enemies, double hunger, double thirst, double fatigue) {
+        return director.observe("need",time,100,100,false,enemies,false,false,false,hunger,thirst,fatigue);
+    }
+
     public static void run() {
         var director = new ReactionDirector();
         assert observe(director,"a",100_000,100,0,false).isEmpty() : "No unsolicited generic chatter";
@@ -35,10 +39,34 @@ public final class ReactionTest {
         assert director.trackedCount()==0;
         assert director.observe("",100_000,100,100,false,0,true,false,false).isEmpty();
         assert director.observe("a",100_000,Double.NaN,100,false,0,true,false,false).isEmpty();
+        director.reset();
+        assert need(director,100_000,0,0,0,0).isEmpty();
+        assert need(director,101_000,0,Double.NaN,-1,Double.POSITIVE_INFINITY).isEmpty();
+        assert need(director,102_000,0,.3,0,0).equals("react_hunger");
+        assert need(director,202_000,0,.3,0,0).isEmpty() : "Do not constantly repeat an unmet need";
+        assert need(director,402_000,0,.2,0,0).equals("react_hunger") : "Hysteresis avoids threshold flicker";
+        assert need(director,500_000,0,.1,0,0).isEmpty();
+        assert need(director,800_000,0,.2,0,0).isEmpty() : "Recovered hunger must cross the start threshold again";
+        assert need(director,801_000,0,.25,0,0).equals("react_hunger");
+        director.reset();
+        assert need(director,100_000,0,.5,.3,.8).equals("react_thirst") : "Thirst is most urgent among routine needs";
+        assert need(director,120_000,0,.5,0,0).isEmpty();
+        assert need(director,191_000,0,.5,0,0).equals("react_hunger") : "Still-current needs survive a competing topic";
+        director.reset();
+        assert observe(director,"a",100_000,100,0,true).equals("react_rain");
+        assert need(director,101_000,0,.5,0,0).isEmpty();
+        assert need(director,121_000,0,0,0,0).isEmpty() : "Do not say hungry after the NPC ate";
+        director.reset();
+        assert need(director,100_000,1,.5,.5,.9).equals("react_zombies");
+        assert need(director,200_000,1,.5,.5,.9).isEmpty() : "No need chatter in an ongoing fight";
+        assert need(director,300_000,0,0,0,.9).equals("react_fatigue");
+        director.reset();
+        assert director.observe("need",100_000,100,100,true,0,false,false,false,.8,.8,.9).equals("react_injury");
+        assert director.observe("need",300_000,100,100,true,0,false,false,false,.8,.8,.9).isEmpty() : "Bleeding suppresses routine needs";
         var api=PersonalKnoxAPI.getInstance();
-        for (String topic : new String[]{"react_zombies","react_horde","react_injury","react_player_injury","react_rain","react_dark","react_corpses"}) {
+        for (String topic : new String[]{"react_zombies","react_horde","react_injury","react_player_injury","react_rain","react_dark","react_corpses","react_hunger","react_thirst","react_fatigue"}) {
             assert api.chooseDialogue(topic,0.1,20,80,0)>0 : "Missing Russian reaction: "+topic;
         }
-        System.out.println("World reaction tests passed: perception edges, priority, shared/NPC/topic cooldowns, stale warnings, bounded memory.");
+        System.out.println("World reaction tests passed: perception, needs, priority, cooldowns, recovered needs, hysteresis, combat suppression, bounded memory.");
     }
 }

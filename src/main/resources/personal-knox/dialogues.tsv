@@ -60,3 +60,21 @@
 60	plan_house	default	Проверю комнаты на полезные вещи. Начну с еды и перевязки.
 61	plan_house	low_morale	Ладно, посмотрю, что здесь есть. Будьте поблизости.
 62	plan_house	brave	Осмотрю дом. Может, найдётся оружие получше и нужные припасы.
+63	react_hunger	default	Хочу есть.
+64	react_hunger	default	Неплохо бы перекусить.
+65	react_hunger	default	Что-нибудь бы съесть.
+66	react_hunger	low_morale	Поесть бы сейчас.
+67	react_hunger	low_trust	Мне тоже что-нибудь из еды осталось?
+68	react_hunger	brave	Перекусить бы перед следующей вылазкой.
+69	react_thirst	default	Хочется пить.
+70	react_thirst	default	Где бы набрать воды?
+71	react_thirst	default	Нужно попить.
+72	react_thirst	low_morale	Воды бы немного.
+73	react_thirst	low_trust	Воды для меня найдётся?
+74	react_thirst	brave	Попить бы, и можно продолжать.
+75	react_fatigue	default	Глаза слипаются.
+76	react_fatigue	default	Нужен отдых.
+77	react_fatigue	default	Пора бы поспать.
+78	react_fatigue	low_morale	Совсем нет сил, хочется отдохнуть.
+79	react_fatigue	low_trust	Для отдыха здесь найдётся безопасное место?
+80	react_fatigue	brave	Немного бы отдохнуть, и можно дальше.

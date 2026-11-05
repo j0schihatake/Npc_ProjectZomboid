@@ -92,4 +92,12 @@ public final class PersonalKnoxAPI {
         if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return "";
         return reactions.observe(key, (long) nowMillis, health, playerHealth, bleeding, zombies, rain, dark, corpses);
     }
+
+    public String worldReactionWithNeeds(String key, double nowMillis, double health, double playerHealth,
+            boolean bleeding, int zombies, boolean rain, boolean dark, boolean corpses,
+            double hunger, double thirst, double fatigue) {
+        if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return "";
+        return reactions.observe(key, (long) nowMillis, health, playerHealth, bleeding, zombies,
+                rain, dark, corpses, hunger, thirst, fatigue);
+    }
 }

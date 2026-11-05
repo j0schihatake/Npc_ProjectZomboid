@@ -10,6 +10,7 @@ public final class ReactionDirector {
     private static final long NPC_COOLDOWN = 90_000;
     private static final long TOPIC_COOLDOWN = 180_000;
     private static final long PENDING_LIFETIME = 30_000;
+    private static final long NEED_REMINDER = 300_000;
     private final LinkedHashMap<String, State> states = new LinkedHashMap<>();
     private long lastGroupSpeech = Long.MIN_VALUE;
 
@@ -18,6 +19,7 @@ public final class ReactionDirector {
         double playerHealth = Double.NaN;
         int zombies;
         boolean rain, dark, corpses, bleeding;
+        boolean hungry, thirsty, tired;
         long lastSpeech = Long.MIN_VALUE;
         String pending;
         int priority;
@@ -43,6 +45,22 @@ public final class ReactionDirector {
 
     public String observe(String key, long now, double health, double playerHealth, boolean bleeding,
                           int zombies, boolean rain, boolean dark, boolean corpses) {
+        return observe(key, now, health, playerHealth, bleeding, zombies, rain, dark, corpses,
+                Double.NaN, Double.NaN, Double.NaN);
+    }
+
+    private static boolean needs(double value, boolean wasActive, double on, double off) {
+        return Double.isFinite(value) && value >= 0 && value <= 1 && value >= (wasActive ? off : on);
+    }
+
+    private static void offerNeed(State state, String topic, boolean active, int priority, long now) {
+        if (active && elapsed(now, state.topics.getOrDefault(topic, Long.MIN_VALUE), NEED_REMINDER))
+            offer(state, topic, priority, now);
+    }
+
+    public String observe(String key, long now, double health, double playerHealth, boolean bleeding,
+                          int zombies, boolean rain, boolean dark, boolean corpses,
+                          double hunger, double thirst, double fatigue) {
         if (key == null || key.isBlank() || now < 0 || !Double.isFinite(health + playerHealth)) return "";
         // Refresh insertion order; never retain an unbounded population of world NPCs.
         State state = states.remove(key);
@@ -50,6 +68,13 @@ public final class ReactionDirector {
         states.put(key, state);
         while (states.size() > 128) states.remove(states.keySet().iterator().next());
         if (state.pending != null && now > state.expires) state.pending = null;
+        // Explicit policy on the game's 0..1 scales, with hysteresis near the threshold.
+        boolean hungry = needs(hunger, state.hungry, .25, .15);
+        boolean thirsty = needs(thirst, state.thirsty, .20, .10);
+        boolean tired = needs(fatigue, state.tired, .60, .45);
+        if (("react_hunger".equals(state.pending) && !hungry)
+                || ("react_thirst".equals(state.pending) && !thirsty)
+                || ("react_fatigue".equals(state.pending) && !tired)) state.pending = null;
 
         if ((bleeding && !state.bleeding) || (!Double.isNaN(state.health) && health <= state.health - 3))
             offer(state, "react_injury", 100, now);
@@ -60,6 +85,11 @@ public final class ReactionDirector {
         if (corpses && !state.corpses && zombies == 0) offer(state, "react_corpses", 40, now);
         if (rain && !state.rain && zombies == 0) offer(state, "react_rain", 20, now);
         if (dark && !state.dark && zombies == 0) offer(state, "react_dark", 10, now);
+        if (zombies == 0 && !bleeding) {
+            offerNeed(state, "react_thirst", thirsty, 60, now);
+            offerNeed(state, "react_hunger", hungry, 55, now);
+            offerNeed(state, "react_fatigue", tired, 50, now);
+        }
 
         state.health = health;
         state.playerHealth = playerHealth;
@@ -68,8 +98,11 @@ public final class ReactionDirector {
         state.rain = rain;
         state.dark = dark;
         state.corpses = corpses;
-        // Don't deliver a stale rain/night/corpse remark in the middle of a fight.
-        if (zombies > 0 && state.pending != null && state.priority < 80) state.pending = null;
+        state.hungry = hungry;
+        state.thirsty = thirsty;
+        state.tired = tired;
+        // Routine chatter must not compete with an ongoing fight or bleeding.
+        if ((zombies > 0 || bleeding) && state.pending != null && state.priority < 80) state.pending = null;
         if (state.pending == null || !elapsed(now, lastGroupSpeech, GROUP_COOLDOWN)
                 || !elapsed(now, state.lastSpeech, NPC_COOLDOWN)) return "";
         String result = state.pending;

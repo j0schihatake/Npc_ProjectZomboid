@@ -17,12 +17,23 @@ local player={getModData=function() return config end,isDead=function() return f
     getX=function() return 0 end,getY=function() return 0 end,getZ=function() return 0 end,
     getBodyDamage=function() return damage end}
 local visible=true
+local statsAvailable=true
+CharacterStat={HUNGER={},THIRST={},FATIGUE={}}
 local visionCalls=0
 local bodies={}
 for i=1,8 do
     local body={kind="IsoNpcPlayer",getX=player.getX,getY=player.getY,getZ=player.getZ,
         isDead=player.isDead,getCurrentSquare=function() return square end,
         getBodyDamage=function() return damage end,
+        getStats=function()
+            assert(statsAvailable,"Simulated unavailable stats")
+            return {get=function(_,stat)
+                if stat==CharacterStat.HUNGER then return 0.3 end
+                if stat==CharacterStat.THIRST then return 0.2 end
+                if stat==CharacterStat.FATIGUE then return 0.7 end
+                error("Unexpected stat")
+            end}
+        end,
         CanSee=function() visionCalls=visionCalls+1; return visible end}
     local meta={id=i,getId=function(self) return self.id end,getWorldObject=function() return body end}
     body.getMetaCharacter=function() return meta end
@@ -45,8 +56,8 @@ function getGameTime() return {getTimeOfDay=function() return 22 end} end
 function getClimateManager() return {getRainIntensity=function() return 1 end} end
 classFilesInstalled=true
 local java={
-    worldReactionTopic=function(_,key,now,hp,php,bleed,zombies,rain,dark,corpses)
-        observed[#observed+1]={key=key,zombies=zombies,rain=rain,dark=dark}
+    worldReactionWithNeeds=function(_,key,now,hp,php,bleed,zombies,rain,dark,corpses,hunger,thirst,fatigue)
+        observed[#observed+1]={key=key,zombies=zombies,rain=rain,dark=dark,hunger=hunger,thirst=thirst,fatigue=fatigue}
         assert(zombies<=24 and now==100000 and hp==100)
         return "react_zombies"
     end,
@@ -61,11 +72,15 @@ tick()
 assert(#observed==4 and emitted==4,"One poll handles at most four companions")
 assert(visionCalls<=96,"Visibility work has a hard budget")
 assert(observed[1].zombies==24 and observed[1].rain and observed[1].dark)
+assert(observed[1].hunger==0.3 and observed[1].thirst==0.2 and observed[1].fatigue==0.7,"Read the actual CharacterStat API")
 local first=observed[1].key
 observed={}; queries=0; visible=false;visionCalls=0
 tick()
 assert(#observed==4 and observed[1].key~=first,"Companions rotate")
 assert(observed[1].zombies==0,"Hidden zombies must not trigger danger")
+observed={};queries=0;statsAvailable=false
+tick()
+assert(#observed==4 and observed[1].hunger==-1 and observed[1].thirst==-1 and observed[1].fatigue==-1,"Unavailable need data must not stop other reactions")
 config.PersonalKnox.worldReactions=false
 observed={}; queries=0
 tick()
@@ -75,4 +90,4 @@ client=true
 tick()
 assert(#observed==0 and queries==0,"Unsupported multiplayer must not run this SP adapter")
 ''')
-print('Reaction Lua checks passed: bounded local sampling, rotating NPC budget, visibility, disable switch, SP guard.')
+print('Reaction Lua checks passed: bounded sampling, rotating NPC budget, visibility, actual CharacterStat reads, unavailable-stat fallback, disable switch, SP guard.')

@@ -3,6 +3,12 @@ local Reactions = { cursor = 0 }
 local adapters
 local RADIUS, MAX_OBJECTS, MAX_THREATS, MAX_NPCS = 6, 256, 24, 8
 
+local function need(body, stat)
+    local ok, value = pcall(function() return body:getStats():get(stat) end)
+    if ok and type(value) == "number" then return value end
+    return -1 -- Unknown is not evidence of hunger; keep other reactions working.
+end
+
 local function enabled(player)
     local data = player:getModData()
     data.PersonalKnox = data.PersonalKnox or {}
@@ -77,9 +83,12 @@ function Reactions.poll()
             end
             local outside = body:getCurrentSquare() and body:getCurrentSquare():isOutside() or false
             local damage = body:getBodyDamage()
-            local topic = java:worldReactionTopic(tostring(npc:getId()), now, damage:getHealth(), playerHealth,
+            local topic = java:worldReactionWithNeeds(tostring(npc:getId()), now, damage:getHealth(), playerHealth,
                 damage:getNumPartsBleeding() > 0, visible, rain and outside,
-                outside and (time >= 21 or time < 5), corpses)
+                outside and (time >= 21 or time < 5), corpses,
+                need(body, CharacterStat and CharacterStat.HUNGER),
+                need(body, CharacterStat and CharacterStat.THIRST),
+                need(body, CharacterStat and CharacterStat.FATIGUE))
             if topic ~= "" then adapters.say(player, npc, topic) end
         end
     end
