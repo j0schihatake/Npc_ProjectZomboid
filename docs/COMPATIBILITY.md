@@ -93,6 +93,14 @@
   а не падение JVM; если игра закрывается с ошибкой — нужен `hs_err` или окно ошибки.
 - Новый JAR 0.4.62 (core) и Lua 0.4.63 в этом запуске ещё не были загружены.
 
+## 0.8.0 — первые свои тела
+
+- `OwnNpcBodies.lua`: для активных `OwnNpcAgent` создаётся `IsoPlayer`-тело
+  (`setNPC(true)`, `setSceneCulled(false)`), позиция обновляется, при понижении тело удаляется.
+- API: `ownCount/ownId/ownX/ownY/ownZ`; без классов Knox.
+- Это прототип: анимации/бой/инвентарь/pathfinding ещё не подключены.
+- Java-ядро 0.8.0, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.7.7 — сохранение своих NPC
 
 - `PersonalKnoxAPI.ownSnapshot/ownRestore` + `OwnNpcLayer.restore`: активные агенты

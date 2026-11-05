@@ -33,6 +33,29 @@ public final class PersonalKnoxAPI {
     }
 
     public int ownActive() { return ownLayer.count(); }
+    public int ownCount() { return ownLayer.count(); }
+
+    public String ownId(int index) {
+        var agents = ownLayer.agents();
+        return index >= 0 && index < agents.size() ? agents.get(index).id() : "";
+    }
+
+    public double ownX(int index) {
+        var agents = ownLayer.agents();
+        return index >= 0 && index < agents.size() ? agents.get(index).x() : 0;
+    }
+
+    public double ownY(int index) {
+        var agents = ownLayer.agents();
+        return index >= 0 && index < agents.size() ? agents.get(index).y() : 0;
+    }
+
+    public double ownZ(int index) {
+        var agents = ownLayer.agents();
+        return index >= 0 && index < agents.size() ? agents.get(index).z() : 0;
+    }
+
+
     public String ownSnapshot() {
         return personal.knox.npc.own.OwnNpcCodec.encode(ownLayer.agents());
     }
