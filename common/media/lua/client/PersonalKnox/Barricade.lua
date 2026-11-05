@@ -273,6 +273,8 @@ function Barricade.inspect(player, npc)
             read("waterReady",function() return stock.water end)
             read("medicineReady",function() return stock.medicine end)
             read("weaponReady",function() return stock.weapon end)
+            read("foodUnknown",function() return stock.foodUnknown end)
+            read("waterUnknown",function() return stock.waterUnknown end)
         else
             read("supplies",function() return "unavailable" end)
         end

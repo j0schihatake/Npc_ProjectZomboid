@@ -88,6 +88,7 @@ assert(announced==1 and supply.pending[npc].kind=='essentials','Unsuitable stock
 contents={item{kind='Food',unsupported=true},item{kind='InventoryContainer',contents={item{kind='Food'},item{source=true,amount=.2,pure=true}}}}
 supply.propose(player,npc)
 assert(seen.food==1 and seen.water==1,'One unsupported item must not stop inspection of the remaining bags')
+assert(supply.stockSnapshot(body).foodUnknown==1,'Unsupported food metadata stays visible in diagnostics')
 assert(poisonChecks.n>0,'Ask the NPC about known poison')
 ''')
 print('Supply adapter readiness checks passed: actual plan counts, safe food/water, clean dressings, broken weapons, nested bags and unsupported-item fallback.')

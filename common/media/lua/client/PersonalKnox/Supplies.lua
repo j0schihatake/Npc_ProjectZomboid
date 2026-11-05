@@ -16,7 +16,7 @@ local function settings(player)
 end
 
 local function inventorySnapshot(body)
-    local result = {food=0, water=0, medicine=0, weapon=false}
+    local result = {food=0, water=0, medicine=0, weapon=false, foodUnknown=0, waterUnknown=0}
     local java = PersonalKnoxAPI.getInstance()
     local function readyFood(item)
         if not instanceof(item, "Food") then return false end
@@ -25,6 +25,7 @@ local function inventorySnapshot(body)
                 item:isRotten(), item:isBurnt(), item:isbDangerousUncooked(), item:isCooked(),
                 body:isKnownPoison(item))
         end)
+        if not ok then result.foodUnknown=result.foodUnknown+1 end
         return ok and ready == true
     end
     local function readyWater(item)
@@ -34,6 +35,7 @@ local function inventorySnapshot(body)
             if not fluid then return false end -- Legacy/unknown contents do not prove a drinkable reserve.
             return java:isSupplyWater(fluid:getAmount(), fluid:isPureFluid(Fluid.Water), fluid:isTainted())
         end)
+        if not ok then result.waterUnknown=result.waterUnknown+1 end
         return ok and ready == true
     end
     local function inspect(container, depth)
