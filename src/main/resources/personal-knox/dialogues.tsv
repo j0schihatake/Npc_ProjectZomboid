@@ -120,3 +120,10 @@
 120	help_rush	brave	Ну ты и влип. Сейчас вытащу.
 121	help_rush	low_morale	Опять я всех вытаскиваю...
 122	help_rush	low_trust	Иду. Но ты мне должен.
+123	smalltalk	default	Как сам-то?
+124	smalltalk	default	Держимся помаленьку.
+125	smalltalk	default	Тихо сегодня.
+126	smalltalk	default	Ты как? Не ранен?
+127	smalltalk	brave	Живы — уже хорошо.
+128	smalltalk	low_morale	Надо бы передохнуть...
+129	smalltalk	low_trust	Чего тебе?

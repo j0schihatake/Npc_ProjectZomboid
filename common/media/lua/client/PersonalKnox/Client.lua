@@ -17,6 +17,7 @@ local Crowd = require "PersonalKnox/Crowd"
 local Help = require "PersonalKnox/Help"
 local HelpCall = require "PersonalKnox/HelpCall"
 local Negotiation = require "PersonalKnox/Negotiation"
+local Chatter = require "PersonalKnox/Chatter"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -253,4 +254,5 @@ Crowd.install({isMember=isMember})
 Help.install()
 HelpCall.install({roster=roster,say=say})
 Negotiation.install({roster=roster,say=say})
+Chatter.install({roster=roster,say=say})
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")

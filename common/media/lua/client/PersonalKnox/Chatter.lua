@@ -1,0 +1,42 @@
+-- Companions sometimes start a short conversation on their own, not only reply.
+local Chatter = {}
+local Settings = require "PersonalKnox/Settings"
+local CHECK_MS, MIN_GAP_MS, MAX_GAP_MS = 15000, 90000, 180000
+local lastCheck, nextAt, deps = 0, 0, nil
+
+local function poll(player)
+    if not deps or not Settings.speechEnabled() or isClient() then return end
+    local now = getTimestampMs()
+    if now - lastCheck < CHECK_MS then return end
+    lastCheck = now
+    if now < nextAt then return end
+    if player:isTargetedByZombie() or player:isAiming() then return end
+    local speaker, best = nil, 1e9
+    for _, npc in ipairs(deps.roster(player)) do
+        local body = npc:getWorldObject()
+        if body and not body:isDead() then
+            local dx, dy = body:getX() - player:getX(), body:getY() - player:getY()
+            local d = dx * dx + dy * dy
+            if d < 100 and d < best then speaker, best = npc, d end
+        end
+    end
+    if not speaker then return end
+    deps.say(player, speaker, "smalltalk")
+    nextAt = now + MIN_GAP_MS + math.random() * (MAX_GAP_MS - MIN_GAP_MS)
+    if Settings.diagnosticsEnabled() then
+        print("[PersonalKnox][chatter] npc=" .. tostring(speaker:getId()))
+    end
+end
+
+function Chatter.install(adapters)
+    deps = adapters
+    Events.OnGameStart.Add(function() lastCheck, nextAt = 0, 0 end)
+    Events.OnPlayerUpdate.Add(function()
+        local player = getSpecificPlayer(0)
+        if not player or player:isDead() then return end
+        local ok, err = pcall(poll, player)
+        if not ok then print("[PersonalKnox] Chatter error: " .. tostring(err)) end
+    end)
+end
+
+return Chatter
