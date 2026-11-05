@@ -98,6 +98,12 @@
 - `OwnNpcPathfinder.Grid.canStep(from,to)` — проходимость ребра, а не только клетки;
   нужно для стен/дверей в реальном `IsoCell`.
 
+## 0.9.27 — разбор roster в Java
+
+- `KnoxRoster`: парсит `id@x,y,z;`, форматирует обратно, отклоняет битые записи;
+  API `knoxMemberCount`/`knoxMemberIds`.
+- Java-ядро 0.9.27, JAR пересобран; тесты проходят.
+
 ## 0.9.26 — устойчивый id в roster
 
 - `groupMemberSnapshot`: если `getId` нет — `getUsername`, затем `toString`;

@@ -85,6 +85,7 @@ public final class BrainTest {
         ReactionTest.run();
         SupplyEligibilityTest.run();
         KnoxTransferProbeTest.run();
+        KnoxRosterTest.run();
         ThreatDirectionTest.run();
         WeaponChoiceTest.run();
         PlayerCareTest.run();
