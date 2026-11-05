@@ -60,5 +60,7 @@
   "ContextMenu_PersonalKnox_BarricadeDanger": "Сначала нужно разобраться с опасностью рядом.",
   "ContextMenu_PersonalKnox_BarricadeFailed": "Задание не запущено. Подробности в console.txt.",
   "ContextMenu_PersonalKnox_BarricadeStalled": "Работа остановилась: остались незаконченные окна. Проверь доступ и проходы.",
-  "ContextMenu_PersonalKnox_BarricadeStopped": "Баррикадирование прервано."
+  "ContextMenu_PersonalKnox_BarricadeStopped": "Баррикадирование прервано.",
+  "ContextMenu_PersonalKnox_BarricadeInspect": "Диагностика: NPC и баррикадирование",
+  "ContextMenu_PersonalKnox_BarricadeInspectLogged": "Состояние NPC записано в console.txt. Приказы не изменены."
 }

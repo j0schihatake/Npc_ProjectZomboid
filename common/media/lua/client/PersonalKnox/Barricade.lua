@@ -200,8 +200,45 @@ function Barricade.poll()
     Barricade.cursor = (Barricade.cursor+4)%math.max(1,#Barricade.active)
 end
 
+function Barricade.inspect(player, npc)
+    if isClient() or not player or not deps.isMember(player,npc) then return end
+    local body = npc:getWorldObject()
+    if not body then return end
+    local fields = {}
+    local function read(key, fn)
+        local ok, value = pcall(fn)
+        fields[#fields+1] = key .. "=" .. (ok and tostring(value) or "unavailable")
+        if not ok then print("[PersonalKnox][probe] " .. key .. ": " .. tostring(value)) end
+    end
+    read("npc",function() return npc:getId() end)
+    read("goal",function() return npc:getGoal() end)
+    read("subGoal",function() return npc:getSubGoal() end)
+    read("nativeBarricade",function() return npc:getBehaviorTree():getChildWithName("BarricadeSubTree") ~= nil end)
+    read("health",function() return body:getBodyDamage():getHealth() end)
+    read("hunger",function() return body:getStats():get(CharacterStat.HUNGER) end)
+    read("thirst",function() return body:getStats():get(CharacterStat.THIRST) end)
+    read("fatigue",function() return body:getStats():get(CharacterStat.FATIGUE) end)
+    read("planks",function() return body:getInventory():getItemCount("Base.Plank",true) end)
+    read("nails",function() return body:getInventory():getItemCount("Base.Nails",true) end)
+    read("healthyHammer",function()
+        return body:getInventory():getFirstTagEvalRecurse(ItemTag.HAMMER,function(item) return not item:isBroken() end) ~= nil
+    end)
+    read("safehouseMatches",function()
+        local building = body:getCurrentSquare():getBuilding()
+        local home = api():getPlayerSafehouse()
+        return building ~= nil and home ~= nil and home:equals(building:getDef())
+    end)
+    read("windows",function() return #windowsFor(body:getCurrentSquare():getBuilding()) end)
+    local report = table.concat(fields," ")
+    print("[PersonalKnox][probe] " .. report)
+    deps.journal(player,npc,"npc_probe",report)
+    notice(player,"InspectLogged")
+    return report
+end
+
 function Barricade.addOption(menu, player, npc)
     menu:addOption(getText("ContextMenu_PersonalKnox_BarricadeHome"),player,Barricade.start,npc)
+    menu:addOption(getText("ContextMenu_PersonalKnox_BarricadeInspect"),player,Barricade.inspect,npc)
 end
 function Barricade.install(adapters)
     deps = adapters

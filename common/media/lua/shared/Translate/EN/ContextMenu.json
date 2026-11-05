@@ -60,5 +60,7 @@
   "ContextMenu_PersonalKnox_BarricadeDanger": "Deal with the nearby danger first.",
   "ContextMenu_PersonalKnox_BarricadeFailed": "Could not start the task. See console.txt.",
   "ContextMenu_PersonalKnox_BarricadeStalled": "Work stalled with unfinished windows. Check access and paths.",
-  "ContextMenu_PersonalKnox_BarricadeStopped": "Barricading interrupted."
+  "ContextMenu_PersonalKnox_BarricadeStopped": "Barricading interrupted.",
+  "ContextMenu_PersonalKnox_BarricadeInspect": "Diagnostic: NPC and barricading",
+  "ContextMenu_PersonalKnox_BarricadeInspectLogged": "NPC state recorded in console.txt. Orders unchanged."
 }

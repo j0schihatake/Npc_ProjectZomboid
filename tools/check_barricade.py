@@ -15,6 +15,7 @@ function isClient() return false end
 classFilesInstalled=true
 Events={EveryOneMinute={Add=function(fn) tick=fn end},OnGameStart={Add=function(fn) reset=fn end},OnKeyPressed={Add=function() end}}
 ItemTag={HAMMER={}}
+CharacterStat={HUNGER={},THIRST={},FATIGUE={}}
 local function list(items)
  return {size=function() return #items end,get=function(_,index) return items[index+1] end}
 end
@@ -52,6 +53,11 @@ local body={getX=function() return 0 end,getY=function() return 0 end,getZ=funct
  getInventory=function() return inventory end,getCurrentSquare=function() return square end,
  isDead=function() return false end,CanSee=function() return visible end,
  StopAllActionQueue=function() stopped=stopped+1 end}
+body.getBodyDamage=function() return {getHealth=function() return 80 end} end
+body.getStats=function() return {get=function(_,stat)
+ assert(stat==CharacterStat.HUNGER or stat==CharacterStat.THIRST or stat==CharacterStat.FATIGUE)
+ return 0.4
+end} end
 local player={getCurrentSquare=function() return square end,getX=body.getX,getY=body.getY,
  isDead=body.isDead,Say=function(_,text) messages[#messages+1]=text end}
 local counter=0
@@ -89,6 +95,9 @@ local Barricade=require 'PersonalKnox/Barricade'
 Barricade.install({isMember=function() return member end,journal=function() end,
  say=function(_,_,topic) assert(topic=='plan_barricade');announced=announced+1 end,cancelSupply=function() end})
 local n=npc()
+local report=Barricade.inspect(player,n)
+assert(report:find('hunger=0.4',1,true) and report:find('nativeBarricade=true',1,true))
+assert(granted==0 and stopped==0 and transferred==0 and #Barricade.active==0,'Inspection must not issue orders, grant materials or interrupt actions')
 Barricade.start(player,n)
 assert(#Barricade.active==1 and stock['Base.Plank']==4 and stock['Base.Nails']==8 and #hammers==2)
 assert(announced==1 and n.subGoal=='BarricadeSubTree')
