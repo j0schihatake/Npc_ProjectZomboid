@@ -33,7 +33,7 @@ local function poll(player)
     end
     if not speaker then return end
     deps.say(player, speaker, "smalltalk")
-    nextAt = now + minGap + math.random() * (maxGap - minGap)
+    nextAt = now + ZombRand(minGap, maxGap + 1)
     if Settings.diagnosticsEnabled() then
         print("[PersonalKnox][chatter] npc=" .. tostring(Util.id(speaker)))
     end

@@ -22,7 +22,7 @@ def summarize(text: str) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--console', type=Path, default=Path.home() / 'Zomboid/console.txt')
-    parser.add_argument('--expect', default='0.4.48')
+    parser.add_argument('--expect', default='0.4.53')
     args = parser.parse_args()
     report = summarize(args.console.read_text(errors='replace'))
     ok = report['core'] == args.expect and report['lua'] and not report['errors']
