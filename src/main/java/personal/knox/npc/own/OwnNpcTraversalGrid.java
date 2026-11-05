@@ -4,6 +4,7 @@ package personal.knox.npc.own;
 public final class OwnNpcTraversalGrid implements OwnNpcPathfinder.Grid {
     public interface World {
         boolean passable(int x, int y);
+        default boolean canStep(int fx, int fy, int tx, int ty) { return passable(tx, ty); }
         OwnNpcTraversal.Kind traversalAt(int x, int y); // null means normal floor
     }
 
@@ -15,6 +16,8 @@ public final class OwnNpcTraversalGrid implements OwnNpcPathfinder.Grid {
     }
 
     @Override public boolean passable(int x, int y) { return world.passable(x, y); }
+
+    @Override public boolean canStep(int fx, int fy, int tx, int ty) { return world.canStep(fx, fy, tx, ty); }
 
     @Override public double cost(int x, int y) {
         var kind = world.traversalAt(x, y);

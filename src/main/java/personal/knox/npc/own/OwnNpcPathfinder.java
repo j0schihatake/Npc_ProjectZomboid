@@ -13,6 +13,7 @@ public final class OwnNpcPathfinder {
     public record Point(int x, int y) {}
     public interface Grid {
         boolean passable(int x, int y);
+        default boolean canStep(int fx, int fy, int tx, int ty) { return passable(tx, ty); }
         default double cost(int x, int y) { return 0; }
     }
 
@@ -37,7 +38,7 @@ public final class OwnNpcPathfinder {
             if (current.point.equals(target)) return reconstruct(came, target);
             for (var step : new int[][]{{1,0},{-1,0},{0,1},{0,-1}}) {
                 var next = new Point(current.point.x + step[0], current.point.y + step[1]);
-                if (closed.contains(next) || !grid.passable(next.x, next.y)) continue;
+                if (closed.contains(next) || !grid.canStep(current.point.x, current.point.y, next.x, next.y)) continue;
                 double g = current.g + 1.0 + grid.cost(next.x, next.y);
                 if (g >= best.getOrDefault(next, Double.MAX_VALUE)) continue;
                 best.put(next, g);
