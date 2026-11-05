@@ -111,6 +111,7 @@ PersonalKnoxAPI={getInstance=function() return {
   elseif idle>=2 then return 'stalled' else return 'work' end
  end,
 } end}
+package.preload['PersonalKnox/Settings']=function() return {diagnosticsEnabled=function() return true end} end
 local Barricade=require 'PersonalKnox/Barricade'
 Barricade.install({isMember=function() return member end,journal=function() end,
  say=function(_,_,topic) assert(topic=='plan_barricade');announced=announced+1 end,cancelSupply=function() end})

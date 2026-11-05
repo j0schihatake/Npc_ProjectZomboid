@@ -9,6 +9,7 @@ local Interaction = require "PersonalKnox/Interaction"
 local Call = require "PersonalKnox/Call"
 local Weapons = require "PersonalKnox/Weapons"
 local Barricade = require "PersonalKnox/Barricade"
+local Settings = require "PersonalKnox/Settings"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -53,6 +54,7 @@ local function journal(player, npc, kind, detail)
 end
 
 local function say(player, npc, topic)
+    if not Settings.speechEnabled() then return end
     if not isMember(player, npc) then return end
     local body = npc:getWorldObject()
     if not body or body:isDead() then
@@ -93,6 +95,7 @@ local function setJob(player, npc, job)
 end
 
 local function report(player, npc)
+    if not Settings.diagnosticsEnabled() then return end
     if not isMember(player, npc) then return end
     local body = npc:getWorldObject()
     if not body then message(player, getText("ContextMenu_PersonalKnox_NpcUnloaded")); return end
@@ -161,17 +164,21 @@ local function fillNpcMenu(sub, player, npc)
     Call.addOption(sub, player, npc)
     Barricade.addOption(sub, player, npc)
     Weapons.addOptions(sub, player, npc)
-    sub:addOption(getText("ContextMenu_PersonalKnox_TalkStatus"), player, say, npc, "status")
-    sub:addOption(getText("ContextMenu_PersonalKnox_TalkFarming"), player, say, npc, "farming")
-    sub:addOption(getText("ContextMenu_PersonalKnox_TalkSupplies"), player, say, npc, "supplies")
-    sub:addOption(getText("ContextMenu_PersonalKnox_TalkWatch"), player, say, npc, "watch")
-    sub:addOption(getText("ContextMenu_PersonalKnox_TalkRetreat"), player, say, npc, "squad")
+    if Settings.speechEnabled() then
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkStatus"), player, say, npc, "status")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkFarming"), player, say, npc, "farming")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkSupplies"), player, say, npc, "supplies")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkWatch"), player, say, npc, "watch")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkRetreat"), player, say, npc, "squad")
+    end
     Supply.addOptions(sub,player,npc)
     Routine.addOptions(sub,player,npc)
     sub:addOption(getText("ContextMenu_PersonalKnox_JobFarming"), player, setJob, npc, "Farming")
     sub:addOption(getText("ContextMenu_PersonalKnox_JobChopping"), player, setJob, npc, "Chopping")
     sub:addOption(getText("ContextMenu_PersonalKnox_JobOrganizing"), player, setJob, npc, "Organizing")
-    sub:addOption(getText("ContextMenu_PersonalKnox_ElevationReport"), player, report, npc)
+    if Settings.diagnosticsEnabled() then
+        sub:addOption(getText("ContextMenu_PersonalKnox_ElevationReport"), player, report, npc)
+    end
 end
 
 local function onContext(playerIndex, context, worldObjects, test)

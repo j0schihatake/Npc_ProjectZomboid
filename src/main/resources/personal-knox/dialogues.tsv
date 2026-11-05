@@ -78,3 +78,23 @@
 78	react_fatigue	low_morale	Совсем нет сил, хочется отдохнуть.
 79	react_fatigue	low_trust	Для отдыха здесь найдётся безопасное место?
 80	react_fatigue	brave	Немного бы отдохнуть, и можно дальше.
+81	react_zombies_front	default	Зомби впереди. Держимся рядом.
+82	react_zombies_front	default	Впереди мертвяк, осторожнее.
+83	react_zombies_front	low_morale	Зомби впереди. Только не оставляй меня.
+84	react_zombies_front	low_trust	Зомби впереди. Прикроешь?
+85	react_zombies_front	brave	Зомби впереди. Встречаем вместе.
+86	react_zombies_behind	default	Зомби сзади! Оглянись.
+87	react_zombies_behind	default	Мертвяк за спиной, осторожнее.
+88	react_zombies_behind	low_morale	Зомби сзади! Давай ближе друг к другу.
+89	react_zombies_behind	low_trust	У нас зомби сзади. Спину прикрой.
+90	react_zombies_behind	brave	Зомби сзади. Разворачиваемся вместе.
+91	react_zombies_right	default	Зомби справа. Осторожнее.
+92	react_zombies_right	default	Справа мертвяк, не подпускай.
+93	react_zombies_right	low_morale	Справа зомби. Мне нужна помощь.
+94	react_zombies_right	low_trust	Зомби справа. Не подведи.
+95	react_zombies_right	brave	Справа зомби. Вместе справимся.
+96	react_zombies_left	default	Зомби слева. Осторожнее.
+97	react_zombies_left	default	Слева мертвяк, не подпускай.
+98	react_zombies_left	low_morale	Слева зомби. Держись рядом со мной.
+99	react_zombies_left	low_trust	Зомби слева. Рассчитываю на прикрытие.
+100	react_zombies_left	brave	Зомби слева. Разберёмся вместе.

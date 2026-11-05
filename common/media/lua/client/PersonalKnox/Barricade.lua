@@ -1,5 +1,6 @@
 -- Native safehouse job adapter. No instant construction or independent pathfinding.
 local Barricade = {active={}, cursor=0}
+local Settings = require "PersonalKnox/Settings"
 local deps
 local MAX_TASKS, MAX_ROOMS, MAX_WINDOWS = 8, 64, 128
 
@@ -139,7 +140,9 @@ local function stop(task, reason, restoreStart)
             task.npc:setSubGoal(task.previousSubGoal)
         end
     end
-    print("[PersonalKnox][barricade] npc=" .. tostring(task.npc:getId()) .. " stop=" .. reason)
+    if Settings.diagnosticsEnabled() then
+        print("[PersonalKnox][barricade] npc=" .. tostring(task.npc:getId()) .. " stop=" .. reason)
+    end
     deps.journal(task.player, task.npc, "barricade_stop", reason)
     if reason == "done" then notice(task.player, "Done")
     elseif reason == "stalled" then notice(task.player, "Stalled")
@@ -181,7 +184,9 @@ local function begin(player, npc)
     assert(nativeNode(npc),"Native barricading node unavailable after assignment")
     topUp(task, missing)
     deps.journal(player,npc,"barricade_start",tostring(#windows))
-    print("[PersonalKnox][barricade] npc=" .. tostring(npc:getId()) .. " windows=" .. #windows .. " missing=" .. missing)
+    if Settings.diagnosticsEnabled() then
+        print("[PersonalKnox][barricade] npc=" .. tostring(npc:getId()) .. " windows=" .. #windows .. " missing=" .. missing)
+    end
 end
 
 function Barricade.start(player, npc)
@@ -232,6 +237,7 @@ function Barricade.poll()
 end
 
 function Barricade.inspect(player, npc)
+    if not Settings.diagnosticsEnabled() then return end
     if isClient() or not player or not deps.isMember(player,npc) then return end
     local body = npc:getWorldObject()
     if not body then return end
@@ -279,7 +285,9 @@ end
 
 function Barricade.addOption(menu, player, npc)
     menu:addOption(getText("ContextMenu_PersonalKnox_BarricadeHome"),player,Barricade.start,npc)
-    menu:addOption(getText("ContextMenu_PersonalKnox_BarricadeInspect"),player,Barricade.inspect,npc)
+    if Settings.diagnosticsEnabled() then
+        menu:addOption(getText("ContextMenu_PersonalKnox_BarricadeInspect"),player,Barricade.inspect,npc)
+    end
 end
 function Barricade.install(adapters)
     deps = adapters

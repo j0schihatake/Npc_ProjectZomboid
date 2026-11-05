@@ -1,5 +1,6 @@
 -- Bounded world sampling. Java decides which event may produce a line.
 local Reactions = { cursor = 0 }
+local Settings = require "PersonalKnox/Settings"
 local adapters
 local RADIUS, MAX_OBJECTS, MAX_THREATS, MAX_NPCS = 6, 256, 24, 8
 
@@ -7,6 +8,17 @@ local function need(body, stat)
     local ok, value = pcall(function() return body:getStats():get(stat) end)
     if ok and type(value) == "number" then return value end
     return -1 -- Unknown is not evidence of hunger; keep other reactions working.
+end
+
+local function directionalTopic(java, body, zombie, topic)
+    if topic ~= "react_zombies" or not zombie then return topic end
+    -- Keep the generic line if an older core or an unavailable direction API is loaded.
+    local ok, result = pcall(function()
+        local facing = body:getForwardDirection()
+        return java:directionalReaction(topic, facing:getX(), facing:getY(),
+            zombie:getX() - body:getX(), zombie:getY() - body:getY())
+    end)
+    return ok and type(result) == "string" and result ~= "" and result or topic
 end
 
 local function enabled(player)
@@ -63,7 +75,7 @@ end
 function Reactions.poll()
     if isClient() or not PersonalKnoxAPI or not classFilesInstalled then return end
     local player = getSpecificPlayer(0)
-    if not player or player:isDead() or not enabled(player) then return end
+    if not player or player:isDead() or not Settings.speechEnabled() or not enabled(player) then return end
     local members, threats, corpses = sample(player)
     if #members == 0 then return end
     local now = getTimestampMs()
@@ -76,10 +88,14 @@ function Reactions.poll()
         local npc = members[((Reactions.cursor + offset - 1) % #members) + 1]
         local body = npc:getWorldObject()
         if body and not body:isDead() and adapters.isMember(player, npc) then
-            local visible = 0
+            local visible, nearest, nearestDistance = 0, nil, math.huge
             for _, zombie in ipairs(threats) do
                 local dx, dy = body:getX() - zombie:getX(), body:getY() - zombie:getY()
-                if dx * dx + dy * dy <= 64 and body:CanSee(zombie) then visible = visible + 1 end
+                local distance = dx * dx + dy * dy
+                if distance <= 64 and body:CanSee(zombie) then
+                    visible = visible + 1
+                    if distance < nearestDistance then nearest, nearestDistance = zombie, distance end
+                end
             end
             local outside = body:getCurrentSquare() and body:getCurrentSquare():isOutside() or false
             local damage = body:getBodyDamage()
@@ -89,7 +105,7 @@ function Reactions.poll()
                 need(body, CharacterStat and CharacterStat.HUNGER),
                 need(body, CharacterStat and CharacterStat.THIRST),
                 need(body, CharacterStat and CharacterStat.FATIGUE))
-            if topic ~= "" then adapters.say(player, npc, topic) end
+            if topic ~= "" then adapters.say(player, npc, directionalTopic(java, body, nearest, topic)) end
         end
     end
     Reactions.cursor = (Reactions.cursor + 4) % #members
@@ -101,9 +117,11 @@ function Reactions.install(deps)
         Reactions.cursor = 0
         if PersonalKnoxAPI then PersonalKnoxAPI.getInstance():resetWorldReactions() end
         -- Log exports once per world load, without constructing actions or scanning NPCs.
-        print("[PersonalKnox][capabilities] luaNpcTransferAction=" .. tostring(ISNpcInventoryTransferAction ~= nil)
-            .. " luaBehaviorNode=" .. tostring(LuaBehaviorNode ~= nil)
-            .. " luaSubTreeNode=" .. tostring(LuaSubTreeNode ~= nil))
+        if Settings.diagnosticsEnabled() then
+            print("[PersonalKnox][capabilities] luaNpcTransferAction=" .. tostring(ISNpcInventoryTransferAction ~= nil)
+                .. " luaBehaviorNode=" .. tostring(LuaBehaviorNode ~= nil)
+                .. " luaSubTreeNode=" .. tostring(LuaSubTreeNode ~= nil))
+        end
     end)
     Events.EveryOneMinute.Add(function()
         local ok, err = pcall(Reactions.poll)
