@@ -28,6 +28,13 @@ public final class PersonalKnoxAPI {
         return alife.tick(now, x, y, z, budget);
     }
 
+    public void alifeOutpost(String id, String faction, double x, double y, double z,
+                             int garrison, int supplies, boolean radio) {
+        alife.outpost(id, faction, x, y, z, garrison, supplies, radio);
+    }
+
+    public int alifeOutposts() { return alife.outpostCount(); }
+
     public String alifeEvents() { return alife.lastEvents(); }
 
     public int alifeSquads() { return alife.squadCount(); }

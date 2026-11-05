@@ -38,6 +38,9 @@ local function tick()
             end
         end
     end
+    if api:alifeOutposts() == 0 then
+        api:alifeOutpost("player-base", "own", px, py, pz, 2, 8, true)
+    end
     local summary = api:alifeTick(now, px, py, pz, 32)
     local events = api:alifeEvents()
     if events ~= nil and events ~= "" then

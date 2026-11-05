@@ -15,6 +15,11 @@ public final class AlifeRuntimeTest {
         far.submit("far", "own", 1, 90, 2, "REGROUP", 500, 500, 0, 900, 900);
         far.tick(2000, 0, 0, 0, 8);
         assert far.lastEvents().contains("FAR_MOVE") : far.lastEvents();
+        var outpostRuntime = new AlifeRuntime();
+        outpostRuntime.outpost("base", "own", 0, 0, 0, 2, 1, true);
+        assert outpostRuntime.outpostCount() == 1;
+        outpostRuntime.tick(3000, 0, 0, 0, 8);
+        assert outpostRuntime.lastEvents().contains("OUTPOST_SILENT") : outpostRuntime.lastEvents();
         System.out.println("A-Life runtime tests passed: submit/update, tick summary and task fallback.");
     }
 }

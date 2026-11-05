@@ -43,6 +43,12 @@ public final class AlifeWorld {
         outposts.put(outpost.id(), outpost);
     }
 
+    public void updateOutpost(Outpost outpost) {
+        if (outpost == null || !outposts.containsKey(outpost.id()))
+            throw new IllegalArgumentException("Unknown outpost");
+        outposts.put(outpost.id(), outpost);
+    }
+
     public Outpost removeOutpost(String id) { return outposts.remove(id); }
 
     public void setRespawnDelayMillis(long value) {

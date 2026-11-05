@@ -36,6 +36,15 @@ public final class AlifeRuntime {
         return lastSummary;
     }
 
+    public void outpost(String id, String factionId, double x, double y, double z,
+                        int garrison, int supplies, boolean radio) {
+        var outpost = new Outpost(id, factionId, Outpost.Kind.CAMP, x, y, z, garrison, supplies, radio);
+        if (world.outpost(id) == null) world.addOutpost(outpost);
+        else world.updateOutpost(outpost);
+    }
+
+    public int outpostCount() { return world.outpostCount(); }
+
     public String lastSummary() { return lastSummary; }
     public String lastEvents() { return lastEvents; }
     public int squadCount() { return world.squadCount(); }
