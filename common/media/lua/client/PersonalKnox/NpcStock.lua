@@ -96,6 +96,33 @@ local function poll(player)
                         print("[PersonalKnox][npc-stock] " .. kind .. "=" .. tostring(item:getType())
                             .. " distance=" .. tostring(distance))
                     end
+                elseif kind == "opener" then
+                    local friend, friendItem, friendDistance = nil, nil, math.huge
+                    for _, other in ipairs(deps.roster(player)) do
+                        if other ~= npc then
+                            local otherBody = other:getWorldObject()
+                            if otherBody and not otherBody:isDead() and not otherBody:hasTimedActions() then
+                                local dx, dy = otherBody:getX() - body:getX(), otherBody:getY() - body:getY()
+                                local d = dx * dx + dy * dy
+                                if d < friendDistance then
+                                    local items = otherBody:getInventory():getItems()
+                                    for i = 0, items:size() - 1 do
+                                        if isOpener(items:get(i)) then
+                                            friend, friendItem, friendDistance = otherBody, items:get(i), d
+                                            break
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    if friend and friendItem and ISInventoryTransferAction and ISTimedActionQueue then
+                        ISTimedActionQueue.add(ISInventoryTransferAction:new(body, friendItem,
+                            friend:getInventory(), body:getInventory()))
+                        if Settings.diagnosticsEnabled() then
+                            print("[PersonalKnox][npc-stock] opener friend distance=" .. tostring(friendDistance))
+                        end
+                    end
                 end
             end
         end
