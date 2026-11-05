@@ -87,6 +87,12 @@ public final class AlifeTest {
 
         var presenceWorld = new AlifeWorld(13);
         presenceWorld.addFactionPresence(new FactionPresence.State("own", 2, true, 100));
+        presenceWorld.setRespawnDelayMillis(1000);
+        presenceWorld.loseFactionSquad("own", 1400);
+        var returnEvents = presenceWorld.tick(2500, 0, 0, 0, 10);
+        assert returnEvents.stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_RETURN) : "Faction return event";
+        assert presenceWorld.factionPresence("own").members() == 1;
+
         presenceWorld.loseFactionSquad("own", 200);
         assert presenceWorld.factionPresence("own").members() == 0;
         assert presenceWorld.respawnReady(300, 1000).isEmpty();

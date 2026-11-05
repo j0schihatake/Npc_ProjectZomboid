@@ -18,6 +18,7 @@ public final class AlifeWorld {
     private final Map<String, Squad> squads = new LinkedHashMap<>();
     private final Map<String, Outpost> outposts = new LinkedHashMap<>();
     private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
+    private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
     private long now;
 
@@ -38,6 +39,11 @@ public final class AlifeWorld {
     }
 
     public Outpost removeOutpost(String id) { return outposts.remove(id); }
+
+    public void setRespawnDelayMillis(long value) {
+        if (value <= 0) throw new IllegalArgumentException("Invalid respawn delay");
+        respawnDelayMillis = value;
+    }
 
     public void addFactionPresence(FactionPresence.State state) {
         if (state == null || presence.containsKey(state.factionId()))
@@ -133,6 +139,11 @@ public final class AlifeWorld {
                 events.add(new AlifeEvent(AlifeEvent.Type.OUTPOST_SILENT, outpost.id(), outpost.factionId(),
                         outpost.x(), outpost.y(), outpost.z(), "radio_off"));
             }
+        }
+        for (var factionId : respawnReady(time, respawnDelayMillis)) {
+            respawnFaction(factionId, 1, time);
+            events.add(new AlifeEvent(AlifeEvent.Type.FACTION_RETURN, factionId, factionId,
+                    px, py, pz, "edge"));
         }
         return events;
     }
