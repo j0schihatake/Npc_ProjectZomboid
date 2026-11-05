@@ -35,6 +35,10 @@ public final class PersonalKnoxAPI {
 
     public int ownActive() { return ownLayer.count(); }
 
+    public int ownTick(double hours, int budget) {
+        return ownLayer.tick(hours, budget).size();
+    }
+
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
     public String ownDebugSpawn(double x, double y, double z) {
         var event = ownLayer.debugSpawn(x, y, z);
