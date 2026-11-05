@@ -27,6 +27,10 @@ public final class OwnNpcLayerTest {
         layer.tick(0.01, 8);
         assert !layer.agent("n3").state().bleeding() : "Bleeding treated";
         layer.remove("n3");
+        assert layer.damage("n1", 10).type() == OwnNpcEvent.Type.NEEDS;
+        assert layer.damage("n1", 200).type() == OwnNpcEvent.Type.DIED;
+        assert layer.agent("n1") == null;
+        layer.restore(OwnNpcCodec.decode(OwnNpcCodec.encode(java.util.List.of(agent))));
         var hungryState = new NpcState(100, 0.9, 0.9, 0.1, 0.8, false, false,
                 NpcState.Role.SCAVENGER, NpcState.Task.FOLLOW);
         var hungry = new OwnNpcAgent("n2", "own", 0, 0, 0, 0, 0, 2, hungryState);

@@ -35,6 +35,10 @@ public final class PersonalKnoxAPI {
 
     public int ownActive() { return ownLayer.count(); }
 
+    public String ownDamage(String id, double amount) {
+        return ownLayer.damage(id, amount).type().name();
+    }
+
     public String ownOrderMode(String id, String order, double x, double y) {
         return ownLayer.order(id, personal.knox.npc.own.OwnNpcOrder.valueOf(order.toUpperCase(java.util.Locale.ROOT)), x, y).agentId();
     }

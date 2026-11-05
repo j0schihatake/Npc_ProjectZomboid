@@ -22,6 +22,14 @@ public record OwnNpcAgent(String id, String factionId, double x, double y, doubl
         return new OwnNpcAgent(id, factionId, x, y, z, targetX, targetY, supplies, next);
     }
 
+    public OwnNpcAgent withHealth(double value) {
+        if (!Double.isFinite(value) || value < 0 || value > 100)
+            throw new IllegalArgumentException("Invalid health");
+        return new OwnNpcAgent(id, factionId, x, y, z, targetX, targetY, supplies,
+                new personal.knox.npc.NpcState(value, state.hunger(), state.thirst(), state.fatigue(),
+                        state.morale(), state.bleeding(), state.downed(), state.role(), state.task()));
+    }
+
     public OwnNpcAgent withSupplies(int value) {
         if (value < 0) throw new IllegalArgumentException("Invalid supplies");
         return new OwnNpcAgent(id, factionId, x, y, z, targetX, targetY, value, state);

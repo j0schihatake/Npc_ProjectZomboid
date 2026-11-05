@@ -74,6 +74,19 @@ public final class OwnNpcLayer {
         return new OwnNpcEvent(OwnNpcEvent.Type.MOVED, id, updated.x(), updated.y(), updated.z(), "order");
     }
 
+    public OwnNpcEvent damage(String id, double amount) {
+        if (!Double.isFinite(amount) || amount <= 0) throw new IllegalArgumentException("Invalid damage");
+        var agent = agents.get(id);
+        if (agent == null) throw new IllegalArgumentException("Unknown agent");
+        double health = Math.max(0, agent.state().health() - amount);
+        if (health <= 0) {
+            var removed = remove(id);
+            return new OwnNpcEvent(OwnNpcEvent.Type.DIED, id, removed.x(), removed.y(), removed.z(), "dead");
+        }
+        agents.put(id, agent.withHealth(health));
+        return new OwnNpcEvent(OwnNpcEvent.Type.NEEDS, id, agent.x(), agent.y(), agent.z(), "damage");
+    }
+
     public OwnNpcEvent remove(String id) {
         orders.remove(id);
         var agent = agents.remove(id);
