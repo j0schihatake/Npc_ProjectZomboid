@@ -31,11 +31,14 @@ public final class OwnNpcLayer {
     }
 
     public OwnNpcEvent debugSpawn(double x, double y, double z) {
-        String id = "debug#" + (agents.size() + 1);
+        int index = agents.size();
+        String id = "debug#" + (index + 1);
+        double ox = (index % 4) * 0.9;
+        double oy = ((index / 4) % 4) * 0.9;
         var state = new personal.knox.npc.NpcState(100, 0.2, 0.2, 0.2, 0.7,
                 false, false, personal.knox.npc.NpcState.Role.SCAVENGER,
                 personal.knox.npc.NpcState.Task.FOLLOW);
-        return spawn(new OwnNpcAgent(id, "own", x, y, z, x + 3, y, 2, state));
+        return spawn(new OwnNpcAgent(id, "own", x + ox, y + oy, z, x + ox + 3, y + oy, 2, state));
     }
 
     public void restore(List<OwnNpcAgent> restored) {

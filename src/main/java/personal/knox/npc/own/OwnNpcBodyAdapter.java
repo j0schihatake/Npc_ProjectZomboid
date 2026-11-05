@@ -70,8 +70,22 @@ public final class OwnNpcBodyAdapter {
         invoke(body, "setSceneCulled", new Class<?>[]{boolean.class}, false);
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
         invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
-        call(body, "dressInRandomNonSillyOutfit");
+        dress(body, desc);
         return body;
+    }
+
+    private static void dress(Object body, Object desc) {
+        try {
+            body.getClass().getMethod("Dressup", desc.getClass()).invoke(body, desc);
+        } catch (Throwable ignored) { }
+        for (var name : new String[]{"dressInRandomNonSillyOutfit", "dressInRandomOutfit"}) {
+            try {
+                body.getClass().getMethod(name).invoke(body);
+                System.out.println("[PersonalKnox] Own body dressed via " + name);
+                return;
+            } catch (Throwable ignored) { }
+        }
+        System.out.println("[PersonalKnox] Own body dress failed");
     }
 
     private static void move(Object body, double x, double y, double z) {

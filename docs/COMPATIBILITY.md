@@ -93,6 +93,13 @@
   а не падение JVM; если игра закрывается с ошибкой — нужен `hs_err` или окно ошибки.
 - Новый JAR 0.4.62 (core) и Lua 0.4.63 в этом запуске ещё не были загружены.
 
+## 0.8.6 — разнос и одежда тел
+
+- `debugSpawn` смещает каждого нового NPC по сетке 0.9 м; раньше F10 спавнил всех в одной клетке.
+- `OwnNpcBodyAdapter` вызывает `Dressup(desc)` и `dressInRandomNonSillyOutfit`/`dressInRandomOutfit`,
+  пишет `Own body dressed via ...` или `dress failed`.
+- Java-ядро 0.8.6, JAR пересобран; тесты проходят.
+
 ## 0.8.5 — свои NPC двигаются
 
 - `ownTick` из Lua раз в 10 с; `OwnNpcLayer` двигает агентов к цели (2 м/шаг),
