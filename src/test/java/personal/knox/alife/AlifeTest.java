@@ -113,6 +113,7 @@ public final class AlifeTest {
         assert camp.removeOutpost("camp") != null && camp.outpostCount() == 0;
         personal.knox.alife.DynamicRelationsTest.run();
         personal.knox.alife.FactionPresenceTest.run();
+        personal.knox.alife.FactionEconomyTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
