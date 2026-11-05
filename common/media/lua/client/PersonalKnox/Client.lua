@@ -178,14 +178,19 @@ local function roster(player)
     end
     -- Nearby followers are not always listed among safehouse workers.
     local cell = getCell()
-    for x=math.floor(player:getX())-8,math.floor(player:getX())+8 do
-        for y=math.floor(player:getY())-8,math.floor(player:getY())+8 do
-            local square = cell:getGridSquare(x, y, math.floor(player:getZ()))
+    local px,py,pz=math.floor(player:getX()),math.floor(player:getY()),math.floor(player:getZ())
+    local processed=0
+    for x=px-8,px+8 do
+        for y=py-8,py+8 do
+            local square = cell:getGridSquare(x, y, pz)
             if square then
                 local moving = square:getMovingObjects()
                 for i=0,moving:size()-1 do
+                    processed=processed+1
                     local body = moving:get(i)
                     if instanceof(body, "IsoNpcPlayer") then add(body:getMetaCharacter()) end
+                    -- Known group members above are retained even in a saturated scene.
+                    if processed>=512 then return result end
                 end
             end
         end
