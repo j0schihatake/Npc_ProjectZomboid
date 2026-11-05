@@ -6,7 +6,7 @@ local Util = require "PersonalKnox/Util"
 
 local deps
 local INTERVAL_MS, LOG_MS = 10000, 60000
-local last, lastLog, logged = 0, 0, false
+local last, lastLog, logged, lastSave = 0, 0, false, 0
 
 local function tick()
     if isClient() or not PersonalKnoxAPI then return end
@@ -24,6 +24,10 @@ local function tick()
     local px, py = player:getX(), player:getY()
     api:ownGroup("player-squad", "own", members, px, py)
     local active = api:ownSync(px, py, 80, members)
+    if now - lastSave >= 60000 then
+        lastSave = now
+        player:getModData().PersonalKnoxOwnNpc = api:ownSnapshot()
+    end
     if not logged then
         logged = true
         print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active))
@@ -35,6 +39,14 @@ end
 
 function OwnNpc.install(adapters)
     deps = adapters
+    Events.OnGameStart.Add(function()
+        local player = getSpecificPlayer(0)
+        local saved = player and player:getModData().PersonalKnoxOwnNpc
+        if saved and PersonalKnoxAPI then
+            local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownRestore(saved) end)
+            if not ok then print("[PersonalKnox] Own-NPC restore error: " .. tostring(err)) end
+        end
+    end)
     Events.OnPlayerUpdate.Add(function()
         local ok, err = pcall(tick)
         if not ok then print("[PersonalKnox] Own-NPC poll error: " .. tostring(err)) end

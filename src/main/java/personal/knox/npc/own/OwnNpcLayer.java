@@ -30,6 +30,13 @@ public final class OwnNpcLayer {
         return new OwnNpcEvent(OwnNpcEvent.Type.SPAWNED, agent.id(), agent.x(), agent.y(), agent.z(), "spawn");
     }
 
+    public void restore(List<OwnNpcAgent> restored) {
+        if (restored == null) throw new IllegalArgumentException("Missing agents");
+        if (restored.size() > MAX_NPCS) throw new IllegalArgumentException("Too many agents");
+        agents.clear();
+        for (var agent : restored) agents.put(agent.id(), agent);
+    }
+
     public OwnNpcEvent remove(String id) {
         var agent = agents.remove(id);
         if (agent == null) throw new IllegalArgumentException("Unknown agent");

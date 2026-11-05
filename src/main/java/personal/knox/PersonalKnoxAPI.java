@@ -33,6 +33,16 @@ public final class PersonalKnoxAPI {
     }
 
     public int ownActive() { return ownLayer.count(); }
+    public String ownSnapshot() {
+        return personal.knox.npc.own.OwnNpcCodec.encode(ownLayer.agents());
+    }
+
+    public int ownRestore(String text) {
+        ownLayer.restore(personal.knox.npc.own.OwnNpcCodec.decode(text));
+        return ownLayer.count();
+    }
+
+
 
     private final personal.knox.alife.AlifeRuntime alife = new personal.knox.alife.AlifeRuntime();
 

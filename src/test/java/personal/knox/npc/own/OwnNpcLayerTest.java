@@ -16,6 +16,9 @@ public final class OwnNpcLayerTest {
         assert layer.agent("n1").state().hunger() > state.hunger() : "Needs decayed";
         assert layer.remove("n1").type() == OwnNpcEvent.Type.REMOVED;
         assert layer.count() == 0;
+        var saved = OwnNpcCodec.encode(java.util.List.of(agent));
+        layer.restore(OwnNpcCodec.decode(saved));
+        assert layer.count() == 1 && layer.agent("n1") != null;
         try { layer.spawn(agent); layer.spawn(agent); throw new AssertionError("Duplicate accepted"); }
         catch (IllegalArgumentException expected) { }
         try { layer.remove("missing"); throw new AssertionError("Unknown removal accepted"); }

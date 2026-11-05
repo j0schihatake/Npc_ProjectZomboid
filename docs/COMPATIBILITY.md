@@ -93,6 +93,12 @@
   а не падение JVM; если игра закрывается с ошибкой — нужен `hs_err` или окно ошибки.
 - Новый JAR 0.4.62 (core) и Lua 0.4.63 в этом запуске ещё не были загружены.
 
+## 0.7.7 — сохранение своих NPC
+
+- `PersonalKnoxAPI.ownSnapshot/ownRestore` + `OwnNpcLayer.restore`: активные агенты
+  пишутся в `player:getModData().PersonalKnoxOwnNpc` раз в 60 с и восстанавливаются на старте.
+- Java-ядро 0.7.7, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.7.6 — свой слой в игре
 
 - `PersonalKnoxAPI.ownGroup/ownSync/ownActive`: Lua раз в 10 с обновляет группу
