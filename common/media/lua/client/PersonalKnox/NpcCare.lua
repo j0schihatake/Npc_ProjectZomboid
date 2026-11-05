@@ -28,6 +28,58 @@ local function bleedingPart(body)
     return nil
 end
 
+local ISNpcRipClothing = nil
+if ISBaseTimedAction then
+    ISNpcRipClothing = ISBaseTimedAction:derive("ISNpcRipClothing")
+    function ISNpcRipClothing:isValid()
+        return self.item:getContainer() == self.container
+    end
+    function ISNpcRipClothing:start()
+        self:setActionAnim("Bandage")
+    end
+    function ISNpcRipClothing:perform()
+        self.container:Remove(self.item)
+        self.character:getInventory():AddItem("Base.RippedSheets")
+        ISBaseTimedAction.perform(self)
+    end
+    function ISNpcRipClothing:new(character, item, container)
+        local o = ISBaseTimedAction.new(self, character)
+        o.character = character
+        o.item = item
+        o.container = container
+        o.maxTime = 50
+        return o
+    end
+end
+
+local function corpseCloth(body)
+    if not ISNpcRipClothing then return nil end
+    local cell = getCell()
+    local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
+    for dx = -6, 6 do
+        for dy = -6, 6 do
+            local square = cell:getGridSquare(px + dx, py + dy, pz)
+            if square then
+                local objects = square:getMovingObjects()
+                for i = 0, objects:size() - 1 do
+                    local object = objects:get(i)
+                    if instanceof(object, "IsoZombie") and object:isDead() and object.getInventory then
+                        local inv = object:getInventory()
+                        if inv then
+                            local items = inv:getItems()
+                            for j = 0, items:size() - 1 do
+                                local item = items:get(j)
+                                if item:IsClothing() then return item, inv end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return nil
+end
+
 local function searchBandage(body)
     local cell = getCell()
     local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
@@ -80,6 +132,14 @@ local function poll(player)
                         print("[PersonalKnox][npc-care] take=" .. tostring(found:getFullType()))
                     end
                     bandage = nil
+                else
+                    local cloth, corpseInv = corpseCloth(body)
+                    if cloth and corpseInv and ISTimedActionQueue then
+                        ISTimedActionQueue.add(ISNpcRipClothing:new(body, cloth, corpseInv))
+                        if Settings.diagnosticsEnabled() then
+                            print("[PersonalKnox][npc-care] rip=" .. tostring(cloth:getFullType()))
+                        end
+                    end
                 end
             end
             if part and bandage and ISApplyBandage and ISTimedActionQueue then
