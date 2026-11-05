@@ -2,6 +2,7 @@
 local NpcReload = {}
 local Settings = require "PersonalKnox/Settings"
 local Perf = require "PersonalKnox/Perf"
+local Util = require "PersonalKnox/Util"
 local INTERVAL_MS, MAX_NPCS = 5000, 2
 local lastCheck, deps = 0, nil
 
@@ -25,7 +26,7 @@ local function poll(player)
                 if weapon.getAmmoType then ammoType = weapon:getAmmoType() end
                 local reserve = 0
                 if ammoType and ammoType.getItemKey then
-                    reserve = body:getInventory():getItemCountFromTypeRecursive(ammoType:getItemKey())
+                    reserve = Util.countAmmo(body:getInventory(), ammoType:getItemKey())
                 end
                 local reloadable = true
                 if weapon.isReloadable then

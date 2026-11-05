@@ -2,6 +2,7 @@
 local AutoReload = {}
 local Settings = require "PersonalKnox/Settings"
 local Perf = require "PersonalKnox/Perf"
+local Util = require "PersonalKnox/Util"
 local INTERVAL_MS = 1000
 local lastCheck = 0
 
@@ -26,7 +27,7 @@ local function poll(player)
     if weapon.getAmmoType then ammoType = weapon:getAmmoType() end
     local reserve = 0
     if ammoType and ammoType.getItemKey then
-        reserve = player:getInventory():getItemCountFromTypeRecursive(ammoType:getItemKey())
+        reserve = Util.countAmmo(player:getInventory(), ammoType:getItemKey())
     end
     if reserve <= 0 then return end
     if ISReloadWeaponAction and ISTimedActionQueue then
