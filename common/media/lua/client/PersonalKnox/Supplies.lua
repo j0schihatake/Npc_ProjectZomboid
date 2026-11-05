@@ -17,23 +17,48 @@ end
 
 local function inventorySnapshot(body)
     local result = {food=0, water=0, medicine=0, weapon=false}
+    local java = PersonalKnoxAPI.getInstance()
+    local function readyFood(item)
+        if not instanceof(item, "Food") then return false end
+        local ok, ready = pcall(function()
+            return java:isSupplyFood(item:getHungerChange(), not item:getScriptItem():isCantEat(),
+                item:isRotten(), item:isBurnt(), item:isbDangerousUncooked(), item:isCooked(),
+                body:isKnownPoison(item))
+        end)
+        return ok and ready == true
+    end
+    local function readyWater(item)
+        local ok, ready = pcall(function()
+            if not item:isWaterSource() then return false end
+            local fluid = item:getFluidContainer()
+            if not fluid then return false end -- Legacy/unknown contents do not prove a drinkable reserve.
+            return java:isSupplyWater(fluid:getAmount(), fluid:isPureFluid(Fluid.Water), fluid:isTainted())
+        end)
+        return ok and ready == true
+    end
     local function inspect(container, depth)
         if not container or depth > 4 then return end
         local items = container:getItems()
         for i=0,items:size()-1 do
             local item = items:get(i)
-            if instanceof(item, "Food") and not item:isRotten() then result.food=result.food+1 end
-            if item:isWaterSource() then result.water=result.water+1 end
-            if PersonalKnoxAPI.getInstance():isCleanBandage(item:getFullType(),item:isCanBandage(),item:isInfected()) then
-                result.medicine=result.medicine+1
+            local changed = false
+            if readyFood(item) then result.food=result.food+1; changed=true end
+            if readyWater(item) then result.water=result.water+1; changed=true end
+            if java:isCleanBandage(item:getFullType(),item:isCanBandage(),item:isInfected()) then
+                result.medicine=result.medicine+1; changed=true
             end
-            if instanceof(item,"HandWeapon") and not item:isBroken() then result.weapon=true end
-            if instanceof(item,"InventoryContainer") then inspect(item:getInventory(),depth+1) end
+            if not result.weapon and instanceof(item,"HandWeapon") and not item:isBroken() then result.weapon=true; changed=true end
+            -- Stop as soon as Java confirms the reserve. No duplicated thresholds in Lua.
+            if changed and java:supplyPlan(result.food,result.water,result.medicine,result.weapon,false,false)=="none" then return true end
+            if instanceof(item,"InventoryContainer") and inspect(item:getInventory(),depth+1) then return true end
         end
     end
     inspect(body:getInventory(),0)
     return result
 end
+
+-- Read-only view shared by the explicit NPC diagnostic; counts may stop at a sufficient reserve.
+Supply.stockSnapshot = inventorySnapshot
 
 local function inDanger(body)
     -- Knox already tracks perceived hostile NPCs as well as zombies.

@@ -73,6 +73,7 @@ public final class BrainTest {
         assert api.itemObjection(0, 0.7, 0.1, 100, 2, 0) > 0 : "Hungry NPC objects";
         assert api.itemObjection(0, 0.7, 0.1, 100, 0, 0) == 0 : "Full slots do not object";
         ReactionTest.run();
+        SupplyEligibilityTest.run();
         ThreatDirectionTest.run();
         WeaponChoiceTest.run();
         PlayerCareTest.run();
