@@ -10,8 +10,6 @@ function Util.id(npc)
     return tostring(npc)
 end
 
-return Util
-
 -- B42 removed getItemCountFromTypeRecursive on some builds; fall back to a bounded scan.
 function Util.countAmmo(inventory, itemKey)
     if not inventory or not itemKey then return 0 end
@@ -25,3 +23,5 @@ function Util.countAmmo(inventory, itemKey)
     end
     return total
 end
+
+return Util
