@@ -246,7 +246,7 @@ Call.install({isMember=isMember,roster=roster,journal=journal,cancelTasks=functi
     Supply.cancel(npc)
     Barricade.cancel(npc)
 end})
-Barricade.install({isMember=isMember,journal=journal,say=say,cancelSupply=Supply.cancel})
+Barricade.install({isMember=isMember,journal=journal,say=say,cancelSupply=Supply.cancel,stockSnapshot=Supply.stockSnapshot})
 Weapons.install({isMember=isMember})
 Reactions.install({isMember=isMember,say=say})
 Events.OnFillWorldObjectContextMenu.Add(function(...)

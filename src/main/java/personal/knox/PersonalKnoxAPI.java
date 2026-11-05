@@ -94,6 +94,15 @@ public final class PersonalKnoxAPI {
         return CompanionBrain.cleanBandage(itemType, canBandage, infected);
     }
 
+    public boolean isSupplyFood(double hungerChange, boolean canEat, boolean rotten, boolean burnt,
+                                boolean dangerousUncooked, boolean cooked, boolean knownPoison) {
+        return SupplyEligibility.food(hungerChange, canEat, rotten, burnt, dangerousUncooked, cooked, knownPoison);
+    }
+
+    public boolean isSupplyWater(double amount, boolean pureWater, boolean tainted) {
+        return SupplyEligibility.water(amount, pureWater, tainted);
+    }
+
     public String worldReactionTopic(String key, double nowMillis, double health, double playerHealth,
             boolean bleeding, int zombies, boolean rain, boolean dark, boolean corpses) {
         if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return "";

@@ -266,6 +266,17 @@ function Barricade.inspect(player, npc)
     read("hunger",function() return body:getStats():get(CharacterStat.HUNGER) end)
     read("thirst",function() return body:getStats():get(CharacterStat.THIRST) end)
     read("fatigue",function() return body:getStats():get(CharacterStat.FATIGUE) end)
+    if deps.stockSnapshot then
+        local ok, stock = pcall(deps.stockSnapshot, body)
+        if ok and type(stock)=="table" then
+            read("foodReady",function() return stock.food end)
+            read("waterReady",function() return stock.water end)
+            read("medicineReady",function() return stock.medicine end)
+            read("weaponReady",function() return stock.weapon end)
+        else
+            read("supplies",function() return "unavailable" end)
+        end
+    end
     read("planks",function() return body:getInventory():getItemCount("Base.Plank",true) end)
     read("nails",function() return body:getInventory():getItemCount("Base.Nails",true) end)
     read("healthyHammer",function()
