@@ -20,14 +20,17 @@ local items={size=function() return 0 end}
 local weight=1
 local inv={getItems=function() return items end, getCapacityWeight=function() return weight end, getCapacity=function() return 50 end}
 local body={getX=function() return 0 end,getY=function() return 0 end,getZ=function() return 0 end,
-    isDead=function() return false end,getInventory=function() return inv end,getMaxWeight=function() return 50 end}
+    isDead=function() return false end,getInventory=function() return inv end,getMaxWeight=function() return 50 end,
+    kind='IsoNpcPlayer',hasNoDangerousTargets=function() return true end,
+    hasEnemyNpcTargets=function() return false end,isInActiveCombat=function() return false end}
 local data={}
 local square={getBuilding=function() return building end}
 local player={getModData=function() return data end,getCurrentSquare=function() return square end,
     getX=body.getX,getY=body.getY,getZ=body.getZ,Say=function() end}
 local npc={getWorldObject=function() return body end}
 local zombieList={size=function() return 0 end}
-function getCell() return {getZombieList=function() return zombieList end} end
+function getCell() return {getZombieList=function() error('No global zombie scan') end,getGridSquare=function() return nil end} end
+function instanceof(object,kind) return object.kind==kind end
 function getGameTime() return {getWorldAgeHours=function() return 10 end} end
 function isClient() return false end
 function getSpecificPlayer() return player end

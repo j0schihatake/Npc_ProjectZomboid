@@ -60,6 +60,9 @@ local body={getX=function() return 0 end,getY=function() return 0 end,getZ=funct
  getInventory=function() return inventory end,getCurrentSquare=function() return square end,
  isDead=function() return false end,CanSee=function() return visible end,
  StopAllActionQueue=function() stopped=stopped+1 end}
+body.hasNoDangerousTargets=function() return true end
+body.hasEnemyNpcTargets=function() return false end
+body.isInActiveCombat=function() return false end
 body.getBodyDamage=function() return {getHealth=function() return 80 end} end
 body.getStats=function() return {get=function(_,stat)
  assert(stat==CharacterStat.HUNGER or stat==CharacterStat.THIRST or stat==CharacterStat.FATIGUE)
@@ -73,6 +76,7 @@ local function npc()
  local n={kind='MetaNpcCharacter',goal='RoamingSubTree',subGoal='FollowSubTree'}
  n.getId=function() return id end
  n.getFullName=function() return 'Companion' end
+ n.getPreferredWeapon=function() return nil end
  n.getWorldObject=function() return body end
  n.getGoal=function() return n.goal end;n.getSubGoal=function() return n.subGoal end
  n.setGoal=function(_,v) n.goal=v end;n.setSubGoal=function(_,v) n.subGoal=v end
