@@ -40,6 +40,12 @@
 (`Lua/ModOptions.ini`, 15:13), поэтому строка `[capabilities]` не печаталась —
 это не ошибка мода. Для следующей проверки включать диагностику до загрузки мира.
 
+## Подтверждено в игре (0.4.14)
+
+- `[PersonalKnox] Java core 0.4.14 loaded`, `[help] frequency=3`, `[care-init] classFilesInstalled=true api=true diagnostics=true`.
+- `[care-state] health=100.0 wounds=0 pain=0.0 thirst=0.00 hunger=0.00 action=none` — модуль тикает; действий нет, потому что персонаж здоров.
+- Ошибок PersonalKnox нет. Автобинт/голоса уже подтверждены на 0.4.12; здесь новых триггеров не было.
+
 ## Подтверждено в игре (0.4.12)
 
 - `[care-init] classFilesInstalled=true api=true diagnostics=true` — модуль инициализирован.
