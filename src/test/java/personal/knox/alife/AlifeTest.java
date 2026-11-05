@@ -153,6 +153,8 @@ public final class AlifeTest {
         personal.knox.alife.EscortPolicyTest.run();
         personal.knox.alife.EscortContractTest.run();
         personal.knox.alife.SpecialistLoanTest.run();
+        personal.knox.alife.RadioOperatorTest.run();
+        personal.knox.alife.VehicleTripTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
