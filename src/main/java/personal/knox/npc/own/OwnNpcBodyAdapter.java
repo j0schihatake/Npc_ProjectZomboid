@@ -26,7 +26,8 @@ public final class OwnNpcBodyAdapter {
                 Object body = bodies.get(agent.id());
                 if (body != null) syncHealth(layer, agent.id(), body);
                 if (layer.agent(agent.id()) == null) {
-                    bodies.remove(agent.id());
+                    var dead = bodies.remove(agent.id());
+                    if (dead != null) call(dead, "removeFromWorld");
                     pathCache.remove(agent.id());
                     continue;
                 }
