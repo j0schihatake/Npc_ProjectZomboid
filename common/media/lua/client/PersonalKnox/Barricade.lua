@@ -25,23 +25,54 @@ end
 
 local function windowsFor(building)
     local windows, seen = {}, {}
-    local rooms = building:getDef():getRooms()
+    local def = building:getDef()
+    local rooms, levels = def:getRooms(), {}
     assert(rooms:size() <= MAX_ROOMS, "Building exceeds room budget")
     for i=0,rooms:size()-1 do
-        local room = rooms:get(i):getIsoRoom()
+        local definition = rooms:get(i)
+        local room = definition:getIsoRoom()
         assert(room, "Building has unloaded rooms")
-        local list = room:getWindows()
-        assert(list:size() <= MAX_WINDOWS, "Room exceeds window budget")
-        for j=0,list:size()-1 do
-            local window = list:get(j)
-            if not seen[window] and window:isBarricadeAllowed() then
-                seen[window] = true
-                windows[#windows+1] = window
-                assert(#windows <= MAX_WINDOWS, "Building exceeds window budget")
+        levels[definition:getZ()] = true
+    end
+    -- IsoRoom:getWindows() returned an empty cache in a live Viewpoint house.
+    -- Inspect only this building's loaded bounds, including exterior wall squares.
+    local x1,y1,x2,y2=def:getX()-1,def:getY()-1,def:getX2()+1,def:getY2()+1
+    local floors=0
+    for _ in pairs(levels) do floors=floors+1 end
+    assert((x2-x1+1)*(y2-y1+1)*floors<=4096,"Building exceeds square budget")
+    local cell, processed = getCell(), 0
+    for z in pairs(levels) do for x=x1,x2 do for y=y1,y2 do
+        local square=cell:getGridSquare(x,y,z)
+        assert(square,"Building bounds not fully loaded")
+        local objects=square:getObjects()
+        for i=0,objects:size()-1 do
+            processed=processed+1
+            assert(processed<=32768,"Building exceeds object budget")
+            local window=objects:get(i)
+            if instanceof(window,"IsoWindow") and not seen[window] and window:isBarricadeAllowed() then
+                local inside=window:getIndoorSquare()
+                local owner=inside and inside:getBuilding()
+                if owner and owner:getDef():equals(def) then
+                    seen[window]=true
+                    windows[#windows+1]=window
+                    assert(#windows<=MAX_WINDOWS,"Building exceeds window budget")
+                end
             end
         end
-    end
+    end end end
     return windows
+end
+
+local function nativeNode(npc)
+    local tree=npc:getBehaviorTree()
+    local direct=tree:getChildWithName("BarricadeSubTree")
+    if direct then return direct end
+    local goal=tree:getGoalNode()
+    if not goal then return nil end
+    direct=goal:getChildWithNameWithDepth("BarricadeSubTree",1)
+    if direct then return direct end
+    local home=goal:getChildWithNameWithDepth("SafehouseSubTree",1)
+    return home and home:getChildWithName("BarricadeSubTree") or nil
 end
 
 local function remaining(task)
@@ -95,10 +126,10 @@ local function danger(body)
     return false
 end
 
-local function stop(task, reason)
+local function stop(task, reason, restoreStart)
     Barricade.cancel(task.npc)
     local body = task.npc:getWorldObject()
-    if body and not body:isDead() and deps.isMember(task.player, task.npc) and owns(task) then
+    if body and not body:isDead() and deps.isMember(task.player, task.npc) and (owns(task) or restoreStart) then
         body:StopAllActionQueue()
         if reason == "danger" or task.previousGoal == "RoamingSubTree" then
             api():getGroup(task.player):sendToGroup(task.npc)
@@ -131,7 +162,6 @@ local function begin(player, npc)
     end
     if find(npc) then return end
     if #Barricade.active >= MAX_TASKS then notice(player, "Busy"); return end
-    assert(npc:getBehaviorTree():getChildWithName("BarricadeSubTree"), "Native barricading node unavailable")
     local windows = windowsFor(building)
     if #windows == 0 then notice(player, "NoWindows"); return end
     local task = {player=player,npc=npc,home=safehouse,building=building,windows=windows,
@@ -148,6 +178,7 @@ local function begin(player, npc)
     body:StopAllActionQueue()
     npc:setGoal("SafehouseSubTree")
     npc:setSubGoal("BarricadeSubTree")
+    assert(nativeNode(npc),"Native barricading node unavailable after assignment")
     topUp(task, missing)
     deps.journal(player,npc,"barricade_start",tostring(#windows))
     print("[PersonalKnox][barricade] npc=" .. tostring(npc:getId()) .. " windows=" .. #windows .. " missing=" .. missing)
@@ -157,7 +188,7 @@ function Barricade.start(player, npc)
     local ok, err = pcall(begin, player, npc)
     if not ok then
         local task = find(npc)
-        if task then pcall(stop, task, "error") end
+        if task then pcall(stop, task, "error", true) end
         print("[PersonalKnox] Barricade start error: " .. tostring(err))
         notice(player, "Failed")
     end
@@ -213,7 +244,7 @@ function Barricade.inspect(player, npc)
     read("npc",function() return npc:getId() end)
     read("goal",function() return npc:getGoal() end)
     read("subGoal",function() return npc:getSubGoal() end)
-    read("nativeBarricade",function() return npc:getBehaviorTree():getChildWithName("BarricadeSubTree") ~= nil end)
+    read("nativeBarricadeCurrent",function() return nativeNode(npc) ~= nil end)
     read("health",function() return body:getBodyDamage():getHealth() end)
     read("hunger",function() return body:getStats():get(CharacterStat.HUNGER) end)
     read("thirst",function() return body:getStats():get(CharacterStat.THIRST) end)
