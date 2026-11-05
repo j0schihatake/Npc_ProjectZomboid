@@ -1,0 +1,68 @@
+# Проверка текущей сборки
+
+Дата: 2026-11-05. Игра: 42.21.0, Viewpoint: 0.1.6.1. Проверка манифеста и прошлого журнала не доказывает совместимость всех функций в игре.
+
+## Подтверждённая проблема и исправление
+
+- `ViewpointExtendedSupport` отключён в общем списке и последнем сохранении: в журнале есть Byte Buddy `Cannot assign class java.lang.Object to class viewpoint.interact.LootTargets$Target` непосредственно при его патче `LootTargets.aimed`.
+- `ProjectViewpointQOLLegacy0.1.6` оставлен. Его отдельное предупреждение `ThirdPerson.active` по просьбе пользователя отложено.
+- Исправлены наши подписи процентов в переводе Ammo Weight: больше нет сырого `%`, который вызывал предупреждение форматирования.
+- Наши русские подписи контекстного меню вынесены из Lua в JSON через `getText`; нужны повторный запуск и проверка ПКМ в игре.
+
+## Изменения интерфейса
+
+- Установлен `DGVViewpointEyes`. Полосы здоровья зомби, цифры урона, контур и комбо отключены в его пользовательском конфиге.
+- Дополнительные карта/компас/пинги/ежедневные сводки Eyes отключены, чтобы не добавлять ненужную работу. Стандартная миникарта сохранена.
+- Это новый мод для текущей сборки: необходима проверка в игре; другой полноценный HUD параллельно не подключён.
+
+## Карты
+
+- Raven Creek B42, Maplewood, Iris Eyot и Dinglespurt используют `lots=Muldraugh, KY`: это дополнения к основному миру.
+- Заголовки клеток проверены: 116 / 4 / 6 / 4 клетки соответственно; пересечений между ними нет.
+- Новые Iris Eyot и Dinglespurt включены в общий набор для нового мира. В уже созданное сохранение новые карты не добавлялись, чанки не удалялись.
+- В прошлом журнале есть ошибки идентификаторов комнат `BuildingRoomsEditor`. Их конкретный источник и последствия ещё требуют отдельного теста карт.
+
+## Автоматизация персонажа и NPC
+
+- Auto Eat, Auto Drink и Auto Medic не считаются проверенной автоматизацией Knox NPC только потому, что работают на игроке.
+- Auto Reload — тренировка перезарядки, а не замена Infinite Ammo With Reload. С бесконечным запасом его упражнения требуют отдельной проверки.
+- Снабжение PersonalKnox теперь считает только чистые пригодные повязки; резерв — минимум две. Самостоятельное изготовление тряпок пока не реализовано.
+
+## Включённые моды
+
+| Mod ID | Workshop | Версия | Зависимости |
+|---|---|---|---|
+| ZombieBuddy | 3619862853 | не указана | — |
+| Viewpoint | 3809306528 | 0.1.6.1 | ZombieBuddy |
+| PZVoxelStudioViewpoint | 3810302175 | 1.0 | — |
+| WallTextureFixForViewpoint | 3820609079 | 0.3.01 | ZombieBuddy,Viewpoint |
+| ProjectViewpointQOLLegacy0.1.6 | 3811256204 | не указана | ZombieBuddy,Viewpoint |
+| KnoxEventExpandedNpc | 3397396843 | 0.4.0-15 | ZombieBuddy |
+| KnoxEventExpandedNpcRU | 3830449528 | 0.4.0-15 | KnoxEventExpandedNpc |
+| CACustomWoodWeight | 3643808082 | 1.6.0 | — |
+| AmmoWeightRemoval | 2706397569 | не указана | — |
+| BetterSortCC | 2313387159 | 2.1.5 | — |
+| P4HasBeenRead | 2544353492 | 3.8.1 | — |
+| MapSymbolSizeSlider | 2734705913 | не указана | — |
+| RavenCreekB42 | 3484263516 | не указана | — |
+| Maplewood | 3644794945 | не указана | — |
+| NepInfiniteAmmo | 3408420806 | не указана | — |
+| aparosa_ViewpointI18n | 3822634333 | 0.0.14 | ZombieBuddy,Viewpoint |
+| PersonalKnox | локальный | 0.2.0 | ZombieBuddy, KnoxEventExpandedNpc |
+| IWD | 3657654953 | не указана | — |
+| FarSnowGround | 3830920925 | 1.0.0 | Viewpoint |
+| ViewpointLivingProps | 3816442251 | 1.0.3 | Viewpoint,ZombieBuddy |
+| VHSCinemaT2 | 3828766487 | 0.5.20 | ZombieBuddy,Viewpoint,ViewpointLivingProps |
+| ViewpointWindshield | 3830477223 | 1.2.1 | Viewpoint,ZombieBuddy |
+| ViewpointForaging | 3814994364 | 0.3.0 | ZombieBuddy,Viewpoint |
+| VisceralViewpoint | 3820965001 | 1.3.0 | ZombieBuddy,Viewpoint |
+| ShelfContents3D | 3828905319 | 0.6.4 | ZombieBuddy,Viewpoint |
+| AutoDrinkAnimation | 3803045908 | 1.3 | — |
+| AutoReload | 3389448389 | 1.3 | — |
+| MapCenter | 3790912405 | 1.2 | — |
+| UngodlyAutoMedic | 3791781209 | 1.2.1 | — |
+| [B42.19]AutoDrinkRevert | 3737205872 | 1.1.4 | — |
+| AutoEat | 3795435563 | не указана | — |
+| DGVViewpointEyes | 3825098116 | 1.3k | ZombieBuddy |
+| IrisEyot | 3545473388 | не указана | — |
+| DinglespurtKY | 3765673925 | не указана | — |

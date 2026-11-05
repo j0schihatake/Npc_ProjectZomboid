@@ -8,7 +8,9 @@ for file in (root/'common/media/lua').rglob('*.lua'):
     lua.execute('assert(loadstring(...))', file.read_text())
 lua.globals().package.path = str(root/'common/media/lua/shared/?.lua')+';'+str(root/'common/media/lua/client/?.lua')
 lua.execute('''
-Events={EveryTenMinutes={Add=function(fn) tick=fn end}, OnFillWorldObjectContextMenu={Add=function(fn) contextCallback=fn end}}
+function getText(key, ...) return key end
+Events={EveryTenMinutes={Add=function(fn) tick=fn end}, OnFillWorldObjectContextMenu={Add=function(fn) contextCallback=fn end},
+    EveryOneMinute={Add=function(fn) reactionTick=fn end}, OnGameStart={Add=function(fn) reactionReset=fn end}}
 package.preload.KnoxEventLoader=function() return {} end
 PersonalKnoxAPI={getInstance=function() return {supplyPlan=function() return "essentials" end} end}
 local Supply=require "PersonalKnox/Supplies"
@@ -16,7 +18,7 @@ local building={}
 local items={size=function() return 0 end}
 local inv={getItems=function() return items end, getCapacityWeight=function() return 1 end, getCapacity=function() return 50 end}
 local body={getX=function() return 0 end,getY=function() return 0 end,getZ=function() return 0 end,
-    isDead=function() return false end,getInventory=function() return inv end}
+    isDead=function() return false end,getInventory=function() return inv end,getMaxWeight=function() return 50 end}
 local data={}
 local square={getBuilding=function() return building end}
 local player={getModData=function() return data end,getCurrentSquare=function() return square end,

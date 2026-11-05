@@ -26,8 +26,14 @@ public final class CompanionBrain {
 
     public static String supplyPlan(int food, int water, int medicine, boolean weapon, boolean danger, boolean overloaded) {
         if (danger || overloaded) return "wait";
-        if (food < 2 || water < 1 || medicine < 1) return "essentials";
+        if (food < 2 || water < 1 || medicine < 2) return "essentials";
         if (!weapon) return "weapons";
         return "none";
+    }
+
+    public static boolean cleanBandage(String itemType, boolean canBandage, boolean infected) {
+        if (!canBandage || infected || itemType == null) return false;
+        String name = itemType.toLowerCase(java.util.Locale.ROOT);
+        return !name.contains("dirty") && !name.contains("filthy") && !name.contains("bloody");
     }
 }

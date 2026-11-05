@@ -1,4 +1,4 @@
-"""Export the editable SQLite dialogue database into a PZ-compatible Lua table."""
+"""Export the editable SQLite dialogue database into the Java runtime resource."""
 import argparse
 from pathlib import Path
 import sqlite3
@@ -29,7 +29,7 @@ def render(database=DATABASE):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Check that Lua matches SQLite")
+    parser.add_argument("--check", action="store_true", help="Check that the Java resource matches SQLite")
     args = parser.parse_args()
     content = render()
     if args.check:

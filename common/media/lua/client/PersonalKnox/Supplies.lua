@@ -17,10 +17,11 @@ local function inventorySnapshot(body)
         local items = container:getItems()
         for i=0,items:size()-1 do
             local item = items:get(i)
-            local name = string.lower(item:getFullType())
             if instanceof(item, "Food") and not item:isRotten() then result.food=result.food+1 end
             if item:isWaterSource() then result.water=result.water+1 end
-            if string.find(name,"bandage",1,true) or string.find(name,"rippedsheets",1,true) then result.medicine=result.medicine+1 end
+            if PersonalKnoxAPI.getInstance():isCleanBandage(item:getFullType(),item:isCanBandage(),item:isInfected()) then
+                result.medicine=result.medicine+1
+            end
             if instanceof(item,"HandWeapon") and not item:isBroken() then result.weapon=true end
             if instanceof(item,"InventoryContainer") then inspect(item:getInventory(),depth+1) end
         end
@@ -52,10 +53,10 @@ local function execute(player,npc)
     local plan = Supply.pending[npc]
     Supply.pending[npc] = nil
     if not plan or getGameTime():getWorldAgeHours() > plan.expires or not valid(player,npc,plan.building) then
-        player:Say("План отменён: обстановка изменилась. Проверим запасы заново.")
+        player:Say(getText("ContextMenu_PersonalKnox_PlanChanged"))
         return
     end
-    if not tellNpcLoot then player:Say("Команда сбора Knox пока недоступна."); return end
+    if not tellNpcLoot then player:Say(getText("ContextMenu_PersonalKnox_LootUnavailable")); return end
     -- Knox's public Lua command takes the selected group and category flags.
     -- Restore its UI state even when its command raises an error.
     local keys = {"lootAmmo","lootFirstAid","lootFood","lootGuns","lootMaterials","lootTools","lootWater","lootWeapons"}
@@ -69,7 +70,7 @@ local function execute(player,npc)
     for _,key in ipairs(keys) do _G[key]=old[key] end
     if not ok then
         print("[PersonalKnox] Loot command error: "..tostring(err))
-        player:Say("Команда сбора не завершилась. Проверь журнал.")
+        player:Say(getText("ContextMenu_PersonalKnox_LootFailed"))
         return
     end
     Supply.visited[npc]=plan.building
@@ -80,35 +81,35 @@ function Supply.propose(player,npc)
     local square=player:getCurrentSquare()
     local building=square and square:getBuilding()
     if not building or not valid(player,npc,building) then
-        player:Say("Для сбора нужен дом рядом с нами, свободный от близких зомби.")
+        player:Say(getText("ContextMenu_PersonalKnox_NeedSafeBuilding"))
         return
     end
     local body=npc:getWorldObject()
     local stock=inventorySnapshot(body)
-    local overloaded=body:getInventory():getCapacityWeight() >= body:getInventory():getCapacity()*0.8
+    local overloaded=body:getInventory():getCapacityWeight() >= body:getMaxWeight()*0.8
     local kind=Core.supplyPlan(stock.food,stock.water,stock.medicine,stock.weapon,false,overloaded)
-    if kind=="none" then player:Say("Основной запас уже есть. Ничего не поручаю."); return end
-    if kind=="wait" then player:Say("Сначала нужно освободить место в рюкзаке."); return end
+    if kind=="none" then player:Say(getText("ContextMenu_PersonalKnox_StockReady")); return end
+    if kind=="wait" then player:Say(getText("ContextMenu_PersonalKnox_InventoryFull")); return end
     Supply.pending[npc]={kind=kind,building=building,expires=getGameTime():getWorldAgeHours()+1}
     deps.say(player,npc,kind=="weapons" and "plan_weapons" or "plan_supplies")
     deps.journal(player,npc,"supply_proposed",kind)
     if not settings(player).confirmPlans then execute(player,npc)
-    else player:Say("План ждёт подтверждения в меню «Наш отряд».") end
+    else player:Say(getText("ContextMenu_PersonalKnox_PlanPending")) end
 end
 
 function Supply.addOptions(menu,player,npc)
-    menu:addOption("Запасы: проверить и предложить сбор",player,Supply.propose,npc)
-    menu:addOption(Supply.enabled[npc] and "Автосбор в дороге: выключить" or "Автосбор в дороге: включить",player,function(p,n)
+    menu:addOption(getText("ContextMenu_PersonalKnox_SupplyPlan"),player,Supply.propose,npc)
+    menu:addOption(Supply.enabled[npc] and getText("ContextMenu_PersonalKnox_AutoSupplyOff") or getText("ContextMenu_PersonalKnox_AutoSupplyOn"),player,function(p,n)
         Supply.enabled[n]=not Supply.enabled[n]
-        p:Say(Supply.enabled[n] and "Будем проверять дома рядом. Отряд не разделяем." or "Самостоятельный сбор отключён.")
+        p:Say(Supply.enabled[n] and getText("ContextMenu_PersonalKnox_AutoSupplyEnabled") or getText("ContextMenu_PersonalKnox_AutoSupplyDisabled"))
     end,npc)
-    menu:addOption(settings(player).confirmPlans and "Подтверждение планов: выключить" or "Подтверждение планов: включить",player,function(p)
+    menu:addOption(settings(player).confirmPlans and getText("ContextMenu_PersonalKnox_ConfirmationOff") or getText("ContextMenu_PersonalKnox_ConfirmationOn"),player,function(p)
         settings(p).confirmPlans=not settings(p).confirmPlans
-        p:Say(settings(p).confirmPlans and "Планы требуют подтверждения." or "Планы выполняются после уведомления.")
+        p:Say(settings(p).confirmPlans and getText("ContextMenu_PersonalKnox_ConfirmationEnabled") or getText("ContextMenu_PersonalKnox_ConfirmationDisabled"))
     end)
     if Supply.pending[npc] then
-        menu:addOption("Подтвердить предложенный сбор",player,execute,npc)
-        menu:addOption("Отклонить предложенный сбор",player,function(p,n)
+        menu:addOption(getText("ContextMenu_PersonalKnox_ApprovePlan"),player,execute,npc)
+        menu:addOption(getText("ContextMenu_PersonalKnox_DeclinePlan"),player,function(p,n)
             Supply.pending[n]=nil
             local square=p:getCurrentSquare()
             Supply.visited[n]=square and square:getBuilding()

@@ -12,6 +12,7 @@ public final class PersonalKnoxAPI {
     private record Dialogue(int id, String topic, String condition, String text) {}
     private static final PersonalKnoxAPI INSTANCE = new PersonalKnoxAPI();
     private final List<Dialogue> dialogues;
+    private final ReactionDirector reactions = new ReactionDirector();
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
 
     private PersonalKnoxAPI() {
@@ -64,5 +65,17 @@ public final class PersonalKnoxAPI {
 
     public String supplyPlan(int food, int water, int medicine, boolean weapon, boolean danger, boolean overloaded) {
         return CompanionBrain.supplyPlan(food, water, medicine, weapon, danger, overloaded);
+    }
+
+    public void resetWorldReactions() { reactions.reset(); }
+
+    public boolean isCleanBandage(String itemType, boolean canBandage, boolean infected) {
+        return CompanionBrain.cleanBandage(itemType, canBandage, infected);
+    }
+
+    public String worldReactionTopic(String key, double nowMillis, double health, double playerHealth,
+            boolean bleeding, int zombies, boolean rain, boolean dark, boolean corpses) {
+        if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return "";
+        return reactions.observe(key, (long) nowMillis, health, playerHealth, bleeding, zombies, rain, dark, corpses);
     }
 }

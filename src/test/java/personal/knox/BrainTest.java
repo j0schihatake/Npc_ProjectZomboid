@@ -23,9 +23,16 @@ public final class BrainTest {
         assert api.supplyPlan(0,0,0,false,true,false).equals("wait") : "No looting during nearby danger";
         assert api.supplyPlan(0,0,0,false,false,true).equals("wait") : "No looting while overloaded";
         assert api.supplyPlan(0,0,0,true,false,false).equals("essentials");
-        assert api.supplyPlan(2,1,1,false,false,false).equals("weapons");
-        assert api.supplyPlan(2,1,1,true,false,false).equals("none");
+        assert api.supplyPlan(2,1,1,false,false,false).equals("essentials") : "Keep at least two clean dressings";
+        assert api.supplyPlan(2,1,2,false,false,false).equals("weapons");
+        assert api.supplyPlan(2,1,2,true,false,false).equals("none");
+        assert api.isCleanBandage("Base.RippedSheets",true,false);
+        assert api.isCleanBandage("Base.AlcoholBandage",true,false);
+        assert !api.isCleanBandage("Base.RippedSheetsDirty",true,false);
+        assert !api.isCleanBandage("Base.Bandage",true,true);
+        assert !api.isCleanBandage("Base.Bandage",false,false);
         assert api.chooseDialogue("plan_supplies", 0.1, 10, 10, 0) > 0 : "Fallback to default template";
+        ReactionTest.run();
         System.out.println("Java tests passed: squad policy, Russian dialogues, floor/range classification, supply priorities.");
     }
 }

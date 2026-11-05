@@ -3,6 +3,7 @@ local Core = require "PersonalKnox/Core"
 local Dialogues = nil -- Phrases are loaded by Java from the SQLite export.
 PersonalKnox = PersonalKnox or {}
 local Supply = require "PersonalKnox/Supplies"
+local Reactions = require "PersonalKnox/Reactions"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -50,12 +51,12 @@ local function say(player, npc, topic)
     if not isMember(player, npc) then return end
     local body = npc:getWorldObject()
     if not body or body:isDead() then
-        message(player, "Нужно подойти к этому выжившему, чтобы поговорить.")
+        message(player, getText("ContextMenu_PersonalKnox_ApproachNpc"))
         return
     end
     if math.abs(body:getZ() - player:getZ()) > 0.5 or
         Core.distanceSquared({x=body:getX(), y=body:getY()}, {x=player:getX(), y=player:getY()}) > 100 then
-        message(player, "Слишком далеко для разговора.")
+        message(player, getText("ContextMenu_PersonalKnox_TooFar"))
         return
     end
     local state = stateFor(player, npc)
@@ -70,7 +71,7 @@ local function setJob(player, npc, job)
     if not isMember(player, npc) then return end
     local service = api()
     if not service or not service:getPlayerSafehouse() then
-        message(player, "Сначала назначь убежище и рабочие зоны в меню Knox.")
+        message(player, getText("ContextMenu_PersonalKnox_NeedSafehouse"))
         return
     end
     local ok, errorText = pcall(function()
@@ -79,17 +80,17 @@ local function setJob(player, npc, job)
     end)
     if not ok then
         print("[PersonalKnox] Job unavailable: " .. tostring(errorText))
-        message(player, "Приоритет не изменён: подробности в console.txt.")
+        message(player, getText("ContextMenu_PersonalKnox_JobFailed"))
         return
     end
     journal(player, npc, "job_priority", job)
-    message(player, "Приоритет работы изменён. Для выполнения нужны зона, инструменты и смена работы Knox.")
+    message(player, getText("ContextMenu_PersonalKnox_JobChanged"))
 end
 
 local function report(player, npc)
     if not isMember(player, npc) then return end
     local body = npc:getWorldObject()
-    if not body then message(player, "Этот выживший сейчас вне загруженной области."); return end
+    if not body then message(player, getText("ContextMenu_PersonalKnox_NpcUnloaded")); return end
     local weapon = body:getPrimaryHandItem()
     local origin = {x=body:getX(), y=body:getY(), z=body:getZ()}
     local ranged = weapon and attempt(function() return weapon:isRanged() end, false)
@@ -116,7 +117,7 @@ local function report(player, npc)
         candidates.visibleBelow, candidates.unknownVisibility, candidates.same_floor, candidates.above)
     print("[PersonalKnox][elevation] " .. result)
     journal(player, npc, "elevation_diagnostic", result)
-    message(player, string.format("Этаж %.0f: зомби снизу — %d, видимых — %d. Отчёт в console.txt.", origin.z + 1, candidates.below, candidates.visibleBelow))
+    message(player, getText("ContextMenu_PersonalKnox_ElevationSummary", tostring(math.floor(origin.z + 1)), tostring(candidates.below), tostring(candidates.visibleBelow)))
 end
 
 local function roster(player)
@@ -157,27 +158,29 @@ local function onContext(playerIndex, context, worldObjects, test)
     if not player or not api() then return end
     local members = roster(player)
     if #members == 0 then return end
-    local root = context:addOption("Наш отряд", nil, nil)
+    local root = context:addOption(getText("ContextMenu_PersonalKnox_Squad"), nil, nil)
     local menu = context:getNew(context)
     context:addSubMenu(root, menu)
+    Reactions.addOption(menu, player)
     for _, npc in ipairs(members) do
         local entry = menu:addOption(npc:getFullName(), nil, nil)
         local sub = context:getNew(context)
         menu:addSubMenu(entry, sub)
-        sub:addOption("Как ты держишься?", player, say, npc, "status")
-        sub:addOption("Обсудить огород", player, say, npc, "farming")
-        sub:addOption("Обсудить запасы", player, say, npc, "supplies")
-        sub:addOption("Обсудить оборону с высоты", player, say, npc, "watch")
-        sub:addOption("Обсудить отступление отряда", player, say, npc, "squad")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkStatus"), player, say, npc, "status")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkFarming"), player, say, npc, "farming")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkSupplies"), player, say, npc, "supplies")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkWatch"), player, say, npc, "watch")
+        sub:addOption(getText("ContextMenu_PersonalKnox_TalkRetreat"), player, say, npc, "squad")
         Supply.addOptions(sub,player,npc)
-        sub:addOption("Работа: земледелие — высший приоритет", player, setJob, npc, "Farming")
-        sub:addOption("Работа: рубка дерева — высший приоритет", player, setJob, npc, "Chopping")
-        sub:addOption("Работа: сортировка склада — высший приоритет", player, setJob, npc, "Organizing")
-        sub:addOption("Диагностика: стрельба с высоты", player, report, npc)
+        sub:addOption(getText("ContextMenu_PersonalKnox_JobFarming"), player, setJob, npc, "Farming")
+        sub:addOption(getText("ContextMenu_PersonalKnox_JobChopping"), player, setJob, npc, "Chopping")
+        sub:addOption(getText("ContextMenu_PersonalKnox_JobOrganizing"), player, setJob, npc, "Organizing")
+        sub:addOption(getText("ContextMenu_PersonalKnox_ElevationReport"), player, report, npc)
     end
 end
 
 Supply.install({isMember=isMember,say=say,journal=journal})
+Reactions.install({isMember=isMember,say=say})
 Events.OnFillWorldObjectContextMenu.Add(function(...)
     local ok, errorText = pcall(onContext, ...)
     if not ok then print("[PersonalKnox] Context menu error: " .. tostring(errorText)) end

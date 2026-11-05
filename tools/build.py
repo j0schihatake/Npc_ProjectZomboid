@@ -25,7 +25,8 @@ def main():
     tests = ROOT/'build/test-classes'
     tests.mkdir(parents=True, exist_ok=True)
     classpath = os.pathsep.join([str(classes), str(args.agent)])
-    subprocess.run(['javac', '--release', '17', '-encoding', 'UTF-8', '-cp', classpath, '-d', str(tests), str(ROOT/'src/test/java/personal/knox/BrainTest.java')], check=True)
+    test_sources=sorted((ROOT/'src/test/java').rglob('*.java'))
+    subprocess.run(['javac', '--release', '17', '-encoding', 'UTF-8', '-cp', classpath, '-d', str(tests), *map(str,test_sources)], check=True)
     subprocess.run(['java', '-ea', '-cp', classpath+os.pathsep+str(tests), 'personal.knox.BrainTest'], check=True)
     jar = ROOT/'42/media/java/client/PersonalKnox.jar'
     jar.parent.mkdir(parents=True, exist_ok=True)
