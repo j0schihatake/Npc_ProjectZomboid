@@ -151,6 +151,7 @@ public final class AlifeTest {
         assert outcome.attackersWin();
         assert raidWorld.raids().get(0).state() == Raid.State.WON;
         personal.knox.alife.EscortPolicyTest.run();
+        personal.knox.alife.EscortContractTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
