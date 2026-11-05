@@ -66,6 +66,7 @@ public final class OwnNpcBodyAdapter {
         invoke(body, "setSceneCulled", new Class<?>[]{boolean.class}, false);
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
         invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
+        call(body, "dressInRandomNonSillyOutfit");
         return body;
     }
 

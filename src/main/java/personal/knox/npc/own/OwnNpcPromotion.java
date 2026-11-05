@@ -20,8 +20,10 @@ public final class OwnNpcPromotion {
             if (layer.agent(id) != null) continue;
             var state = new NpcState(100, 0.2, 0.2, 0.2, 0.7, false, false,
                     NpcState.Role.SCAVENGER, NpcState.Task.FOLLOW);
-            layer.spawn(new OwnNpcAgent(id, group.factionId(), group.x(), group.y(), 0,
-                    group.x(), group.y(), 2, state));
+            double offsetX = ((i - 1) % 4) * 0.9;
+            double offsetY = (((i - 1) / 4) % 4) * 0.9;
+            layer.spawn(new OwnNpcAgent(id, group.factionId(), group.x() + offsetX, group.y() + offsetY, 0,
+                    group.x() + offsetX, group.y() + offsetY, 2, state));
             created++;
         }
         return created;
