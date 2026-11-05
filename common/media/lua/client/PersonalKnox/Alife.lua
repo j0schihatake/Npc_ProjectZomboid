@@ -6,7 +6,7 @@ local Util = require "PersonalKnox/Util"
 
 local deps
 local INTERVAL_MS, LOG_MS = 5000, 30000
-local last, lastLog, firstLogged = 0, 0, false
+local last, lastLog, firstLogged, seeded = 0, 0, false, false
 
 local function healthOf(body)
     local ok, health = pcall(function() return body:getBodyDamage():getHealth() end)
@@ -37,6 +37,18 @@ local function tick()
                 submitted = submitted + 1
             end
         end
+    end
+    if not seeded and deps.stockSnapshot then
+        seeded = true
+        local stock = deps.stockSnapshot(player)
+        local ammo = 0
+        local items = player:getInventory():getItems()
+        for i = 0, math.min(items:size(), 256) - 1 do
+            local item = items:get(i)
+            local ok, category = pcall(function() return item:getDisplayCategory() end)
+            if ok and category == "Ammo" then ammo = ammo + 1 end
+        end
+        api:alifeEconomy(stock.food or 0, stock.water or 0, stock.medicine or 0, ammo)
     end
     if api:alifeOutposts() == 0 then
         api:alifeOutpost("player-base", "own", px, py, pz, 2, 8, true)

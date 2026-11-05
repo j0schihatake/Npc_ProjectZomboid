@@ -35,6 +35,10 @@ public final class PersonalKnoxAPI {
 
     public int alifeOutposts() { return alife.outpostCount(); }
 
+    public void alifeEconomy(int food, int water, int meds, int ammo) {
+        alife.economy(food, water, meds, ammo);
+    }
+
     public String alifeEvents() { return alife.lastEvents(); }
 
     public int alifeSquads() { return alife.squadCount(); }

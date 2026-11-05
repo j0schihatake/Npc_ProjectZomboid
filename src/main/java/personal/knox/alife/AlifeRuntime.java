@@ -8,6 +8,7 @@ public final class AlifeRuntime {
     private long lastTick;
     private String lastSummary = "";
     private String lastEvents = "";
+    private boolean economyAdded;
 
     public void submit(String squadId, String factionId, int members, double health, int supplies,
                        String task, double x, double y, double z, double targetX, double targetY) {
@@ -34,6 +35,18 @@ public final class AlifeRuntime {
         }
         lastEvents = text.toString();
         return lastSummary;
+    }
+
+    /** Seed the own faction stock once from the real player inventory. */
+    public void economy(int food, int water, int meds, int ammo) {
+        if (economyAdded) return;
+        var stock = new FactionEconomy(1);
+        stock.add(FactionEconomy.Resource.FOOD, Math.max(0, food));
+        stock.add(FactionEconomy.Resource.WATER, Math.max(0, water));
+        stock.add(FactionEconomy.Resource.MEDS, Math.max(0, meds));
+        stock.add(FactionEconomy.Resource.AMMO, Math.max(0, ammo));
+        world.addFactionEconomy("own", stock);
+        economyAdded = true;
     }
 
     public void outpost(String id, String factionId, double x, double y, double z,

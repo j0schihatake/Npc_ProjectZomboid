@@ -20,6 +20,11 @@ public final class AlifeRuntimeTest {
         assert outpostRuntime.outpostCount() == 1;
         outpostRuntime.tick(3000, 0, 0, 0, 8);
         assert outpostRuntime.lastEvents().contains("OUTPOST_SILENT") : outpostRuntime.lastEvents();
+        var economyRuntime = new AlifeRuntime();
+        economyRuntime.economy(1, 1, 0, 0);
+        economyRuntime.tick(4000, 0, 0, 0, 8);
+        economyRuntime.tick(5000, 0, 0, 0, 8);
+        assert economyRuntime.lastEvents().contains("FACTION_STARVING") : economyRuntime.lastEvents();
         System.out.println("A-Life runtime tests passed: submit/update, tick summary and task fallback.");
     }
 }
