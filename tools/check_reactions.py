@@ -21,9 +21,11 @@ local visible=true
 local statsAvailable=true
 CharacterStat={HUNGER={},THIRST={},FATIGUE={}}
 local visionCalls=0
+local npcCoordinateReads,zombieCoordinateReads=0,0
 local bodies={}
 for i=1,8 do
-    local body={kind="IsoNpcPlayer",getX=player.getX,getY=player.getY,getZ=player.getZ,
+    local body={kind="IsoNpcPlayer",getX=function() npcCoordinateReads=npcCoordinateReads+1;return 0 end,
+        getY=function() npcCoordinateReads=npcCoordinateReads+1;return 0 end,getZ=player.getZ,
         isDead=player.isDead,getCurrentSquare=function() return square end,
         getBodyDamage=function() return damage end,
         getForwardDirection=function() return {getX=function() return 1 end,getY=function() return 0 end} end,
@@ -41,12 +43,18 @@ for i=1,8 do
     body.getMetaCharacter=function() return meta end
     bodies[#bodies+1]=body
 end
-for i=1,500 do bodies[#bodies+1]={kind="IsoZombie",isDead=player.isDead,getX=player.getX,getY=function() return 2 end} end
-local objects={size=function() return #bodies end,get=function(_,i) return bodies[i+1] end}
+for i=1,500 do
+    local y=i==1 and 7 or 2
+    bodies[#bodies+1]={kind="IsoZombie",isDead=player.isDead,
+        getX=function() zombieCoordinateReads=zombieCoordinateReads+1;return 0 end,
+        getY=function() zombieCoordinateReads=zombieCoordinateReads+1;return y end}
+end
+local movingLimit=#bodies
+local objects={size=function() return movingLimit end,get=function(_,i) return bodies[i+1] end}
 square.getMovingObjects=function() return objects end
 local queries=0
 function getCell() return {
-    getGridSquare=function(_,x,y,z) queries=queries+1; assert(queries<=169); return square end,
+    getGridSquare=function(_,x,y,z) queries=queries+1; assert(queries<=169); if x==0 and y==0 then return square end end,
     getZombieList=function() error("World reactions must not traverse the whole zombie list") end
 } end
 function instanceof(obj,kind) return obj.kind==kind end
@@ -77,6 +85,8 @@ assert(resets==1)
 tick()
 assert(#observed==4 and emitted==4,"One poll handles at most four companions")
 assert(visionCalls<=96,"Visibility work has a hard budget")
+assert(npcCoordinateReads<=8 and zombieCoordinateReads<=48,
+    "At most two coordinate getters per NPC/target, shared across all visibility pairs")
 assert(observed[1].zombies==24 and observed[1].rain and observed[1].dark)
 assert(observed[1].hunger==0.3 and observed[1].thirst==0.2 and observed[1].fatigue==0.7,"Read the actual CharacterStat API")
 assert(spoken[1]=="react_zombies_right","Pass the nearest visible target and NPC facing to Java")
@@ -84,6 +94,10 @@ java.directionalReaction=nil
 observed={};queries=0;spoken={}
 tick()
 assert(spoken[1]=="react_zombies","An older core falls back to generic speech")
+movingLimit=9;observed={};queries=0;zombieCoordinateReads=0
+tick()
+assert(#observed==4 and observed[1].zombies==1 and zombieCoordinateReads==2,
+    "A smaller target list ignores stale snapshot slots and reads only its current target")
 local first=observed[1].key
 observed={}; queries=0; visible=false;visionCalls=0
 tick()
