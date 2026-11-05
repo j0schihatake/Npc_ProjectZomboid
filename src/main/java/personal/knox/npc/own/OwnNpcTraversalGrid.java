@@ -26,6 +26,7 @@ public final class OwnNpcTraversalGrid implements OwnNpcPathfinder.Grid {
             case WINDOW -> 1.2;
             case HIGH_FENCE -> 2.0;
             case ROPE -> 3.0;
+            case STAIRS -> 1.0;
         };
     }
 }

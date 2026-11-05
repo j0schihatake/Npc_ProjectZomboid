@@ -2,7 +2,7 @@ package personal.knox.npc.own;
 
 /** Traversal rules for own NPCs: windows, high fences and ropes. */
 public final class OwnNpcTraversal {
-    public enum Kind { WINDOW, HIGH_FENCE, ROPE }
+    public enum Kind { WINDOW, HIGH_FENCE, ROPE, STAIRS }
     public record Move(Kind kind, double seconds, double noise, double staminaCost) {
         public Move {
             if (kind == null || seconds <= 0 || noise < 0 || staminaCost < 0)
@@ -17,6 +17,7 @@ public final class OwnNpcTraversal {
         if (kind == null) throw new IllegalArgumentException("Missing traversal kind");
         if (stamina < 0 || stamina > 1) throw new IllegalArgumentException("Invalid stamina");
         if (kind == Kind.ROPE) return hasRope && handsFree && stamina >= 0.15 && !injuredLegs;
+        if (kind == Kind.STAIRS) return !injuredLegs && stamina >= 0.05;
         if (kind == Kind.HIGH_FENCE) return handsFree && stamina >= 0.25 && !injuredLegs && fenceHeightOk;
         return windowOpen && handsFree && !injuredLegs;
     }
@@ -30,6 +31,7 @@ public final class OwnNpcTraversal {
                 if (!hasRope) throw new IllegalStateException("No rope");
                 yield new Move(kind, 3.0, 0.2, 0.15);
             }
+            case STAIRS -> new Move(kind, 1.0, 0.15, 0.05);
         };
     }
 }
