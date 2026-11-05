@@ -9,12 +9,29 @@ public final class NpcNeeds {
     private NpcNeeds() {}
 
     public static NpcState tick(NpcState state, double hours) {
-        if (state == null || !Double.isFinite(hours) || hours < 0)
+        return tick(state, hours, 1);
+    }
+
+    /** 1..5 maps to very slow, slow, normal, fast, very fast. */
+    public static double rate(int choice) {
+        return switch (choice) {
+            case 1 -> 0.25;
+            case 2 -> 0.5;
+            case 3 -> 1;
+            case 4 -> 2;
+            case 5 -> 4;
+            default -> 1;
+        };
+    }
+
+    public static NpcState tick(NpcState state, double hours, double rate) {
+        if (state == null || !Double.isFinite(hours) || hours < 0
+                || !Double.isFinite(rate) || rate < 0)
             throw new IllegalArgumentException("Invalid need tick");
         return state.withNeeds(
-                clamp(state.hunger() + HUNGER_PER_HOUR * hours),
-                clamp(state.thirst() + THIRST_PER_HOUR * hours),
-                clamp(state.fatigue() + FATIGUE_PER_HOUR * hours));
+                clamp(state.hunger() + HUNGER_PER_HOUR * hours * rate),
+                clamp(state.thirst() + THIRST_PER_HOUR * hours * rate),
+                clamp(state.fatigue() + FATIGUE_PER_HOUR * hours * rate));
     }
 
     private static double clamp(double value) {

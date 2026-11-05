@@ -27,5 +27,12 @@
   "UI_PersonalKnox_HelpNormal": "Normal",
   "UI_PersonalKnox_HelpOften": "Often",
   "UI_PersonalKnox_NpcVoices": "NPC voices",
-  "UI_PersonalKnox_NpcVoicesHint": "Short native vocalizations with dialogue: warning, pain, generic voice. Text remains; other mods’ lines are not played."
+  "UI_PersonalKnox_NpcVoicesHint": "Short native vocalizations with dialogue: warning, pain, generic voice. Text remains; other mods’ lines are not played.",
+  "UI_PersonalKnox_NpcNeedRate": "NPC need decay",
+  "UI_PersonalKnox_NpcNeedRateHint": "How fast companions get hungry, thirsty and tired: very slow, slow, normal, fast or very fast, like the game sandbox.",
+  "UI_PersonalKnox_NeedVerySlow": "Very slow",
+  "UI_PersonalKnox_NeedSlow": "Slow",
+  "UI_PersonalKnox_NeedNormal": "Normal",
+  "UI_PersonalKnox_NeedFast": "Fast",
+  "UI_PersonalKnox_NeedVeryFast": "Very fast"
 }

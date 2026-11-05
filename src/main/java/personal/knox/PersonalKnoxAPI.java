@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import me.zed_0xff.zombie_buddy.Exposer;
+import personal.knox.npc.NpcNeeds;
 
 @Exposer.LuaClass
 public final class PersonalKnoxAPI {
@@ -125,6 +126,10 @@ public final class PersonalKnoxAPI {
     }
 
     public void resetCare() { care.reset(); }
+
+    public double npcNeedRate(int choice) {
+        return NpcNeeds.rate(choice);
+    }
 
     public boolean helpAllowed(int frequency, double nowMillis, double lastAtMillis) {
         if (!Double.isFinite(nowMillis) || !Double.isFinite(lastAtMillis)

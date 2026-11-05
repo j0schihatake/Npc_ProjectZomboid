@@ -26,6 +26,15 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("autoUnstick", "UI_PersonalKnox_AutoUnstick", true, "UI_PersonalKnox_AutoUnstickHint")
     ensure("careSearchBags", "UI_PersonalKnox_CareSearchBags", true, "UI_PersonalKnox_CareSearchBagsHint")
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
+    if page and not page:getOption("npcNeedRate") then
+        local combo = page:addComboBox("npcNeedRate", getText("UI_PersonalKnox_NpcNeedRate"),
+            getText("UI_PersonalKnox_NpcNeedRateHint"))
+        combo:addItem("UI_PersonalKnox_NeedVerySlow")
+        combo:addItem("UI_PersonalKnox_NeedSlow")
+        combo:addItem("UI_PersonalKnox_NeedNormal", true)
+        combo:addItem("UI_PersonalKnox_NeedFast")
+        combo:addItem("UI_PersonalKnox_NeedVeryFast")
+    end
     if page and not page:getOption("helpFrequency") then
         local combo = page:addComboBox("helpFrequency", getText("UI_PersonalKnox_HelpFrequency"),
             getText("UI_PersonalKnox_HelpFrequencyHint"))
@@ -52,6 +61,12 @@ function Settings.infiniteAmmo() return value("infiniteAmmo", true) end
 function Settings.autoUnstick() return value("autoUnstick", true) end
 function Settings.careSearchBags() return value("careSearchBags", true) end
 function Settings.npcVoices() return value("npcVoices", true) end
+function Settings.npcNeedRate()
+    local option = page and page:getOption("npcNeedRate")
+    if not option then return 3 end
+    local choice = option:getValue()
+    return type(choice) == "number" and choice or 3
+end
 function Settings.helpFrequency()
     local option = page and page:getOption("helpFrequency")
     if not option then return 3 end

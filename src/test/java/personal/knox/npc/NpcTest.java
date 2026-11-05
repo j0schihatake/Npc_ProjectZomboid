@@ -14,6 +14,14 @@ public final class NpcTest {
         assert Math.abs(ticked.fatigue() - 0.10) < 1e-9;
         var full = NpcNeeds.tick(state(0.99, 0.99, 0.99, NpcState.Task.REST), 100);
         assert full.hunger() == 1 && full.thirst() == 1 && full.fatigue() == 1 : "Needs clamp at one";
+        assert Math.abs(NpcNeeds.rate(1) - 0.25) < 1e-9 && NpcNeeds.rate(3) == 1 && NpcNeeds.rate(5) == 4;
+        assert NpcNeeds.rate(0) == 1 && NpcNeeds.rate(9) == 1 : "Unknown rate is normal";
+        var fast = NpcNeeds.tick(base, 10, NpcNeeds.rate(4));
+        assert Math.abs(fast.hunger() - 0.24) < 1e-9 : "Fast rate doubles decay";
+        var frozen = NpcNeeds.tick(base, 10, 0);
+        assert frozen.hunger() == 0 && frozen.thirst() == 0 : "Zero rate stops decay";
+        try { NpcNeeds.tick(base, 1, -0.1); throw new AssertionError("Negative rate accepted"); }
+        catch (IllegalArgumentException expected) { }
         try { NpcNeeds.tick(base, -1); throw new AssertionError("Negative hours accepted"); }
         catch (IllegalArgumentException expected) { }
         try { NpcNeeds.tick(null, 1); throw new AssertionError("Null state accepted"); }

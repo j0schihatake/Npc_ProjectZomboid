@@ -36,5 +36,12 @@
   "UI_PersonalKnox_HelpNormal": "Обычно",
   "UI_PersonalKnox_HelpOften": "Часто",
   "UI_PersonalKnox_NpcVoices": "Голоса NPC",
-  "UI_PersonalKnox_NpcVoicesHint": "Короткие штатные возгласы при репликах: предупреждение, боль, обычный голос. Текст остаётся, чужие фразы не проигрываются."
+  "UI_PersonalKnox_NpcVoicesHint": "Короткие штатные возгласы при репликах: предупреждение, боль, обычный голос. Текст остаётся, чужие фразы не проигрываются.",
+  "UI_PersonalKnox_NpcNeedRate": "Снижение потребностей NPC",
+  "UI_PersonalKnox_NpcNeedRateHint": "Как быстро у союзников растут голод, жажда и усталость: очень медленно, медленно, обычно, быстро или очень быстро. Как в песочнице игры.",
+  "UI_PersonalKnox_NeedVerySlow": "Очень медленно",
+  "UI_PersonalKnox_NeedSlow": "Медленно",
+  "UI_PersonalKnox_NeedNormal": "Обычно",
+  "UI_PersonalKnox_NeedFast": "Быстро",
+  "UI_PersonalKnox_NeedVeryFast": "Очень быстро"
 }
