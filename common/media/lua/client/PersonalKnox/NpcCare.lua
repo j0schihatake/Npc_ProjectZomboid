@@ -28,6 +28,22 @@ local function bleedingPart(body)
     return nil
 end
 
+local function comradeBandage(body, player)
+    local best, bestItem, bestDistance = nil, nil, math.huge
+    for _, other in ipairs(deps.roster(player)) do
+        local otherBody = other:getWorldObject()
+        if otherBody and otherBody ~= body and not otherBody:isDead() and not otherBody:hasTimedActions() then
+            local dx, dy = otherBody:getX() - body:getX(), otherBody:getY() - body:getY()
+            local distance = dx * dx + dy * dy
+            if distance <= 36 and distance < bestDistance then
+                local item = cleanBandage(otherBody)
+                if item then best, bestItem, bestDistance = otherBody, item, distance end
+            end
+        end
+    end
+    return best, bestItem, bestDistance
+end
+
 local ISNpcRipClothing = nil
 if ISBaseTimedAction then
     ISNpcRipClothing = ISBaseTimedAction:derive("ISNpcRipClothing")
@@ -137,16 +153,25 @@ local function poll(player)
             local part = bleedingPart(body)
             local bandage = part and cleanBandage(body)
             if part and not bandage and Settings.npcSearchContainers() then
+                local friend, friendItem, friendDistance = comradeBandage(body, player)
                 local found, container, containerDistance = searchBandage(body)
                 local cloth, corpseInv, corpseDistance = corpseCloth(body)
-                if found and container and (not cloth or containerDistance <= corpseDistance)
+                local bestDistance = math.min(friendDistance or math.huge,
+                    containerDistance or math.huge, corpseDistance or math.huge)
+                if friend and friendDistance == bestDistance and ISInventoryTransferAction and ISTimedActionQueue then
+                    ISTimedActionQueue.add(ISInventoryTransferAction:new(body, friendItem,
+                        friend:getInventory(), body:getInventory()))
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-care] ask distance=" .. tostring(friendDistance))
+                    end
+                elseif found and container and containerDistance == bestDistance
                         and ISInventoryTransferAction and ISTimedActionQueue then
                     ISTimedActionQueue.add(ISInventoryTransferAction:new(body, found, container, body:getInventory()))
                     if Settings.diagnosticsEnabled() then
                         print("[PersonalKnox][npc-care] take=" .. tostring(found:getFullType())
                             .. " distance=" .. tostring(containerDistance))
                     end
-                elseif cloth and corpseInv and ISTimedActionQueue then
+                elseif cloth and corpseInv and corpseDistance == bestDistance and ISTimedActionQueue then
                     ISTimedActionQueue.add(ISNpcRipClothing:new(body, cloth, corpseInv))
                     if Settings.diagnosticsEnabled() then
                         print("[PersonalKnox][npc-care] rip=" .. tostring(cloth:getFullType())
