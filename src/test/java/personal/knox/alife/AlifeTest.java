@@ -137,6 +137,9 @@ public final class AlifeTest {
         economyWorld.addFactionEconomy("hungry", new FactionEconomy(2));
         var starvingEvents = economyWorld.tick(100, 0, 0, 0, 10);
         assert starvingEvents.stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_STARVING);
+        assert economyWorld.tick(200, 0, 0, 0, 10).stream()
+                .noneMatch(e -> e.type() == AlifeEvent.Type.FACTION_STARVING) : "Starvation is throttled";
+
         personal.knox.alife.BaseLevelTest.run();
         personal.knox.alife.ResourceNodeStateTest.run();
         personal.knox.alife.BaseDefenseTest.run();

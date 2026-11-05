@@ -20,6 +20,7 @@ public final class AlifeWorld {
     private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
     private final Map<String, FactionEconomy> economies = new LinkedHashMap<>();
     private final Map<String, Long> lastExpand = new LinkedHashMap<>();
+    private final Map<String, Long> lastStarving = new LinkedHashMap<>();
     private final Map<String, ResourceNodeState> nodes = new LinkedHashMap<>();
     private final java.util.List<Raid> raids = new java.util.ArrayList<>();
     private long lastNodeIncome = Long.MIN_VALUE / 2;
@@ -227,7 +228,10 @@ public final class AlifeWorld {
         }
         for (var entry : economies.entrySet()) {
             var economy = entry.getValue();
-            if (economy.tick(1, 1)) {
+            boolean starving = economy.tick(1, 1);
+            long lastHunger = lastStarving.getOrDefault(entry.getKey(), Long.MIN_VALUE / 2);
+            if (starving && time - lastHunger >= 600_000L) {
+                lastStarving.put(entry.getKey(), time);
                 events.add(new AlifeEvent(AlifeEvent.Type.FACTION_STARVING, entry.getKey(), entry.getKey(),
                         px, py, pz, "supplies"));
             }
