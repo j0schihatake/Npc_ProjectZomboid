@@ -47,5 +47,9 @@
   "ContextMenu_PersonalKnox_CallOne": "Ко мне — прекратить текущее занятие",
   "ContextMenu_PersonalKnox_CallName": "%1, ко мне!",
   "ContextMenu_PersonalKnox_CallAll": "Все ко мне — прекратить занятия",
-  "ContextMenu_PersonalKnox_CallAllVoice": "Все ко мне!"
+  "ContextMenu_PersonalKnox_CallAllVoice": "Все ко мне!",
+  "ContextMenu_PersonalKnox_ActionLabel": "%1: %2",
+  "ContextMenu_PersonalKnox_PrefMelee": "Весь отряд: предпочитать ближний бой",
+  "ContextMenu_PersonalKnox_PrefRanged": "Весь отряд: предпочитать дальний бой",
+  "ContextMenu_PersonalKnox_PrefAny": "Весь отряд: любое оружие"
 }

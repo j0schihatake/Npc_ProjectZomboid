@@ -7,6 +7,7 @@ lua = LuaRuntime(unpack_returned_tuples=True)
 lua.globals().package.path = str(root/'common/media/lua/client/?.lua')
 source = Path('/home/j0schi/SteamLibrary/steamapps/workshop/content/108600/3397396843/mods/KnoxEventExpanded/42/media/lua/client/01_Core/SPCommands.lua')
 lua.globals().nativeCommands = source.read_text()
+lua.globals().radialSource = (source.parents[1]/'ISUI/ISNpcGroupRadialMenu.lua').read_text()
 lua.execute('''
 KnoxEventLoader={defer=function() end}
 package.preload.KnoxEventLoader=function() return KnoxEventLoader end
@@ -65,5 +66,30 @@ Call.all(player);assert(cancelled==19,"At most 16 successful recalls per invocat
 local before=cancelled
 group=nil
 assert(not Call.one(player,nearby) and cancelled==before,"Missing group must block before cancellation")
+-- Weapon entries delegate to installed Knox preferences for the entire squad.
+package.preload['ISUI/ISRadialMenu']=function() return {} end
+ISRadialMenu={}
+ISBaseObject={derive=function(self) return setmetatable({},{__index=self}) end}
+Events.OnGameStart={Add=function() end}
+assert(loadstring(radialSource))()
+local preference=nil
+local squad={setWeaponPreference=function(_,value) preference=value end}
+KnoxEventLoader.getAPI=function() return {getSquad=function() return squad end} end
+WeaponPreference={MELEE={},RANGED={},ANY={}}
+local Weapons=require 'PersonalKnox/Weapons'
+Weapons.install({isMember=function(_,npc) return members[npc]==true end})
+local menu={options={}}
+function menu:addOption(label,target,fn,a,b) self.options[#self.options+1]={target=target,fn=fn,a=a,b=b} end
+Weapons.addOptions(menu,player,nearby)
+assert(#menu.options==3)
+for index,value in ipairs({WeaponPreference.MELEE,WeaponPreference.RANGED,WeaponPreference.ANY}) do
+ local option=menu.options[index]
+ option.fn(option.target,option.a,option.b)
+ assert(preference==value,"Installed Knox preference must change")
+end
+members[nearby]=false
+local option=menu.options[1]
+option.fn(option.target,option.a,option.b)
+assert(preference==WeaponPreference.ANY,"Stale weapon entry must recheck membership")
 ''')
-print('Recall checks passed: installed native follow, action interruption, task cancellation, membership, voice distance, deduplication, typing guard, key mapping, SP guard, batch limit.')
+print('Recall and weapon checks passed with installed native commands: task cancellation, membership, distance, typing, key mapping, SP guard, batch limit, squad-wide melee/ranged/any preference.')

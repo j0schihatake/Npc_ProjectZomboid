@@ -7,6 +7,7 @@ local Reactions = require "PersonalKnox/Reactions"
 local Routine = require "PersonalKnox/BaseRoutine"
 local Interaction = require "PersonalKnox/Interaction"
 local Call = require "PersonalKnox/Call"
+local Weapons = require "PersonalKnox/Weapons"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -157,6 +158,7 @@ end
 
 local function fillNpcMenu(sub, player, npc)
     Call.addOption(sub, player, npc)
+    Weapons.addOptions(sub, player, npc)
     sub:addOption(getText("ContextMenu_PersonalKnox_TalkStatus"), player, say, npc, "status")
     sub:addOption(getText("ContextMenu_PersonalKnox_TalkFarming"), player, say, npc, "farming")
     sub:addOption(getText("ContextMenu_PersonalKnox_TalkSupplies"), player, say, npc, "supplies")
@@ -193,6 +195,7 @@ Supply.install({isMember=isMember,say=say,journal=journal})
 Routine.install({isMember=isMember})
 Interaction.install({isMember=isMember,fill=fillNpcMenu,reactions=Reactions.addOption})
 Call.install({isMember=isMember,roster=roster,journal=journal,cancelTasks=Supply.cancel})
+Weapons.install({isMember=isMember})
 Reactions.install({isMember=isMember,say=say})
 Events.OnFillWorldObjectContextMenu.Add(function(...)
     local ok, errorText = pcall(onContext, ...)
