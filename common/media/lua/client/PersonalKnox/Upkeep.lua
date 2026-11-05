@@ -16,6 +16,10 @@ local function repair(player)
             if java:upkeepNeedsRepair(condition, maximum) then
                 item:setConditionNoSound(maximum)
                 pcall(function() if item:getSharpness() < 1 then item:setSharpness(1) end end)
+                if Settings.diagnosticsEnabled() then
+                    print("[PersonalKnox][upkeep] repair=" .. item:getFullType()
+                        .. " " .. tostring(condition) .. "/" .. tostring(maximum))
+                end
             end
         end
     end
@@ -48,7 +52,12 @@ local function ammo(player)
     if not key or key == "" then return end
     local inventory = player:getInventory()
     local missing = api():upkeepAmmo(countItems(inventory, key, 0), maximum)
-    if missing > 0 then inventory:AddItem(key, missing) end
+    if missing > 0 then
+        inventory:AddItem(key, missing)
+        if Settings.diagnosticsEnabled() then
+            print("[PersonalKnox][upkeep] ammo=" .. key .. " add=" .. tostring(missing))
+        end
+    end
     local magazine = gun:getMagazineType()
     if magazine and magazine ~= "" and api():upkeepNeedsMagazine(countItems(inventory, magazine, 0)) then
         inventory:AddItem(magazine, 1)

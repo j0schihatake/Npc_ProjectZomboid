@@ -139,6 +139,13 @@ local function poll()
         busy(player), danger(player), Settings.autoMedic(), Settings.autoDrink(), Settings.autoEat())
     if action == "none" then return end
     local ok, done = pcall(execute, player, action)
+    if Settings.diagnosticsEnabled() then
+        print("[PersonalKnox][care] action=" .. action .. " ok=" .. tostring(ok and done)
+            .. " bleeding=" .. tostring(body:getNumPartsBleeding())
+            .. " pain=" .. string.format("%.1f", maxPain(body))
+            .. " thirst=" .. string.format("%.2f", stat(player, CharacterStat.THIRST))
+            .. " hunger=" .. string.format("%.2f", stat(player, CharacterStat.HUNGER)))
+    end
     if ok and done then
         api():careDone(action, getTimestampMs())
     else
