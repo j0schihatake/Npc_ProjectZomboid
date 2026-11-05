@@ -149,7 +149,7 @@ function Negotiation.install(adapters)
     Events.OnPlayerUpdate.Add(function()
         local player = getSpecificPlayer(0)
         if not player or player:isDead() then return end
-        local ok, err = pcall(poll, player)
+        local ok, err = xpcall(function() poll(player) end, debug.traceback)
         if not ok then print("[PersonalKnox] Negotiation error: " .. tostring(err)) end
     end)
 end

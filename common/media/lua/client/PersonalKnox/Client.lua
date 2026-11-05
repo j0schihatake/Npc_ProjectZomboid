@@ -10,6 +10,7 @@ local Call = require "PersonalKnox/Call"
 local Weapons = require "PersonalKnox/Weapons"
 local Barricade = require "PersonalKnox/Barricade"
 local Settings = require "PersonalKnox/Settings"
+local Util = require "PersonalKnox/Util"
 local Care = require "PersonalKnox/Care"
 local Upkeep = require "PersonalKnox/Upkeep"
 local Stuck = require "PersonalKnox/Stuck"
@@ -58,7 +59,7 @@ local function journal(player, npc, kind, detail)
     data.PersonalKnox.journal = data.PersonalKnox.journal or {}
     Core.appendJournal(data.PersonalKnox.journal, {
         hour = getGameTime():getWorldAgeHours(),
-        npc = npc:getFullName(), kind = kind, detail = detail,
+        npc = Util.id(npc), kind = kind, detail = detail,
     }, 100)
 end
 
