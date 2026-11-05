@@ -31,12 +31,26 @@ local function maxPain(body)
     return worst
 end
 
-local function bleedingPart(player)
+local function woundPart(player)
     local parts = player:getBodyDamage():getBodyParts()
+    local injured
     for i = 0, parts:size() - 1 do
         local part = parts:get(i)
-        if part:bleeding() and not part:bandaged() then return part end
+        if not part:bandaged() then
+            if part:bleeding() then return part end
+            if part:HasInjury() and not injured then injured = part end
+        end
     end
+    return injured
+end
+
+local function woundCount(player)
+    local count, parts = 0, player:getBodyDamage():getBodyParts()
+    for i = 0, parts:size() - 1 do
+        local part = parts:get(i)
+        if not part:bandaged() and (part:bleeding() or part:HasInjury()) then count = count + 1 end
+    end
+    return count
 end
 
 local function findBandage(player)
@@ -109,7 +123,7 @@ end
 
 local function execute(player, action)
     if action == "bandage" then
-        local part = bleedingPart(player)
+        local part = woundPart(player)
         local item = part and findBandage(player)
         if not part or not item then return false end
         ISTimedActionQueue.add(ISApplyBandage:new(player, player, item, part, true))
@@ -143,13 +157,13 @@ local function poll()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
     local body = player:getBodyDamage()
-    local action = api():careAction(now, body:getHealth(), body:getNumPartsBleeding(),
+    local action = api():careAction(now, body:getHealth(), woundCount(player),
         maxPain(body), stat(player, CharacterStat.THIRST), stat(player, CharacterStat.HUNGER),
         busy(player), danger(player), Settings.autoMedic(), Settings.autoDrink(), Settings.autoEat())
     if Settings.diagnosticsEnabled() and now - lastState >= STATE_MS then
         lastState = now
         print("[PersonalKnox][care-state] health=" .. string.format("%.1f", body:getHealth())
-            .. " bleeding=" .. tostring(body:getNumPartsBleeding())
+            .. " wounds=" .. tostring(woundCount(player))
             .. " pain=" .. string.format("%.1f", maxPain(body))
             .. " thirst=" .. string.format("%.2f", stat(player, CharacterStat.THIRST))
             .. " hunger=" .. string.format("%.2f", stat(player, CharacterStat.HUNGER))
@@ -159,7 +173,7 @@ local function poll()
     local ok, done = pcall(execute, player, action)
     if Settings.diagnosticsEnabled() then
         print("[PersonalKnox][care] action=" .. action .. " ok=" .. tostring(ok and done)
-            .. " bleeding=" .. tostring(body:getNumPartsBleeding())
+            .. " wounds=" .. tostring(woundCount(player))
             .. " pain=" .. string.format("%.1f", maxPain(body))
             .. " thirst=" .. string.format("%.2f", stat(player, CharacterStat.THIRST))
             .. " hunger=" .. string.format("%.2f", stat(player, CharacterStat.HUNGER)))
