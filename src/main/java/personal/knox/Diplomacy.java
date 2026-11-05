@@ -3,7 +3,7 @@ package personal.knox;
 /** Faction standing and diplomatic reactions for A-Life groups. No game objects. */
 public final class Diplomacy {
     public enum Stance { ALLIED, NEUTRAL, TENSE, HOSTILE }
-    public enum Action { GIFT, AID, TRADE, BETRAYAL, ATTACK }
+    public enum Action { GIFT, AID, TRADE, BETRAYAL, ATTACK, SPARE }
 
     private Diplomacy() {}
 
@@ -16,6 +16,7 @@ public final class Diplomacy {
             case TRADE -> 5;
             case BETRAYAL -> -30;
             case ATTACK -> -40;
+            case SPARE -> 40;
         };
         return Math.max(-100, Math.min(100, standing + delta));
     }

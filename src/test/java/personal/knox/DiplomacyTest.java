@@ -7,6 +7,7 @@ public final class DiplomacyTest {
         assert Diplomacy.adjust(0, Diplomacy.Action.TRADE) == 5;
         assert Diplomacy.adjust(0, Diplomacy.Action.BETRAYAL) == -30;
         assert Diplomacy.adjust(0, Diplomacy.Action.ATTACK) == -40;
+        assert Diplomacy.adjust(0, Diplomacy.Action.SPARE) == 40 : "Mercy raises standing";
         assert Diplomacy.adjust(95, Diplomacy.Action.AID) == 100 : "Clamp high";
         assert Diplomacy.adjust(-95, Diplomacy.Action.BETRAYAL) == -100 : "Clamp low";
         assert Diplomacy.stance(50) == Diplomacy.Stance.ALLIED;
