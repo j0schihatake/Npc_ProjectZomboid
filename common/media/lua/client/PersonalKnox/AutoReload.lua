@@ -16,7 +16,12 @@ local function poll(player)
     local current, max = 0, 0
     if weapon.getCurrentAmmoCount then current = weapon:getCurrentAmmoCount() end
     if weapon.getMaxAmmo then max = weapon:getMaxAmmo() end
-    if max <= 0 or current >= max then return end
+    local reloadable = true
+    if weapon.isReloadable then
+        local ok, result = pcall(function() return weapon:isReloadable(player) end)
+        reloadable = ok and result
+    end
+    if not reloadable or max <= 0 or current >= max then return end
     local ammoType = nil
     if weapon.getAmmoType then ammoType = weapon:getAmmoType() end
     local reserve = 0

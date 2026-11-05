@@ -27,7 +27,12 @@ local function poll(player)
                 if ammoType and ammoType.getItemKey then
                     reserve = body:getInventory():getItemCountFromTypeRecursive(ammoType:getItemKey())
                 end
-                if max > 0 and current < max and reserve > 0 and ISReloadWeaponAction and ISTimedActionQueue then
+                local reloadable = true
+                if weapon.isReloadable then
+                    local ok, result = pcall(function() return weapon:isReloadable(body) end)
+                    reloadable = ok and result
+                end
+                if reloadable and max > 0 and current < max and reserve > 0 and ISReloadWeaponAction and ISTimedActionQueue then
                     ISTimedActionQueue.add(ISReloadWeaponAction:new(body, weapon))
                     if Settings.diagnosticsEnabled() then
                         print("[PersonalKnox][npc-reload] start " .. tostring(current) .. "/" .. tostring(max))
