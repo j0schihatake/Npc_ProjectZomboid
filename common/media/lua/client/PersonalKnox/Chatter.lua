@@ -14,7 +14,7 @@ end
 local lastCheck, nextAt, deps = 0, 0, nil
 
 local function poll(player)
-    if not deps or not Settings.speechEnabled() or isClient() or Perf.lowFps() then return end
+    if not deps or not Settings.speechEnabled() or isClient() or Perf.skip() then return end
     local minGap, maxGap = gap()
     if not minGap then return end
     local now = getTimestampMs()

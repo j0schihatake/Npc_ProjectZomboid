@@ -79,7 +79,7 @@ local function resolve(player)
 end
 
 local function poll(player)
-    if isClient() or not PersonalKnoxAPI or not Settings.speechEnabled() or Perf.lowFps() then return end
+    if isClient() or not PersonalKnoxAPI or not Settings.speechEnabled() or Perf.skip() then return end
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now

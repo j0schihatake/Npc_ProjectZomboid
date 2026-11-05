@@ -42,6 +42,6 @@ public final class KnoxTransferProbeTest {
     }
 
     private static String check(Object npc, Class<?> actor, Class<?> action) {
-        return KnoxTransferProbe.inspect(npc, actor, action, Item.class, Container.class, BaseAction.class);
+        return KnoxTransferProbe.inspect(npc.getClass(), actor, action, Item.class, Container.class, BaseAction.class);
     }
 }

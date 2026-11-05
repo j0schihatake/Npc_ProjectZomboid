@@ -41,5 +41,7 @@
   "UI_PersonalKnox_ChatterOff": "Off",
   "UI_PersonalKnox_ChatterRare": "Rare",
   "UI_PersonalKnox_ChatterNormal": "Normal",
-  "UI_PersonalKnox_ChatterOften": "Often"
+  "UI_PersonalKnox_ChatterOften": "Often",
+  "UI_PersonalKnox_PerformanceMode": "Performance mode",
+  "UI_PersonalKnox_PerformanceModeHint": "Disables background chatter, negotiations and help calls to reduce load. Manual actions stay available."
 }

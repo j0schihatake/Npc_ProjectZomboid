@@ -104,6 +104,7 @@ function getCell() return {getGridSquare=function(_,x,y,z)
   getObjects=function() return list(x==-1 and y==0 and windows or {}) end}
 end,getZombieList=function() error('No whole-world zombie scan allowed') end} end
 PersonalKnoxAPI={getInstance=function() return {
+ npcTransferApi=function(_,value) assert(value.kind=='MetaNpcCharacter');return 'public_api_present' end,
  barricadeMissing=function(_,planks,metal) assert(planks>=0 and planks<=4);return metal and 0 or 4-planks end,
  barricadeStockTarget=function(_,missing,nails) return math.min(4,missing)*(nails and 2 or 1) end,
  barricadeStatus=function(_,missing,owns,danger,idle)
@@ -118,6 +119,7 @@ Barricade.install({isMember=function() return member end,journal=function() end,
 local n=npc()
 local report=Barricade.inspect(player,n)
 assert(report:find('hunger=0.4',1,true) and report:find('nativeBarricadeCurrent=false',1,true) and report:find('windows=2',1,true))
+assert(report:find('javaNpcTransferApi=public_api_present',1,true),'Probe must pass the selected NPC to the Java metadata check')
 assert(granted==0 and stopped==0 and transferred==0 and #Barricade.active==0,'Inspection must not issue orders, grant materials or interrupt actions')
 Barricade.start(player,n)
 assert(#Barricade.active==1 and #Barricade.active[1].windows==2 and stock['Base.Plank']==4 and stock['Base.Nails']==8 and #hammers==2)

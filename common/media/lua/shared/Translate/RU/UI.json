@@ -50,5 +50,7 @@
   "UI_PersonalKnox_ChatterOff": "Выкл",
   "UI_PersonalKnox_ChatterRare": "Редко",
   "UI_PersonalKnox_ChatterNormal": "Обычно",
-  "UI_PersonalKnox_ChatterOften": "Часто"
+  "UI_PersonalKnox_ChatterOften": "Часто",
+  "UI_PersonalKnox_PerformanceMode": "Режим производительности",
+  "UI_PersonalKnox_PerformanceModeHint": "Отключает фоновую болтовню, переговоры и вызовы помощи, чтобы не нагружать игру. Ручные действия остаются."
 }

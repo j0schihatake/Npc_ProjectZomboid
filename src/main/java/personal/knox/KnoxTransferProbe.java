@@ -10,7 +10,7 @@ public final class KnoxTransferProbe {
         if (npc == null) return "no_npc";
         try {
             var loader = npc.getClass().getClassLoader();
-            return inspect(npc,
+            return inspect(npc.getClass(),
                     Class.forName("knox.event.npc.MetaNpcCharacter", false, loader),
                     Class.forName("knox.event.npc.actions.ISNpcInventoryTransferAction", false, loader),
                     Class.forName("zombie.inventory.InventoryItem", false, loader),
@@ -25,9 +25,9 @@ public final class KnoxTransferProbe {
         }
     }
 
-    static String inspect(Object npc, Class<?> actor, Class<?> transfer,
+    static String inspect(Class<?> npcType, Class<?> actor, Class<?> transfer,
                           Class<?> item, Class<?> container, Class<?> baseAction) {
-        if (!actor.isInstance(npc)) return "npc_type_mismatch";
+        if (!actor.isAssignableFrom(npcType)) return "npc_type_mismatch";
         if (!baseAction.isAssignableFrom(transfer)) return "action_type_mismatch";
         try {
             transfer.getConstructor(actor, int.class, item, container, container);
@@ -35,7 +35,7 @@ public final class KnoxTransferProbe {
             return "constructor_missing";
         }
         try {
-            var queue = npc.getClass().getMethod("QueueAction", baseAction);
+            var queue = npcType.getMethod("QueueAction", baseAction);
             if (Modifier.isStatic(queue.getModifiers())) return "queue_missing";
         } catch (NoSuchMethodException error) {
             return "queue_missing";
