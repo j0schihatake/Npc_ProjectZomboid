@@ -51,10 +51,15 @@ local function poll(player, deps)
             end
         end
     end
-    for ally, untilAt in pairs(assist) do
-        if now >= untilAt then
+    for ally, state in pairs(assist) do
+        local targetBody = state.target and state.target:getWorldObject()
+        local engaged = targetBody and not targetBody:isDead() and threats(targetBody) >= 3
+        if now >= state.untilAt or not engaged then
             assist[ally] = nil
             Call.one(player, ally, true)
+            if Settings.diagnosticsEnabled() then
+                print("[PersonalKnox][help-retreat] npc=" .. tostring(ally:getId()))
+            end
         end
     end
     if Settings.diagnosticsEnabled() and now - lastScan >= 60000 then
@@ -78,7 +83,7 @@ local function poll(player, deps)
                     if dx * dx + dy * dy <= 400 then
                         local ok = pcall(tellNpcStay, ally, bestBody:getX(), bestBody:getY(), bestBody:getZ())
                         if ok then
-                            assist[ally] = now + 20000
+                            assist[ally] = {untilAt = now + 20000, target = best}
                             sent = sent + 1
                             if Settings.diagnosticsEnabled() then
                                 print("[PersonalKnox][help-rush] npc=" .. tostring(ally:getId())
