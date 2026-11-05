@@ -111,7 +111,11 @@ public final class OwnNpcBodyAdapter {
             double bx = (double) body.getClass().getMethod("getX").invoke(body);
             double by = (double) body.getClass().getMethod("getY").invoke(body);
             if (!passable(cell, bx, by, z, x, y)) {
-                if (passable(cell, bx, by, z, x, by)) {
+                var step = pathStep(cell, bx, by, z, tx, ty);
+                if (step != null) {
+                    sx = step[0];
+                    sy = step[1];
+                } else if (passable(cell, bx, by, z, x, by)) {
                     sy = by;
                 } else if (passable(cell, bx, by, z, bx, y)) {
                     sx = bx;
@@ -132,6 +136,46 @@ public final class OwnNpcBodyAdapter {
             invoke(body, "setAnimated", new Class<?>[]{boolean.class}, true);
         } else {
             invoke(body, "setMoving", new Class<?>[]{boolean.class}, false);
+        }
+    }
+
+    private static double[] pathStep(Object cell, double bx, double by, double z, double tx, double ty) {
+        try {
+            var world = new OwnNpcTraversalGrid.World() {
+                public boolean passable(int x, int y) {
+                    try {
+                        return cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                                .invoke(cell, x, y, (int) z) != null;
+                    } catch (Throwable ignored) {
+                        return false;
+                    }
+                }
+                public boolean canStep(int fx, int fy, int tx2, int ty2) {
+                    return passable2(cell, fx, fy, (int) z, tx2, ty2);
+                }
+                public OwnNpcTraversal.Kind traversalAt(int x, int y) { return null; }
+            };
+            var path = OwnNpcPathfinder.find((int) bx, (int) by, (int) tx, (int) ty,
+                    new OwnNpcTraversalGrid(world), 128);
+            if (path.size() > 1) return new double[]{path.get(1).x(), path.get(1).y()};
+        } catch (Throwable ignored) { }
+        return null;
+    }
+
+    private static boolean passable2(Object cell, int fx, int fy, int z, int tx, int ty) {
+        try {
+            Class<?> squareClass = Class.forName("zombie.iso.IsoGridSquare");
+            Object a = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                    .invoke(cell, fx, fy, z);
+            Object b = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                    .invoke(cell, tx, ty, z);
+            if (a == null || b == null) return false;
+            boolean blocked = (boolean) a.getClass().getMethod("isBlockedTo", squareClass).invoke(a, b);
+            if (!blocked) return true;
+            openDoor(b);
+            return !(boolean) a.getClass().getMethod("isBlockedTo", squareClass).invoke(a, b);
+        } catch (Throwable ignored) {
+            return false;
         }
     }
 
