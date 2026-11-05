@@ -29,6 +29,12 @@ public final class OwnNpcPopulation {
         groups.put(group.id(), group);
     }
 
+    public void update(Group group) {
+        if (group == null || !groups.containsKey(group.id()))
+            throw new IllegalArgumentException("Unknown group");
+        groups.put(group.id(), group);
+    }
+
     public Group remove(String id) { return groups.remove(id); }
     public Group group(String id) { return groups.get(id); }
     public List<Group> groups() { return List.copyOf(groups.values()); }

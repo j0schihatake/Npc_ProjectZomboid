@@ -17,6 +17,23 @@ public final class PersonalKnoxAPI {
     private final ReactionDirector reactions = new ReactionDirector();
     private final PlayerCare care = new PlayerCare();
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
+    private final personal.knox.npc.own.OwnNpcPopulation ownPopulation = new personal.knox.npc.own.OwnNpcPopulation();
+    private final personal.knox.npc.own.OwnNpcLayer ownLayer = new personal.knox.npc.own.OwnNpcLayer();
+
+    public void ownGroup(String id, String faction, int members, double x, double y) {
+        var group = new personal.knox.npc.own.OwnNpcPopulation.Group(id, faction,
+                personal.knox.npc.own.OwnNpcPopulation.Group.Kind.PLAYER_SQUAD,
+                members, x, y, x, y);
+        if (ownPopulation.group(id) == null) ownPopulation.add(group);
+        else ownPopulation.update(group);
+    }
+
+    public int ownSync(double px, double py, double radius, int perGroup) {
+        return personal.knox.npc.own.OwnNpcSpawner.sync(ownPopulation, ownLayer, px, py, radius, perGroup);
+    }
+
+    public int ownActive() { return ownLayer.count(); }
+
     private final personal.knox.alife.AlifeRuntime alife = new personal.knox.alife.AlifeRuntime();
 
     public void alifeSquad(String id, String faction, int members, double health, int supplies,
