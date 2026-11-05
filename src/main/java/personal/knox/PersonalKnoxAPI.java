@@ -127,6 +127,22 @@ public final class PersonalKnoxAPI {
 
     public void resetCare() { care.reset(); }
 
+    public String groupChoice(double attackWeight, double holdWeight, double retreatWeight, int leaderChoice) {
+        if (!Double.isFinite(attackWeight + holdWeight + retreatWeight)
+                || attackWeight < 0 || holdWeight < 0 || retreatWeight < 0) return "hold";
+        var votes = List.of(
+                new GroupDecision.Vote(GroupDecision.Choice.ATTACK, Math.max(0.01, attackWeight)),
+                new GroupDecision.Vote(GroupDecision.Choice.HOLD, Math.max(0.01, holdWeight)),
+                new GroupDecision.Vote(GroupDecision.Choice.RETREAT, Math.max(0.01, retreatWeight)));
+        GroupDecision.Choice leader = switch (leaderChoice) {
+            case 1 -> GroupDecision.Choice.ATTACK;
+            case 2 -> GroupDecision.Choice.HOLD;
+            case 3 -> GroupDecision.Choice.RETREAT;
+            default -> null;
+        };
+        return GroupDecision.decide(votes, leader).name().toLowerCase(java.util.Locale.ROOT);
+    }
+
     public double npcNeedRate(int choice) {
         return NpcNeeds.rate(choice);
     }

@@ -63,5 +63,9 @@
   "ContextMenu_PersonalKnox_BarricadeStopped": "Баррикадирование прервано.",
   "ContextMenu_PersonalKnox_BarricadeInspect": "Диагностика: NPC и баррикадирование",
   "ContextMenu_PersonalKnox_BarricadeInspectLogged": "Состояние NPC записано в console.txt. Приказы не изменены.",
-  "ContextMenu_PersonalKnox_InspectHouse": "Осмотри дом, поищи полезное"
+  "ContextMenu_PersonalKnox_InspectHouse": "Осмотри дом, поищи полезное",
+  "ContextMenu_PersonalKnox_AnswerSquad": "Ответ отряду",
+  "ContextMenu_PersonalKnox_AnswerAttack": "Атаковать",
+  "ContextMenu_PersonalKnox_AnswerHold": "Держаться",
+  "ContextMenu_PersonalKnox_AnswerRetreat": "Отойти"
 }

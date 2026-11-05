@@ -63,5 +63,9 @@
   "ContextMenu_PersonalKnox_BarricadeStopped": "Barricading interrupted.",
   "ContextMenu_PersonalKnox_BarricadeInspect": "Diagnostic: NPC and barricading",
   "ContextMenu_PersonalKnox_BarricadeInspectLogged": "NPC state recorded in console.txt. Orders unchanged.",
-  "ContextMenu_PersonalKnox_InspectHouse": "Search this house for useful supplies"
+  "ContextMenu_PersonalKnox_InspectHouse": "Search this house for useful supplies",
+  "ContextMenu_PersonalKnox_AnswerSquad": "Answer the squad",
+  "ContextMenu_PersonalKnox_AnswerAttack": "Attack",
+  "ContextMenu_PersonalKnox_AnswerHold": "Hold",
+  "ContextMenu_PersonalKnox_AnswerRetreat": "Retreat"
 }

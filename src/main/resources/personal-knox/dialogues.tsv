@@ -106,3 +106,11 @@
 106	help_call	low_morale	Не оставляйте меня здесь...
 107	help_call	low_morale	Я не хочу так умереть...
 108	help_call	brave	Держитесь! Я ещё стою!
+109	squad_question	default	Один идёт. Атакуем?
+110	squad_question	default	Видишь? Что делаем?
+111	squad_attack	default	Взять его!
+112	squad_attack	default	Идём!
+113	squad_hold	default	Стоим, не лезем.
+114	squad_hold	default	Держим позицию.
+115	squad_retreat	default	Отходим к дому.
+116	squad_retreat	default	Назад, к игроку.

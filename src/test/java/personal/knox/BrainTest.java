@@ -65,6 +65,9 @@ public final class BrainTest {
         assert api.chooseDialogue("plan_house", 0.5, 50, 50, 0) > 0;
         assert api.chooseDialogue("plan_barricade", 0.5, 50, 50, 0) > 0;
         assert api.chooseDialogue("help_call", 0.5, 50, 50, 0) > 0 : "Help call dialogue required";
+        assert api.groupChoice(1, 5, 1, 0).equals("hold") : "Weighted consensus";
+        assert api.groupChoice(1, 1, 5, 0).equals("retreat") : "Tie retreats";
+        assert api.groupChoice(1, 5, 1, 1).equals("attack") : "Leader override";
         ReactionTest.run();
         ThreatDirectionTest.run();
         WeaponChoiceTest.run();

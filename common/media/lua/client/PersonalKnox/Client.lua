@@ -16,6 +16,7 @@ local Stuck = require "PersonalKnox/Stuck"
 local Crowd = require "PersonalKnox/Crowd"
 local Help = require "PersonalKnox/Help"
 local HelpCall = require "PersonalKnox/HelpCall"
+local Negotiation = require "PersonalKnox/Negotiation"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -221,6 +222,7 @@ local function onContext(playerIndex, context, worldObjects, test)
     local menu = context:getNew(context)
     context:addSubMenu(root, menu)
     Reactions.addOption(menu, player)
+    Negotiation.addOptions(menu, player)
     menu:addOption(getText("ContextMenu_PersonalKnox_CallAll"), player, Call.all)
     for _, npc in ipairs(members) do
         local entry = menu:addOption(npc:getFullName(), nil, nil)
@@ -250,4 +252,5 @@ Stuck.install({isMember=isMember,roster=roster})
 Crowd.install({isMember=isMember})
 Help.install()
 HelpCall.install({roster=roster,say=say})
+Negotiation.install({roster=roster,say=say})
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")
