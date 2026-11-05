@@ -1,6 +1,7 @@
 -- Companions sometimes start a short conversation on their own, not only reply.
 local Chatter = {}
 local Settings = require "PersonalKnox/Settings"
+local Util = require "PersonalKnox/Util"
 local CHECK_MS, MIN_GAP_MS, MAX_GAP_MS = 15000, 90000, 180000
 local lastCheck, nextAt, deps = 0, 0, nil
 
@@ -24,7 +25,7 @@ local function poll(player)
     deps.say(player, speaker, "smalltalk")
     nextAt = now + MIN_GAP_MS + math.random() * (MAX_GAP_MS - MIN_GAP_MS)
     if Settings.diagnosticsEnabled() then
-        print("[PersonalKnox][chatter] npc=" .. tostring(speaker:getId()))
+        print("[PersonalKnox][chatter] npc=" .. tostring(Util.id(speaker)))
     end
 end
 

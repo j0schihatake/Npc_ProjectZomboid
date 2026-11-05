@@ -1,6 +1,7 @@
 -- Native safehouse job adapter. No instant construction or independent pathfinding.
 local Barricade = {active={}, cursor=0}
 local Settings = require "PersonalKnox/Settings"
+local Util = require "PersonalKnox/Util"
 local deps
 local MAX_TASKS, MAX_ROOMS, MAX_WINDOWS = 8, 64, 128
 
@@ -141,7 +142,7 @@ local function stop(task, reason, restoreStart)
         end
     end
     if Settings.diagnosticsEnabled() then
-        print("[PersonalKnox][barricade] npc=" .. tostring(task.npc:getId()) .. " stop=" .. reason)
+        print("[PersonalKnox][barricade] npc=" .. tostring(Util.id(task.npc)) .. " stop=" .. reason)
     end
     deps.journal(task.player, task.npc, "barricade_stop", reason)
     if reason == "done" then notice(task.player, "Done")
@@ -185,7 +186,7 @@ local function begin(player, npc)
     topUp(task, missing)
     deps.journal(player,npc,"barricade_start",tostring(#windows))
     if Settings.diagnosticsEnabled() then
-        print("[PersonalKnox][barricade] npc=" .. tostring(npc:getId()) .. " windows=" .. #windows .. " missing=" .. missing)
+        print("[PersonalKnox][barricade] npc=" .. tostring(Util.id(npc)) .. " windows=" .. #windows .. " missing=" .. missing)
     end
 end
 
@@ -247,7 +248,7 @@ function Barricade.inspect(player, npc)
         fields[#fields+1] = key .. "=" .. (ok and tostring(value) or "unavailable")
         if not ok then print("[PersonalKnox][probe] " .. key .. ": " .. tostring(value)) end
     end
-    read("npc",function() return npc:getId() end)
+    read("npc",function() return Util.id(npc) end)
     read("goal",function() return npc:getGoal() end)
     read("subGoal",function() return npc:getSubGoal() end)
     read("nativeBarricadeCurrent",function() return nativeNode(npc) ~= nil end)

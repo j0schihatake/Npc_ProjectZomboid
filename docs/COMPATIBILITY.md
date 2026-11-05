@@ -57,6 +57,17 @@
 - Ошибок PersonalKnox в журнале нет. Ядро в этом запуске — 0.4.12; 0.4.13/0.4.14
   (модель NPC, скорость потребностей) ещё не запускались.
 
+## Подтверждено в игре (0.4.40)
+
+- Самостоятельный запуск через Steam: ZombieBuddy показал `PersonalKnox`, разрешение выдано,
+  26 активных Java-модов; мир загрузился.
+- `[PersonalKnox] Java core 0.4.40 loaded`, `[help] frequency=3`, `care-init classFilesInstalled=true`,
+  `[care-state] health=100 wounds=0`.
+- Найден и исправлен `Chatter error: Object tried to call nil`: у NPC нет `getId()`;
+  добавлен `Util.id` (getId → getUsername → tostring) для Chatter/HelpCall/Ask/Barricade/
+  BaseRoutine/Stuck/Reactions.
+- Lua-проверки после исправления проходят все; версия 0.4.41 (Lua), Java-ядро 0.4.40.
+
 ## 0.4.40 — риск предательства
 
 - `BetrayalRisk`: доверие, отказы, игнорирование бедствий, дары, дележ; риск 0..100

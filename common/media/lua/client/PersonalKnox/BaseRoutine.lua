@@ -1,3 +1,4 @@
+local Util = require "PersonalKnox/Util"
 -- Explicit commands only. Knox owns movement, furniture and rest behaviour.
 local Routine = {}
 local adapters
@@ -70,7 +71,7 @@ function Routine.apply(player, npc)
         for hour = 0, 23 do
             plan[hour + 1] = PersonalKnoxAPI.getInstance():baseSchedule(hour, original[hour + 1])
         end
-        local backups, key = state(player), tostring(npc:getId())
+        local backups, key = state(player), tostring(Util.id(npc))
         replace(priorities, plan, original)
         -- Reapplying must not overwrite the user's original schedule.
         if backups[key] == nil then backups[key] = original end
@@ -80,7 +81,7 @@ end
 
 function Routine.restore(player, npc)
     execute(player, npc, function()
-        local backups, key = state(player), tostring(npc:getId())
+        local backups, key = state(player), tostring(Util.id(npc))
         local saved = backups[key]
         if saved == nil then return end
         local priorities = npc:getJobPrioritizer()
@@ -103,7 +104,7 @@ end
 
 function Routine.addOptions(menu, player, npc)
     menu:addOption(getText("ContextMenu_PersonalKnox_BaseRoutine"), player, Routine.apply, npc)
-    if state(player)[tostring(npc:getId())] ~= nil then
+    if state(player)[tostring(Util.id(npc))] ~= nil then
         menu:addOption(getText("ContextMenu_PersonalKnox_RestoreRoutine"), player, Routine.restore, npc)
     end
     menu:addOption(getText("ContextMenu_PersonalKnox_ReturnHome"), player, Routine.returnHome, npc)

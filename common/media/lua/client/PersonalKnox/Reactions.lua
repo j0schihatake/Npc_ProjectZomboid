@@ -1,6 +1,7 @@
 -- Bounded world sampling. Java decides which event may produce a line.
 local Reactions = { cursor = 0 }
 local Settings = require "PersonalKnox/Settings"
+local Util = require "PersonalKnox/Util"
 local adapters
 local RADIUS, MAX_OBJECTS, MAX_THREATS, MAX_NPCS = 6, 256, 24, 8
 
@@ -99,7 +100,7 @@ function Reactions.poll()
             end
             local outside = body:getCurrentSquare() and body:getCurrentSquare():isOutside() or false
             local damage = body:getBodyDamage()
-            local topic = java:worldReactionWithNeeds(tostring(npc:getId()), now, damage:getHealth(), playerHealth,
+            local topic = java:worldReactionWithNeeds(tostring(Util.id(npc)), now, damage:getHealth(), playerHealth,
                 damage:getNumPartsBleeding() > 0, visible, rain and outside,
                 outside and (time >= 21 or time < 5), corpses,
                 need(body, CharacterStat and CharacterStat.HUNGER),

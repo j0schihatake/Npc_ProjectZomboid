@@ -1,6 +1,7 @@
 -- A surrounded companion shouts for help, gated by the help-frequency setting.
 local HelpCall = {}
 local Help = require "PersonalKnox/Help"
+local Util = require "PersonalKnox/Util"
 local Call = require "PersonalKnox/Call"
 local Settings = require "PersonalKnox/Settings"
 local INTERVAL_MS, RADIUS, MAX_NPCS, MAX_OBJECTS = 5000, 4, 4, 128
@@ -64,7 +65,7 @@ local function poll(player, deps)
             Call.one(player, state.target, true)
             lastRequest = nil
             if Settings.diagnosticsEnabled() then
-                print("[PersonalKnox][help-fallback] npc=" .. tostring(state.target:getId())
+                print("[PersonalKnox][help-fallback] npc=" .. tostring(Util.id(state.target))
                     .. " incoming=" .. tostring(incoming))
             end
         end
@@ -72,20 +73,20 @@ local function poll(player, deps)
             assist[ally] = nil
             Call.one(player, ally, true)
             if Settings.diagnosticsEnabled() then
-                print("[PersonalKnox][help-retreat] npc=" .. tostring(ally:getId()))
+                print("[PersonalKnox][help-retreat] npc=" .. tostring(Util.id(ally)))
             end
         end
     end
     if Settings.diagnosticsEnabled() and now - lastScan >= 60000 then
         lastScan = now
-        print("[PersonalKnox][help-scan] npc=" .. tostring(maxNpc and maxNpc:getId() or "none")
+        print("[PersonalKnox][help-scan] npc=" .. tostring(maxNpc and Util.id(maxNpc) or "none")
             .. " threats=" .. tostring(maxCount))
     end
     if best and Help.allowed(now) then
         deps.say(player, best, "help_call")
         lastRequest = {npc = best, untilAt = now + 20000}
         if Settings.diagnosticsEnabled() then
-            print("[PersonalKnox][help-call] npc=" .. tostring(best:getId()) .. " zombies=" .. tostring(bestCount))
+            print("[PersonalKnox][help-call] npc=" .. tostring(Util.id(best)) .. " zombies=" .. tostring(bestCount))
         end
         local request = best
         local requestBody = lastRequest.npc:getWorldObject()
@@ -114,8 +115,8 @@ local function poll(player, deps)
                             assist[ally] = {untilAt = now + 20000, target = request}
                             sent = sent + 1
                             if Settings.diagnosticsEnabled() then
-                                print("[PersonalKnox][help-cover] npc=" .. tostring(ally:getId())
-                                    .. " to=" .. tostring(request:getId()))
+                                print("[PersonalKnox][help-cover] npc=" .. tostring(Util.id(ally))
+                                    .. " to=" .. tostring(Util.id(request)))
                             end
                             deps.say(player, ally, "help_rush")
                         end

@@ -1,6 +1,7 @@
 -- Detect a squad member that follows but does not move, then recall it.
 local Stuck = {}
 local Settings = require "PersonalKnox/Settings"
+local Util = require "PersonalKnox/Util"
 local Call = require "PersonalKnox/Call"
 local INTERVAL_MS, STUCK_MS = 5000, 20000
 local lastCheck = 0
@@ -38,7 +39,7 @@ local function poll(player, roster, isMember)
                     if now - state.since >= STUCK_MS and moved < 0.25 then
                         if Call.one(player, npc, true) then
                             if Settings.diagnosticsEnabled() then
-                                print("[PersonalKnox][stuck] npc=" .. tostring(npc:getId())
+                                print("[PersonalKnox][stuck] npc=" .. tostring(Util.id(npc))
                                     .. " goal=" .. tostring(npc:getGoal()) .. " recall")
                             end
                         end

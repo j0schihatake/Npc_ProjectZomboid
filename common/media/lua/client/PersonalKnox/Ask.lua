@@ -1,6 +1,7 @@
 -- Ask the squad before taking food, water, medicine or ammo.
 local Ask = {}
 local Settings = require "PersonalKnox/Settings"
+local Util = require "PersonalKnox/Util"
 local deps = nil
 
 local function kindOf(item)
@@ -55,13 +56,13 @@ local function ask(player, item, kind)
             ISTimedActionQueue.add(ISInventoryTransferAction:new(player, item, container, best:getInventory()))
         end
         if Settings.diagnosticsEnabled() then
-            print("[PersonalKnox][item-ask] objector=" .. tostring(best:getId())
+            print("[PersonalKnox][item-ask] objector=" .. tostring(Util.id(best))
                 .. " weight=" .. string.format("%.2f", bestWeight))
         end
     else
         deps.say(player, speaker, "item_ok")
         if Settings.diagnosticsEnabled() then
-            print("[PersonalKnox][item-ask] ok npc=" .. tostring(speaker:getId()))
+            print("[PersonalKnox][item-ask] ok npc=" .. tostring(Util.id(speaker)))
         end
     end
 end
