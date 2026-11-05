@@ -1,6 +1,7 @@
 -- Companions sometimes start a short conversation on their own, not only reply.
 local Chatter = {}
 local Settings = require "PersonalKnox/Settings"
+local Perf = require "PersonalKnox/Perf"
 local Util = require "PersonalKnox/Util"
 local CHECK_MS = 30000
 local function gap()
@@ -13,7 +14,7 @@ end
 local lastCheck, nextAt, deps = 0, 0, nil
 
 local function poll(player)
-    if not deps or not Settings.speechEnabled() or isClient() then return end
+    if not deps or not Settings.speechEnabled() or isClient() or Perf.lowFps() then return end
     local minGap, maxGap = gap()
     if not minGap then return end
     local now = getTimestampMs()

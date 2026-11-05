@@ -18,6 +18,8 @@ public final class PersonalKnoxAPI {
     private final PlayerCare care = new PlayerCare();
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
 
+    public String npcTransferApi(Object npc) { return KnoxTransferProbe.inspect(npc); }
+
     public int barricadeMissing(int planks, boolean metal) {
         return CompanionBrain.barricadeMissing(planks, metal);
     }

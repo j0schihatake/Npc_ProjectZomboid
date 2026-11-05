@@ -1,6 +1,7 @@
 -- Prototype: a small threat is discussed; leader may answer, otherwise NPCs agree.
 local Negotiation = {}
 local Settings = require "PersonalKnox/Settings"
+local Perf = require "PersonalKnox/Perf"
 local Call = require "PersonalKnox/Call"
 local INTERVAL_MS, ANSWER_MS, COOLDOWN_MS = 5000, 8000, 120000
 local lastCheck, lastStart = 0, 0
@@ -78,7 +79,7 @@ local function resolve(player)
 end
 
 local function poll(player)
-    if isClient() or not PersonalKnoxAPI or not Settings.speechEnabled() then return end
+    if isClient() or not PersonalKnoxAPI or not Settings.speechEnabled() or Perf.lowFps() then return end
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
