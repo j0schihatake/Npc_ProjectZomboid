@@ -43,5 +43,13 @@
   "ContextMenu_PersonalKnox_RoutineApplied": "Routine set: rest 22–06, work 08–12 and 13–18. Guard hours preserved.",
   "ContextMenu_PersonalKnox_RoutineRestored": "Previous schedule restored.",
   "ContextMenu_PersonalKnox_ReturningHome": "Return to safehouse ordered.",
-  "ContextMenu_PersonalKnox_KnoxActions": "Knox — interact"
+  "ContextMenu_PersonalKnox_KnoxActions": "Knox — interact",
+  "ContextMenu_PersonalKnox_CallOne": "Come here — stop current task",
+  "ContextMenu_PersonalKnox_CallName": "%1, come here!",
+  "ContextMenu_PersonalKnox_CallAll": "Everyone, come here — stop tasks",
+  "ContextMenu_PersonalKnox_CallAllVoice": "Everyone, come here!",
+  "ContextMenu_PersonalKnox_ActionLabel": "%1: %2",
+  "ContextMenu_PersonalKnox_PrefMelee": "Whole squad: prefer melee",
+  "ContextMenu_PersonalKnox_PrefRanged": "Whole squad: prefer ranged",
+  "ContextMenu_PersonalKnox_PrefAny": "Whole squad: any weapon"
 }

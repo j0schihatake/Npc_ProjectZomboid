@@ -49,14 +49,24 @@ local function selectNative(player, npc, label)
     end
 end
 
-function Interaction.openKnox(player, npc)
-    if not nearTarget(player, npc) then return end
-    local actions = nativeActions(player, npc)
-    if not actions then return end
-    local menu = popup(player)
-    for _, action in ipairs(actions) do
-        if action.onSelect and not action.navigation then
-            menu:addOption(action.label, player, selectNative, npc, action.label)
+local function addonOptions(player, npc)
+    local options = {}
+    local collector = {}
+    function collector:addOption(label, target, fn, ...)
+        if not fn then return end
+        options[#options + 1] = {label=label, target=target, fn=fn, args={...}, n=select("#", ...)}
+    end
+    deps.reactions(collector, player)
+    deps.fill(collector, player, npc)
+    return options
+end
+
+local function selectAddon(player, npc, label)
+    if not eligible(player, npc) then return end
+    for _, option in ipairs(addonOptions(player, npc)) do
+        if option.label == label then
+            option.fn(option.target, unpack(option.args, 1, option.n))
+            return
         end
     end
 end
@@ -85,18 +95,26 @@ function Interaction.attach()
             local result = original(player, object)
             if not result or not result.labels or not result.enabled or not instanceof(object, "IsoNpcPlayer") then return result end
             local npc = object:getMetaCharacter()
-            local function add(label, callback)
+            local function add(group, label, callback)
+                local name = getText("ContextMenu_PersonalKnox_ActionLabel", group, label)
                 table.insert(ViewpointInteract.actions, {
-                    name = label, fn = callback, args = {player, npc}, n = 2, enabled = true,
+                    name = name, fn = callback, args = {player, npc, label}, n = 3, enabled = true,
                 })
-                table.insert(result.labels, label)
+                table.insert(result.labels, name)
                 table.insert(result.enabled, true)
             end
-            if nearTarget(player, npc) and nativeActions(player, npc) then
-                add(getText("ContextMenu_PersonalKnox_KnoxActions"), Interaction.openKnox)
-            end
-            if eligible(player, npc) then
-                add(getText("ContextMenu_PersonalKnox_Squad"), Interaction.open)
+            if nearTarget(player, npc) then
+                local squadLabel = getText("ContextMenu_PersonalKnox_Squad")
+                for _, action in ipairs(nativeActions(player, npc) or {}) do
+                    if action.onSelect and not action.navigation and action.label ~= squadLabel then
+                        add("Knox", action.label, selectNative)
+                    end
+                end
+                if eligible(player, npc) then
+                    for _, option in ipairs(addonOptions(player, npc)) do
+                        add(squadLabel, option.label, selectAddon)
+                    end
+                end
             end
             return result
         end
