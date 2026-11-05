@@ -105,17 +105,47 @@ public final class OwnNpcBodyAdapter {
     }
 
     private static void move(Object body, double x, double y, double z, double tx, double ty) {
-        invoke(body, "setX", new Class<?>[]{float.class}, (float) x);
-        invoke(body, "setY", new Class<?>[]{float.class}, (float) y);
+        double sx = x, sy = y;
+        try {
+            Object cell = currentCell();
+            double bx = (double) body.getClass().getMethod("getX").invoke(body);
+            double by = (double) body.getClass().getMethod("getY").invoke(body);
+            if (!passable(cell, bx, by, z, x, y)) {
+                if (passable(cell, bx, by, z, x, by)) {
+                    sy = by;
+                } else if (passable(cell, bx, by, z, bx, y)) {
+                    sx = bx;
+                } else {
+                    invoke(body, "setMoving", new Class<?>[]{boolean.class}, false);
+                    return;
+                }
+            }
+        } catch (Throwable ignored) { }
+        invoke(body, "setX", new Class<?>[]{float.class}, (float) sx);
+        invoke(body, "setY", new Class<?>[]{float.class}, (float) sy);
         invoke(body, "setZ", new Class<?>[]{float.class}, (float) z);
-        double dx = tx - x;
-        double dy = ty - y;
+        double dx = tx - sx;
+        double dy = ty - sy;
         if (Math.hypot(dx, dy) > 0.15) {
             invoke(body, "setDirectionAngle", new Class<?>[]{float.class}, (float) Math.atan2(dy, dx));
             invoke(body, "setMoving", new Class<?>[]{boolean.class}, true);
             invoke(body, "setAnimated", new Class<?>[]{boolean.class}, true);
         } else {
             invoke(body, "setMoving", new Class<?>[]{boolean.class}, false);
+        }
+    }
+
+    private static boolean passable(Object cell, double x0, double y0, double z0, double x1, double y1) {
+        try {
+            Class<?> squareClass = Class.forName("zombie.iso.IsoGridSquare");
+            Object a = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                    .invoke(cell, (int) x0, (int) y0, (int) z0);
+            Object b = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                    .invoke(cell, (int) x1, (int) y1, (int) z0);
+            if (a == null || b == null) return false;
+            return !(boolean) a.getClass().getMethod("isBlockedTo", squareClass).invoke(a, b);
+        } catch (Throwable ignored) {
+            return true;
         }
     }
 
