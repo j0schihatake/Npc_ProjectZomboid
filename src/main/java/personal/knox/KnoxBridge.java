@@ -13,6 +13,22 @@ public final class KnoxBridge {
     public static int metaNpcs() { return size("getNpcs"); }
     public static int safehouses() { return size("getSafehouses"); }
 
+    public static double[] safehousePosition(Object player) {
+        if (player == null) return null;
+        try {
+            Object api = instance();
+            if (api == null) return null;
+            Object group = api.getClass().getMethod("getGroup", player.getClass()).invoke(api, player);
+            if (group == null) return null;
+            double x = ((Number) group.getClass().getMethod("getSafehousePositionX").invoke(group)).doubleValue();
+            double y = ((Number) group.getClass().getMethod("getSafehousePositionY").invoke(group)).doubleValue();
+            if (!Double.isFinite(x + y) || (x == 0 && y == 0)) return null;
+            return new double[]{x, y};
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
     public static String groupMemberSnapshot(Object player) {
         if (player == null) return "";
         try {

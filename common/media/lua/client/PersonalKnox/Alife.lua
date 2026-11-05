@@ -51,7 +51,9 @@ local function tick()
         api:alifeEconomy(stock.food or 0, stock.water or 0, stock.medicine or 0, ammo)
     end
     if api:alifeOutposts() == 0 then
-        api:alifeOutpost("player-base", "own", px, py, pz, 2, 8, true)
+        local bx, by = api:knoxSafehouseX(player), api:knoxSafehouseY(player)
+        if bx == 0 and by == 0 then bx, by = px, py end
+        api:alifeOutpost("player-base", "own", bx, by, pz, 2, 8, true)
     end
     local summary = api:alifeTick(now, px, py, pz, 32)
     local events = api:alifeEvents()

@@ -98,6 +98,12 @@
 - `OwnNpcPathfinder.Grid.canStep(from,to)` — проходимость ребра, а не только клетки;
   нужно для стен/дверей в реальном `IsoCell`.
 
+## 0.9.28 — safehouse в A-Life
+
+- `KnoxBridge.safehousePosition` читает `getSafehousePositionX/Y`; API `knoxSafehouseX/Y`.
+- A-Life регистрирует `player-base` в координатах safehouse, а не игрока (fallback — игрок).
+- Java-ядро 0.9.28, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.9.27 — разбор roster в Java
 
 - `KnoxRoster`: парсит `id@x,y,z;`, форматирует обратно, отклоняет битые записи;

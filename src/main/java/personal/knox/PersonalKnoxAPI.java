@@ -35,6 +35,17 @@ public final class PersonalKnoxAPI {
 
     public String knoxStatus() { return KnoxBridge.status(); }
     public int knoxGroupMembers(Object player) { return KnoxBridge.groupMembers(player); }
+    public double knoxSafehouseX(Object player) {
+        var p = KnoxBridge.safehousePosition(player);
+        return p == null ? 0 : p[0];
+    }
+
+    public double knoxSafehouseY(Object player) {
+        var p = KnoxBridge.safehousePosition(player);
+        return p == null ? 0 : p[1];
+    }
+
+
     public String knoxMemberSnapshot(Object player) { return KnoxBridge.groupMemberSnapshot(player); }
     public int knoxMemberCount(Object player) {
         return KnoxRoster.parse(KnoxBridge.groupMemberSnapshot(player)).size();
