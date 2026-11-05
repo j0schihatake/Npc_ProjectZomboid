@@ -9,6 +9,7 @@ local INTERVAL_MS = 2000
 local STATE_MS = 60000
 local lastCheck = 0
 local lastState = 0
+local initLogged = false
 
 local function api()
     return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() or nil
@@ -129,6 +130,12 @@ local function execute(player, action)
 end
 
 local function poll()
+    if not initLogged then
+        initLogged = true
+        print("[PersonalKnox][care-init] classFilesInstalled=" .. tostring(classFilesInstalled)
+            .. " api=" .. tostring(PersonalKnoxAPI ~= nil)
+            .. " diagnostics=" .. tostring(Settings.diagnosticsEnabled()))
+    end
     if isClient() or not PersonalKnoxAPI or not classFilesInstalled then return end
     local player = getSpecificPlayer(0)
     if not player or player:isDead() then return end
