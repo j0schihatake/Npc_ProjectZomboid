@@ -42,5 +42,6 @@
   "ContextMenu_PersonalKnox_RoutineFailed": "Команда базы не выполнена. Подробности в console.txt.",
   "ContextMenu_PersonalKnox_RoutineApplied": "Распорядок задан: отдых 22–06, работа 08–12 и 13–18. Часы охраны сохранены.",
   "ContextMenu_PersonalKnox_RoutineRestored": "Прежнее расписание восстановлено.",
-  "ContextMenu_PersonalKnox_ReturningHome": "Передан приказ вернуться в убежище."
+  "ContextMenu_PersonalKnox_ReturningHome": "Передан приказ вернуться в убежище.",
+  "ContextMenu_PersonalKnox_KnoxActions": "Knox — взаимодействие"
 }

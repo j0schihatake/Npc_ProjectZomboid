@@ -27,8 +27,15 @@ function getPlayerScreenLeft() return 0 end
 function getPlayerScreenTop() return 0 end
 function getPlayerScreenWidth() return 1000 end
 function getPlayerScreenHeight() return 800 end
-local opened=0
-ISContextMenu={get=function(num,x,y) assert(num==0 and x==500 and y==400);opened=opened+1;return {} end}
+local opened,lastPopup=0,nil
+ISContextMenu={get=function(num,x,y)
+ assert(num==0 and x==500 and y==400);opened=opened+1
+ lastPopup={options={}}
+ function lastPopup:addOption(label,target,fn,a,b)
+  self.options[#self.options+1]={label=label,target=target,fn=fn,a=a,b=b}
+ end
+ return lastPopup
+end}
 NpcContextualActionListUI={buildNpcActions=function() return {{label='native'}} end}
 ViewpointInteract={harvest=function(_,object)
  ViewpointInteract.actions={{name='native',fn=function() end,args={},n=0,enabled=true}}
@@ -78,7 +85,7 @@ ISPanelJoypad={derive=function() return {} end}
 UIFont={Small=1,Medium=2}
 function getTextManager() return {getFontHeight=function() return 20 end} end
 function getDebug() return false end
-function isNpcInGroup(_,target) return target==npc end
+function isNpcInGroup(_,target) return member and target==npc end
 assert(loadstring(knoxUiSource))()
 Interaction.knoxAttached=false
 Interaction.attach()
@@ -88,5 +95,29 @@ local ended=false
 panel.endSession=function() ended=true end
 NpcContextualActionListUI.onRowClick(panel,{contextualAction=nativeRows[1],rowIndex=1})
 assert(ended and opened==4,"Installed Knox click must close its session and open our menu")
+function getPlayerData() return {npcContextualActionListUI=panel} end
+local spoken,medical,inventory=0,0,0
+function talkToNpc(_,target,num) assert(target==npc and num==0);spoken=spoken+1 end
+function requestNpcMedicalCheck(num,target) assert(target==npc and num==0);medical=medical+1 end
+function requestNpcInventory(num,target) assert(target==npc and num==0);inventory=inventory+1 end
+local withKnox=ViewpointInteract.harvest(player,body)
+assert(#withKnox.labels==2 and withKnox.labels[1]=='ContextMenu_PersonalKnox_KnoxActions')
+ViewpointInteract.run(player,1)
+assert(opened==5 and #lastPopup.options==4,"Native Knox popup includes squad, speak, medical and inventory")
+local oldInventory
+for _,option in ipairs(lastPopup.options) do
+ if option.label=='ContextMenu_KnoxEvent_OpenInventory' then oldInventory=option
+ else option.fn(option.target,option.a,option.b) end
+end
+assert(spoken==1 and medical==1)
+oldInventory.fn(oldInventory.target,oldInventory.a,oldInventory.b)
+assert(inventory==1)
+member=false
+oldInventory.fn(oldInventory.target,oldInventory.a,oldInventory.b)
+assert(inventory==1,"Old native inventory button must be denied after leaving squad")
+local outsider=ViewpointInteract.harvest(player,body)
+assert(#outsider.labels==1 and outsider.labels[1]=='ContextMenu_PersonalKnox_KnoxActions',"Strangers retain native talk but no squad commands")
+ViewpointInteract.run(player,1)
+assert(#lastPopup.options==2,"No unauthorized inventory or squad entry for strangers")
 ''')
 print('Interaction checks passed: native preservation, single attachment, exact target, list alignment, selection revalidation, visibility, installed Viewpoint collector/dispatcher and Knox menu/click.')
