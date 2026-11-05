@@ -38,10 +38,10 @@ local function tick()
     end
     if not logged then
         logged = true
-        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies))
+        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies) .. " " .. tostring(api:knoxStatus()))
     elseif Settings.diagnosticsEnabled() and now - lastLog >= LOG_MS then
         lastLog = now
-        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies))
+        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies) .. " " .. tostring(api:knoxStatus()))
     end
 end
 

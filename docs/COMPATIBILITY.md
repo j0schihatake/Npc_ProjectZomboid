@@ -98,6 +98,12 @@
 - `OwnNpcPathfinder.Grid.canStep(from,to)` — проходимость ребра, а не только клетки;
   нужно для стен/дверей в реальном `IsoCell`.
 
+## 0.9.23 — Java-мост к Knox
+
+- `KnoxBridge` через reflection читает `getInstance`, `getWorldNpcs`, `getNpcs`,
+  `getSafehouses`; API `knoxStatus`, лог `[own-npc] ... knox=ok world=...`.
+- Java-ядро 0.9.23, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.9.22 — модель боя
 
 - `OwnNpcCombat`: ближайшая видимая цель, ближний бой, дальний с расходом патрона,

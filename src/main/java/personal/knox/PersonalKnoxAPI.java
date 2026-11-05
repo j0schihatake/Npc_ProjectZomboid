@@ -33,6 +33,8 @@ public final class PersonalKnoxAPI {
         return personal.knox.npc.own.OwnNpcSpawner.sync(ownPopulation, ownLayer, px, py, radius, perGroup);
     }
 
+    public String knoxStatus() { return KnoxBridge.status(); }
+
     public int ownActive() { return ownLayer.count(); }
 
     public String ownDamage(String id, double amount) {
