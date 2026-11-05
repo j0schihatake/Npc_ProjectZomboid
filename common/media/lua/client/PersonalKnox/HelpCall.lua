@@ -81,12 +81,20 @@ local function poll(player, deps)
                 if body and not body:isDead() and not body:hasTimedActions() and not body:isAttacking() then
                     local dx, dy = body:getX() - bestBody:getX(), body:getY() - bestBody:getY()
                     if dx * dx + dy * dy <= 400 then
-                        local ok = pcall(tellNpcStay, ally, bestBody:getX(), bestBody:getY(), bestBody:getZ())
+                        local bx, by = bestBody:getX(), bestBody:getY()
+                        local dx, dy = player:getX() - bx, player:getY() - by
+                        local length = math.sqrt(dx * dx + dy * dy)
+                        local coverX, coverY = bx, by
+                        if length > 0.1 then
+                            coverX = bx + dx / length * 3
+                            coverY = by + dy / length * 3
+                        end
+                        local ok = pcall(tellNpcStay, ally, coverX, coverY, bestBody:getZ())
                         if ok then
                             assist[ally] = {untilAt = now + 20000, target = best}
                             sent = sent + 1
                             if Settings.diagnosticsEnabled() then
-                                print("[PersonalKnox][help-rush] npc=" .. tostring(ally:getId())
+                                print("[PersonalKnox][help-cover] npc=" .. tostring(ally:getId())
                                     .. " to=" .. tostring(best:getId()))
                             end
                         end
