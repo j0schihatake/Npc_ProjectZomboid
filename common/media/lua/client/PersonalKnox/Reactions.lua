@@ -3,6 +3,8 @@ local Reactions = { cursor = 0 }
 local Settings = require "PersonalKnox/Settings"
 local adapters
 local RADIUS, MAX_OBJECTS, MAX_THREATS, MAX_NPCS = 6, 256, 24, 8
+-- Reused numeric snapshots: at most 24 slots, no retained world-object references.
+local threatX, threatY = {}, {}
 
 local function need(body, stat)
     local ok, value = pcall(function() return body:getStats():get(stat) end)
@@ -10,13 +12,12 @@ local function need(body, stat)
     return -1 -- Unknown is not evidence of hunger; keep other reactions working.
 end
 
-local function directionalTopic(java, body, zombie, topic)
-    if topic ~= "react_zombies" or not zombie then return topic end
+local function directionalTopic(java, body, dx, dy, topic)
+    if topic ~= "react_zombies" or dx == nil then return topic end
     -- Keep the generic line if an older core or an unavailable direction API is loaded.
     local ok, result = pcall(function()
         local facing = body:getForwardDirection()
-        return java:directionalReaction(topic, facing:getX(), facing:getY(),
-            zombie:getX() - body:getX(), zombie:getY() - body:getY())
+        return java:directionalReaction(topic, facing:getX(), facing:getY(), dx, dy)
     end)
     return ok and type(result) == "string" and result ~= "" and result or topic
 end
@@ -78,6 +79,10 @@ function Reactions.poll()
     if not player or player:isDead() or not Settings.speechEnabled() or not enabled(player) then return end
     local members, threats, corpses = sample(player)
     if #members == 0 then return end
+    -- Read each target once; the four NPCs share this same game-thread snapshot.
+    for i, zombie in ipairs(threats) do
+        threatX[i], threatY[i] = zombie:getX(), zombie:getY()
+    end
     local now = getTimestampMs()
     local time = getGameTime():getTimeOfDay()
     local rain = getClimateManager():getRainIntensity() > 0.1
@@ -88,13 +93,16 @@ function Reactions.poll()
         local npc = members[((Reactions.cursor + offset - 1) % #members) + 1]
         local body = npc:getWorldObject()
         if body and not body:isDead() and adapters.isMember(player, npc) then
-            local visible, nearest, nearestDistance = 0, nil, math.huge
-            for _, zombie in ipairs(threats) do
-                local dx, dy = body:getX() - zombie:getX(), body:getY() - zombie:getY()
+            local bx, by = body:getX(), body:getY()
+            local visible, nearestDx, nearestDy, nearestDistance = 0, nil, nil, math.huge
+            for i, zombie in ipairs(threats) do
+                local dx, dy = bx - threatX[i], by - threatY[i]
                 local distance = dx * dx + dy * dy
                 if distance <= 64 and body:CanSee(zombie) then
                     visible = visible + 1
-                    if distance < nearestDistance then nearest, nearestDistance = zombie, distance end
+                    if distance < nearestDistance then
+                        nearestDx, nearestDy, nearestDistance = -dx, -dy, distance
+                    end
                 end
             end
             local outside = body:getCurrentSquare() and body:getCurrentSquare():isOutside() or false
@@ -105,7 +113,7 @@ function Reactions.poll()
                 need(body, CharacterStat and CharacterStat.HUNGER),
                 need(body, CharacterStat and CharacterStat.THIRST),
                 need(body, CharacterStat and CharacterStat.FATIGUE))
-            if topic ~= "" then adapters.say(player, npc, directionalTopic(java, body, nearest, topic)) end
+            if topic ~= "" then adapters.say(player, npc, directionalTopic(java, body, nearestDx, nearestDy, topic)) end
         end
     end
     Reactions.cursor = (Reactions.cursor + 4) % #members
