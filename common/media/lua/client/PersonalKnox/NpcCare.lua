@@ -193,7 +193,7 @@ local function poll(player)
                     print("[PersonalKnox][npc-care] bandage npc=" .. tostring(body))
                 end
             end
-            if not part and Settings.npcBandageStock() and bandageCount(body) < 5 then
+            if not part and Settings.npcBandageStock() and bandageCount(body) < 6 then
                 local found, container, containerDistance = searchBandage(body)
                 local cloth, corpseInv, corpseDistance = corpseCloth(body)
                 if found and container and (not cloth or containerDistance <= corpseDistance)

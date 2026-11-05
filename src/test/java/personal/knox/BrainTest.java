@@ -95,6 +95,7 @@ public final class BrainTest {
         TransportPolicyTest.run();
         SurveyTest.run();
         ReloadPolicyTest.run();
+        LootBagTest.run();
         ItemNeedPolicyTest.run();
         DiplomacyTest.run();
         EvacuationPolicyTest.run();
