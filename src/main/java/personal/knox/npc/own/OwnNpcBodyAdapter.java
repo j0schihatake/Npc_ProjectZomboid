@@ -9,7 +9,9 @@ import java.util.Map;
 /** Java-side body adapter via reflection: no compile-time dependency on Java 25 game classes. */
 public final class OwnNpcBodyAdapter {
     private final Map<String, Object> bodies = new HashMap<>();
+    private record PathState(double tx, double ty, java.util.List<OwnNpcPathfinder.Point> points, int index) { }
     private boolean unavailable;
+    private final Map<String, PathState> pathCache = new HashMap<>();
 
     public int sync(OwnNpcLayer layer) {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
@@ -26,7 +28,7 @@ public final class OwnNpcBodyAdapter {
                     if (body == null) continue;
                     bodies.put(agent.id(), body);
                 }
-                move(body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY());
+                move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY());
             }
             var stale = new HashSet<>(bodies.keySet());
             stale.removeAll(seen);
@@ -104,14 +106,14 @@ public final class OwnNpcBodyAdapter {
         System.out.println("[PersonalKnox] Own body dress failed");
     }
 
-    private static void move(Object body, double x, double y, double z, double tx, double ty) {
+    private void move(String id, Object body, double x, double y, double z, double tx, double ty) {
         double sx = x, sy = y;
         try {
             Object cell = currentCell();
             double bx = (double) body.getClass().getMethod("getX").invoke(body);
             double by = (double) body.getClass().getMethod("getY").invoke(body);
             if (!passable(cell, bx, by, z, x, y)) {
-                var step = pathStep(cell, bx, by, z, tx, ty);
+                var step = pathStep(id, cell, bx, by, z, tx, ty);
                 if (step != null) {
                     sx = step[0];
                     sy = step[1];
@@ -139,26 +141,41 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
-    private static double[] pathStep(Object cell, double bx, double by, double z, double tx, double ty) {
-        try {
-            var world = new OwnNpcTraversalGrid.World() {
-                public boolean passable(int x, int y) {
-                    try {
-                        return cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
-                                .invoke(cell, x, y, (int) z) != null;
-                    } catch (Throwable ignored) {
-                        return false;
+    private double[] pathStep(String id, Object cell, double bx, double by, double z, double tx, double ty) {
+        var cached = pathCache.get(id);
+        if (cached != null && (cached.tx() != tx || cached.ty() != ty)) {
+            pathCache.remove(id);
+            cached = null;
+        }
+        if (cached == null || cached.index() >= cached.points().size()) {
+            try {
+                var world = new OwnNpcTraversalGrid.World() {
+                    public boolean passable(int x, int y) {
+                        try {
+                            return cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                                    .invoke(cell, x, y, (int) z) != null;
+                        } catch (Throwable ignored) {
+                            return false;
+                        }
                     }
+                    public boolean canStep(int fx, int fy, int tx2, int ty2) {
+                        return passable2(cell, fx, fy, (int) z, tx2, ty2);
+                    }
+                    public OwnNpcTraversal.Kind traversalAt(int x, int y) { return null; }
+                };
+                var points = OwnNpcPathfinder.find((int) bx, (int) by, (int) tx, (int) ty,
+                        new OwnNpcTraversalGrid(world), 128);
+                if (points.size() > 1) {
+                    pathCache.put(id, new PathState(tx, ty, points, 1));
+                    cached = pathCache.get(id);
                 }
-                public boolean canStep(int fx, int fy, int tx2, int ty2) {
-                    return passable2(cell, fx, fy, (int) z, tx2, ty2);
-                }
-                public OwnNpcTraversal.Kind traversalAt(int x, int y) { return null; }
-            };
-            var path = OwnNpcPathfinder.find((int) bx, (int) by, (int) tx, (int) ty,
-                    new OwnNpcTraversalGrid(world), 128);
-            if (path.size() > 1) return new double[]{path.get(1).x(), path.get(1).y()};
-        } catch (Throwable ignored) { }
+            } catch (Throwable ignored) { }
+        }
+        if (cached != null && cached.index() < cached.points().size()) {
+            var point = cached.points().get(cached.index());
+            pathCache.put(id, new PathState(cached.tx(), cached.ty(), cached.points(), cached.index() + 1));
+            return new double[]{point.x(), point.y()};
+        }
         return null;
     }
 
