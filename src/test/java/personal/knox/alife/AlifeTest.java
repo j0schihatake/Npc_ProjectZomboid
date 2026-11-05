@@ -75,6 +75,26 @@ public final class AlifeTest {
         assert left.squad("a").equals(right.squad("a"));
         try { returning.addSquad(squad("low", "raiders", 0, 0, Squad.Task.HOLD, 1)); throw new AssertionError("Duplicate squad accepted"); }
         catch (IllegalArgumentException expected) { }
+        var outpost = new Outpost("camp", "own", Outpost.Kind.CAMP, 10, 20, 0, 4, 3, true);
+        assert outpost.canDispatch();
+        assert !outpost.withRadio(false).canDispatch() : "Radio off stops dispatch";
+        assert !outpost.withSupplies(0).canDispatch() : "No supplies stops dispatch";
+        assert !outpost.withSupplies(2).withRadio(false).canDispatch();
+        try { new Outpost("", "own", Outpost.Kind.CAMP, 0, 0, 0, 1, 1, true); throw new AssertionError("Empty id accepted"); }
+        catch (IllegalArgumentException expected) { }
+        try { new Outpost("x", "own", Outpost.Kind.CAMP, 0, 0, 0, 65, 1, true); throw new AssertionError("Too many guards"); }
+        catch (IllegalArgumentException expected) { }
+
+        var camp = new AlifeWorld(9);
+        camp.addOutpost(new Outpost("camp", "own", Outpost.Kind.CAMP, 10, 20, 0, 4, 1, true));
+        assert camp.outpostCount() == 1 && camp.canDispatch("camp");
+        var campEvents = camp.tick(1000, 500, 500, 0, 10);
+        assert campEvents.stream().anyMatch(e -> e.type() == AlifeEvent.Type.OUTPOST_SILENT) : "Last supply cuts the radio";
+        assert !camp.canDispatch("camp");
+        assert camp.outpost("camp").supplies() == 0 && !camp.outpost("camp").radio();
+        try { camp.addOutpost(new Outpost("camp", "own", Outpost.Kind.CAMP, 0, 0, 0, 1, 1, true)); throw new AssertionError("Duplicate outpost accepted"); }
+        catch (IllegalArgumentException expected) { }
+        assert camp.removeOutpost("camp") != null && camp.outpostCount() == 0;
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }

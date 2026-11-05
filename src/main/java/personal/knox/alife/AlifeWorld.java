@@ -16,6 +16,7 @@ public final class AlifeWorld {
 
     private final Random random;
     private final Map<String, Squad> squads = new LinkedHashMap<>();
+    private final Map<String, Outpost> outposts = new LinkedHashMap<>();
     private final Relations relations = new Relations();
     private long now;
 
@@ -25,6 +26,22 @@ public final class AlifeWorld {
     public int squadCount() { return squads.size(); }
     public Squad squad(String id) { return squads.get(id); }
     public List<Squad> squads() { return List.copyOf(squads.values()); }
+    public int outpostCount() { return outposts.size(); }
+    public Outpost outpost(String id) { return outposts.get(id); }
+    public List<Outpost> outposts() { return List.copyOf(outposts.values()); }
+
+    public void addOutpost(Outpost outpost) {
+        if (outpost == null) throw new IllegalArgumentException("Missing outpost");
+        if (outposts.containsKey(outpost.id())) throw new IllegalArgumentException("Duplicate outpost");
+        outposts.put(outpost.id(), outpost);
+    }
+
+    public Outpost removeOutpost(String id) { return outposts.remove(id); }
+
+    public boolean canDispatch(String outpostId) {
+        var outpost = outposts.get(outpostId);
+        return outpost != null && outpost.canDispatch();
+    }
 
     public void addSquad(Squad squad) {
         if (squad == null) throw new IllegalArgumentException("Missing squad");
@@ -72,6 +89,17 @@ public final class AlifeWorld {
             } else if (squad.task() == Squad.Task.PATROL && random.nextInt(100) < 10) {
                 events.add(new AlifeEvent(AlifeEvent.Type.FAR_ENCOUNTER, squad.id(), squad.factionId(),
                         nx, ny, squad.z(), "patrol"));
+            }
+        }
+        for (var entry : new ArrayList<>(outposts.entrySet())) {
+            var outpost = entry.getValue();
+            if (!outpost.radio() || outpost.supplies() <= 0) continue;
+            int supplies = outpost.supplies() - 1;
+            boolean radio = supplies > 0;
+            outposts.put(outpost.id(), outpost.withSupplies(supplies).withRadio(radio));
+            if (!radio) {
+                events.add(new AlifeEvent(AlifeEvent.Type.OUTPOST_SILENT, outpost.id(), outpost.factionId(),
+                        outpost.x(), outpost.y(), outpost.z(), "radio_off"));
             }
         }
         return events;
