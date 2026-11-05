@@ -57,6 +57,15 @@
 - Ошибок PersonalKnox в журнале нет. Ядро в этом запуске — 0.4.12; 0.4.13/0.4.14
   (модель NPC, скорость потребностей) ещё не запускались.
 
+## 0.4.45 — Kahlua и проверка в мире
+
+- В 0.4.44 `xpcall(..., debug.traceback)` валил игру: в Kahlua нет библиотеки `debug`,
+  отсюда «attempted index: traceback of non-table: null» каждую секунду.
+- Обработчики Chatter/Negotiation снова на `pcall`; ошибки логируются текстом.
+- Самостоятельный запуск 0.4.45 через Steam: `Java core 0.4.45 loaded`, `care-init true`,
+  в течение 90 секунд нет `traceback`/`Negotiation error`/`Chatter error`.
+- В 0.4.45 вошла проверка готовности запасов NPC (`SupplyEligibility`), Java-тесты прошли.
+
 ## 0.4.44 — исправление Negotiation
 
 - Найдено в игре: `Negotiation` вызывал `Call.one`, но не подключал `PersonalKnox/Call`,
@@ -68,7 +77,7 @@
 
 - Найдено в игре: после реплики `journal` вызывал `npc:getFullName()` — у NPC такого метода нет,
   из-за чего Chatter падал с «Object tried to call nil».
-- Журнал теперь пишет `Util.id(npc)`; Chatter/Negotiation логируют полный traceback при ошибке.
+- Журнал теперь пишет `Util.id(npc)`; Chatter/Negotiation логируют текст ошибки через pcall.
 - Lua-проверки проходят; Java-ядро 0.4.40.
 
 ## 0.4.42 — реже болтовня, больше фраз
