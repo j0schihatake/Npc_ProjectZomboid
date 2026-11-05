@@ -46,6 +46,17 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_ReloadAuto", true)
         combo:addItem("UI_PersonalKnox_ReloadNever")
     end
+    if page and not page:getOption("raidMax") then
+        page:addSlider("raidMax", getText("UI_PersonalKnox_RaidMax"), 10, 30, 5, 30,
+            getText("UI_PersonalKnox_RaidMaxHint"))
+    end
+    if page and not page:getOption("raidFrequency") then
+        local combo = page:addComboBox("raidFrequency", getText("UI_PersonalKnox_RaidFrequency"),
+            getText("UI_PersonalKnox_RaidFrequencyHint"))
+        combo:addItem("UI_PersonalKnox_RaidRare")
+        combo:addItem("UI_PersonalKnox_RaidNormal", true)
+        combo:addItem("UI_PersonalKnox_RaidOften")
+    end
     if page and not page:getOption("npcNeedRate") then
         local combo = page:addComboBox("npcNeedRate", getText("UI_PersonalKnox_NpcNeedRate"),
             getText("UI_PersonalKnox_NpcNeedRateHint"))
@@ -115,6 +126,24 @@ function Settings.chatterFrequency()
     if not option then return 3 end
     local choice = option:getValue()
     return type(choice) == "number" and choice or 3
+end
+function Settings.raidMax()
+    local option = page and page:getOption("raidMax")
+    if not option then return 30 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 30
+end
+function Settings.raidFrequency()
+    local option = page and page:getOption("raidFrequency")
+    if not option then return 2 end
+    local choice = option:getValue()
+    return type(choice) == "number" and choice or 2
+end
+function Settings.raidIntervalMinutes()
+    local rate = Settings.raidFrequency()
+    if rate == 1 then return 180 end
+    if rate == 3 then return 45 end
+    return 90
 end
 function Settings.npcNeedRate()
     local option = page and page:getOption("npcNeedRate")

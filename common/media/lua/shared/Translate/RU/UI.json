@@ -75,5 +75,12 @@
   "UI_PersonalKnox_NpcStock": "Союзники держат запас еды и воды",
   "UI_PersonalKnox_NpcStockHint": "Поддерживать 2 порции еды, 2 ёмкости воды и открывашку; пополнять из ближайших шкафов заранее.",
   "UI_PersonalKnox_NpcFinds": "Союзники сообщают о находках",
-  "UI_PersonalKnox_NpcFindsHint": "Иногда указывают на кувалду, топор, молоток, гвозди в контейнерах; не спамят."
+  "UI_PersonalKnox_NpcFindsHint": "Иногда указывают на кувалду, топор, молоток, гвозди в контейнерах; не спамят.",
+  "UI_PersonalKnox_RaidMax": "Максимальный размер набега",
+  "UI_PersonalKnox_RaidMaxHint": "От 10 до 30 человек; минимальный размер — 10.",
+  "UI_PersonalKnox_RaidFrequency": "Частота набегов",
+  "UI_PersonalKnox_RaidFrequencyHint": "Редко/обычно/часто; влияет на интервал между набегами.",
+  "UI_PersonalKnox_RaidRare": "Редко",
+  "UI_PersonalKnox_RaidNormal": "Обычно",
+  "UI_PersonalKnox_RaidOften": "Часто"
 }

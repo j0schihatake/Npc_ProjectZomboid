@@ -26,10 +26,10 @@ function getText(key) return key end
 package.preload['PZAPI/ModOptions']=function() assert(loadstring(nativeOptionsSource))();return PZAPI.ModOptions end
 local settings=require 'PersonalKnox/Settings'
 local options=PZAPI.ModOptions:getOptions('PersonalKnox')
-assert(#PZAPI.ModOptions.Data==1 and #options.data==20,'Twenty PersonalKnox options')
+assert(#PZAPI.ModOptions.Data==1 and #options.data==22,'Twenty-two PersonalKnox options')
 assert(settings.speechEnabled() and not settings.diagnosticsEnabled(),'Speech on, diagnostics off by default')
 assert(settings.autoMedic() and settings.autoDrink() and settings.autoEat(),'Self-care on by default')
-assert(settings.infiniteDurability() and settings.infiniteAmmo() and settings.autoUnstick() and settings.careSearchBags() and settings.helpFrequency()==3 and settings.npcVoices() and settings.npcNeedRate()==3 and settings.chatterFrequency()==3 and settings.performanceMode()==false and settings.npcItemAsks()==true and settings.reloadMode()==2 and settings.ammoMode()==2 and settings.npcSearchContainers()==true and settings.npcBandageStock()==true and settings.npcStock()==true and settings.npcFinds()==true,'Upkeep, unstick, bag search, voices, need rate and help frequency defaults')
+assert(settings.infiniteDurability() and settings.infiniteAmmo() and settings.autoUnstick() and settings.careSearchBags() and settings.helpFrequency()==3 and settings.npcVoices() and settings.npcNeedRate()==3 and settings.chatterFrequency()==3 and settings.performanceMode()==false and settings.npcItemAsks()==true and settings.reloadMode()==2 and settings.ammoMode()==2 and settings.npcSearchContainers()==true and settings.npcBandageStock()==true and settings.npcStock()==true and settings.npcFinds()==true and settings.raidMax()==30 and settings.raidFrequency()==2,'Upkeep, unstick, bag search, voices, need rate and help frequency defaults')
 local lines={}
 function getFileWriter()
  return {write=function(_,text) lines[#lines+1]=text:gsub('[\\r\\n]+$','') end,close=function() end}

@@ -66,5 +66,12 @@
   "UI_PersonalKnox_NpcStock": "Companions keep food and water reserves",
   "UI_PersonalKnox_NpcStockHint": "Keep 2 food portions, 2 water containers and a can opener; refill from nearby cabinets before need.",
   "UI_PersonalKnox_NpcFinds": "Companions report valuable finds",
-  "UI_PersonalKnox_NpcFindsHint": "Occasionally point out a sledgehammer, axe, hammer or nails in containers; no spam."
+  "UI_PersonalKnox_NpcFindsHint": "Occasionally point out a sledgehammer, axe, hammer or nails in containers; no spam.",
+  "UI_PersonalKnox_RaidMax": "Maximum raid size",
+  "UI_PersonalKnox_RaidMaxHint": "From 10 to 30 people; minimum is 10.",
+  "UI_PersonalKnox_RaidFrequency": "Raid frequency",
+  "UI_PersonalKnox_RaidFrequencyHint": "Rare/normal/often; sets the interval between raids.",
+  "UI_PersonalKnox_RaidRare": "Rare",
+  "UI_PersonalKnox_RaidNormal": "Normal",
+  "UI_PersonalKnox_RaidOften": "Often"
 }
