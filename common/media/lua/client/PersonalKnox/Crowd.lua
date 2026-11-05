@@ -1,6 +1,7 @@
 -- Read-only diagnostic for non-squad NPCs crowding one spot.
 local Crowd = {}
 local Settings = require "PersonalKnox/Settings"
+local Perf = require "PersonalKnox/Perf"
 local INTERVAL_MS, MAX_CELLS, MAX_OBJECTS = 60000, 169, 256
 local lastCheck = 0
 
@@ -38,6 +39,7 @@ local function poll(player, isMember)
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
+    if Perf.skip() then return end
     local buckets = scan(player, isMember)
     local best
     for _, bucket in pairs(buckets) do
