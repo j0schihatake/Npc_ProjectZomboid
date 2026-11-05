@@ -46,6 +46,13 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_ReloadAuto", true)
         combo:addItem("UI_PersonalKnox_ReloadNever")
     end
+    if page and not page:getOption("ammoWeight") then
+        local combo = page:addComboBox("ammoWeight", getText("UI_PersonalKnox_AmmoWeight"),
+            getText("UI_PersonalKnox_AmmoWeightHint"))
+        combo:addItem("UI_PersonalKnox_AmmoWeightZero")
+        combo:addItem("UI_PersonalKnox_AmmoWeightHalf")
+        combo:addItem("UI_PersonalKnox_AmmoWeightFull", true)
+    end
     if page and not page:getOption("raidMax") then
         page:addSlider("raidMax", getText("UI_PersonalKnox_RaidMax"), 10, 30, 5, 30,
             getText("UI_PersonalKnox_RaidMaxHint"))
@@ -126,6 +133,18 @@ function Settings.chatterFrequency()
     if not option then return 3 end
     local choice = option:getValue()
     return type(choice) == "number" and choice or 3
+end
+function Settings.ammoWeight()
+    local option = page and page:getOption("ammoWeight")
+    if not option then return 3 end
+    local choice = option:getValue()
+    return type(choice) == "number" and choice or 3
+end
+function Settings.ammoWeightFactor()
+    local choice = Settings.ammoWeight()
+    if choice == 1 then return 0 end
+    if choice == 2 then return 0.5 end
+    return 1
 end
 function Settings.raidMax()
     local option = page and page:getOption("raidMax")

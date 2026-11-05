@@ -73,5 +73,10 @@
   "UI_PersonalKnox_RaidFrequencyHint": "Rare/normal/often; sets the interval between raids.",
   "UI_PersonalKnox_RaidRare": "Rare",
   "UI_PersonalKnox_RaidNormal": "Normal",
-  "UI_PersonalKnox_RaidOften": "Often"
+  "UI_PersonalKnox_RaidOften": "Often",
+  "UI_PersonalKnox_AmmoWeight": "Ammo weight",
+  "UI_PersonalKnox_AmmoWeightHint": "0% / 50% of original / 100% (original).",
+  "UI_PersonalKnox_AmmoWeightZero": "0%",
+  "UI_PersonalKnox_AmmoWeightHalf": "50%",
+  "UI_PersonalKnox_AmmoWeightFull": "100% (original)"
 }

@@ -82,5 +82,10 @@
   "UI_PersonalKnox_RaidFrequencyHint": "Редко/обычно/часто; влияет на интервал между набегами.",
   "UI_PersonalKnox_RaidRare": "Редко",
   "UI_PersonalKnox_RaidNormal": "Обычно",
-  "UI_PersonalKnox_RaidOften": "Часто"
+  "UI_PersonalKnox_RaidOften": "Часто",
+  "UI_PersonalKnox_AmmoWeight": "Вес патронов",
+  "UI_PersonalKnox_AmmoWeightHint": "0% / 50% от оригинала / 100% (оригинал).",
+  "UI_PersonalKnox_AmmoWeightZero": "0% (нет веса)",
+  "UI_PersonalKnox_AmmoWeightHalf": "50% (половина)",
+  "UI_PersonalKnox_AmmoWeightFull": "100% (оригинал)"
 }
