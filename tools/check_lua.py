@@ -1,14 +1,17 @@
 """Check the Lua 5.1 adapters and the confirmation/dispatch contract using game doubles."""
 from pathlib import Path
+import re
 from lupa.lua51 import LuaRuntime
 
 root = Path(__file__).resolve().parents[1]
 lua = LuaRuntime(unpack_returned_tuples=True)
+lua.globals().expectedLuaVersion = re.search(r'^modversion=(.+)$',(root/'42/mod.info').read_text(),re.M).group(1)
 for file in (root/'common/media/lua').rglob('*.lua'):
     lua.execute('assert(loadstring(...))', file.read_text())
 lua.globals().package.path = str(root/'common/media/lua/shared/?.lua')+';'+str(root/'common/media/lua/client/?.lua')
 lua.execute('''
 function getText(key, ...) return key end
+function getModInfoByID(id) assert(id=='PersonalKnox');return {getModVersion=function() return expectedLuaVersion end} end
 Events={EveryTenMinutes={Add=function(fn) tick=fn end}, OnFillWorldObjectContextMenu={Add=function(fn) contextCallback=fn end},
     EveryOneMinute={Add=function(fn) reactionTick=fn end}, OnGameStart={Add=function(fn) reactionReset=fn end},
     OnKeyPressed={Add=function(fn) recallKey=fn end}, OnPlayerUpdate={Add=function(fn) playerUpdate=fn end}}
@@ -103,5 +106,11 @@ assert(dispatched==beforeHouse+1 and Supply.pending[npc]==nil,"Recheck capacity 
 weight=1
 require "PersonalKnox/Client"
 assert(contextCallback,"Client must register its menu")
+assert(require('PersonalKnox/Version').loaded==expectedLuaVersion,'Log the package declaration loaded with Lua')
+getModInfoByID=function() return {getModVersion=function() return 'later-disk-version' end} end
+assert(require('PersonalKnox/Version').loaded==expectedLuaVersion,'The load marker must remain a snapshot')
+package.loaded['PersonalKnox/Version']=nil
+getModInfoByID=nil
+assert(require('PersonalKnox/Version').loaded=='unverified','Missing metadata must not invent a version')
 ''')
 print('Lua 5.1 checks passed: syntax, confirmation, dispatch, membership recheck, error cleanup, rejection cooldown, menu registration.')

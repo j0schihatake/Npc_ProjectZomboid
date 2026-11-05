@@ -3,7 +3,6 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
-import re
 
 log = '''
 [PersonalKnox] Java core 0.4.6 loaded; directional world reactions ready.
@@ -31,11 +30,8 @@ assert startup_matches(summarize(mixed),'0.4.6','0.4.7'), 'Explicit separate cor
 assert not startup_matches(summarize(versioned+'\n[PersonalKnox] Lua addon loaded'),'0.4.6','0.4.6'), 'Use the last Lua load'
 assert not startup_matches(summarize(versioned+'\n[PersonalKnox] Chatter error: failure'),'0.4.6','0.4.6')
 assert not startup_matches(summarize(versioned+'\n[PersonalKnox] Java core 0.4.6 loaded'),'0.4.6','0.4.6'), 'Old Lua must not validate a later core startup'
-root=Path(__file__).resolve().parents[1]
-source=(root/'common/media/lua/client/PersonalKnox/Client.lua').read_text()
-declared=re.search(r'^modversion=(.+)$',(root/'42/mod.info').read_text(),re.M).group(1)
-marker=re.search(r'\[PersonalKnox\] Lua addon ([\d.]+) loaded',source).group(1)
-assert marker==declared, f'Lua startup marker {marker} differs from mod.info {declared}'
+unknown=summarize(versioned.replace('Lua addon 0.4.6 loaded','Lua addon unverified loaded'))
+assert unknown['lua'] and not startup_matches(unknown,'0.4.6','0.4.6')
 with tempfile.TemporaryDirectory(prefix='personalknox-run-check-') as tmp:
     console=Path(tmp)/'console.txt'
     console.write_text(versioned)

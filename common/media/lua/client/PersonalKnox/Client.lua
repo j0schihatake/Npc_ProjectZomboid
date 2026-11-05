@@ -1,5 +1,6 @@
 require "KnoxEventLoader"
 local Core = require "PersonalKnox/Core"
+local Version = require "PersonalKnox/Version"
 local Dialogues = nil -- Phrases are loaded by Java from the SQLite export.
 PersonalKnox = PersonalKnox or {}
 local Supply = require "PersonalKnox/Supplies"
@@ -277,4 +278,4 @@ AutoReload.install()
 NpcReload.install({roster=roster,say=say})
 NpcMagazine.install({roster=roster,say=say})
 Ask.install({roster=roster,say=say})
-print("[PersonalKnox] Lua addon 0.4.59 loaded; Russian dialogues and elevation diagnostics ready.")
+print("[PersonalKnox] Lua addon " .. Version.loaded .. " loaded; Russian dialogues and elevation diagnostics ready.")

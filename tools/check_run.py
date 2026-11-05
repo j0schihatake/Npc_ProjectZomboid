@@ -6,7 +6,7 @@ from pathlib import Path
 
 def summarize(text: str) -> dict:
     core = list(re.finditer(r'\[PersonalKnox\] Java core ([\d.]+) loaded', text))
-    lua = list(re.finditer(r'\[PersonalKnox\] Lua addon(?: ([\d.]+))? loaded', text))
+    lua = list(re.finditer(r'\[PersonalKnox\] Lua addon(?: (\S+))? loaded', text))
     return {
         'core': core[-1].group(1) if core else '',
         'lua': bool(lua),
