@@ -15,6 +15,7 @@ public final class OwnNpcBodyAdapter {
 
     public int sync(OwnNpcLayer layer) {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
+        if (pathCache.size() > 128) pathCache.clear();
         if (unavailable) return 0;
         try {
             Object cell = currentCell();
@@ -33,6 +34,7 @@ public final class OwnNpcBodyAdapter {
             var stale = new HashSet<>(bodies.keySet());
             stale.removeAll(seen);
             for (var id : stale) {
+                pathCache.remove(id);
                 var body = bodies.remove(id);
                 call(body, "removeFromWorld");
             }
