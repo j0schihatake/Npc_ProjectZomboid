@@ -56,6 +56,15 @@ public final class BrainTest {
         assert api.supplyPlan(2,1,1,false,false,false).equals("essentials") : "Keep at least two clean dressings";
         assert api.supplyPlan(2,1,2,false,false,false).equals("weapons");
         assert api.supplyPlan(2,1,2,true,false,false).equals("none");
+        assert api.supplyCategoryNeeded("medicine",2,1,0,true);
+        assert !api.supplyCategoryNeeded("food",2,1,0,true);
+        assert !api.supplyCategoryNeeded("water",2,1,0,true);
+        assert !api.supplyCategoryNeeded("weapons",2,1,0,true);
+        assert api.supplyCategoryNeeded("food",1,1,2,true);
+        assert api.supplyCategoryNeeded("water",2,0,2,true);
+        assert api.supplyCategoryNeeded("weapons",2,1,2,false);
+        assert !api.supplyCategoryNeeded(null,0,0,0,false);
+        assert !api.supplyCategoryNeeded("tools",0,0,0,false);
         assert api.isCleanBandage("Base.RippedSheets",true,false);
         assert api.isCleanBandage("Base.AlcoholBandage",true,false);
         assert !api.isCleanBandage("Base.RippedSheetsDirty",true,false);

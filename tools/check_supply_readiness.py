@@ -1,10 +1,15 @@
 """Exercise supply proposals against usable, unsafe, empty and unsupported inventory items."""
 from pathlib import Path
+import re
 from lupa.lua51 import LuaRuntime
 
 root = Path(__file__).resolve().parents[1]
 lua = LuaRuntime(unpack_returned_tuples=True)
 lua.globals().package.path = str(root / 'common/media/lua/shared/?.lua') + ';' + str(root / 'common/media/lua/client/?.lua')
+native = Path('/home/j0schi/SteamLibrary/steamapps/workshop/content/108600/3397396843/mods/KnoxEventExpanded/42/media/lua/client/01_Core/SPCommands.lua')
+match = re.search(r'^function tellNpcLoot\(.*?^end\s*$', native.read_text(), re.M | re.S)
+assert match, 'Installed Knox public loot command not found'
+lua.globals().nativeLootCommand = match.group(0)
 lua.execute('''
 function getText(key) return key end
 function isClient() return false end
@@ -19,6 +24,11 @@ local java={
     end,
     isSupplyWater=function(_,amount,pure,tainted) return amount>0 and pure and not tainted end,
     isCleanBandage=function(_,name,canBandage,infected) return canBandage and not infected and name~='Base.RippedSheetsDirty' end,
+    supplyCategoryNeeded=function(_,category,food,water,medicine,weapon)
+        if category=='food' then return food<2 elseif category=='water' then return water<1
+        elseif category=='medicine' then return medicine<2 elseif category=='weapons' then return not weapon end
+        return false
+    end,
     supplyPlan=function(_,food,water,medicine,weapon)
         seen={food=food,water=water,medicine=medicine,weapon=weapon}
         if food<2 or water<1 or medicine<2 then return 'essentials' end
@@ -31,7 +41,7 @@ local function inventory(items)
     return {getItems=function() return {size=function() return #items end,get=function(_,i) return items[i+1] end} end,
         getCapacityWeight=function() return 1 end}
 end
-local building={}
+local building={getDef=function() return 'building-definition' end}
 local square={getBuilding=function() return building end}
 local body={kind='IsoNpcPlayer',isDead=function() return false end,
     getX=function() return 0 end,getY=function() return 0 end,getZ=function() return 0 end,
@@ -40,8 +50,9 @@ local body={kind='IsoNpcPlayer',isDead=function() return false end,
     isInActiveCombat=function() return false end,
     isKnownPoison=function(_,item) poisonChecks.n=poisonChecks.n+1;return item.knownPoison==true end}
 local data={}
+local lastMessage
 local player={getX=body.getX,getY=body.getY,getZ=body.getZ,getCurrentSquare=function() return square end,
-    getModData=function() return data end,Say=function() end}
+    getModData=function() return data end,Say=function(_,text) lastMessage=text end}
 local npc={getWorldObject=function() return body end}
 function getCell() return {getGridSquare=function() return nil end} end
 local function item(options)
@@ -90,5 +101,65 @@ supply.propose(player,npc)
 assert(seen.food==1 and seen.water==1,'One unsupported item must not stop inspection of the remaining bags')
 assert(supply.stockSnapshot(body).foodUnknown==1,'Unsupported food metadata stays visible in diagnostics')
 assert(poisonChecks.n>0,'Ask the NPC about known poison')
+
+-- Execute the installed public Knox command against a behavior-tree double.
+-- This checks the actual category keys consumed by Knox, not just our UI flags.
+assert(loadstring(nativeLootCommand))()
+local dispatched,nodeData=0,{}
+npc.setGoal=function() dispatched=dispatched+1 end
+npc.setSubGoal=function() end
+npc.getBehaviorTree=function() return {getGoalNode=function() return {
+    getChildWithNameWithDepth=function(_,name,depth)
+        assert(name=='LootingSubTree' and depth==1)
+        return {clearAllDataRecursive=function() nodeData={} end,
+            setData=function(_,key,value) nodeData[key]=value end}
+    end,
+} end} end
+selectedGroupNpcs={'original-selection'}
+local originalSelection=selectedGroupNpcs
+lootAmmo=true;lootFood=false;lootFirstAid=false;lootWater=true
+local function approve()
+    local menu={}
+    function menu:addOption(label,target,fn,arg)
+        if label=='ContextMenu_PersonalKnox_ApprovePlan' then self.approve=function() fn(target,arg) end end
+    end
+    supply.addOptions(menu,player,npc)
+    assert(menu.approve,'The plan must await explicit confirmation')
+    menu.approve()
+    assert(selectedGroupNpcs==originalSelection and lootAmmo and not lootFood and not lootFirstAid and lootWater,
+        'Dispatch/cancellation must preserve the unrelated Knox UI state')
+end
+local function stocked(weapon)
+    local result={item{kind='Food'},item{kind='Food'},item{source=true,amount=1,pure=true},item{bandage=true},item{bandage=true}}
+    if weapon then result[#result+1]=item{kind='HandWeapon'} end
+    return result
+end
+contents={item{kind='Food'},item{kind='Food'},item{source=true,amount=1,pure=true},item{kind='HandWeapon'}}
+supply.propose(player,npc);approve()
+assert(dispatched==1 and nodeData.LootingSubTreeCategoryFirstAid and not nodeData.LootingSubTreeCategoryFood and
+    not nodeData.LootingSubTreeCategoryWater and not nodeData.LootingSubTreeCategoryWeapons,
+    'Missing dressings must not dispatch food, water or weapons collection')
+assert(nodeData.LootingSubTreeLootBuildingDef=='building-definition' and
+    nodeData.LootingSubTreeCategoryFinishedSubGoal=='FollowSubTree','Keep Knox building/return contract')
+contents={item{kind='Food'},item{kind='HandWeapon'}}
+supply.propose(player,npc)
+contents=stocked(true);approve()
+assert(dispatched==1 and supply.pending[npc]==nil and lastMessage=='ContextMenu_PersonalKnox_StockReady',
+    'Supplies acquired while confirmation is pending must cancel the obsolete run')
+contents={item{kind='HandWeapon'}}
+supply.propose(player,npc)
+contents=stocked(false);approve()
+assert(dispatched==1 and supply.pending[npc]==nil and lastMessage=='ContextMenu_PersonalKnox_PlanChanged',
+    'An essentials proposal must not silently become an unannounced weapons run')
+supply.propose(player,npc);approve()
+assert(dispatched==2 and nodeData.LootingSubTreeCategoryWeapons and nodeData.LootingSubTreeCategoryGuns and
+    nodeData.LootingSubTreeCategoryAmmo and not nodeData.LootingSubTreeCategoryFood and
+    not nodeData.LootingSubTreeCategoryWater and not nodeData.LootingSubTreeCategoryFirstAid,
+    'A weapons plan must not collect already stocked essentials')
+contents=stocked(true)
+supply.inspectHouse(player,npc);approve()
+assert(dispatched==3 and nodeData.LootingSubTreeCategoryWeapons and not nodeData.LootingSubTreeCategoryFood and
+    not nodeData.LootingSubTreeCategoryWater and not nodeData.LootingSubTreeCategoryFirstAid,
+    'Explicit house inspection retains its weapons search without taking surplus essentials')
 ''')
-print('Supply adapter readiness checks passed: actual plan counts, safe food/water, clean dressings, broken weapons, nested bags and unsupported-item fallback.')
+print('Supply adapter checks passed: safe reserves, nested bags, actual Knox category keys, confirmation recheck, changed plan, UI restoration and native return contract. Item-level transfer remains unverified.')

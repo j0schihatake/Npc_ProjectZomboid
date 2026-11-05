@@ -86,6 +86,10 @@ public final class PersonalKnoxAPI {
         return CompanionBrain.supplyPlan(food, water, medicine, weapon, danger, overloaded);
     }
 
+    public boolean supplyCategoryNeeded(String category, int food, int water, int medicine, boolean weapon) {
+        return CompanionBrain.supplyCategoryNeeded(category, food, water, medicine, weapon);
+    }
+
     public void resetWorldReactions() { reactions.reset(); }
 
     public String directionalReaction(String topic, double facingX, double facingY, double dx, double dy) {

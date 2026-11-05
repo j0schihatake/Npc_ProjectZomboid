@@ -120,6 +120,19 @@ local function execute(player,npc)
     if body:getInventory():getCapacityWeight() >= body:getMaxWeight()*0.8 then
         player:Say(getText("ContextMenu_PersonalKnox_InventoryFull")); return
     end
+    local stock=inventorySnapshot(body)
+    local kind=Core.supplyPlan(stock.food,stock.water,stock.medicine,stock.weapon,false,false)
+    if plan.kind~="house" then
+        if kind=="none" then player:Say(getText("ContextMenu_PersonalKnox_StockReady")); return end
+        if kind~=plan.kind then player:Say(getText("ContextMenu_PersonalKnox_PlanChanged")); return end
+    end
+    local java=PersonalKnoxAPI.getInstance()
+    local function needed(category)
+        return java:supplyCategoryNeeded(category,stock.food,stock.water,stock.medicine,stock.weapon)
+    end
+    -- Resolve policy before borrowing Knox's global UI state.
+    local food,water,medicine=needed("food"),needed("water"),needed("medicine")
+    local searchWeapons=plan.kind=="house" or (plan.kind=="weapons" and needed("weapons"))
     if not tellNpcLoot then player:Say(getText("ContextMenu_PersonalKnox_LootUnavailable")); return end
     -- Knox's public Lua command takes the selected group and category flags.
     -- Restore its UI state even when its command raises an error.
@@ -127,8 +140,7 @@ local function execute(player,npc)
     local old, selected = {}, selectedGroupNpcs
     for _,key in ipairs(keys) do old[key]=_G[key]; _G[key]=false end
     selectedGroupNpcs={npc}
-    lootFirstAid=true; lootFood=true; lootWater=true
-    local searchWeapons=plan.kind=="weapons" or plan.kind=="house"
+    lootFirstAid=medicine; lootFood=food; lootWater=water
     lootGuns=searchWeapons; lootWeapons=searchWeapons; lootAmmo=searchWeapons
     local ok, err = pcall(tellNpcLoot,nil,plan.building)
     selectedGroupNpcs=selected
