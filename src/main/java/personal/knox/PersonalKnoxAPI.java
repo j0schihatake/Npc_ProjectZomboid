@@ -13,6 +13,7 @@ public final class PersonalKnoxAPI {
     private static final PersonalKnoxAPI INSTANCE = new PersonalKnoxAPI();
     private final List<Dialogue> dialogues;
     private final ReactionDirector reactions = new ReactionDirector();
+    private final PlayerCare care = new PlayerCare();
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
 
     public int barricadeMissing(int planks, boolean metal) {
@@ -103,5 +104,37 @@ public final class PersonalKnoxAPI {
         if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return "";
         return reactions.observe(key, (long) nowMillis, health, playerHealth, bleeding, zombies,
                 rain, dark, corpses, hunger, thirst, fatigue);
+    }
+
+    public String careAction(double nowMillis, double health, int bleedingParts, double pain,
+            double thirst, double hunger, boolean busy, boolean danger,
+            boolean medic, boolean drink, boolean eat) {
+        if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return PlayerCare.NONE;
+        return care.decide((long) nowMillis, health, bleedingParts, pain, thirst, hunger,
+                busy, danger, medic, drink, eat);
+    }
+
+    public void careDone(String action, double nowMillis) {
+        if (Double.isFinite(nowMillis) && nowMillis >= 0 && nowMillis <= Long.MAX_VALUE)
+            care.done(action, (long) nowMillis);
+    }
+
+    public void careUnavailable(String action, double nowMillis) {
+        if (Double.isFinite(nowMillis) && nowMillis >= 0 && nowMillis <= Long.MAX_VALUE)
+            care.unavailable(action, (long) nowMillis);
+    }
+
+    public void resetCare() { care.reset(); }
+
+    public boolean upkeepNeedsRepair(int condition, int max) {
+        return UpkeepPolicy.needsRepair(condition, max);
+    }
+
+    public int upkeepAmmo(int current, int magazine) {
+        return UpkeepPolicy.ammoToAdd(current, magazine);
+    }
+
+    public boolean upkeepNeedsMagazine(int count) {
+        return UpkeepPolicy.needsMagazine(count);
     }
 }

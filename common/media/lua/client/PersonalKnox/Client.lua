@@ -10,6 +10,8 @@ local Call = require "PersonalKnox/Call"
 local Weapons = require "PersonalKnox/Weapons"
 local Barricade = require "PersonalKnox/Barricade"
 local Settings = require "PersonalKnox/Settings"
+local Care = require "PersonalKnox/Care"
+local Upkeep = require "PersonalKnox/Upkeep"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -220,4 +222,6 @@ Events.OnFillWorldObjectContextMenu.Add(function(...)
     local ok, errorText = pcall(onContext, ...)
     if not ok then print("[PersonalKnox] Context menu error: " .. tostring(errorText)) end
 end)
+Care.install()
+Upkeep.install()
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")

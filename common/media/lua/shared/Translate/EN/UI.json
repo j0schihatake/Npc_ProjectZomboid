@@ -5,5 +5,15 @@
   "UI_PersonalKnox_Speech": "PersonalKnox NPC speech",
   "UI_PersonalKnox_SpeechHint": "Enable this addon’s world reactions, needs and command replies. Commands still work when speech is off. Does not control speech from Knox or other addons.",
   "UI_PersonalKnox_Diagnostics": "Show PersonalKnox diagnostics",
-  "UI_PersonalKnox_DiagnosticsHint": "Show NPC/barricade and elevation checks in interaction menus. Off by default. Checks run on request; addon errors are still logged."
+  "UI_PersonalKnox_DiagnosticsHint": "Show NPC/barricade and elevation checks in interaction menus. Off by default. Checks run on request; addon errors are still logged.",
+  "UI_PersonalKnox_AutoMedic": "Player auto-medic",
+  "UI_PersonalKnox_AutoMedicHint": "Bandages bleeding and takes painkillers for severe pain. Does not replace manual care and never uses items you do not have.",
+  "UI_PersonalKnox_AutoDrink": "Player auto-drink",
+  "UI_PersonalKnox_AutoDrinkHint": "Drinks from a suitable source in the inventory when thirsty. Pauses between actions and stops in combat or danger.",
+  "UI_PersonalKnox_AutoEat": "Player auto-eat",
+  "UI_PersonalKnox_AutoEatHint": "Eats suitable food when hungry. Does not take food from the world, avoids rotten or dangerous food, and stops in combat or danger.",
+  "UI_PersonalKnox_InfiniteDurability": "Infinite weapon durability",
+  "UI_PersonalKnox_InfiniteDurabilityHint": "Restores the condition of weapons in your hands. Does not repair vehicles or ordinary items.",
+  "UI_PersonalKnox_InfiniteAmmo": "Infinite ammo with reload",
+  "UI_PersonalKnox_InfiniteAmmoHint": "Tops up ammo and magazines for the weapon in your hands; reloading stays normal. Ammo weight is not removed."
 }
