@@ -5,6 +5,7 @@ local function java()
     return PersonalKnoxAPI.getInstance()
 end
 function Core.pickDialogue(_, topic, state, roll)
+    if not PersonalKnoxAPI then return nil end
     local id = java():chooseDialogue(topic, state.morale or 0.5,
         state.relationship or 50, state.bravery or 50, roll or 0)
     if id < 0 then return nil end

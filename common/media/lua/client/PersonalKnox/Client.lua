@@ -79,6 +79,7 @@ local function journal(player, npc, kind, detail)
 end
 
 local function speak(body, text)
+    if not PersonalKnoxAPI then return end
     -- Say() goes to the chat panel for NPCs; ChatElement draws the bubble above the character.
     local ok = pcall(function() body:addLineChatElement(text, 1, 1, 1) end)
     if not ok then body:Say(text) end
