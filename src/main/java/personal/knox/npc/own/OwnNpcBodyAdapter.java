@@ -26,7 +26,7 @@ public final class OwnNpcBodyAdapter {
                     if (body == null) continue;
                     bodies.put(agent.id(), body);
                 }
-                move(body, agent.x(), agent.y(), agent.z());
+                move(body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY());
             }
             var stale = new HashSet<>(bodies.keySet());
             stale.removeAll(seen);
@@ -104,10 +104,19 @@ public final class OwnNpcBodyAdapter {
         System.out.println("[PersonalKnox] Own body dress failed");
     }
 
-    private static void move(Object body, double x, double y, double z) {
+    private static void move(Object body, double x, double y, double z, double tx, double ty) {
         invoke(body, "setX", new Class<?>[]{float.class}, (float) x);
         invoke(body, "setY", new Class<?>[]{float.class}, (float) y);
         invoke(body, "setZ", new Class<?>[]{float.class}, (float) z);
+        double dx = tx - x;
+        double dy = ty - y;
+        if (Math.hypot(dx, dy) > 0.15) {
+            invoke(body, "setDirectionAngle", new Class<?>[]{float.class}, (float) Math.atan2(dy, dx));
+            invoke(body, "setMoving", new Class<?>[]{boolean.class}, true);
+            invoke(body, "setAnimated", new Class<?>[]{boolean.class}, true);
+        } else {
+            invoke(body, "setMoving", new Class<?>[]{boolean.class}, false);
+        }
     }
 
     private static void call(Object target, String name) {
