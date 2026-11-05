@@ -71,5 +71,7 @@
   "UI_PersonalKnox_NpcSearchContainers": "Союзники ищут бинты в шкафах",
   "UI_PersonalKnox_NpcSearchContainersHint": "Раненый союзник без бинта обыскивает ближайшие шкафы/ящики и берёт чистый бинт, затем перевязывается.",
   "UI_PersonalKnox_NpcBandageStock": "Союзники держат запас бинтов",
-  "UI_PersonalKnox_NpcBandageStockHint": "Поддерживать 5 бинтов в инвентаре: после боя подбирать из шкафов и срывать одежду зомби."
+  "UI_PersonalKnox_NpcBandageStockHint": "Поддерживать 5 бинтов в инвентаре: после боя подбирать из шкафов и срывать одежду зомби.",
+  "UI_PersonalKnox_NpcStock": "Союзники держат запас еды и воды",
+  "UI_PersonalKnox_NpcStockHint": "Поддерживать 2 порции еды, 2 ёмкости воды и открывашку; пополнять из ближайших шкафов заранее."
 }
