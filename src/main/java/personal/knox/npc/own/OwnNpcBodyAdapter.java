@@ -24,6 +24,12 @@ public final class OwnNpcBodyAdapter {
             for (var agent : layer.agents()) {
                 seen.add(agent.id());
                 Object body = bodies.get(agent.id());
+                if (body != null) syncHealth(layer, agent.id(), body);
+                if (layer.agent(agent.id()) == null) {
+                    bodies.remove(agent.id());
+                    pathCache.remove(agent.id());
+                    continue;
+                }
                 if (body == null) {
                     body = create(cell, agent.id(), (int) agent.x(), (int) agent.y(), (int) agent.z());
                     if (body == null) continue;
@@ -106,6 +112,17 @@ public final class OwnNpcBodyAdapter {
             } catch (Throwable ignored) { }
         }
         System.out.println("[PersonalKnox] Own body dress failed");
+    }
+
+    private static void syncHealth(OwnNpcLayer layer, String id, Object body) {
+        try {
+            Object damage = body.getClass().getMethod("getBodyDamage").invoke(body);
+            double health = ((Number) damage.getClass().getMethod("getHealth").invoke(damage)).doubleValue();
+            var agent = layer.agent(id);
+            if (agent == null) return;
+            double delta = agent.state().health() - health;
+            if (delta > 0.5) layer.damage(id, delta);
+        } catch (Throwable ignored) { }
     }
 
     private void move(String id, Object body, double x, double y, double z, double tx, double ty, double targetZ) {
