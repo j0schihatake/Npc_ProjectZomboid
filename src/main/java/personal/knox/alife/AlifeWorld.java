@@ -18,6 +18,7 @@ public final class AlifeWorld {
     private final Map<String, Squad> squads = new LinkedHashMap<>();
     private final Map<String, Outpost> outposts = new LinkedHashMap<>();
     private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
+    private final Map<String, FactionEconomy> economies = new LinkedHashMap<>();
     private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
     private long now;
@@ -44,6 +45,14 @@ public final class AlifeWorld {
         if (value <= 0) throw new IllegalArgumentException("Invalid respawn delay");
         respawnDelayMillis = value;
     }
+
+    public void addFactionEconomy(String factionId, FactionEconomy economy) {
+        if (factionId == null || economy == null || economies.containsKey(factionId))
+            throw new IllegalArgumentException("Duplicate or missing faction economy");
+        economies.put(factionId, economy);
+    }
+
+    public FactionEconomy factionEconomy(String factionId) { return economies.get(factionId); }
 
     public void addFactionPresence(FactionPresence.State state) {
         if (state == null || presence.containsKey(state.factionId()))
@@ -138,6 +147,12 @@ public final class AlifeWorld {
             if (!radio) {
                 events.add(new AlifeEvent(AlifeEvent.Type.OUTPOST_SILENT, outpost.id(), outpost.factionId(),
                         outpost.x(), outpost.y(), outpost.z(), "radio_off"));
+            }
+        }
+        for (var entry : economies.entrySet()) {
+            if (entry.getValue().tick(1, 1)) {
+                events.add(new AlifeEvent(AlifeEvent.Type.FACTION_STARVING, entry.getKey(), entry.getKey(),
+                        px, py, pz, "supplies"));
             }
         }
         for (var factionId : respawnReady(time, respawnDelayMillis)) {

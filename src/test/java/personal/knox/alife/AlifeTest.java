@@ -114,6 +114,10 @@ public final class AlifeTest {
         personal.knox.alife.DynamicRelationsTest.run();
         personal.knox.alife.FactionPresenceTest.run();
         personal.knox.alife.FactionEconomyTest.run();
+        var economyWorld = new AlifeWorld(17);
+        economyWorld.addFactionEconomy("hungry", new FactionEconomy(2));
+        var starvingEvents = economyWorld.tick(100, 0, 0, 0, 10);
+        assert starvingEvents.stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_STARVING);
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
