@@ -110,6 +110,7 @@ public final class BrainTest {
         personal.knox.quest.QuestFactoryTest.run();
         personal.knox.quest.QuestServiceTest.run();
         personal.knox.quest.QuestAssignmentTest.run();
+        personal.knox.npc.own.OwnNpcLayerTest.run();
         personal.knox.economy.ResourceBagTest.run();
         SurrenderPolicyTest.run();
         BetrayalRiskTest.run();
