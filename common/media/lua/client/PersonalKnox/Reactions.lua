@@ -100,6 +100,10 @@ function Reactions.install(deps)
     Events.OnGameStart.Add(function()
         Reactions.cursor = 0
         if PersonalKnoxAPI then PersonalKnoxAPI.getInstance():resetWorldReactions() end
+        -- Log exports once per world load, without constructing actions or scanning NPCs.
+        print("[PersonalKnox][capabilities] luaNpcTransferAction=" .. tostring(ISNpcInventoryTransferAction ~= nil)
+            .. " luaBehaviorNode=" .. tostring(LuaBehaviorNode ~= nil)
+            .. " luaSubTreeNode=" .. tostring(LuaSubTreeNode ~= nil))
     end)
     Events.EveryOneMinute.Add(function()
         local ok, err = pcall(Reactions.poll)
