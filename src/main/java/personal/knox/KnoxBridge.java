@@ -13,6 +13,30 @@ public final class KnoxBridge {
     public static int metaNpcs() { return size("getNpcs"); }
     public static int safehouses() { return size("getSafehouses"); }
 
+    public static String groupMemberSnapshot(Object player) {
+        if (player == null) return "";
+        try {
+            Object api = instance();
+            if (api == null) return "";
+            Object group = api.getClass().getMethod("getGroup", player.getClass()).invoke(api, player);
+            if (group == null) return "";
+            Object value = group.getClass().getMethod("getAllNpcGroupMemberObjects").invoke(group);
+            if (!(value instanceof java.util.List<?> list)) return "";
+            var text = new StringBuilder();
+            for (var member : list) {
+                if (member == null) continue;
+                String id = String.valueOf(member.getClass().getMethod("getId").invoke(member));
+                double x = ((Number) member.getClass().getMethod("getX").invoke(member)).doubleValue();
+                double y = ((Number) member.getClass().getMethod("getY").invoke(member)).doubleValue();
+                double z = ((Number) member.getClass().getMethod("getZ").invoke(member)).doubleValue();
+                text.append(id).append('@').append(String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", x, y, z)).append(';');
+            }
+            return text.toString();
+        } catch (Throwable ignored) {
+            return "";
+        }
+    }
+
     public static int groupMembers(Object player) {
         if (player == null) return 0;
         try {
