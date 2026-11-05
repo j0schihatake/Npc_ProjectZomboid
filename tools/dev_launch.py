@@ -165,6 +165,7 @@ def main():
     parser.add_argument('--game-root',type=Path,default=GAME)
     parser.add_argument('--workshop',type=Path)
     parser.add_argument('--add-mod',action='append',default=[])
+    parser.add_argument('--no-debug',action='store_true',help='Launch without -debug')
     parser.add_argument('--nosteam',action='store_true',help='Installed Workshop mods remain available through local links')
     parser.add_argument('--detach',action='store_true',help='Return PID immediately; no launch timeout or automatic process termination')
     parser.add_argument('--prepare-only',action='store_true')
@@ -202,7 +203,7 @@ def main():
         changed = approve_projects(mods, trusted, args.approval_store, cache/'approval-backups')
         if changed: print('Approved local build for ZombieBuddy: ' + ', '.join(changed), flush=True)
 
-    command=[str(binary),'-debug','-cachedir='+str(cache)]+(['-nosteam'] if args.nosteam else [])
+    command=[str(binary)]+([] if args.no_debug else ['-debug'])+['-cachedir='+str(cache)]+(['-nosteam'] if args.nosteam else [])
     if args.dry_run:
         print(json.dumps({'command':command,'cwd':str(engine),'cache':str(cache),'source':str(source),
                           'mods':ids,'mod_roots':{key:str(value['root']) for key,value in mods.items()}},ensure_ascii=False,indent=2))
