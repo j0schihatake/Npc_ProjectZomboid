@@ -114,3 +114,9 @@
 114	squad_hold	default	Держим позицию.
 115	squad_retreat	default	Отходим к дому.
 116	squad_retreat	default	Назад, к игроку.
+117	help_rush	default	Сейчас помогу.
+118	help_rush	default	Держись, иду!
+119	help_rush	default	Прикрой спину, я к нему.
+120	help_rush	brave	Ну ты и влип. Сейчас вытащу.
+121	help_rush	low_morale	Опять я всех вытаскиваю...
+122	help_rush	low_trust	Иду. Но ты мне должен.

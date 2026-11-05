@@ -117,6 +117,7 @@ local function poll(player, deps)
                                 print("[PersonalKnox][help-cover] npc=" .. tostring(ally:getId())
                                     .. " to=" .. tostring(request:getId()))
                             end
+                            deps.say(player, ally, "help_rush")
                         end
                     end
                 end
