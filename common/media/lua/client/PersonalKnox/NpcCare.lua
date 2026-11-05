@@ -19,6 +19,14 @@ local function cleanBandage(body)
     return dirty
 end
 
+local function bandageCount(body)
+    local count, items = 0, body:getInventory():getItems()
+    for i = 0, items:size() - 1 do
+        if items:get(i):isCanBandage() then count = count + 1 end
+    end
+    return count
+end
+
 local function bleedingPart(body)
     local parts = body:getBodyDamage():getBodyParts()
     for i = 0, parts:size() - 1 do
@@ -183,6 +191,22 @@ local function poll(player)
                 ISTimedActionQueue.add(ISApplyBandage:new(body, body, bandage, part, true))
                 if Settings.diagnosticsEnabled() then
                     print("[PersonalKnox][npc-care] bandage npc=" .. tostring(body))
+                end
+            end
+            if not part and Settings.npcBandageStock() and bandageCount(body) < 5 then
+                local found, container, containerDistance = searchBandage(body)
+                local cloth, corpseInv, corpseDistance = corpseCloth(body)
+                if found and container and (not cloth or containerDistance <= corpseDistance)
+                        and ISInventoryTransferAction and ISTimedActionQueue then
+                    ISTimedActionQueue.add(ISInventoryTransferAction:new(body, found, container, body:getInventory()))
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-care] stock=" .. tostring(found:getFullType()))
+                    end
+                elseif cloth and corpseInv and ISTimedActionQueue then
+                    ISTimedActionQueue.add(ISNpcRipClothing:new(body, cloth, corpseInv))
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-care] stock-rip=" .. tostring(cloth:getFullType()))
+                    end
                 end
             end
         end

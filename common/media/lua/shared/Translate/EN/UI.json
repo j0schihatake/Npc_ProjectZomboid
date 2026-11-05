@@ -60,5 +60,7 @@
   "UI_PersonalKnox_AmmoInfiniteMagazine": "Infinite magazine (no reload)",
   "UI_PersonalKnox_AmmoInfiniteReload": "Infinite reserve, reload only when empty",
   "UI_PersonalKnox_NpcSearchContainers": "Companions search cabinets for bandages",
-  "UI_PersonalKnox_NpcSearchContainersHint": "A wounded companion without a bandage searches nearby cabinets/crates for a clean bandage, then bandages."
+  "UI_PersonalKnox_NpcSearchContainersHint": "A wounded companion without a bandage searches nearby cabinets/crates for a clean bandage, then bandages.",
+  "UI_PersonalKnox_NpcBandageStock": "Companions keep bandage stock",
+  "UI_PersonalKnox_NpcBandageStockHint": "Keep 5 bandages in inventory: after battle take them from cabinets and rip zombie clothing."
 }

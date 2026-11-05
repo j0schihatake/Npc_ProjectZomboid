@@ -96,6 +96,7 @@ public final class AlifeTest {
         catch (IllegalArgumentException expected) { }
         assert camp.removeOutpost("camp") != null && camp.outpostCount() == 0;
         personal.knox.alife.DynamicRelationsTest.run();
+        personal.knox.alife.FactionPresenceTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
