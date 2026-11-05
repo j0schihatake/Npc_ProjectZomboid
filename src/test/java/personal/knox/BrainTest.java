@@ -71,6 +71,7 @@ public final class BrainTest {
         PlayerCareTest.run();
         UpkeepPolicyTest.run();
         HelpPolicyTest.run();
+        GroupDecisionTest.run();
         personal.knox.alife.AlifeTest.run();
         personal.knox.npc.NpcTest.run();
         System.out.println("Java tests passed: squad policy, Russian dialogues, floor/range classification, supply priorities.");
