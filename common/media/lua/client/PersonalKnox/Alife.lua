@@ -39,6 +39,10 @@ local function tick()
         end
     end
     local summary = api:alifeTick(now, px, py, pz, 32)
+    local events = api:alifeEvents()
+    if events ~= nil and events ~= "" then
+        print("[PersonalKnox][alife-event] " .. tostring(events))
+    end
     if not firstLogged then
         firstLogged = true
         print("[PersonalKnox][alife-init] squads=" .. tostring(submitted) .. " events=" .. tostring(summary))

@@ -28,6 +28,8 @@ public final class PersonalKnoxAPI {
         return alife.tick(now, x, y, z, budget);
     }
 
+    public String alifeEvents() { return alife.lastEvents(); }
+
     public int alifeSquads() { return alife.squadCount(); }
 
 

@@ -93,6 +93,13 @@
   а не падение JVM; если игра закрывается с ошибкой — нужен `hs_err` или окно ошибки.
 - Новый JAR 0.4.62 (core) и Lua 0.4.63 в этом запуске ещё не были загружены.
 
+## 0.6.3 — видимые события A-Life
+
+- `AlifeRuntime.lastEvents()` + `PersonalKnoxAPI.alifeEvents()`: до 8 событий за тик
+  (без шумного NEAR_SQUAD), формат `TYPE:squadId;`.
+- Lua печатает `[PersonalKnox][alife-event] ...`; диагностика остаётся раз в 30 с.
+- Java-ядро 0.6.3, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.6.2 — живой A-Life
 
 - `AlifeRuntime` + `PersonalKnoxAPI.alifeSquad/alifeTick`: Lua раз в 5 с отправляет снимки
