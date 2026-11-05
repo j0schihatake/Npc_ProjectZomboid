@@ -20,6 +20,7 @@ public final class AlifeWorld {
     private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
     private final Map<String, FactionEconomy> economies = new LinkedHashMap<>();
     private final Map<String, Long> lastExpand = new LinkedHashMap<>();
+    private final Map<String, ResourceNode> nodes = new LinkedHashMap<>();
     private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
     private long now;
@@ -45,6 +46,23 @@ public final class AlifeWorld {
     public void setRespawnDelayMillis(long value) {
         if (value <= 0) throw new IllegalArgumentException("Invalid respawn delay");
         respawnDelayMillis = value;
+    }
+
+    public void addResourceNode(ResourceNode node) {
+        if (node == null || nodes.containsKey(node.id()))
+            throw new IllegalArgumentException("Duplicate or missing resource node");
+        nodes.put(node.id(), node);
+    }
+
+    public ResourceNode resourceNode(String id) { return nodes.get(id); }
+    public java.util.List<ResourceNode> resourceNodes() { return java.util.List.copyOf(nodes.values()); }
+
+    public AlifeEvent captureResourceNode(String nodeId, String factionId, long time) {
+        var node = nodes.get(nodeId);
+        if (node == null) throw new IllegalArgumentException("Unknown resource node");
+        nodes.put(nodeId, node.withController(factionId));
+        return new AlifeEvent(AlifeEvent.Type.NODE_CAPTURED, nodeId, factionId,
+                node.x(), node.y(), node.z(), "captured");
     }
 
     public void addFactionEconomy(String factionId, FactionEconomy economy) {

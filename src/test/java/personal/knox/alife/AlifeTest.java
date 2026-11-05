@@ -122,6 +122,11 @@ public final class AlifeTest {
         expanding.addFactionEconomy("rich", rich);
         assert expanding.tick(0, 0, 0, 0, 10).stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_EXPAND);
         assert expanding.tick(1000, 0, 0, 0, 10).stream().noneMatch(e -> e.type() == AlifeEvent.Type.FACTION_EXPAND);
+        var nodeWorld = new AlifeWorld(21);
+        nodeWorld.addResourceNode(new ResourceNode("farm", ResourceNode.Kind.FOOD, 10, 10, 0, "neutral", 10));
+        var captured = nodeWorld.captureResourceNode("farm", "own", 100);
+        assert captured.type() == AlifeEvent.Type.NODE_CAPTURED;
+        assert nodeWorld.resourceNode("farm").controller().equals("own");
         var economyWorld = new AlifeWorld(17);
         economyWorld.addFactionEconomy("hungry", new FactionEconomy(2));
         var starvingEvents = economyWorld.tick(100, 0, 0, 0, 10);
