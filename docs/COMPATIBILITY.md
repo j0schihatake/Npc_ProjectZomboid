@@ -93,6 +93,12 @@
   а не падение JVM; если игра закрывается с ошибкой — нужен `hs_err` или окно ошибки.
 - Новый JAR 0.4.62 (core) и Lua 0.4.63 в этом запуске ещё не были загружены.
 
+## 0.9.2 — приказы своим NPC
+
+- `OwnNpcOrder` (FOLLOW/HOLD/GUARD/LOOT/REST), `ownOrderMode`, `ownFollowTarget`;
+  debug-тела идут за игроком, `tick` обновляет цель FOLLOW.
+- Java-ядро 0.9.2, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.9.1 — сохранение стратегической популяции
 
 - `OwnNpcPopulationCodec` + API `ownPopulationSnapshot/ownPopulationRestore`; Lua пишет

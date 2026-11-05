@@ -14,6 +14,10 @@ public final class OwnNpcLayerTest {
         assert !events.isEmpty();
         assert layer.agent("n1").x() > 0 : "Agent moved toward target";
         assert layer.agent("n1").state().hunger() > state.hunger() : "Needs decayed";
+        layer.order("n1", OwnNpcOrder.FOLLOW, 50, 0);
+        layer.followTarget(60, 60);
+        layer.tick(1, 8);
+        assert layer.agent("n1").targetX() == 60 && layer.agent("n1").targetY() == 60;
         layer.order("n1", 50, 0);
         assert layer.agent("n1").targetX() == 50;
         assert layer.remove("n1").type() == OwnNpcEvent.Type.REMOVED;

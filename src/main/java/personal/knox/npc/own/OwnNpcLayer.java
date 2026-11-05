@@ -11,6 +11,8 @@ public final class OwnNpcLayer {
     public static final int MAX_NPCS = 64;
     public static final double STEP_METERS = 2.0;
     private final Map<String, OwnNpcAgent> agents = new LinkedHashMap<>();
+    private final Map<String, OwnNpcOrder> orders = new LinkedHashMap<>();
+    private double followX, followY;
     private double needRate = 1;
 
     public void setNeedRate(double rate) {
@@ -48,6 +50,21 @@ public final class OwnNpcLayer {
         for (var agent : restored) agents.put(agent.id(), agent);
     }
 
+    public OwnNpcEvent order(String id, OwnNpcOrder order, double tx, double ty) {
+        if (order == null) throw new IllegalArgumentException("Missing order");
+        var event = order(id, tx, ty);
+        orders.put(id, order);
+        return event;
+    }
+
+    public void followTarget(double x, double y) {
+        if (!Double.isFinite(x + y)) throw new IllegalArgumentException("Invalid follow target");
+        followX = x;
+        followY = y;
+    }
+
+    public OwnNpcOrder orderOf(String id) { return orders.getOrDefault(id, OwnNpcOrder.HOLD); }
+
     public OwnNpcEvent order(String id, double tx, double ty) {
         var agent = agents.get(id);
         if (agent == null) throw new IllegalArgumentException("Unknown agent");
@@ -58,6 +75,7 @@ public final class OwnNpcLayer {
     }
 
     public OwnNpcEvent remove(String id) {
+        orders.remove(id);
         var agent = agents.remove(id);
         if (agent == null) throw new IllegalArgumentException("Unknown agent");
         return new OwnNpcEvent(OwnNpcEvent.Type.REMOVED, id, agent.x(), agent.y(), agent.z(), "remove");
@@ -71,6 +89,10 @@ public final class OwnNpcLayer {
         for (var entry : new ArrayList<>(agents.entrySet())) {
             if (events.size() >= budget) break;
             var agent = entry.getValue();
+            if (orders.getOrDefault(agent.id(), OwnNpcOrder.HOLD) == OwnNpcOrder.FOLLOW) {
+                agent = agent.withTarget(followX, followY);
+                agents.put(agent.id(), agent);
+            }
             var nextState = NpcNeeds.tick(agent.state(), hours, needRate);
             double dx = agent.targetX() - agent.x();
             double dy = agent.targetY() - agent.y();

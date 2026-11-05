@@ -35,6 +35,12 @@ public final class PersonalKnoxAPI {
 
     public int ownActive() { return ownLayer.count(); }
 
+    public String ownOrderMode(String id, String order, double x, double y) {
+        return ownLayer.order(id, personal.knox.npc.own.OwnNpcOrder.valueOf(order.toUpperCase(java.util.Locale.ROOT)), x, y).agentId();
+    }
+
+    public void ownFollowTarget(double x, double y) { ownLayer.followTarget(x, y); }
+
     public String ownOrder(String id, double x, double y) {
         return ownLayer.order(id, x, y).agentId();
     }
@@ -46,6 +52,8 @@ public final class PersonalKnoxAPI {
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
     public String ownDebugSpawn(double x, double y, double z) {
         var event = ownLayer.debugSpawn(x, y, z);
+        ownLayer.order(event.agentId(), personal.knox.npc.own.OwnNpcOrder.FOLLOW, x + 3, y);
+        ownLayer.followTarget(x, y);
         return event.agentId();
     }
 
