@@ -67,5 +67,6 @@
   "ContextMenu_PersonalKnox_AnswerSquad": "Ответ отряду",
   "ContextMenu_PersonalKnox_AnswerAttack": "Атаковать",
   "ContextMenu_PersonalKnox_AnswerHold": "Держаться",
-  "ContextMenu_PersonalKnox_AnswerRetreat": "Отойти"
+  "ContextMenu_PersonalKnox_AnswerRetreat": "Отойти",
+  "ContextMenu_PersonalKnox_AskTake": "Спросить отряд: можно взять?"
 }

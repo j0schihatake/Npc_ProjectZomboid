@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import me.zed_0xff.zombie_buddy.Exposer;
 import personal.knox.npc.NpcNeeds;
+import personal.knox.ItemNeedPolicy;
 
 @Exposer.LuaClass
 public final class PersonalKnoxAPI {
@@ -126,6 +127,19 @@ public final class PersonalKnoxAPI {
     }
 
     public void resetCare() { care.reset(); }
+
+    public double itemObjection(int kind, double hunger, double thirst, double health,
+                                int freeSlots, int ammo) {
+        ItemNeedPolicy.Kind type = switch (kind) {
+            case 0 -> ItemNeedPolicy.Kind.FOOD;
+            case 1 -> ItemNeedPolicy.Kind.WATER;
+            case 2 -> ItemNeedPolicy.Kind.MEDICAL;
+            case 3 -> ItemNeedPolicy.Kind.AMMO;
+            default -> ItemNeedPolicy.Kind.OTHER;
+        };
+        return ItemNeedPolicy.weight(type,
+                new ItemNeedPolicy.State(hunger, thirst, health, freeSlots, ammo));
+    }
 
     public String groupChoice(double attackWeight, double holdWeight, double retreatWeight, int leaderChoice) {
         if (!Double.isFinite(attackWeight + holdWeight + retreatWeight)

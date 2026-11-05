@@ -67,5 +67,6 @@
   "ContextMenu_PersonalKnox_AnswerSquad": "Answer the squad",
   "ContextMenu_PersonalKnox_AnswerAttack": "Attack",
   "ContextMenu_PersonalKnox_AnswerHold": "Hold",
-  "ContextMenu_PersonalKnox_AnswerRetreat": "Retreat"
+  "ContextMenu_PersonalKnox_AnswerRetreat": "Retreat",
+  "ContextMenu_PersonalKnox_AskTake": "Ask the squad: may I take this?"
 }

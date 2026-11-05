@@ -70,6 +70,8 @@ public final class BrainTest {
         assert api.groupChoice(1, 5, 1, 0).equals("hold") : "Weighted consensus";
         assert api.groupChoice(1, 1, 5, 0).equals("retreat") : "Tie retreats";
         assert api.groupChoice(1, 5, 1, 1).equals("attack") : "Leader override";
+        assert api.itemObjection(0, 0.7, 0.1, 100, 2, 0) > 0 : "Hungry NPC objects";
+        assert api.itemObjection(0, 0.7, 0.1, 100, 0, 0) == 0 : "Full slots do not object";
         ReactionTest.run();
         ThreatDirectionTest.run();
         WeaponChoiceTest.run();

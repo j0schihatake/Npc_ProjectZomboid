@@ -127,3 +127,11 @@
 127	smalltalk	brave	Живы — уже хорошо.
 128	smalltalk	low_morale	Надо бы передохнуть...
 129	smalltalk	low_trust	Чего тебе?
+130	item_ok	default	Бери, мне хватает.
+131	item_ok	default	Не против.
+132	item_ok	default	Забирай, у меня есть.
+133	item_ok	low_trust	Бери, только не всё.
+134	item_object	default	Мне нужнее.
+135	item_object	default	Отдай, мне это нужнее.
+136	item_object	default	У меня пусто — я возьму.
+137	item_object	low_morale	Мне бы самому пригодилось...
