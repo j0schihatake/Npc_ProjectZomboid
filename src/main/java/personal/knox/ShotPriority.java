@@ -17,6 +17,12 @@ public final class ShotPriority {
      * Enemies outside the shooter's range are ignored.
      */
     public static int choose(Point ally, Point shooter, List<Point> enemies, double maxRange) {
+        return choose(ally, shooter, enemies, maxRange, null, 0);
+    }
+
+    /** Same choice, but skips any enemy whose line is blocked by a friendly. */
+    public static int choose(Point ally, Point shooter, List<Point> enemies, double maxRange,
+                             List<Point> friendlies, double friendlyRadius) {
         if (ally == null || shooter == null || enemies == null || enemies.isEmpty()
                 || !Double.isFinite(maxRange) || maxRange <= 0) return -1;
         int best = -1;
@@ -25,6 +31,7 @@ public final class ShotPriority {
         for (int i = 0; i < enemies.size(); i++) {
             var enemy = enemies.get(i);
             if (enemy == null) continue;
+            if (friendlies != null && LineOfFire.blocked(shooter, enemy, friendlies, friendlyRadius)) continue;
             double toShooter = Math.hypot(enemy.x() - shooter.x(), enemy.y() - shooter.y());
             if (toShooter > maxRange) continue;
             double toAlly = Math.hypot(enemy.x() - ally.x(), enemy.y() - ally.y());

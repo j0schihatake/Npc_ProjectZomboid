@@ -17,6 +17,13 @@ public final class ShotPriorityTest {
         assert ShotPriority.choose(null, shooter, java.util.List.of(closeToAlly), 30) == -1;
         assert ShotPriority.choose(ally, shooter, java.util.List.of(closeToAlly), 0) == -1;
         assert ShotPriority.choose(ally, shooter, java.util.Arrays.asList(closeToAlly, null), 100) == 0 : "Null enemy is skipped";
+        var blocked = p(5, 0);
+        assert ShotPriority.choose(ally, shooter, java.util.List.of(blocked, p(6, 3)), 100,
+                java.util.List.of(p(10, 0)), 1) == 1 : "Blocked enemy is skipped";
+        assert ShotPriority.choose(ally, shooter, java.util.List.of(blocked), 100,
+                java.util.List.of(p(10, 0)), 1) == -1 : "All blocked enemies are refused";
+        assert ShotPriority.choose(ally, shooter, java.util.List.of(blocked), 100,
+                java.util.List.of(p(3, 5)), 0.5) == 0 : "Clear line keeps the target";
         try { p(Double.NaN, 0); throw new AssertionError("NaN point accepted"); }
         catch (IllegalArgumentException expected) { }
         System.out.println("Shot priority tests passed: ally-first target, shooter tie-break, range, empty, null and invalid points.");
