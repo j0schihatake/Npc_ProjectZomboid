@@ -22,6 +22,16 @@ def atomic_write(path, data):
     os.replace(temporary, path)
 
 
+def runtime_fingerprint(userdata):
+    runtime = userdata/'mods/PersonalKnox'
+    result = {}
+    for folder in ('common','42'):
+        for path in sorted((runtime/folder).rglob('*')):
+            if path.is_file() and (path.suffix in ('.lua','.jar') or path.name=='mod.info'):
+                result[str(path.relative_to(runtime))]=hashlib.sha256(path.read_bytes()).hexdigest()
+    return result
+
+
 def arm(userdata, source_name, seconds=180, quit_when_done=False):
     require_closed_game()
     if not 10 <= seconds <= 300:
@@ -38,6 +48,7 @@ def arm(userdata, source_name, seconds=180, quit_when_done=False):
         raise ValueError('Install the matching Probe adapter before arming a run')
     if 'Probe.install(' not in (installed/'Client.lua').read_text():
         raise ValueError('The installed Client does not install the Probe adapter')
+    runtime_before = runtime_fingerprint(userdata)
     profile = userdata / 'mods/default.txt'
     profile_bytes = profile.read_bytes()
     enabled = set(re.findall(r'^\s*mod\s*=\s*(.+?)\s*,?\s*$', profile_bytes.decode(), re.M))
@@ -56,10 +67,13 @@ def arm(userdata, source_name, seconds=180, quit_when_done=False):
               'source_sha256': baseline['sha256'], 'created': datetime.now().isoformat(),
               'profile_sha256': hashlib.sha256(profile_bytes).hexdigest(),
               'latest_before': base64.b64encode(latest_bytes).decode() if latest_bytes is not None else None,
-              'seconds': seconds, 'quit_when_done': quit_when_done, 'scope': 'readonly_api'}
+              'seconds': seconds, 'quit_when_done': quit_when_done, 'scope': 'readonly_api',
+              'runtime_fingerprint': runtime_before}
     require_closed_game()
     if profile.read_bytes() != profile_bytes:
         raise RuntimeError('The current mod profile changed; copy left unarmed')
+    if runtime_fingerprint(userdata) != runtime_before:
+        raise RuntimeError('The installed runtime changed; copy left unarmed')
     if fingerprint(Path(baseline['source'])) != baseline['sha256']:
         raise RuntimeError('The original save changed; copy left unarmed')
     if (latest.read_bytes() if latest.exists() else None) != latest_bytes:
@@ -100,7 +114,9 @@ def cleanup(userdata, record_path):
         rows = control.read_text().splitlines()
         if len(rows)>=3 and rows[:3]==[MAGIC,copy.name,record['nonce']]:
             control.unlink()
-    record.update(cleaned=datetime.now().isoformat(),source_unchanged=unchanged,latest_restored=restored)
+    runtime_unchanged=(runtime_fingerprint(userdata)==record['runtime_fingerprint']) if 'runtime_fingerprint' in record else None
+    record.update(cleaned=datetime.now().isoformat(),source_unchanged=unchanged,latest_restored=restored,
+                  runtime_unchanged=runtime_unchanged)
     atomic_write(record_path,(json.dumps(record,ensure_ascii=False,indent=2)+'\n').encode())
     return unchanged, restored
 
@@ -123,8 +139,9 @@ def main():
         print('default.txt and the original world were not changed. This command does not launch the game.')
     else:
         unchanged, restored = cleanup(userdata,args.record.resolve())
-        print(f'Cleaned. Original world unchanged={unchanged}; latest-save pointer restored={restored}. Test copy retained.')
-        if not unchanged:
+        runtime_unchanged=json.loads(args.record.read_text())['runtime_unchanged']
+        print(f'Cleaned. Original world unchanged={unchanged}; runtime unchanged={runtime_unchanged}; latest-save pointer restored={restored}. Test copy retained.')
+        if not unchanged or runtime_unchanged is False:
             raise SystemExit(1)
 
 

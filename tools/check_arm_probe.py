@@ -44,6 +44,7 @@ with tempfile.TemporaryDirectory(prefix='personalknox-arm-check-') as tmp:
         latest.write_text(copy.name+'\nSandbox\n')
         unchanged,restored=arm_probe.cleanup(userdata,record_path)
         assert unchanged and restored and latest.read_bytes()==latest_before and not control.exists()
+        assert json.loads(record_path.read_text())['runtime_unchanged'] is True
         assert copy.is_dir() and profile.read_bytes()==profile_before
         latest.write_text('UserChosen\nSandbox\n')
         unchanged,restored=arm_probe.cleanup(userdata,record_path)
@@ -61,6 +62,21 @@ with tempfile.TemporaryDirectory(prefix='personalknox-arm-check-') as tmp:
             except RuntimeError as error:
                 assert 'profile changed' in str(error)
         assert not control.exists() and prepare_probe_world.fingerprint(source)==original
+        profile.write_bytes(profile_before)
+        client=installed/'Client.lua'
+        def changed_runtime(*args):
+            result=prepare(*args)
+            client.write_text(client.read_text()+'\n-- concurrent edit\n')
+            return result
+        with patch.object(arm_probe,'prepare',side_effect=changed_runtime):
+            try:
+                arm_probe.arm(userdata,'Original')
+                raise AssertionError('Runtime race accepted')
+            except RuntimeError as error:
+                assert 'runtime changed' in str(error)
+        assert not control.exists()
+        unchanged,restored=arm_probe.cleanup(userdata,record_path)
+        assert unchanged and json.loads(record_path.read_text())['runtime_unchanged'] is False
     before=sorted(p.name for p in (userdata/'Saves/Sandbox').iterdir())
     with patch.object(arm_probe,'require_closed_game',side_effect=RuntimeError('Game is live')):
         try:
