@@ -33,6 +33,7 @@ local NpcMedic = require "PersonalKnox/NpcMedic"
 local NpcStock = require "PersonalKnox/NpcStock"
 local NpcFinds = require "PersonalKnox/NpcFinds"
 local Ask = require "PersonalKnox/Ask"
+local Alife = require "PersonalKnox/Alife"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -277,6 +278,7 @@ Negotiation.install({roster=roster,say=say})
 Chatter.install({roster=roster,say=say})
 Perf.install()
 AutoAsk.install({roster=roster,say=say})
+Alife.install({roster=roster})
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
 AutoReload.install()
@@ -287,5 +289,6 @@ NpcMedic.install({roster=roster,say=say})
 NpcStock.install({roster=roster,say=say})
 NpcFinds.install({roster=roster,say=say})
 Ask.install({roster=roster,say=say})
+Alife.install({roster=roster})
 Probe.install({roster=roster,isMember=isMember})
 print("[PersonalKnox] Lua addon " .. Version.loaded .. " loaded; Russian dialogues and elevation diagnostics ready.")

@@ -146,6 +146,12 @@ public final class AlifeWorld {
         squads.put(squad.id(), squad);
     }
 
+    public void updateSquad(Squad squad) {
+        if (squad == null || !squads.containsKey(squad.id()))
+            throw new IllegalArgumentException("Unknown squad");
+        squads.put(squad.id(), squad);
+    }
+
     public Squad removeSquad(String id) { return squads.remove(id); }
 
     public List<AlifeEvent> tick(long time, double px, double py, double pz, int budget) {

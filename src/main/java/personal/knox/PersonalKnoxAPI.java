@@ -17,6 +17,20 @@ public final class PersonalKnoxAPI {
     private final ReactionDirector reactions = new ReactionDirector();
     private final PlayerCare care = new PlayerCare();
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
+    private final personal.knox.alife.AlifeRuntime alife = new personal.knox.alife.AlifeRuntime();
+
+    public void alifeSquad(String id, String faction, int members, double health, int supplies,
+                           String task, double x, double y, double z, double tx, double ty) {
+        alife.submit(id, faction, members, health, supplies, task, x, y, z, tx, ty);
+    }
+
+    public String alifeTick(long now, double x, double y, double z, int budget) {
+        return alife.tick(now, x, y, z, budget);
+    }
+
+    public int alifeSquads() { return alife.squadCount(); }
+
+
 
     public String npcTransferApi(Object npc) { return KnoxTransferProbe.inspect(npc); }
 

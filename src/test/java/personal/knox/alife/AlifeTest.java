@@ -158,6 +158,7 @@ public final class AlifeTest {
         personal.knox.alife.RadioTrafficTest.run();
         personal.knox.alife.RadioInterceptTest.run();
         personal.knox.alife.RadioDirectorTest.run();
+        personal.knox.alife.AlifeRuntimeTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
