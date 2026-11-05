@@ -131,6 +131,7 @@ public final class AlifeTest {
         economyWorld.addFactionEconomy("hungry", new FactionEconomy(2));
         var starvingEvents = economyWorld.tick(100, 0, 0, 0, 10);
         assert starvingEvents.stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_STARVING);
+        personal.knox.alife.BaseLevelTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
