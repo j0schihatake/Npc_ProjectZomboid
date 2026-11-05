@@ -98,3 +98,11 @@
 98	react_zombies_left	low_morale	Слева зомби. Держись рядом со мной.
 99	react_zombies_left	low_trust	Зомби слева. Рассчитываю на прикрытие.
 100	react_zombies_left	brave	Зомби слева. Разберёмся вместе.
+101	help_call	default	Сюда! Их слишком много!
+102	help_call	default	Помогите, меня окружают!
+103	help_call	default	Не справлюсь один!
+104	help_call	default	Прикройте, я не выдержу!
+105	help_call	low_trust	Ты... помоги, если можешь.
+106	help_call	low_morale	Не оставляйте меня здесь...
+107	help_call	low_morale	Я не хочу так умереть...
+108	help_call	brave	Держитесь! Я ещё стою!

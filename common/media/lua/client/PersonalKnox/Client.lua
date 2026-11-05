@@ -73,7 +73,7 @@ local function voice(body, topic)
     local sound = prefix
     if topic == "react_injury" or topic == "react_player_injury" then
         sound = prefix .. "PainFromHitBlunt"
-    elseif topic:find("zombies", 1, true) or topic == "react_horde" then
+    elseif topic:find("zombies", 1, true) or topic == "react_horde" or topic == "help_call" then
         sound = prefix .. "ShoutHey"
     end
     local played = pcall(function() body:playSound(sound) end)

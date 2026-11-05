@@ -68,7 +68,7 @@ local function poll(player, deps)
             .. " threats=" .. tostring(maxCount))
     end
     if best and Help.allowed(now) then
-        deps.say(player, best, "react_horde")
+        deps.say(player, best, "help_call")
         if Settings.diagnosticsEnabled() then
             print("[PersonalKnox][help-call] npc=" .. tostring(best:getId()) .. " zombies=" .. tostring(bestCount))
         end
