@@ -21,6 +21,7 @@ local Negotiation = require "PersonalKnox/Negotiation"
 local Chatter = require "PersonalKnox/Chatter"
 local Perf = require "PersonalKnox/Perf"
 local AutoAsk = require "PersonalKnox/AutoAsk"
+local NpcCare = require "PersonalKnox/NpcCare"
 local Ask = require "PersonalKnox/Ask"
 
 local function attempt(fn, fallback)
@@ -266,5 +267,6 @@ Negotiation.install({roster=roster,say=say})
 Chatter.install({roster=roster,say=say})
 Perf.install()
 AutoAsk.install({roster=roster,say=say})
+NpcCare.install({roster=roster,say=say})
 Ask.install({roster=roster,say=say})
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")
