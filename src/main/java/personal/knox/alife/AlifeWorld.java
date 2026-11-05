@@ -21,6 +21,7 @@ public final class AlifeWorld {
     private final Map<String, FactionEconomy> economies = new LinkedHashMap<>();
     private final Map<String, Long> lastExpand = new LinkedHashMap<>();
     private final Map<String, ResourceNodeState> nodes = new LinkedHashMap<>();
+    private final java.util.List<Raid> raids = new java.util.ArrayList<>();
     private long lastNodeIncome = Long.MIN_VALUE / 2;
     private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
@@ -74,6 +75,16 @@ public final class AlifeWorld {
         return new AlifeEvent(AlifeEvent.Type.NODE_CAPTURED, nodeId, factionId,
                 node.x(), node.y(), node.z(), "captured");
     }
+
+    public AlifeEvent startRaid(Raid raid) {
+        if (raid == null || raids.stream().anyMatch(r -> r.id().equals(raid.id())))
+            throw new IllegalArgumentException("Duplicate or missing raid");
+        raids.add(raid);
+        return new AlifeEvent(AlifeEvent.Type.RAID_STARTED, raid.id(), raid.attackerFactionId(),
+                0, 0, 0, raid.targetKind().name());
+    }
+
+    public java.util.List<Raid> raids() { return java.util.List.copyOf(raids); }
 
     public void addFactionEconomy(String factionId, FactionEconomy economy) {
         if (factionId == null || economy == null || economies.containsKey(factionId))
