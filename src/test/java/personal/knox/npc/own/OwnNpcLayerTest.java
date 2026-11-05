@@ -14,6 +14,8 @@ public final class OwnNpcLayerTest {
         assert !events.isEmpty();
         assert layer.agent("n1").x() > 0 : "Agent moved toward target";
         assert layer.agent("n1").state().hunger() > state.hunger() : "Needs decayed";
+        layer.order("n1", 50, 0);
+        assert layer.agent("n1").targetX() == 50;
         assert layer.remove("n1").type() == OwnNpcEvent.Type.REMOVED;
         assert layer.count() == 0;
         var saved = OwnNpcCodec.encode(java.util.List.of(agent));

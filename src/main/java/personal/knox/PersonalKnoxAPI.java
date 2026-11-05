@@ -35,6 +35,10 @@ public final class PersonalKnoxAPI {
 
     public int ownActive() { return ownLayer.count(); }
 
+    public String ownOrder(String id, double x, double y) {
+        return ownLayer.order(id, x, y).agentId();
+    }
+
     public int ownTick(double hours, int budget) {
         return ownLayer.tick(hours, budget).size();
     }

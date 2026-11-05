@@ -48,6 +48,15 @@ public final class OwnNpcLayer {
         for (var agent : restored) agents.put(agent.id(), agent);
     }
 
+    public OwnNpcEvent order(String id, double tx, double ty) {
+        var agent = agents.get(id);
+        if (agent == null) throw new IllegalArgumentException("Unknown agent");
+        if (!Double.isFinite(tx + ty)) throw new IllegalArgumentException("Invalid target");
+        var updated = agent.withTarget(tx, ty);
+        agents.put(id, updated);
+        return new OwnNpcEvent(OwnNpcEvent.Type.MOVED, id, updated.x(), updated.y(), updated.z(), "order");
+    }
+
     public OwnNpcEvent remove(String id) {
         var agent = agents.remove(id);
         if (agent == null) throw new IllegalArgumentException("Unknown agent");
