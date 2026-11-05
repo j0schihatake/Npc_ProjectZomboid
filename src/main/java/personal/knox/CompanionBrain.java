@@ -4,6 +4,15 @@ package personal.knox;
 public final class CompanionBrain {
     private CompanionBrain() {}
 
+    /** Codes are our persistence format, not Knox enum ordinals. */
+    public static String baseSchedule(int hour, String current) {
+        if (hour < 0 || hour > 23) throw new IllegalArgumentException("Invalid hour");
+        if ("GUARD".equals(current)) return "GUARD";
+        if (hour >= 22 || hour < 6) return "REST";
+        if ((hour >= 8 && hour < 12) || (hour >= 13 && hour < 18)) return "WORK";
+        return "RECREATION";
+    }
+
     public static String condition(double morale, double relationship, double bravery) {
         if (Double.isFinite(relationship) && relationship < 30) return "low_trust";
         if (Double.isFinite(morale) && morale < 0.3) return "low_morale";

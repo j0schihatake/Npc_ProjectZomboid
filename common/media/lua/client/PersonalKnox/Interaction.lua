@@ -1,0 +1,111 @@
+-- Optional UI integration; no target search and no Java patch.
+local Interaction = {}
+local deps
+
+local function nearTarget(player, npc)
+    if isClient() or not classFilesInstalled or not player or player:isDead() or not npc then return false end
+    local body = npc:getWorldObject()
+    if not body or body:isDead() or math.abs(body:getZ() - player:getZ()) > 0.5 then return false end
+    local dx, dy = body:getX() - player:getX(), body:getY() - player:getY()
+    return dx * dx + dy * dy <= 100 and player:CanSee(body)
+end
+
+local function eligible(player, npc)
+    return PersonalKnoxAPI and nearTarget(player, npc) and deps.isMember(player, npc)
+end
+
+local function popup(player)
+    local num = player:getPlayerNum()
+    local menu = ISContextMenu.get(num,
+        getPlayerScreenLeft(num) + getPlayerScreenWidth(num) / 2,
+        getPlayerScreenTop(num) + getPlayerScreenHeight(num) / 2)
+    ISContextMenu.globalPlayerContext = num
+    return menu
+end
+
+function Interaction.open(player, npc)
+    -- Recheck on selection: the target can leave or die while a menu is open.
+    if not eligible(player, npc) then return end
+    local menu = popup(player)
+    deps.reactions(menu, player)
+    deps.fill(menu, player, npc)
+end
+
+local function nativeActions(player, npc)
+    local data = getPlayerData and getPlayerData(player:getPlayerNum())
+    local panel = data and data.npcContextualActionListUI
+    if not panel or not NpcContextualActionListUI or not NpcContextualActionListUI.buildNpcActions then return nil end
+    return NpcContextualActionListUI.buildNpcActions(panel, npc)
+end
+
+local function selectNative(player, npc, label)
+    if not nearTarget(player, npc) then return end
+    -- Rebuild permissions: a former companion must not retain an inventory button.
+    for _, action in ipairs(nativeActions(player, npc) or {}) do
+        if action.label == label and action.onSelect and not action.navigation then
+            action.onSelect()
+            return
+        end
+    end
+end
+
+function Interaction.openKnox(player, npc)
+    if not nearTarget(player, npc) then return end
+    local actions = nativeActions(player, npc)
+    if not actions then return end
+    local menu = popup(player)
+    for _, action in ipairs(actions) do
+        if action.onSelect and not action.navigation then
+            menu:addOption(action.label, player, selectNative, npc, action.label)
+        end
+    end
+end
+
+function Interaction.attach()
+    if NpcContextualActionListUI and not Interaction.knoxAttached then
+        local original = NpcContextualActionListUI.buildNpcActions
+        if type(original) == "function" then
+            NpcContextualActionListUI.buildNpcActions = function(panel, npc)
+                local actions = original(panel, npc)
+                local player = getSpecificPlayer(panel.playerNum)
+                if eligible(player, npc) then
+                    table.insert(actions, 1, {
+                        label = getText("ContextMenu_PersonalKnox_Squad"), npc = npc,
+                        onSelect = function() Interaction.open(player, npc) end,
+                    })
+                end
+                return actions
+            end
+            Interaction.knoxAttached = true
+        end
+    end
+    if ViewpointInteract and type(ViewpointInteract.harvest) == "function" and not Interaction.viewpointAttached then
+        local original = ViewpointInteract.harvest
+        ViewpointInteract.harvest = function(player, object)
+            local result = original(player, object)
+            if not result or not result.labels or not result.enabled or not instanceof(object, "IsoNpcPlayer") then return result end
+            local npc = object:getMetaCharacter()
+            local function add(label, callback)
+                table.insert(ViewpointInteract.actions, {
+                    name = label, fn = callback, args = {player, npc}, n = 2, enabled = true,
+                })
+                table.insert(result.labels, label)
+                table.insert(result.enabled, true)
+            end
+            if nearTarget(player, npc) and nativeActions(player, npc) then
+                add(getText("ContextMenu_PersonalKnox_KnoxActions"), Interaction.openKnox)
+            end
+            if eligible(player, npc) then
+                add(getText("ContextMenu_PersonalKnox_Squad"), Interaction.open)
+            end
+            return result
+        end
+        Interaction.viewpointAttached = true
+    end
+end
+
+function Interaction.install(adapters)
+    deps = adapters
+    Events.OnGameStart.Add(Interaction.attach)
+end
+return Interaction

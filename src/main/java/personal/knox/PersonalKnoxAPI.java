@@ -63,6 +63,10 @@ public final class PersonalKnoxAPI {
         return CompanionBrain.allowRetreat(inSquad, groupOrder);
     }
 
+    public String baseSchedule(int hour, String current) {
+        return CompanionBrain.baseSchedule(hour, current);
+    }
+
     public String supplyPlan(int food, int water, int medicine, boolean weapon, boolean danger, boolean overloaded) {
         return CompanionBrain.supplyPlan(food, water, medicine, weapon, danger, overloaded);
     }
