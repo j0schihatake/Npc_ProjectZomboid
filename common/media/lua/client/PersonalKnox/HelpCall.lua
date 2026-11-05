@@ -1,9 +1,11 @@
 -- A surrounded companion shouts for help, gated by the help-frequency setting.
 local HelpCall = {}
 local Help = require "PersonalKnox/Help"
+local Call = require "PersonalKnox/Call"
 local Settings = require "PersonalKnox/Settings"
 local INTERVAL_MS, RADIUS, MAX_NPCS, MAX_OBJECTS = 5000, 4, 4, 128
 local lastCheck = 0
+local assist = {}
 
 local function threats(body)
     local cell = getCell()
@@ -46,10 +48,38 @@ local function poll(player, deps)
             end
         end
     end
+    for ally, untilAt in pairs(assist) do
+        if now >= untilAt then
+            assist[ally] = nil
+            Call.one(player, ally, true)
+        end
+    end
     if best and Help.allowed(now) then
         deps.say(player, best, "react_horde")
         if Settings.diagnosticsEnabled() then
             print("[PersonalKnox][help-call] npc=" .. tostring(best:getId()) .. " zombies=" .. tostring(bestCount))
+        end
+        local bestBody = best:getWorldObject()
+        local sent = 0
+        for _, ally in ipairs(deps.roster(player)) do
+            if sent >= 2 then break end
+            if ally ~= best and not assist[ally] and tellNpcStay then
+                local body = ally:getWorldObject()
+                if body and not body:isDead() and not body:hasTimedActions() and not body:isAttacking() then
+                    local dx, dy = body:getX() - bestBody:getX(), body:getY() - bestBody:getY()
+                    if dx * dx + dy * dy <= 400 then
+                        local ok = pcall(tellNpcStay, ally, bestBody:getX(), bestBody:getY(), bestBody:getZ())
+                        if ok then
+                            assist[ally] = now + 20000
+                            sent = sent + 1
+                            if Settings.diagnosticsEnabled() then
+                                print("[PersonalKnox][help-rush] npc=" .. tostring(ally:getId())
+                                    .. " to=" .. tostring(best:getId()))
+                            end
+                        end
+                    end
+                end
+            end
         end
     end
 end
