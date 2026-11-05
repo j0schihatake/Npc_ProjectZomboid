@@ -47,7 +47,7 @@ local function poll(player)
     for _, npc in ipairs(deps.roster(player)) do
         if checked >= MAX_NPCS then break end
         local body = npc:getWorldObject()
-        if body and not body:isDead() then
+        if body and not body:isDead() and not body:hasTimedActions() then
             checked = checked + 1
             local hunger = body:getStats():get(CharacterStat.HUNGER)
             local thirst = body:getStats():get(CharacterStat.THIRST)
