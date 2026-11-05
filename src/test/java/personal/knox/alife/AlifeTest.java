@@ -95,6 +95,7 @@ public final class AlifeTest {
         try { camp.addOutpost(new Outpost("camp", "own", Outpost.Kind.CAMP, 0, 0, 0, 1, 1, true)); throw new AssertionError("Duplicate outpost accepted"); }
         catch (IllegalArgumentException expected) { }
         assert camp.removeOutpost("camp") != null && camp.outpostCount() == 0;
+        personal.knox.alife.DynamicRelationsTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
