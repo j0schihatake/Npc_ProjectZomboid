@@ -29,7 +29,7 @@
 - Auto Reload — тренировка перезарядки, а не замена Infinite Ammo With Reload. С бесконечным запасом его упражнения требуют отдельной проверки.
 - Снабжение PersonalKnox теперь считает только чистые пригодные повязки; резерв — минимум две. Самостоятельное изготовление тряпок пока не реализовано.
 
-## Проверка нового запуска
+## Проверка запуска 0.2.0
 
 - PersonalKnox 0.2.0, его Java API и Lua-адаптер загрузились в игре.
 - Viewpoint Eyes подключён; конфиг отключения полос здоровья зомби и цифр урона записан до запуска.
@@ -64,7 +64,7 @@
 | Maplewood | 3644794945 | не указана | — |
 | NepInfiniteAmmo | 3408420806 | не указана | — |
 | aparosa_ViewpointI18n | 3822634333 | 0.0.14 | ZombieBuddy,Viewpoint |
-| PersonalKnox | локальный | 0.2.0 | ZombieBuddy, KnoxEventExpandedNpc |
+| PersonalKnox | локальный | 0.3.0 | ZombieBuddy, KnoxEventExpandedNpc |
 | IWD | 3657654953 | не указана | — |
 | FarSnowGround | 3830920925 | 1.0.0 | Viewpoint |
 | ViewpointLivingProps | 3816442251 | 1.0.3 | Viewpoint,ZombieBuddy |
@@ -82,3 +82,4 @@
 | DGVViewpointEyes | 3825098116 | 1.3k | ZombieBuddy |
 | IrisEyot | 3545473388 | не указана | — |
 | DinglespurtKY | 3765673925 | не указана | — |
+| VisibleDoorDamagebyYurik | 3799596085 | 1.1.0 | — |
