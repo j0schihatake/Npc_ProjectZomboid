@@ -35,5 +35,12 @@
   "ContextMenu_PersonalKnox_JobChopping": "Work: chopping, highest priority",
   "ContextMenu_PersonalKnox_JobOrganizing": "Work: organizing, highest priority",
   "ContextMenu_PersonalKnox_ElevationReport": "Diagnostic: elevated shooting",
-  "ContextMenu_PersonalKnox_ElevationSummary": "Floor %1: zombies below — %2, visible — %3. Report in console.txt."
+  "ContextMenu_PersonalKnox_ElevationSummary": "Floor %1: zombies below — %2, visible — %3. Report in console.txt.",
+  "ContextMenu_PersonalKnox_BaseRoutine": "Base: work and rest routine",
+  "ContextMenu_PersonalKnox_RestoreRoutine": "Base: restore previous schedule",
+  "ContextMenu_PersonalKnox_ReturnHome": "Order: return to safehouse",
+  "ContextMenu_PersonalKnox_RoutineFailed": "Base command failed. See console.txt.",
+  "ContextMenu_PersonalKnox_RoutineApplied": "Routine set: rest 22–06, work 08–12 and 13–18. Guard hours preserved.",
+  "ContextMenu_PersonalKnox_RoutineRestored": "Previous schedule restored.",
+  "ContextMenu_PersonalKnox_ReturningHome": "Return to safehouse ordered."
 }

@@ -3,6 +3,20 @@ package personal.knox;
 public final class BrainTest {
     public static void main(String[] args) {
         var api = PersonalKnoxAPI.getInstance();
+        int rest = 0, work = 0, recreation = 0;
+        for (int hour = 0; hour < 24; hour++) {
+            assert api.baseSchedule(hour, "GUARD").equals("GUARD") : "Never remove guard hours";
+            var schedule = api.baseSchedule(hour, "ANY");
+            if (schedule.equals("REST")) rest++;
+            else if (schedule.equals("WORK")) work++;
+            else if (schedule.equals("RECREATION")) recreation++;
+            else throw new AssertionError("Unknown schedule");
+        }
+        assert rest == 8 && work == 9 && recreation == 7;
+        assert api.baseSchedule(12, "WORK").equals("RECREATION");
+        assert api.baseSchedule(22, "ANY").equals("REST");
+        try { api.baseSchedule(24, "ANY"); throw new AssertionError("Invalid hour accepted"); }
+        catch (IllegalArgumentException expected) { }
         assert !api.allowRetreat(true, false) : "A squad member must not abandon the squad";
         assert api.allowRetreat(true, true) : "Group retreat must be possible";
         assert api.allowRetreat(false, false) : "A lone NPC may retreat";

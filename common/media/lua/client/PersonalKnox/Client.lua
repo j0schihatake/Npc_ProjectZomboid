@@ -4,6 +4,8 @@ local Dialogues = nil -- Phrases are loaded by Java from the SQLite export.
 PersonalKnox = PersonalKnox or {}
 local Supply = require "PersonalKnox/Supplies"
 local Reactions = require "PersonalKnox/Reactions"
+local Routine = require "PersonalKnox/BaseRoutine"
+local Interaction = require "PersonalKnox/Interaction"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -152,6 +154,20 @@ local function roster(player)
     return result
 end
 
+local function fillNpcMenu(sub, player, npc)
+    sub:addOption(getText("ContextMenu_PersonalKnox_TalkStatus"), player, say, npc, "status")
+    sub:addOption(getText("ContextMenu_PersonalKnox_TalkFarming"), player, say, npc, "farming")
+    sub:addOption(getText("ContextMenu_PersonalKnox_TalkSupplies"), player, say, npc, "supplies")
+    sub:addOption(getText("ContextMenu_PersonalKnox_TalkWatch"), player, say, npc, "watch")
+    sub:addOption(getText("ContextMenu_PersonalKnox_TalkRetreat"), player, say, npc, "squad")
+    Supply.addOptions(sub,player,npc)
+    Routine.addOptions(sub,player,npc)
+    sub:addOption(getText("ContextMenu_PersonalKnox_JobFarming"), player, setJob, npc, "Farming")
+    sub:addOption(getText("ContextMenu_PersonalKnox_JobChopping"), player, setJob, npc, "Chopping")
+    sub:addOption(getText("ContextMenu_PersonalKnox_JobOrganizing"), player, setJob, npc, "Organizing")
+    sub:addOption(getText("ContextMenu_PersonalKnox_ElevationReport"), player, report, npc)
+end
+
 local function onContext(playerIndex, context, worldObjects, test)
     if test or isClient() or not classFilesInstalled or not PersonalKnoxAPI then return end
     local player = getSpecificPlayer(playerIndex)
@@ -166,20 +182,13 @@ local function onContext(playerIndex, context, worldObjects, test)
         local entry = menu:addOption(npc:getFullName(), nil, nil)
         local sub = context:getNew(context)
         menu:addSubMenu(entry, sub)
-        sub:addOption(getText("ContextMenu_PersonalKnox_TalkStatus"), player, say, npc, "status")
-        sub:addOption(getText("ContextMenu_PersonalKnox_TalkFarming"), player, say, npc, "farming")
-        sub:addOption(getText("ContextMenu_PersonalKnox_TalkSupplies"), player, say, npc, "supplies")
-        sub:addOption(getText("ContextMenu_PersonalKnox_TalkWatch"), player, say, npc, "watch")
-        sub:addOption(getText("ContextMenu_PersonalKnox_TalkRetreat"), player, say, npc, "squad")
-        Supply.addOptions(sub,player,npc)
-        sub:addOption(getText("ContextMenu_PersonalKnox_JobFarming"), player, setJob, npc, "Farming")
-        sub:addOption(getText("ContextMenu_PersonalKnox_JobChopping"), player, setJob, npc, "Chopping")
-        sub:addOption(getText("ContextMenu_PersonalKnox_JobOrganizing"), player, setJob, npc, "Organizing")
-        sub:addOption(getText("ContextMenu_PersonalKnox_ElevationReport"), player, report, npc)
+        fillNpcMenu(sub, player, npc)
     end
 end
 
 Supply.install({isMember=isMember,say=say,journal=journal})
+Routine.install({isMember=isMember})
+Interaction.install({isMember=isMember,fill=fillNpcMenu,reactions=Reactions.addOption})
 Reactions.install({isMember=isMember,say=say})
 Events.OnFillWorldObjectContextMenu.Add(function(...)
     local ok, errorText = pcall(onContext, ...)

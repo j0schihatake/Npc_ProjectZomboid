@@ -35,5 +35,12 @@
   "ContextMenu_PersonalKnox_JobChopping": "Работа: рубка дерева — высший приоритет",
   "ContextMenu_PersonalKnox_JobOrganizing": "Работа: сортировка склада — высший приоритет",
   "ContextMenu_PersonalKnox_ElevationReport": "Диагностика: стрельба с высоты",
-  "ContextMenu_PersonalKnox_ElevationSummary": "Этаж %1: зомби снизу — %2, видимых — %3. Отчёт в console.txt."
+  "ContextMenu_PersonalKnox_ElevationSummary": "Этаж %1: зомби снизу — %2, видимых — %3. Отчёт в console.txt.",
+  "ContextMenu_PersonalKnox_BaseRoutine": "База: распорядок работы и отдыха",
+  "ContextMenu_PersonalKnox_RestoreRoutine": "База: вернуть прежнее расписание",
+  "ContextMenu_PersonalKnox_ReturnHome": "Приказ: вернуться в убежище",
+  "ContextMenu_PersonalKnox_RoutineFailed": "Команда базы не выполнена. Подробности в console.txt.",
+  "ContextMenu_PersonalKnox_RoutineApplied": "Распорядок задан: отдых 22–06, работа 08–12 и 13–18. Часы охраны сохранены.",
+  "ContextMenu_PersonalKnox_RoutineRestored": "Прежнее расписание восстановлено.",
+  "ContextMenu_PersonalKnox_ReturningHome": "Передан приказ вернуться в убежище."
 }
