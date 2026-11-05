@@ -30,6 +30,7 @@ local function tick()
     if now - lastSave >= 60000 then
         lastSave = now
         player:getModData().PersonalKnoxOwnNpc = api:ownSnapshot()
+        player:getModData().PersonalKnoxOwnPopulation = api:ownPopulationSnapshot()
     end
     if not logged then
         logged = true
@@ -44,10 +45,14 @@ function OwnNpc.install(adapters)
     deps = adapters
     Events.OnGameStart.Add(function()
         local player = getSpecificPlayer(0)
-        local saved = player and player:getModData().PersonalKnoxOwnNpc
-        if saved and PersonalKnoxAPI then
-            local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownRestore(saved) end)
+        local data = player and player:getModData()
+        if data and data.PersonalKnoxOwnNpc and PersonalKnoxAPI then
+            local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownRestore(data.PersonalKnoxOwnNpc) end)
             if not ok then print("[PersonalKnox] Own-NPC restore error: " .. tostring(err)) end
+        end
+        if data and data.PersonalKnoxOwnPopulation and PersonalKnoxAPI then
+            local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownPopulationRestore(data.PersonalKnoxOwnPopulation) end)
+            if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
         end
     end)
     Events.OnPlayerUpdate.Add(function()

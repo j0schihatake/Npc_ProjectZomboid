@@ -93,6 +93,12 @@
   а не падение JVM; если игра закрывается с ошибкой — нужен `hs_err` или окно ошибки.
 - Новый JAR 0.4.62 (core) и Lua 0.4.63 в этом запуске ещё не были загружены.
 
+## 0.9.1 — сохранение стратегической популяции
+
+- `OwnNpcPopulationCodec` + API `ownPopulationSnapshot/ownPopulationRestore`; Lua пишет
+  `PersonalKnoxOwnPopulation` в ModData вместе с активными телами.
+- Java-ядро 0.9.1, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.9.0 — коллизии своих тел
 
 - Java-адаптер проверяет `IsoGridSquare.isBlockedTo` перед шагом; при препятствии

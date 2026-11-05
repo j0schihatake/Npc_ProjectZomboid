@@ -75,6 +75,19 @@ public final class PersonalKnoxAPI {
     }
 
 
+    public String ownPopulationSnapshot() {
+        return personal.knox.npc.own.OwnNpcPopulationCodec.encode(ownPopulation.groups());
+    }
+
+    public int ownPopulationRestore(String text) {
+        var groups = personal.knox.npc.own.OwnNpcPopulationCodec.decode(text);
+        for (var group : groups) {
+            if (ownPopulation.group(group.id()) == null) ownPopulation.add(group);
+            else ownPopulation.update(group);
+        }
+        return ownPopulation.groupCount();
+    }
+
     public String ownSnapshot() {
         return personal.knox.npc.own.OwnNpcCodec.encode(ownLayer.agents());
     }
