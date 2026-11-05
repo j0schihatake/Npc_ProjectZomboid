@@ -1,7 +1,7 @@
 -- Player self-care adapter: Java decides, Lua finds items and runs native actions.
-require "TimedActions/ISTimedActionQueue"
-require "TimedActions/ISApplyBandage"
-require "TimedActions/ISTakePillAction"
+pcall(require, "TimedActions/ISTimedActionQueue")
+pcall(require, "TimedActions/ISApplyBandage")
+pcall(require, "TimedActions/ISTakePillAction")
 
 local Care = {}
 local Settings = require "PersonalKnox/Settings"

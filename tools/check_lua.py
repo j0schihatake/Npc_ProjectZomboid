@@ -11,7 +11,7 @@ lua.execute('''
 function getText(key, ...) return key end
 Events={EveryTenMinutes={Add=function(fn) tick=fn end}, OnFillWorldObjectContextMenu={Add=function(fn) contextCallback=fn end},
     EveryOneMinute={Add=function(fn) reactionTick=fn end}, OnGameStart={Add=function(fn) reactionReset=fn end},
-    OnKeyPressed={Add=function(fn) recallKey=fn end}}
+    OnKeyPressed={Add=function(fn) recallKey=fn end}, OnPlayerUpdate={Add=function(fn) playerUpdate=fn end}}
 package.preload.KnoxEventLoader=function() return {} end
 PersonalKnoxAPI={getInstance=function() return {supplyPlan=function() return "essentials" end} end}
 local Supply=require "PersonalKnox/Supplies"
