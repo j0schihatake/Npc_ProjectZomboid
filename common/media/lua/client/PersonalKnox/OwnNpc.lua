@@ -23,7 +23,8 @@ local function tick()
     end
     local px, py = player:getX(), player:getY()
     api:ownGroup("player-squad", "own", members, px, py)
-    local active = api:ownSync(px, py, 80, members)
+    api:ownSync(px, py, 80, members)
+    local active = api:ownActive()
     if now - lastSave >= 60000 then
         lastSave = now
         player:getModData().PersonalKnoxOwnNpc = api:ownSnapshot()
