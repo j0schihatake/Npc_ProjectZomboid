@@ -15,6 +15,7 @@ local Upkeep = require "PersonalKnox/Upkeep"
 local Stuck = require "PersonalKnox/Stuck"
 local Crowd = require "PersonalKnox/Crowd"
 local Help = require "PersonalKnox/Help"
+local HelpCall = require "PersonalKnox/HelpCall"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -248,4 +249,5 @@ Upkeep.install()
 Stuck.install({isMember=isMember,roster=roster})
 Crowd.install({isMember=isMember})
 Help.install()
+HelpCall.install({roster=roster,say=say})
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")
