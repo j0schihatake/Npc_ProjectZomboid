@@ -1,5 +1,6 @@
 -- Bounded world sampling. Java decides which event may produce a line.
 local Reactions = { cursor = 0 }
+local Settings = require "PersonalKnox/Settings"
 local adapters
 local RADIUS, MAX_OBJECTS, MAX_THREATS, MAX_NPCS = 6, 256, 24, 8
 
@@ -74,7 +75,7 @@ end
 function Reactions.poll()
     if isClient() or not PersonalKnoxAPI or not classFilesInstalled then return end
     local player = getSpecificPlayer(0)
-    if not player or player:isDead() or not enabled(player) then return end
+    if not player or player:isDead() or not Settings.speechEnabled() or not enabled(player) then return end
     local members, threats, corpses = sample(player)
     if #members == 0 then return end
     local now = getTimestampMs()
@@ -116,9 +117,11 @@ function Reactions.install(deps)
         Reactions.cursor = 0
         if PersonalKnoxAPI then PersonalKnoxAPI.getInstance():resetWorldReactions() end
         -- Log exports once per world load, without constructing actions or scanning NPCs.
-        print("[PersonalKnox][capabilities] luaNpcTransferAction=" .. tostring(ISNpcInventoryTransferAction ~= nil)
-            .. " luaBehaviorNode=" .. tostring(LuaBehaviorNode ~= nil)
-            .. " luaSubTreeNode=" .. tostring(LuaSubTreeNode ~= nil))
+        if Settings.diagnosticsEnabled() then
+            print("[PersonalKnox][capabilities] luaNpcTransferAction=" .. tostring(ISNpcInventoryTransferAction ~= nil)
+                .. " luaBehaviorNode=" .. tostring(LuaBehaviorNode ~= nil)
+                .. " luaSubTreeNode=" .. tostring(LuaSubTreeNode ~= nil))
+        end
     end)
     Events.EveryOneMinute.Add(function()
         local ok, err = pcall(Reactions.poll)

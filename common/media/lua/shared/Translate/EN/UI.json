@@ -1,4 +1,9 @@
 {
   "UI_optionscreen_binding_PersonalKnoxKeys": "PersonalKnox — our squad",
-  "UI_optionscreen_binding_PersonalKnoxRecall": "Recall companions: stop tasks and follow"
+  "UI_optionscreen_binding_PersonalKnoxRecall": "Recall companions: stop tasks and follow",
+  "UI_PersonalKnox_SettingsTitle": "PersonalKnox — our squad",
+  "UI_PersonalKnox_Speech": "PersonalKnox NPC speech",
+  "UI_PersonalKnox_SpeechHint": "Enable this addon’s world reactions, needs and command replies. Commands still work when speech is off. Does not control speech from Knox or other addons.",
+  "UI_PersonalKnox_Diagnostics": "Show PersonalKnox diagnostics",
+  "UI_PersonalKnox_DiagnosticsHint": "Show NPC/barricade and elevation checks in interaction menus. Off by default. Checks run on request; addon errors are still logged."
 }

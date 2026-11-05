@@ -9,5 +9,10 @@
   "UI_ZB_FixApprovalDialogCursor_desc": "Показывает курсор в окне разрешения Java-модов и исправляет невидимый курсор или неработающие нажатия.",
   "UI_ZB_SuppressSandboxLog_desc": "Скрывает стандартный вывод всех настроек песочницы в журнал при запуске.",
   "UI_optionscreen_binding_PersonalKnoxKeys": "PersonalKnox — наш отряд",
-  "UI_optionscreen_binding_PersonalKnoxRecall": "Все ко мне: прекратить занятия и следовать"
+  "UI_optionscreen_binding_PersonalKnoxRecall": "Все ко мне: прекратить занятия и следовать",
+  "UI_PersonalKnox_SettingsTitle": "PersonalKnox — наш отряд",
+  "UI_PersonalKnox_Speech": "Реплики NPC от PersonalKnox",
+  "UI_PersonalKnox_SpeechHint": "Включает фразы нашего мода: реакции на мир, потребности и ответы на команды. При выключении команды продолжают работать. Не управляет собственной речью Knox и других модов.",
+  "UI_PersonalKnox_Diagnostics": "Показывать диагностику PersonalKnox",
+  "UI_PersonalKnox_DiagnosticsHint": "Показывает проверку NPC/баррикадирования и стрельбы с высоты в меню взаимодействия. Выключено по умолчанию. Проверки запускаются по нажатию; ошибки мода по-прежнему записываются в журнал."
 }
