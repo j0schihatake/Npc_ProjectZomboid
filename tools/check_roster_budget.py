@@ -10,9 +10,13 @@ for name in re.findall(r'require "(PersonalKnox/[^"]+)"', (root / 'common/media/
     lua.globals().stubName = name
     lua.execute('''
     local name=stubName
+    if name=="PersonalKnox/Version" then
+        package.preload[name]=function() return {loaded="fixture"} end
+    else
     package.preload[name]=function() return {
         install=function(deps) if name=="PersonalKnox/Call" then getRoster=deps.roster end end
     } end
+    end
     ''')
 lua.execute('''
 function getText(key) return key end
