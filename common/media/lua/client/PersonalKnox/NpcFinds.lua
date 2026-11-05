@@ -23,29 +23,35 @@ local function find(body)
     local cell = getCell()
     local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
     local processed = 0
+    local best, bestKind, bestDistance = nil, nil, math.huge
     for dx = -6, 6 do
         for dy = -6, 6 do
             local square = cell:getGridSquare(px + dx, py + dy, pz)
             if square then
                 local objects = square:getObjects()
                 for i = 0, objects:size() - 1 do
-                    local object = objects:get(i)
                     processed = processed + 1
+                    local object = objects:get(i)
                     local container = object.getContainer and object:getContainer()
                     if container then
                         local items = container:getItems()
                         for j = 0, items:size() - 1 do
                             local item = items:get(j)
                             local kind = valuable(item)
-                            if kind then return item, kind, dx * dx + dy * dy end
+                            if kind then
+                                local distance = dx * dx + dy * dy
+                                if distance < bestDistance then
+                                    best, bestKind, bestDistance = item, kind, distance
+                                end
+                            end
                         end
                     end
-                    if processed >= 200 then return nil end
+                    if processed >= 200 then return best, bestKind, bestDistance end
                 end
             end
         end
     end
-    return nil
+    return best, bestKind, bestDistance
 end
 
 local function poll(player)
