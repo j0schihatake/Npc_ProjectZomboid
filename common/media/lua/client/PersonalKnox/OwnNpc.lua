@@ -20,9 +20,11 @@ local function tick()
     last = now
     if Perf.skip() then return end
     local api = PersonalKnoxAPI.getInstance()
-    local members = 0
-    for _, npc in ipairs(deps.roster(player)) do
-        if npc:getWorldObject() and not npc:getWorldObject():isDead() then members = members + 1 end
+    local members = api:knoxGroupMembers(player)
+    if members == 0 then
+        for _, npc in ipairs(deps.roster(player)) do
+            if npc:getWorldObject() and not npc:getWorldObject():isDead() then members = members + 1 end
+        end
     end
     local px, py = player:getX(), player:getY()
     api:ownGroup("player-squad", "own", members, px, py)

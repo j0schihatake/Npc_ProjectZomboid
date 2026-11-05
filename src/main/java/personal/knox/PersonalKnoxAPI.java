@@ -34,6 +34,9 @@ public final class PersonalKnoxAPI {
     }
 
     public String knoxStatus() { return KnoxBridge.status(); }
+    public int knoxGroupMembers(Object player) { return KnoxBridge.groupMembers(player); }
+
+
 
     public int ownActive() { return ownLayer.count(); }
 

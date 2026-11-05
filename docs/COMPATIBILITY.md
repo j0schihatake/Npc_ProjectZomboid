@@ -98,6 +98,13 @@
 - `OwnNpcPathfinder.Grid.canStep(from,to)` — проходимость ребра, а не только клетки;
   нужно для стен/дверей в реальном `IsoCell`.
 
+## 0.9.24 — состав группы в Java
+
+- `KnoxBridge.groupMembers(player)` читает `getGroup(player)` и
+  `getAllNpcGroupMemberObjects`/`getAllNpcMembers`; API `knoxGroupMembers`.
+- Lua берёт число из Java, roster — только fallback.
+- Java-ядро 0.9.24, JAR пересобран; тесты и синтаксис Lua проходят.
+
 ## 0.9.23 — Java-мост к Knox
 
 - `KnoxBridge` через reflection читает `getInstance`, `getWorldNpcs`, `getNpcs`,
