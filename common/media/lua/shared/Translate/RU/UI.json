@@ -54,5 +54,12 @@
   "UI_PersonalKnox_PerformanceMode": "Режим производительности",
   "UI_PersonalKnox_PerformanceModeHint": "Отключает фоновую болтовню, переговоры и вызовы помощи, чтобы не нагружать игру. Ручные действия остаются.",
   "UI_PersonalKnox_NpcItemAsks": "Союзники делятся едой и водой",
-  "UI_PersonalKnox_NpcItemAsksHint": "Голодный или испытывающий жажду союзник сам просит у товарища еду/воду; сытый отдаёт, если у него есть запас."
+  "UI_PersonalKnox_NpcItemAsksHint": "Голодный или испытывающий жажду союзник сам просит у товарища еду/воду; сытый отдаёт, если у него есть запас.",
+  "UI_PersonalKnox_AutoReload": "Автоперезарядка оружия",
+  "UI_PersonalKnox_AutoReloadHint": "Автоматически перезаряжать оружие в руках штатным действием, если магазин не полон и есть патроны.",
+  "UI_PersonalKnox_ReloadMode": "Перезарядка оружия",
+  "UI_PersonalKnox_ReloadModeHint": "Стандартная — только вручную; автоматическая — перезаряжать при неполном магазине; не перезаряжать — оружие остаётся как есть.",
+  "UI_PersonalKnox_ReloadStandard": "Стандартная (вручную)",
+  "UI_PersonalKnox_ReloadAuto": "Автоматическая",
+  "UI_PersonalKnox_ReloadNever": "Не перезаряжать"
 }

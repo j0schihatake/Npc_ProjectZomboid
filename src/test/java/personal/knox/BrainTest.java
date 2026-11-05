@@ -94,6 +94,7 @@ public final class BrainTest {
         LineOfFireTest.run();
         TransportPolicyTest.run();
         SurveyTest.run();
+        ReloadPolicyTest.run();
         ItemNeedPolicyTest.run();
         DiplomacyTest.run();
         EvacuationPolicyTest.run();

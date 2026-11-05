@@ -45,5 +45,12 @@
   "UI_PersonalKnox_PerformanceMode": "Performance mode",
   "UI_PersonalKnox_PerformanceModeHint": "Disables background chatter, negotiations and help calls to reduce load. Manual actions stay available.",
   "UI_PersonalKnox_NpcItemAsks": "Companions share food and water",
-  "UI_PersonalKnox_NpcItemAsksHint": "A hungry or thirsty companion asks a squadmate; a fed companion shares if they have a spare."
+  "UI_PersonalKnox_NpcItemAsksHint": "A hungry or thirsty companion asks a squadmate; a fed companion shares if they have a spare.",
+  "UI_PersonalKnox_AutoReload": "Auto-reload weapon",
+  "UI_PersonalKnox_AutoReloadHint": "Automatically reload the weapon in your hands with the native action when the magazine is not full and ammo is available.",
+  "UI_PersonalKnox_ReloadMode": "Weapon reload",
+  "UI_PersonalKnox_ReloadModeHint": "Standard — manual only; automatic — reload when the magazine is not full; never — leave the weapon as is.",
+  "UI_PersonalKnox_ReloadStandard": "Standard (manual)",
+  "UI_PersonalKnox_ReloadAuto": "Automatic",
+  "UI_PersonalKnox_ReloadNever": "Never reload"
 }
