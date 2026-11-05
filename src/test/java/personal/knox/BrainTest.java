@@ -3,6 +3,22 @@ package personal.knox;
 public final class BrainTest {
     public static void main(String[] args) {
         var api = PersonalKnoxAPI.getInstance();
+        assert api.barricadeMissing(0, false) == 4;
+        assert api.barricadeMissing(2, false) == 2;
+        assert api.barricadeMissing(4, false) == 0;
+        assert api.barricadeMissing(0, true) == 0;
+        assert api.barricadeStockTarget(100, false) == 4;
+        assert api.barricadeStockTarget(100, true) == 8;
+        assert api.barricadeStockTarget(1, true) == 2;
+        assert api.barricadeStockTarget(0, false) == 0;
+        assert api.barricadeStatus(0, true, false, 0).equals("done");
+        assert api.barricadeStatus(0, false, false, 0).equals("interrupted");
+        assert api.barricadeStatus(1, true, true, 0).equals("danger");
+        assert api.barricadeStatus(1, true, false, 1.99).equals("work");
+        assert api.barricadeStatus(1, true, false, 2).equals("stalled");
+        assert api.barricadeStatus(1, true, false, Double.NaN).equals("invalid");
+        try { api.barricadeMissing(-1, false); throw new AssertionError("Invalid plank count accepted"); }
+        catch (IllegalArgumentException expected) { }
         int rest = 0, work = 0, recreation = 0;
         for (int hour = 0; hour < 24; hour++) {
             assert api.baseSchedule(hour, "GUARD").equals("GUARD") : "Never remove guard hours";

@@ -15,6 +15,16 @@ public final class PersonalKnoxAPI {
     private final ReactionDirector reactions = new ReactionDirector();
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
 
+    public int barricadeMissing(int planks, boolean metal) {
+        return CompanionBrain.barricadeMissing(planks, metal);
+    }
+    public int barricadeStockTarget(int missing, boolean nails) {
+        return CompanionBrain.barricadeStockTarget(missing, nails);
+    }
+    public String barricadeStatus(int missing, boolean ownsTask, boolean danger, double idleHours) {
+        return CompanionBrain.barricadeStatus(missing, ownsTask, danger, idleHours);
+    }
+
     private PersonalKnoxAPI() {
         var loaded = new ArrayList<Dialogue>();
         try (var stream = PersonalKnoxAPI.class.getResourceAsStream("/personal-knox/dialogues.tsv")) {

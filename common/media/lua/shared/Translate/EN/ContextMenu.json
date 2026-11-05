@@ -51,5 +51,14 @@
   "ContextMenu_PersonalKnox_ActionLabel": "%1: %2",
   "ContextMenu_PersonalKnox_PrefMelee": "Whole squad: prefer melee",
   "ContextMenu_PersonalKnox_PrefRanged": "Whole squad: prefer ranged",
-  "ContextMenu_PersonalKnox_PrefAny": "Whole squad: any weapon"
+  "ContextMenu_PersonalKnox_PrefAny": "Whole squad: any weapon",
+  "ContextMenu_PersonalKnox_BarricadeHome": "Barricade the house",
+  "ContextMenu_PersonalKnox_BarricadeNeedHome": "You and the survivor must be inside the assigned Knox safehouse.",
+  "ContextMenu_PersonalKnox_BarricadeBusy": "Too many active barricade tasks.",
+  "ContextMenu_PersonalKnox_BarricadeNoWindows": "No suitable windows in loaded rooms.",
+  "ContextMenu_PersonalKnox_BarricadeDone": "All checked house windows are protected.",
+  "ContextMenu_PersonalKnox_BarricadeDanger": "Deal with the nearby danger first.",
+  "ContextMenu_PersonalKnox_BarricadeFailed": "Could not start the task. See console.txt.",
+  "ContextMenu_PersonalKnox_BarricadeStalled": "Work stalled with unfinished windows. Check access and paths.",
+  "ContextMenu_PersonalKnox_BarricadeStopped": "Barricading interrupted."
 }
