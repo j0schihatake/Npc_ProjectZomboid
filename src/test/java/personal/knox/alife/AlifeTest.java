@@ -144,6 +144,12 @@ public final class AlifeTest {
         personal.knox.alife.RaidTest.run();
         personal.knox.alife.TheftPolicyTest.run();
         personal.knox.alife.AssaultResolverTest.run();
+        var raidWorld = new AlifeWorld(29);
+        var raid = new Raid("r1", "raiders", Raid.TargetKind.BASE, "farm", 30, 0, Raid.State.MARCHING);
+        raidWorld.startRaid(raid);
+        var outcome = raidWorld.resolveRaid("r1", 0.9, 2, 0.2, 50);
+        assert outcome.attackersWin();
+        assert raidWorld.raids().get(0).state() == Raid.State.WON;
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }

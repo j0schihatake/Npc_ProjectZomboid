@@ -3,6 +3,6 @@ package personal.knox;
 public final class Main {
     public static void main(String[] args) {
         PersonalKnoxAPI.getInstance();
-        System.out.println("[PersonalKnox] Java core 0.4.90 loaded; directional world reactions ready.");
+        System.out.println("[PersonalKnox] Java core 0.4.91 loaded; directional world reactions ready.");
     }
 }

@@ -84,6 +84,16 @@ public final class AlifeWorld {
                 0, 0, 0, raid.targetKind().name());
     }
 
+    public AssaultResolver.Result resolveRaid(String raidId, double attackerGear,
+                                               int defenders, double defenderGear, int roll) {
+        var raid = raids.stream().filter(r -> r.id().equals(raidId)).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown raid"));
+        var result = AssaultResolver.resolve(raid.size(), attackerGear, defenders, defenderGear, roll);
+        var next = result.attackersWin() ? Raid.State.WON : Raid.State.LOST;
+        raids.replaceAll(r -> r.id().equals(raidId) ? r.withState(next) : r);
+        return result;
+    }
+
     public java.util.List<Raid> raids() { return java.util.List.copyOf(raids); }
 
     public void addFactionEconomy(String factionId, FactionEconomy economy) {
