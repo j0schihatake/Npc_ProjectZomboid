@@ -34,5 +34,6 @@
   "UI_PersonalKnox_NeedSlow": "Slow",
   "UI_PersonalKnox_NeedNormal": "Normal",
   "UI_PersonalKnox_NeedFast": "Fast",
-  "UI_PersonalKnox_NeedVeryFast": "Very fast"
+  "UI_PersonalKnox_NeedVeryFast": "Very fast",
+  "UI_optionscreen_binding_PersonalKnoxAnswer": "Answer the squad: open menu"
 }

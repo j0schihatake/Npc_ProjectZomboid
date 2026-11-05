@@ -122,9 +122,30 @@ function Negotiation.addOptions(menu, player)
     sub:addOption(getText("ContextMenu_PersonalKnox_AnswerRetreat"), player, Negotiation.answer, 3)
 end
 
+function Negotiation.showMenu(player)
+    if not pending or isClient() then return end
+    local menu = ISContextMenu.get(0)
+    local root = menu:addOption(getText("ContextMenu_PersonalKnox_AnswerSquad"), nil, nil)
+    local sub = menu:getNew(menu)
+    menu:addSubMenu(root, sub)
+    sub:addOption(getText("ContextMenu_PersonalKnox_AnswerAttack"), player, Negotiation.answer, 1)
+    sub:addOption(getText("ContextMenu_PersonalKnox_AnswerHold"), player, Negotiation.answer, 2)
+    sub:addOption(getText("ContextMenu_PersonalKnox_AnswerRetreat"), player, Negotiation.answer, 3)
+    menu:setX(getMouseX())
+    menu:setY(getMouseY())
+    menu:setVisible(true)
+    menu:bringToTop()
+end
+
 function Negotiation.install(adapters)
     deps = adapters
     Events.OnGameStart.Add(function() lastCheck, lastStart, pending = 0, 0, nil end)
+    Events.OnKeyPressed.Add(function(key)
+        local core = getCore()
+        if isClient() or not core or core:isDoingTextEntry() or not core:isKey("PersonalKnoxAnswer", key) then return end
+        local player = getSpecificPlayer(0)
+        if player and not player:isDead() then Negotiation.showMenu(player) end
+    end)
     Events.OnPlayerUpdate.Add(function()
         local player = getSpecificPlayer(0)
         if not player or player:isDead() then return end

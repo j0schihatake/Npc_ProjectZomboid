@@ -1,6 +1,6 @@
 name=Personal Knox — наш отряд
 id=PersonalKnox
-modversion=0.4.25
+modversion=0.4.26
 versionMin=42.21
 versionMax=42.21
 require=\ZombieBuddy,\KnoxEventExpandedNpc

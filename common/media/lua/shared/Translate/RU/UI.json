@@ -43,5 +43,6 @@
   "UI_PersonalKnox_NeedSlow": "Медленно",
   "UI_PersonalKnox_NeedNormal": "Обычно",
   "UI_PersonalKnox_NeedFast": "Быстро",
-  "UI_PersonalKnox_NeedVeryFast": "Очень быстро"
+  "UI_PersonalKnox_NeedVeryFast": "Очень быстро",
+  "UI_optionscreen_binding_PersonalKnoxAnswer": "Ответ отряду: открыть меню"
 }
