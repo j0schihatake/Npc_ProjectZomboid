@@ -25,16 +25,17 @@ local function tick()
     api:ownGroup("player-squad", "own", members, px, py)
     api:ownSync(px, py, 80, members)
     local active = api:ownActive()
+    local bodies = api:ownBodiesSync()
     if now - lastSave >= 60000 then
         lastSave = now
         player:getModData().PersonalKnoxOwnNpc = api:ownSnapshot()
     end
     if not logged then
         logged = true
-        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active))
+        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies))
     elseif Settings.diagnosticsEnabled() and now - lastLog >= LOG_MS then
         lastLog = now
-        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active))
+        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies))
     end
 end
 

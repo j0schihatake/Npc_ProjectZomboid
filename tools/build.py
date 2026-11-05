@@ -7,7 +7,9 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_AGENT = Path('/home/j0schi/SteamLibrary/steamapps/common/ProjectZomboid/projectzomboid/ZombieBuddy.jar')
+AGENT_DIR = Path('/home/j0schi/SteamLibrary/steamapps/common/ProjectZomboid/projectzomboid')
+DEFAULT_AGENT = AGENT_DIR / 'ZombieBuddy.jar'
+DEFAULT_GAME = AGENT_DIR / 'projectzomboid.jar'
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)

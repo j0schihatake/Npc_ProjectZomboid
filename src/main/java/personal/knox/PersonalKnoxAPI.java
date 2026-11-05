@@ -19,6 +19,7 @@ public final class PersonalKnoxAPI {
     public static PersonalKnoxAPI getInstance() { return INSTANCE; }
     private final personal.knox.npc.own.OwnNpcPopulation ownPopulation = new personal.knox.npc.own.OwnNpcPopulation();
     private final personal.knox.npc.own.OwnNpcLayer ownLayer = new personal.knox.npc.own.OwnNpcLayer();
+    private final personal.knox.npc.own.OwnNpcBodyAdapter ownBodies = new personal.knox.npc.own.OwnNpcBodyAdapter();
 
     public void ownGroup(String id, String faction, int members, double x, double y) {
         var group = new personal.knox.npc.own.OwnNpcPopulation.Group(id, faction,
@@ -33,6 +34,8 @@ public final class PersonalKnoxAPI {
     }
 
     public int ownActive() { return ownLayer.count(); }
+
+    public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
     public int ownCount() { return ownLayer.count(); }
 
     public String ownId(int index) {
