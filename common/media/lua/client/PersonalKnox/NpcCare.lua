@@ -56,6 +56,7 @@ local function corpseCloth(body)
     if not ISNpcRipClothing then return nil end
     local cell = getCell()
     local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
+    local best, bestInv, bestDistance = nil, nil, math.huge
     for dx = -6, 6 do
         for dy = -6, 6 do
             local square = cell:getGridSquare(px + dx, py + dy, pz)
@@ -69,7 +70,12 @@ local function corpseCloth(body)
                             local items = inv:getItems()
                             for j = 0, items:size() - 1 do
                                 local item = items:get(j)
-                                if item:IsClothing() then return item, inv end
+                                if item:IsClothing() then
+                                    local distance = dx * dx + dy * dy
+                                    if distance < bestDistance then
+                                        best, bestInv, bestDistance = item, inv, distance
+                                    end
+                                end
                             end
                         end
                     end
@@ -84,6 +90,7 @@ local function searchBandage(body)
     local cell = getCell()
     local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
     local processed = 0
+    local best, bestContainer, bestDistance = nil, nil, math.huge
     for dx = -6, 6 do
         for dy = -6, 6 do
             local square = cell:getGridSquare(px + dx, py + dy, pz)
@@ -99,11 +106,16 @@ local function searchBandage(body)
                             local item = items:get(j)
                             if item:isCanBandage() then
                                 local kind = (item:getType() or ""):lower()
-                                if not kind:find("dirty", 1, true) then return item, container end
+                                if not kind:find("dirty", 1, true) then
+                                    local distance = dx * dx + dy * dy
+                                    if distance < bestDistance then
+                                        best, bestContainer, bestDistance = item, container, distance
+                                    end
+                                end
                             end
                         end
                     end
-                    if processed >= 200 then return nil end
+                    if processed >= 200 then return best, bestContainer, bestDistance end
                 end
             end
         end
@@ -125,20 +137,20 @@ local function poll(player)
             local part = bleedingPart(body)
             local bandage = part and cleanBandage(body)
             if part and not bandage and Settings.npcSearchContainers() then
-                local found, container = searchBandage(body)
-                if found and container and ISInventoryTransferAction and ISTimedActionQueue then
+                local found, container, containerDistance = searchBandage(body)
+                local cloth, corpseInv, corpseDistance = corpseCloth(body)
+                if found and container and (not cloth or containerDistance <= corpseDistance)
+                        and ISInventoryTransferAction and ISTimedActionQueue then
                     ISTimedActionQueue.add(ISInventoryTransferAction:new(body, found, container, body:getInventory()))
                     if Settings.diagnosticsEnabled() then
-                        print("[PersonalKnox][npc-care] take=" .. tostring(found:getFullType()))
+                        print("[PersonalKnox][npc-care] take=" .. tostring(found:getFullType())
+                            .. " distance=" .. tostring(containerDistance))
                     end
-                    bandage = nil
-                else
-                    local cloth, corpseInv = corpseCloth(body)
-                    if cloth and corpseInv and ISTimedActionQueue then
-                        ISTimedActionQueue.add(ISNpcRipClothing:new(body, cloth, corpseInv))
-                        if Settings.diagnosticsEnabled() then
-                            print("[PersonalKnox][npc-care] rip=" .. tostring(cloth:getFullType()))
-                        end
+                elseif cloth and corpseInv and ISTimedActionQueue then
+                    ISTimedActionQueue.add(ISNpcRipClothing:new(body, cloth, corpseInv))
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-care] rip=" .. tostring(cloth:getFullType())
+                            .. " distance=" .. tostring(corpseDistance))
                     end
                 end
             end

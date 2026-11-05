@@ -54,22 +54,28 @@ local function poll(player)
             elseif hunger >= 0.60 then kind = "food"
             elseif thirst >= 0.60 then kind = "water" end
             if kind then
+                local bestDonor, bestItem, bestDistance = nil, nil, math.huge
                 for _, donor in ipairs(roster) do
                     if donor ~= npc then
                         local donorBody = donor:getWorldObject()
                         if donorBody and not donorBody:isDead() and not donorBody:hasTimedActions() then
-                            local donorHealthy = donorBody:getBodyDamage():getHealth() >= 60
-                                and donorBody:getBodyDamage():getNumPartsBleeding() == 0
-                            local donorNeed = kind == "food"
-                                and donorBody:getStats():get(CharacterStat.HUNGER)
-                                or donorBody:getStats():get(CharacterStat.THIRST)
-                            if (kind == "medical" and donorHealthy) or (kind ~= "medical" and donorNeed < 0.40) then
-                                local item = findItem(donorBody, kind)
-                                if item and share(player, donor, npc, item, kind) then break end
+                            local dx, dy = donorBody:getX() - body:getX(), donorBody:getY() - body:getY()
+                            local distance = dx * dx + dy * dy
+                            if distance < bestDistance then
+                                local donorHealthy = donorBody:getBodyDamage():getHealth() >= 60
+                                    and donorBody:getBodyDamage():getNumPartsBleeding() == 0
+                                local donorNeed = kind == "food"
+                                    and donorBody:getStats():get(CharacterStat.HUNGER)
+                                    or donorBody:getStats():get(CharacterStat.THIRST)
+                                if (kind == "medical" and donorHealthy) or (kind ~= "medical" and donorNeed < 0.40) then
+                                    local item = findItem(donorBody, kind)
+                                    if item then bestDonor, bestItem, bestDistance = donor, item, distance end
+                                end
                             end
                         end
                     end
                 end
+                if bestDonor and bestItem then share(player, bestDonor, npc, bestItem, kind) end
             end
         end
     end

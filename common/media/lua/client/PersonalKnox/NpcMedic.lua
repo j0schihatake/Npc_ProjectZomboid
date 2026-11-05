@@ -38,23 +38,29 @@ local function poll(player)
         if patient and not patient:isDead() and not patient:hasTimedActions() then
             local part = bleedingPart(patient)
             if part then
+                local bestMedic, bestBandage, bestDistance = nil, nil, math.huge
                 for _, medicNpc in ipairs(roster) do
                     if medicNpc ~= patientNpc then
                         local medic = medicNpc:getWorldObject()
                         if medic and not medic:isDead() and not medic:hasTimedActions() then
                             local dx, dy = medic:getX() - patient:getX(), medic:getY() - patient:getY()
-                            if dx * dx + dy * dy <= 25 then
+                            local distance = dx * dx + dy * dy
+                            if distance <= 25 and distance < bestDistance then
                                 local bandage = cleanBandage(medic)
-                                if bandage and ISApplyBandage and ISTimedActionQueue then
-                                    ISTimedActionQueue.add(ISApplyBandage:new(medic, patient, bandage, part, true))
-                                    if Settings.diagnosticsEnabled() then
-                                        print("[PersonalKnox][npc-medic] bandage patient=" .. tostring(patient))
-                                    end
-                                    return
+                                if bandage then
+                                    bestMedic, bestBandage, bestDistance = medic, bandage, distance
                                 end
                             end
                         end
                     end
+                end
+                if bestMedic and bestBandage and ISApplyBandage and ISTimedActionQueue then
+                    ISTimedActionQueue.add(ISApplyBandage:new(bestMedic, patient, bestBandage, part, true))
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-medic] bandage patient=" .. tostring(patient)
+                            .. " distance=" .. tostring(bestDistance))
+                    end
+                    return
                 end
             end
         end
