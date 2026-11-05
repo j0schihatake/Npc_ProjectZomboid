@@ -108,10 +108,10 @@ public final class PersonalKnoxAPI {
 
     public String careAction(double nowMillis, double health, int bleedingParts, double pain,
             double thirst, double hunger, boolean busy, boolean danger,
-            boolean medic, boolean drink, boolean eat) {
+            boolean medic, boolean drink, boolean eat, boolean armed) {
         if (!Double.isFinite(nowMillis) || nowMillis < 0 || nowMillis > Long.MAX_VALUE) return PlayerCare.NONE;
         return care.decide((long) nowMillis, health, bleedingParts, pain, thirst, hunger,
-                busy, danger, medic, drink, eat);
+                busy, danger, medic, drink, eat, armed);
     }
 
     public void careDone(String action, double nowMillis) {

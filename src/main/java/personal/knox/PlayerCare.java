@@ -19,12 +19,12 @@ public final class PlayerCare {
 
     public String decide(long now, double health, int bleedingParts, double pain,
                          double thirst, double hunger, boolean busy, boolean danger,
-                         boolean medic, boolean drink, boolean eat) {
+                         boolean medic, boolean drink, boolean eat, boolean armed) {
         if (now < 0 || bleedingParts < 0
                 || !Double.isFinite(health + pain + thirst + hunger)) return NONE;
         if (lastActionAt != Long.MIN_VALUE && now >= lastActionAt && now - lastActionAt < ACTION_COOLDOWN)
             return NONE;
-        String action = choose(health, bleedingParts, pain, thirst, hunger, busy, danger, medic, drink, eat);
+        String action = choose(health, bleedingParts, pain, thirst, hunger, busy, danger, medic, drink, eat, armed);
         if (action == null) return NONE;
         Long until = unavailableUntil.get(action);
         return until != null && now < until ? NONE : action;
@@ -32,10 +32,9 @@ public final class PlayerCare {
 
     private static String choose(double health, int bleedingParts, double pain, double thirst,
                                  double hunger, boolean busy, boolean danger,
-                                 boolean medic, boolean drink, boolean eat) {
-        // Bleeding outranks everything and is allowed even while a threat is near.
-        // Do not interrupt a fight with a bandage unless the character is critically hurt.
-        if (medic && bleedingParts > 0 && !busy && (!danger || health < 40)) return BANDAGE;
+                                 boolean medic, boolean drink, boolean eat, boolean armed) {
+        // Never interrupt a fight and never switch away from a weapon to bandage.
+        if (medic && bleedingParts > 0 && !busy && !danger && !armed) return BANDAGE;
         if (medic && pain >= 40 && !busy && !danger) return PAINKILLER;
         if (drink && thirst >= 0.20 && !busy && !danger) return DRINK;
         if (eat && hunger >= 0.25 && !busy && !danger) return EAT;

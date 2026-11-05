@@ -145,6 +145,13 @@ local function ensureMain(player, item)
     end
 end
 
+local function armed(player)
+    local item = player:getPrimaryHandItem() or player:getSecondaryHandItem()
+    if not item then return false end
+    local ok, weapon = pcall(function() return item:IsWeapon() end)
+    return ok and weapon or false
+end
+
 local function busy(player)
     return player:hasTimedActions() or player:isSprinting() or player:isDraggingCorpse()
 end
@@ -199,7 +206,7 @@ local function poll()
     local body = player:getBodyDamage()
     local action = api():careAction(now, body:getHealth(), woundCount(player),
         maxPain(body), stat(player, CharacterStat.THIRST), stat(player, CharacterStat.HUNGER),
-        busy(player), danger(player), Settings.autoMedic(), Settings.autoDrink(), Settings.autoEat())
+        busy(player), danger(player), Settings.autoMedic(), Settings.autoDrink(), Settings.autoEat(), armed(player))
     if Settings.diagnosticsEnabled() and now - lastState >= STATE_MS then
         lastState = now
         print("[PersonalKnox][care-state] health=" .. string.format("%.1f", body:getHealth())
