@@ -182,7 +182,11 @@ local function poll()
         api():careDone(action, getTimestampMs())
     else
         api():careUnavailable(action, getTimestampMs())
-        if not ok then print("[PersonalKnox] Care error: " .. tostring(done)) end
+        if not ok then
+            print("[PersonalKnox] Care error: " .. tostring(done))
+        elseif Settings.diagnosticsEnabled() then
+            print("[PersonalKnox][care] unavailable=" .. action .. " (no suitable item or action refused)")
+        end
     end
 end
 
