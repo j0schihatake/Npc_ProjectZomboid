@@ -139,6 +139,7 @@ public final class AlifeTest {
         assert starvingEvents.stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_STARVING);
         personal.knox.alife.BaseLevelTest.run();
         personal.knox.alife.ResourceNodeStateTest.run();
+        personal.knox.alife.BaseDefenseTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
