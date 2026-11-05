@@ -54,9 +54,22 @@ public final class CompanionBrain {
 
     public static String supplyPlan(int food, int water, int medicine, boolean weapon, boolean danger, boolean overloaded) {
         if (danger || overloaded) return "wait";
-        if (food < 2 || water < 1 || medicine < 2) return "essentials";
-        if (!weapon) return "weapons";
+        if (supplyCategoryNeeded("food", food, water, medicine, weapon)
+                || supplyCategoryNeeded("water", food, water, medicine, weapon)
+                || supplyCategoryNeeded("medicine", food, water, medicine, weapon)) return "essentials";
+        if (supplyCategoryNeeded("weapons", food, water, medicine, weapon)) return "weapons";
         return "none";
+    }
+
+    public static boolean supplyCategoryNeeded(String category, int food, int water, int medicine, boolean weapon) {
+        if (category == null) return false;
+        return switch (category) {
+            case "food" -> food < 2;
+            case "water" -> water < 1;
+            case "medicine" -> medicine < 2;
+            case "weapons" -> !weapon;
+            default -> false;
+        };
     }
 
     public static boolean cleanBandage(String itemType, boolean canBandage, boolean infected) {

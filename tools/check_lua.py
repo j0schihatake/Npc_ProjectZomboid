@@ -13,7 +13,10 @@ Events={EveryTenMinutes={Add=function(fn) tick=fn end}, OnFillWorldObjectContext
     EveryOneMinute={Add=function(fn) reactionTick=fn end}, OnGameStart={Add=function(fn) reactionReset=fn end},
     OnKeyPressed={Add=function(fn) recallKey=fn end}, OnPlayerUpdate={Add=function(fn) playerUpdate=fn end}}
 package.preload.KnoxEventLoader=function() return {} end
-PersonalKnoxAPI={getInstance=function() return {supplyPlan=function() return "essentials" end} end}
+PersonalKnoxAPI={getInstance=function() return {
+    supplyPlan=function() return "essentials" end,
+    supplyCategoryNeeded=function() return true end, -- This fixture has an empty inventory.
+} end}
 local Supply=require "PersonalKnox/Supplies"
 local building={}
 local items={size=function() return 0 end}
