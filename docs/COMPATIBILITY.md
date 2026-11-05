@@ -54,8 +54,14 @@ Lua (`Care.lua`, `Upkeep.lua`). Опрос: 2 с лечение, 5 с прочн
 Переключатели `autoMedic`, `autoDrink`, `autoEat`, `infiniteDurability`, `infiniteAmmo` —
 в «Настройки → Моды → PersonalKnox». Проверка в игре ещё не выполнена.
 
-В `mods/default.txt` отключены `ViewpointTactical` (падение `SettingsWindow.render`/ImGui)
-и `AddSlopFacesNeckFixTombBodyTexNUDE` (нет зависимости `TombBodyTexNUDE`).
+В `mods/default.txt` и списке текущего сохранения отключены:
+
+- `ViewpointTactical` — падение `SettingsWindow.render`/ImGui (альфа-патч этого метода);
+- `ProjectViewpointParkour` — сырой `%` в переводах `parkour_Desc`/`FreerunnerDesc` вызывает
+  `UnknownFormatConversionException` при построении страницы настроек Viewpoint;
+- `AddSlopFacesNeckFixTombBodyTexNUDE` — нет зависимости `TombBodyTexNUDE`;
+- `AutoEat`, `AutoDrinkAnimation`, `[B42.19]AutoDrinkRevert`, `UngodlyAutoMedic`,
+  `NepInfiniteAmmo`, `IWD` — заменены модулями 0.4.6.
 
 ## Установленная 0.4.4 — новый запуск ещё не проверен
 
