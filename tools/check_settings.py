@@ -12,10 +12,10 @@ function getText(key) return key end
 package.preload['PZAPI/ModOptions']=function() assert(loadstring(nativeOptionsSource))();return PZAPI.ModOptions end
 local settings=require 'PersonalKnox/Settings'
 local options=PZAPI.ModOptions:getOptions('PersonalKnox')
-assert(#PZAPI.ModOptions.Data==1 and #options.data==7,'Seven PersonalKnox options')
+assert(#PZAPI.ModOptions.Data==1 and #options.data==8,'Eight PersonalKnox options')
 assert(settings.speechEnabled() and not settings.diagnosticsEnabled(),'Speech on, diagnostics off by default')
 assert(settings.autoMedic() and settings.autoDrink() and settings.autoEat(),'Self-care on by default')
-assert(settings.infiniteDurability() and settings.infiniteAmmo(),'Upkeep on by default')
+assert(settings.infiniteDurability() and settings.infiniteAmmo() and settings.autoUnstick(),'Upkeep and unstick on by default')
 local lines={}
 function getFileWriter()
  return {write=function(_,text) lines[#lines+1]=text:gsub('[\\r\\n]+$','') end,close=function() end}

@@ -2,7 +2,8 @@
 local Upkeep = {}
 local Settings = require "PersonalKnox/Settings"
 local DURABILITY_MS, AMMO_MS = 5000, 10000
-local lastDurability, lastAmmo = 0, 0
+local STATE_MS = 60000
+local lastDurability, lastAmmo, lastState = 0, 0, 0
 
 local function api()
     return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() or nil
@@ -69,6 +70,13 @@ local function tick()
     local player = getSpecificPlayer(0)
     if not player or player:isDead() then return end
     local now = getTimestampMs()
+    if Settings.diagnosticsEnabled() and now - lastState >= STATE_MS then
+        lastState = now
+        local item = player:getPrimaryHandItem()
+        local info = item and (item:getFullType() .. " " .. tostring(item:getCondition())
+            .. "/" .. tostring(item:getConditionMax())) or "none"
+        print("[PersonalKnox][upkeep-state] weapon=" .. info)
+    end
     if Settings.infiniteDurability() and now - lastDurability >= DURABILITY_MS then
         lastDurability = now
         local ok, err = pcall(repair, player)

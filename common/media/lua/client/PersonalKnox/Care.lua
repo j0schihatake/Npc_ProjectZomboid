@@ -6,7 +6,9 @@ pcall(require, "TimedActions/ISTakePillAction")
 local Care = {}
 local Settings = require "PersonalKnox/Settings"
 local INTERVAL_MS = 2000
+local STATE_MS = 60000
 local lastCheck = 0
+local lastState = 0
 
 local function api()
     return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() or nil
@@ -137,6 +139,15 @@ local function poll()
     local action = api():careAction(now, body:getHealth(), body:getNumPartsBleeding(),
         maxPain(body), stat(player, CharacterStat.THIRST), stat(player, CharacterStat.HUNGER),
         busy(player), danger(player), Settings.autoMedic(), Settings.autoDrink(), Settings.autoEat())
+    if Settings.diagnosticsEnabled() and now - lastState >= STATE_MS then
+        lastState = now
+        print("[PersonalKnox][care-state] health=" .. string.format("%.1f", body:getHealth())
+            .. " bleeding=" .. tostring(body:getNumPartsBleeding())
+            .. " pain=" .. string.format("%.1f", maxPain(body))
+            .. " thirst=" .. string.format("%.2f", stat(player, CharacterStat.THIRST))
+            .. " hunger=" .. string.format("%.2f", stat(player, CharacterStat.HUNGER))
+            .. " action=" .. action)
+    end
     if action == "none" then return end
     local ok, done = pcall(execute, player, action)
     if Settings.diagnosticsEnabled() then

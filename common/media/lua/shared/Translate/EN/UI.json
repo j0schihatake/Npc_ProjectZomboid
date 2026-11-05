@@ -15,5 +15,7 @@
   "UI_PersonalKnox_InfiniteDurability": "Infinite weapon durability",
   "UI_PersonalKnox_InfiniteDurabilityHint": "Restores the condition of weapons in your hands. Does not repair vehicles or ordinary items.",
   "UI_PersonalKnox_InfiniteAmmo": "Infinite ammo with reload",
-  "UI_PersonalKnox_InfiniteAmmoHint": "Tops up ammo and magazines for the weapon in your hands; reloading stays normal. Ammo weight is not removed."
+  "UI_PersonalKnox_InfiniteAmmoHint": "Tops up ammo and magazines for the weapon in your hands; reloading stays normal. Ammo weight is not removed.",
+  "UI_PersonalKnox_AutoUnstick": "Auto-unstick stuck companions",
+  "UI_PersonalKnox_AutoUnstickHint": "If a following companion has not moved for 20 seconds and the player is more than 4 tiles away, the addon recalls it with the native follow command. Working, sleeping or fighting NPCs are left alone."
 }

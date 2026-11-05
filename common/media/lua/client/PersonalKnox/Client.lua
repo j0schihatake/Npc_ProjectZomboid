@@ -12,6 +12,7 @@ local Barricade = require "PersonalKnox/Barricade"
 local Settings = require "PersonalKnox/Settings"
 local Care = require "PersonalKnox/Care"
 local Upkeep = require "PersonalKnox/Upkeep"
+local Stuck = require "PersonalKnox/Stuck"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -224,4 +225,5 @@ Events.OnFillWorldObjectContextMenu.Add(function(...)
 end)
 Care.install()
 Upkeep.install()
+Stuck.install({isMember=isMember,roster=roster})
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")
