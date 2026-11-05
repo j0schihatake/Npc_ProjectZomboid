@@ -138,6 +138,21 @@ def prepare(cache, userdata, source, ids, mods, maps):
     atomic(marker,json.dumps({'kind':MARKER,'source':str(source),'mods':ids,'links':links},ensure_ascii=False,indent=2)+'\n')
 
 
+def approve_own(source):
+    jar=source/'42/media/java/client/PersonalKnox.jar'
+    digest=hashlib.sha256(jar.read_bytes()).hexdigest()
+    path=Path.home()/'.zombie_buddy/mod_approvals.json'
+    data=json.loads(path.read_text()) if path.is_file() else {'formatVersion':2,'mods':[]}
+    found=False
+    for mod in data.setdefault('mods',[]):
+        if mod.get('id')=='PersonalKnox':
+            mod['jar_hash']=digest;mod['decision']=True;found=True
+    if not found:
+        data['mods'].append({'id':'PersonalKnox','jar_hash':digest,'decision':True})
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+    print('Approved PersonalKnox JAR '+digest[:12]+' for ZombieBuddy',flush=True)
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--profile',choices=['minimal','full'],default='minimal')
@@ -151,6 +166,7 @@ def main():
     parser.add_argument('--detach',action='store_true',help='Return PID immediately; no launch timeout or automatic process termination')
     parser.add_argument('--prepare-only',action='store_true')
     parser.add_argument('--dry-run',action='store_true',help='Resolve mods and print the plan without changing files or launching')
+    parser.add_argument('--approve-own',action='store_true',help='Persist ZombieBuddy approval for the current source JAR before launch')
     args=parser.parse_args()
     source=args.source.expanduser().resolve();userdata=args.userdata.expanduser().resolve()
     cache=args.cache_dir.expanduser().resolve();game=args.game_root.expanduser().resolve()
@@ -161,6 +177,8 @@ def main():
     own=mod_metadata(source)
     if not own or own['id']!='PersonalKnox':
         raise ValueError('--source must declare id=PersonalKnox for B42.21')
+    if args.approve_own:
+        approve_own(source)
     engine=game/'projectzomboid';binary=engine/'ProjectZomboid64'
     if not binary.is_file():
         raise ValueError('Game executable not found: '+str(binary))
