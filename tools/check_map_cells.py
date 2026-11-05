@@ -1,5 +1,6 @@
 """Read enabled local map files; report cell overlaps, not runtime compatibility."""
 import argparse
+import hashlib
 import itertools
 import json
 from pathlib import Path
@@ -10,6 +11,7 @@ def inspect(workshop, config):
     enabled = set(re.findall(r'^\s*mod\s*=\s*(.+?)\s*,?\s*$', config.read_text(), re.M))
     maps = []
     found = set()
+    lua_files, tile_files = {}, {}
     for root in sorted(workshop.glob('*/mods/*')):
         if not root.is_dir():
             continue
@@ -29,6 +31,25 @@ def inspect(workshop, config):
         active = identifiers & enabled
         if not active:
             continue
+        metadata = {}
+        for info in infos:
+            metadata.update(re.findall(r'^([^=\r\n]+)=(.*)$', info.read_text(errors='replace'), re.M))
+        requirements = [name.strip().lstrip('\\') for name in metadata.get('require', '').split(',') if name.strip()]
+        # Resolve each mod's layers before comparing paths across mods.
+        effective_lua, definitions = {}, {}
+        for layer in (root / 'common', selected):
+            for file in (layer / 'media/lua').rglob('*.lua'):
+                effective_lua[str(file.relative_to(layer))] = file
+            info = layer / 'mod.info'
+            if info.is_file():
+                for pack, number in re.findall(r'^tiledef=(\S+)\s+(\d+)\s*$', info.read_text(errors='replace'), re.M):
+                    definitions[int(number)] = pack
+        for path, file in effective_lua.items():
+            lua_files.setdefault(path, []).append({'mods': sorted(active), 'sha256': hashlib.sha256(file.read_bytes()).hexdigest()})
+        for number, pack in definitions.items():
+            files = [path for path in (selected / 'media' / (pack + '.tiles'), root / 'common/media' / (pack + '.tiles')) if path.is_file()]
+            digest = hashlib.sha256(files[0].read_bytes()).hexdigest() if files else 'missing'
+            tile_files.setdefault(number, []).append({'mods': sorted(active), 'pack': pack, 'sha256': digest})
         found.update(active)
         folders = {}
         for layer in (root / 'common', selected):
@@ -46,19 +67,26 @@ def inspect(workshop, config):
                 info = folder / 'map.info'
                 if info.is_file():
                     lots = re.search(r'^lots\s*=\s*(.*?)\s*$', info.read_text(errors='replace'), re.M)
-                    if lots:
-                        entry['lots'] = lots[1]
+                    entry['lots'] = lots[1] if lots else ''
         for folder, data in sorted(folders.items()):
             if data['headers']:
                 maps.append({'mods': sorted(active), 'folder': folder, 'lots': data['lots'],
-                             'versionFolder': selected.name, 'cells': sorted(data['headers'])})
+                             'versionFolder': selected.name, 'workshop': root.parent.parent.name,
+                             'requirements': requirements,
+                             'missingEnabledRequirements': sorted(set(requirements) - enabled),
+                             'versionMin': metadata.get('versionMin', '').strip(),
+                             'versionMax': metadata.get('versionMax', '').strip(),
+                             'cells': sorted(data['headers'])})
     overlaps = []
     for left, right in itertools.combinations(maps, 2):
         cells = sorted(set(left['cells']) & set(right['cells']))
         if cells:
             overlaps.append({'left': left['folder'], 'right': right['folder'], 'cells': cells})
-    return {'maps': maps, 'overlaps': overlaps, 'enabledNotFoundInWorkshop': sorted(enabled - found),
-            'limits': 'Cell headers only; does not prove room, object, NPC, FPS or runtime compatibility.'}
+    lua_collisions = {path: entries for path, entries in lua_files.items() if len({entry['sha256'] for entry in entries}) > 1}
+    tile_collisions = {number: entries for number, entries in tile_files.items() if len({(entry['pack'], entry['sha256']) for entry in entries}) > 1}
+    return {'maps': maps, 'overlaps': overlaps, 'luaCollisions': lua_collisions, 'tileCollisions': tile_collisions,
+            'enabledNotFoundInWorkshop': sorted(enabled - found),
+            'limits': 'Static headers, dependency metadata and file hashes; does not prove room, object, NPC, FPS or runtime compatibility.'}
 
 
 def main():
@@ -68,7 +96,7 @@ def main():
     args = parser.parse_args()
     report = inspect(args.workshop, args.config)
     print(json.dumps(report, ensure_ascii=False, indent=2))
-    if report['overlaps']:
+    if report['overlaps'] or report['luaCollisions'] or report['tileCollisions']:
         raise SystemExit(1)
 
 
