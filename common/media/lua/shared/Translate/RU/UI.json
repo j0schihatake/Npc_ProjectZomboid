@@ -66,5 +66,6 @@
   "UI_PersonalKnox_AmmoModeHint": "Обычные — конечный запас; бесконечный запас — патроны/магазины пополняются, но перезарядка нужна; бесконечный магазин — магазин сразу полный, перезарядка не нужна.",
   "UI_PersonalKnox_AmmoNormal": "Обычные",
   "UI_PersonalKnox_AmmoInfiniteReserve": "Бесконечный запас (с перезарядкой)",
-  "UI_PersonalKnox_AmmoInfiniteMagazine": "Бесконечный магазин (без перезарядки)"
+  "UI_PersonalKnox_AmmoInfiniteMagazine": "Бесконечный магазин (без перезарядки)",
+  "UI_PersonalKnox_AmmoInfiniteReload": "Бесконечный запас, перезарядка после пустого магазина"
 }

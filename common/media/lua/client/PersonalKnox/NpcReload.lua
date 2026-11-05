@@ -32,7 +32,9 @@ local function poll(player)
                     local ok, result = pcall(function() return weapon:isReloadable(body) end)
                     reloadable = ok and result
                 end
-                if reloadable and max > 0 and current < max and reserve > 0 and ISReloadWeaponAction and ISTimedActionQueue then
+                if reloadable and max > 0 and current < max and reserve > 0
+                        and (not Settings.reloadOnlyWhenEmpty() or current == 0)
+                        and ISReloadWeaponAction and ISTimedActionQueue then
                     ISTimedActionQueue.add(ISReloadWeaponAction:new(body, weapon))
                     if Settings.diagnosticsEnabled() then
                         print("[PersonalKnox][npc-reload] start " .. tostring(current) .. "/" .. tostring(max))

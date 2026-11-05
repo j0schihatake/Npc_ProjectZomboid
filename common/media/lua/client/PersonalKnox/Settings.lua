@@ -33,6 +33,7 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_AmmoNormal")
         combo:addItem("UI_PersonalKnox_AmmoInfiniteReserve", true)
         combo:addItem("UI_PersonalKnox_AmmoInfiniteMagazine")
+        combo:addItem("UI_PersonalKnox_AmmoInfiniteReload")
     end
     if page and not page:getOption("reloadMode") then
         local combo = page:addComboBox("reloadMode", getText("UI_PersonalKnox_ReloadMode"),
@@ -88,6 +89,7 @@ function Settings.ammoMode()
 end
 function Settings.infiniteAmmo() return Settings.ammoMode() >= 2 end
 function Settings.infiniteMagazine() return Settings.ammoMode() == 3 end
+function Settings.reloadOnlyWhenEmpty() return Settings.ammoMode() == 4 end
 function Settings.autoUnstick() return value("autoUnstick", true) end
 function Settings.careSearchBags() return value("careSearchBags", true) end
 function Settings.npcVoices() return value("npcVoices", true) end
