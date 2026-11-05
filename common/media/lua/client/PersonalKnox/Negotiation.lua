@@ -3,7 +3,7 @@ local Negotiation = {}
 local Settings = require "PersonalKnox/Settings"
 local INTERVAL_MS, ANSWER_MS, COOLDOWN_MS = 2000, 8000, 120000
 local lastCheck, lastStart = 0, 0
-local pending, deps = nil, nil
+local pending, deps, assault = nil, nil, nil
 
 local function visibleThreats(player)
     local cell = getCell()
@@ -55,6 +55,17 @@ local function resolve(player)
     if not api then pending = nil; return end
     local choice = api:groupChoice(pending.attack, pending.hold, pending.retreat, pending.leader or 0)
     deps.say(player, pending.speaker, "squad_" .. choice)
+    if choice == "retreat" then
+        for _, npc in ipairs(deps.roster(player)) do Call.one(player, npc, true) end
+    elseif choice == "attack" and pending.nearest and tellNpcStay then
+        for _, npc in ipairs(deps.roster(player)) do
+            local body = npc:getWorldObject()
+            if body and not body:isDead() and not body:hasTimedActions() then
+                pcall(tellNpcStay, npc, pending.nearest:getX(), pending.nearest:getY(), pending.nearest:getZ())
+            end
+        end
+        assault = {target = pending.nearest, untilAt = getTimestampMs() + 20000}
+    end
     if Settings.diagnosticsEnabled() then
         print("[PersonalKnox][negotiation] choice=" .. tostring(choice)
             .. " leader=" .. tostring(pending.leader or 0)
@@ -70,6 +81,14 @@ local function poll(player)
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
+    if assault then
+        local target = assault.target
+        if not target or target:isDead() or now >= assault.untilAt then
+            for _, npc in ipairs(deps.roster(player)) do Call.one(player, npc, true) end
+            assault = nil
+            if Settings.diagnosticsEnabled() then print("[PersonalKnox][negotiation-act] release") end
+        end
+    end
     if pending then
         if pending.leader or now >= pending.untilAt then resolve(player) end
         return
@@ -82,7 +101,7 @@ local function poll(player)
     if not speaker then return end
     lastStart = now
     deps.say(player, speaker, "squad_question")
-    pending = {speaker = speaker, untilAt = now + ANSWER_MS,
+    pending = {speaker = speaker, untilAt = now + ANSWER_MS, nearest = nearest,
         attack = attack, hold = hold, retreat = retreat, leader = nil}
     if Settings.diagnosticsEnabled() then
         print("[PersonalKnox][negotiation] start zombies=" .. tostring(count))
