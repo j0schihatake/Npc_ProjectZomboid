@@ -25,7 +25,16 @@ public final class KnoxBridge {
             var text = new StringBuilder();
             for (var member : list) {
                 if (member == null) continue;
-                String id = String.valueOf(member.getClass().getMethod("getId").invoke(member));
+                String id;
+                try {
+                    id = String.valueOf(member.getClass().getMethod("getId").invoke(member));
+                } catch (Throwable missing) {
+                    try {
+                        id = String.valueOf(member.getClass().getMethod("getUsername").invoke(member));
+                    } catch (Throwable missing2) {
+                        id = String.valueOf(member);
+                    }
+                }
                 double x = ((Number) member.getClass().getMethod("getX").invoke(member)).doubleValue();
                 double y = ((Number) member.getClass().getMethod("getY").invoke(member)).doubleValue();
                 double z = ((Number) member.getClass().getMethod("getZ").invoke(member)).doubleValue();
