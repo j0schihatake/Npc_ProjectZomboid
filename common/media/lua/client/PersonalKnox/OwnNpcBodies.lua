@@ -8,9 +8,10 @@ local INTERVAL_MS = 5000
 local function spawnBody(id, x, y, z)
     local desc = SurvivorFactory.CreateSurvivor()
     local body = IsoPlayer.new(getWorld():getCell(), desc, x, y, z)
-    body:setSceneCulled(false)
-    pcall(function() body:setNPC(true) end)
-    pcall(function() body:setBlockMovement(true) end)
+    pcall(function() body:setSceneCulled(false) end)
+    local okNpc = pcall(function() body:setNpc(true) end)
+    if not okNpc then pcall(function() body:setNPC(true) end) end
+    pcall(function() body:setBlockMovement(false) end)
     pcall(function() body:setUsername("PK-" .. id) end)
     bodies[id] = body
     return body
