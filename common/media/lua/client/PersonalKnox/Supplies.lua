@@ -36,11 +36,39 @@ local function inventorySnapshot(body)
 end
 
 local function inDanger(body)
-    local zombies = getCell():getZombieList()
-    for i=0,zombies:size()-1 do
-        local z = zombies:get(i)
-        if not z:isDead() and math.abs(z:getZ()-body:getZ()) < 0.5 and
-            Core.distanceSquared({x=body:getX(),y=body:getY()},{x=z:getX(),y=z:getY()}) < 144 then return true end
+    -- Knox already tracks perceived hostile NPCs as well as zombies.
+    if instanceof(body,"IsoNpcPlayer") then
+        local ok,safe=pcall(function()
+            return body:hasNoDangerousTargets() and not body:hasEnemyNpcTargets() and not body:isInActiveCombat()
+        end)
+        if ok and type(safe)=="boolean" then return not safe end
+    end
+    -- The player and older API versions use a bounded local visibility check.
+    local cell,processed=getCell(),0
+    local x,y,z=math.floor(body:getX()),math.floor(body:getY()),math.floor(body:getZ())
+    for radius=0,12 do
+        for dx=-radius,radius do for dy=-radius,radius do
+            if radius==0 or math.abs(dx)==radius or math.abs(dy)==radius then
+                local square=cell:getGridSquare(x+dx,y+dy,z)
+                if square then
+                    local objects=square:getMovingObjects()
+                    for i=0,objects:size()-1 do
+                        processed=processed+1
+                        local object=objects:get(i)
+                        if (instanceof(object,"IsoZombie") or instanceof(object,"IsoNpcPlayer")) and
+                            object~=body and not object:isDead() and
+                            Core.distanceSquared({x=body:getX(),y=body:getY()},
+                                {x=object:getX(),y=object:getY()})<=144 and body:CanSee(object) then
+                            if instanceof(object,"IsoZombie") then return true end
+                            local ok,fighting=pcall(function() return object:isInActiveCombat() end)
+                            if not ok or fighting then return true end
+                        end
+                        -- A saturated scene is unknown; do not start a supply run there.
+                        if processed>=512 then return true end
+                    end
+                end
+            end
+        end end
     end
     return false
 end
