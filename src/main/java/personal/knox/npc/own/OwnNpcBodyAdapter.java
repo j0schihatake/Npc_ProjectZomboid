@@ -48,7 +48,11 @@ public final class OwnNpcBodyAdapter {
         Class<?> world = Class.forName("zombie.iso.IsoWorld");
         Object value = world.getField("instance").get(null);
         if (value == null) return null;
-        return value.getClass().getField("CurrentCell").get(value);
+        try {
+            return value.getClass().getField("currentCell").get(value);
+        } catch (NoSuchFieldException missing) {
+            return value.getClass().getMethod("getCell").invoke(value);
+        }
     }
 
     private Object create(Object cell, String id, int x, int y, int z) throws Exception {
