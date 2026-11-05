@@ -4,6 +4,25 @@ package personal.knox;
 public final class CompanionBrain {
     private CompanionBrain() {}
 
+    public static int barricadeMissing(int planks, boolean metal) {
+        if (planks < 0 || planks > 4) throw new IllegalArgumentException("Invalid plank count");
+        return metal ? 0 : 4 - planks;
+    }
+
+    public static int barricadeStockTarget(int missing, boolean nails) {
+        if (missing < 0) throw new IllegalArgumentException("Invalid remaining work");
+        return Math.min(4, missing) * (nails ? 2 : 1);
+    }
+
+    public static String barricadeStatus(int missing, boolean ownsTask, boolean danger, double idleHours) {
+        if (missing < 0 || !Double.isFinite(idleHours) || idleHours < 0) return "invalid";
+        if (!ownsTask) return "interrupted";
+        if (danger) return "danger";
+        if (missing == 0) return "done";
+        if (idleHours >= 2) return "stalled";
+        return "work";
+    }
+
     /** Codes are our persistence format, not Knox enum ordinals. */
     public static String baseSchedule(int hour, String current) {
         if (hour < 0 || hour > 23) throw new IllegalArgumentException("Invalid hour");

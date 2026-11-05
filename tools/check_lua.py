@@ -17,7 +17,8 @@ PersonalKnoxAPI={getInstance=function() return {supplyPlan=function() return "es
 local Supply=require "PersonalKnox/Supplies"
 local building={}
 local items={size=function() return 0 end}
-local inv={getItems=function() return items end, getCapacityWeight=function() return 1 end, getCapacity=function() return 50 end}
+local weight=1
+local inv={getItems=function() return items end, getCapacityWeight=function() return weight end, getCapacity=function() return 50 end}
 local body={getX=function() return 0 end,getY=function() return 0 end,getZ=function() return 0 end,
     isDead=function() return false end,getInventory=function() return inv end,getMaxWeight=function() return 50 end}
 local data={}
@@ -52,7 +53,7 @@ end
 Supply.propose(player,npc)
 assert(dispatched==0,"Default confirmation must block dispatch")
 local first=menu()
-assert(#first.options==5)
+assert(#first.options==6)
 first.options[4].fn(player,npc)
 assert(dispatched==1,"Confirm must dispatch")
 assert(selectedGroupNpcs==selectedBefore and lootAmmo==true and lootFood==false,"Knox UI state must be restored")
@@ -78,6 +79,22 @@ decline.options[5].fn(player,npc)
 assert(Supply.pending[npc]==nil,"Decline must cancel")
 tick()
 assert(Supply.pending[npc]==nil,"Declined building must not be proposed repeatedly")
+local beforeHouse=dispatched
+function tellNpcLoot(_,b)
+    assert(b==building and selectedGroupNpcs[1]==npc)
+    assert(lootGuns and lootWeapons and lootAmmo and lootFood and lootWater and lootFirstAid)
+    dispatched=dispatched+1
+end
+Supply.inspectHouse(player,npc)
+assert(Supply.pending[npc].kind=='house' and dispatched==beforeHouse,"Explicit house inspection uses confirmation")
+menu().options[4].fn(player,npc)
+assert(dispatched==beforeHouse+1,"House inspection includes supplies and weapon categories")
+assert(selectedGroupNpcs==selectedBefore and lootAmmo==true and lootFood==false,"House inspection restores Knox UI state")
+Supply.inspectHouse(player,npc)
+weight=45
+menu().options[4].fn(player,npc)
+assert(dispatched==beforeHouse+1 and Supply.pending[npc]==nil,"Recheck capacity at approval")
+weight=1
 require "PersonalKnox/Client"
 assert(contextCallback,"Client must register its menu")
 ''')

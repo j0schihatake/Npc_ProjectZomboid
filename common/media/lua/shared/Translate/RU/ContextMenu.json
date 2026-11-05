@@ -51,5 +51,17 @@
   "ContextMenu_PersonalKnox_ActionLabel": "%1: %2",
   "ContextMenu_PersonalKnox_PrefMelee": "Весь отряд: предпочитать ближний бой",
   "ContextMenu_PersonalKnox_PrefRanged": "Весь отряд: предпочитать дальний бой",
-  "ContextMenu_PersonalKnox_PrefAny": "Весь отряд: любое оружие"
+  "ContextMenu_PersonalKnox_PrefAny": "Весь отряд: любое оружие",
+  "ContextMenu_PersonalKnox_BarricadeHome": "Забаррикадировать дом",
+  "ContextMenu_PersonalKnox_BarricadeNeedHome": "Для этого задания нужно быть вместе с NPC в назначенном убежище Knox.",
+  "ContextMenu_PersonalKnox_BarricadeBusy": "Слишком много действующих заданий на баррикады.",
+  "ContextMenu_PersonalKnox_BarricadeNoWindows": "В загруженных комнатах нет подходящих окон.",
+  "ContextMenu_PersonalKnox_BarricadeDone": "Все проверенные окна дома защищены.",
+  "ContextMenu_PersonalKnox_BarricadeDanger": "Сначала нужно разобраться с опасностью рядом.",
+  "ContextMenu_PersonalKnox_BarricadeFailed": "Задание не запущено. Подробности в console.txt.",
+  "ContextMenu_PersonalKnox_BarricadeStalled": "Работа остановилась: остались незаконченные окна. Проверь доступ и проходы.",
+  "ContextMenu_PersonalKnox_BarricadeStopped": "Баррикадирование прервано.",
+  "ContextMenu_PersonalKnox_BarricadeInspect": "Диагностика: NPC и баррикадирование",
+  "ContextMenu_PersonalKnox_BarricadeInspectLogged": "Состояние NPC записано в console.txt. Приказы не изменены.",
+  "ContextMenu_PersonalKnox_InspectHouse": "Осмотри дом, поищи полезное"
 }

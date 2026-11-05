@@ -3,6 +3,22 @@ package personal.knox;
 public final class BrainTest {
     public static void main(String[] args) {
         var api = PersonalKnoxAPI.getInstance();
+        assert api.barricadeMissing(0, false) == 4;
+        assert api.barricadeMissing(2, false) == 2;
+        assert api.barricadeMissing(4, false) == 0;
+        assert api.barricadeMissing(0, true) == 0;
+        assert api.barricadeStockTarget(100, false) == 4;
+        assert api.barricadeStockTarget(100, true) == 8;
+        assert api.barricadeStockTarget(1, true) == 2;
+        assert api.barricadeStockTarget(0, false) == 0;
+        assert api.barricadeStatus(0, true, false, 0).equals("done");
+        assert api.barricadeStatus(0, false, false, 0).equals("interrupted");
+        assert api.barricadeStatus(1, true, true, 0).equals("danger");
+        assert api.barricadeStatus(1, true, false, 1.99).equals("work");
+        assert api.barricadeStatus(1, true, false, 2).equals("stalled");
+        assert api.barricadeStatus(1, true, false, Double.NaN).equals("invalid");
+        try { api.barricadeMissing(-1, false); throw new AssertionError("Invalid plank count accepted"); }
+        catch (IllegalArgumentException expected) { }
         int rest = 0, work = 0, recreation = 0;
         for (int hour = 0; hour < 24; hour++) {
             assert api.baseSchedule(hour, "GUARD").equals("GUARD") : "Never remove guard hours";
@@ -46,6 +62,8 @@ public final class BrainTest {
         assert !api.isCleanBandage("Base.Bandage",true,true);
         assert !api.isCleanBandage("Base.Bandage",false,false);
         assert api.chooseDialogue("plan_supplies", 0.1, 10, 10, 0) > 0 : "Fallback to default template";
+        assert api.chooseDialogue("plan_house", 0.5, 50, 50, 0) > 0;
+        assert api.chooseDialogue("plan_barricade", 0.5, 50, 50, 0) > 0;
         ReactionTest.run();
         System.out.println("Java tests passed: squad policy, Russian dialogues, floor/range classification, supply priorities.");
     }

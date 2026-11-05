@@ -61,6 +61,10 @@ local function execute(player,npc)
         player:Say(getText("ContextMenu_PersonalKnox_PlanChanged"))
         return
     end
+    local body=npc:getWorldObject()
+    if body:getInventory():getCapacityWeight() >= body:getMaxWeight()*0.8 then
+        player:Say(getText("ContextMenu_PersonalKnox_InventoryFull")); return
+    end
     if not tellNpcLoot then player:Say(getText("ContextMenu_PersonalKnox_LootUnavailable")); return end
     -- Knox's public Lua command takes the selected group and category flags.
     -- Restore its UI state even when its command raises an error.
@@ -69,7 +73,8 @@ local function execute(player,npc)
     for _,key in ipairs(keys) do old[key]=_G[key]; _G[key]=false end
     selectedGroupNpcs={npc}
     lootFirstAid=true; lootFood=true; lootWater=true
-    lootGuns=plan.kind=="weapons"; lootWeapons=plan.kind=="weapons"
+    local searchWeapons=plan.kind=="weapons" or plan.kind=="house"
+    lootGuns=searchWeapons; lootWeapons=searchWeapons; lootAmmo=searchWeapons
     local ok, err = pcall(tellNpcLoot,nil,plan.building)
     selectedGroupNpcs=selected
     for _,key in ipairs(keys) do _G[key]=old[key] end
@@ -82,7 +87,7 @@ local function execute(player,npc)
     deps.journal(player,npc,"supply_dispatched",plan.kind)
 end
 
-function Supply.propose(player,npc)
+function Supply.propose(player,npc,inspection)
     local square=player:getCurrentSquare()
     local building=square and square:getBuilding()
     if not building or not valid(player,npc,building) then
@@ -93,13 +98,18 @@ function Supply.propose(player,npc)
     local stock=inventorySnapshot(body)
     local overloaded=body:getInventory():getCapacityWeight() >= body:getMaxWeight()*0.8
     local kind=Core.supplyPlan(stock.food,stock.water,stock.medicine,stock.weapon,false,overloaded)
+    if inspection=="house" and not overloaded then kind="house" end
     if kind=="none" then player:Say(getText("ContextMenu_PersonalKnox_StockReady")); return end
     if kind=="wait" then player:Say(getText("ContextMenu_PersonalKnox_InventoryFull")); return end
     Supply.pending[npc]={kind=kind,building=building,expires=getGameTime():getWorldAgeHours()+1}
-    deps.say(player,npc,kind=="weapons" and "plan_weapons" or "plan_supplies")
+    deps.say(player,npc,kind=="house" and "plan_house" or kind=="weapons" and "plan_weapons" or "plan_supplies")
     deps.journal(player,npc,"supply_proposed",kind)
     if not settings(player).confirmPlans then execute(player,npc)
     else player:Say(getText("ContextMenu_PersonalKnox_PlanPending")) end
+end
+
+function Supply.inspectHouse(player,npc)
+    Supply.propose(player,npc,"house")
 end
 
 function Supply.addOptions(menu,player,npc)
@@ -121,6 +131,7 @@ function Supply.addOptions(menu,player,npc)
             deps.journal(p,n,"supply_declined","")
         end,npc)
     end
+    menu:addOption(getText("ContextMenu_PersonalKnox_InspectHouse"),player,Supply.inspectHouse,npc)
 end
 
 function Supply.install(adapters)
