@@ -142,6 +142,7 @@ public final class AlifeTest {
         personal.knox.alife.BaseDefenseTest.run();
         personal.knox.alife.RaidPolicyTest.run();
         personal.knox.alife.RaidTest.run();
+        personal.knox.alife.TheftPolicyTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
