@@ -114,6 +114,18 @@ public final class OwnNpcBodyAdapter {
             Object cell = currentCell();
             double bx = (double) body.getClass().getMethod("getX").invoke(body);
             double by = (double) body.getClass().getMethod("getY").invoke(body);
+            if (Math.abs(targetZ - z) > 0.4) {
+                double[] stair = findStairs(cell, bx, by, z);
+                if (stair != null) {
+                    if (Math.hypot(stair[0] - bx, stair[1] - by) < 0.9) {
+                        z = targetZ;
+                    } else {
+                        tx = stair[0];
+                        ty = stair[1];
+                        pathCache.remove(id);
+                    }
+                }
+            }
             if (!passable(cell, bx, by, z, x, y)) {
                 var step = pathStep(id, cell, bx, by, z, tx, ty);
                 if (step != null) {
@@ -183,6 +195,26 @@ public final class OwnNpcBodyAdapter {
             pathCache.put(id, new PathState(cached.tx(), cached.ty(), cached.points(), next));
             return new double[]{point.x(), point.y()};
         }
+        return null;
+    }
+
+    private static double[] findStairs(Object cell, double bx, double by, double z) {
+        try {
+            for (int x = (int) bx - 4; x <= (int) bx + 4; x++) {
+                for (int y = (int) by - 4; y <= (int) by + 4; y++) {
+                    Object square = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                            .invoke(cell, x, y, (int) z);
+                    if (square == null) continue;
+                    for (var name : new String[]{"HasStairs", "HasStairsBelow", "HasStairTop"}) {
+                        try {
+                            if ((boolean) square.getClass().getMethod(name).invoke(square)) {
+                                return new double[]{x, y};
+                            }
+                        } catch (Throwable ignored) { }
+                    }
+                }
+            }
+        } catch (Throwable ignored) { }
         return null;
     }
 
