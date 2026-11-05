@@ -31,6 +31,7 @@ local NpcMagazine = require "PersonalKnox/NpcMagazine"
 local NpcUpkeep = require "PersonalKnox/NpcUpkeep"
 local NpcMedic = require "PersonalKnox/NpcMedic"
 local NpcStock = require "PersonalKnox/NpcStock"
+local NpcFinds = require "PersonalKnox/NpcFinds"
 local Ask = require "PersonalKnox/Ask"
 
 local function attempt(fn, fallback)
@@ -284,6 +285,7 @@ NpcMagazine.install({roster=roster,say=say})
 NpcUpkeep.install({roster=roster,say=say})
 NpcMedic.install({roster=roster,say=say})
 NpcStock.install({roster=roster,say=say})
+NpcFinds.install({roster=roster,say=say})
 Ask.install({roster=roster,say=say})
 Probe.install({roster=roster,isMember=isMember})
 print("[PersonalKnox] Lua addon " .. Version.loaded .. " loaded; Russian dialogues and elevation diagnostics ready.")

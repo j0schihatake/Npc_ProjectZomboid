@@ -152,3 +152,7 @@
 152	smalltalk	low_morale	Сил нет.
 153	smalltalk	brave	Нормально держимся.
 154	smalltalk	brave	Не дрейфь.
+155	find_valuable	default	Смотри, тут кувалда.
+156	find_valuable	default	Нашёл топор.
+157	find_valuable	default	Тут молоток и гвозди.
+158	find_valuable	brave	О, нам это пригодится.

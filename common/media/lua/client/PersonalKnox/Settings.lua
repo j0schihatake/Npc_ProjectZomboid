@@ -27,6 +27,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("npcSearchContainers", "UI_PersonalKnox_NpcSearchContainers", true, "UI_PersonalKnox_NpcSearchContainersHint")
     ensure("npcBandageStock", "UI_PersonalKnox_NpcBandageStock", true, "UI_PersonalKnox_NpcBandageStockHint")
     ensure("npcStock", "UI_PersonalKnox_NpcStock", true, "UI_PersonalKnox_NpcStockHint")
+    ensure("npcFinds", "UI_PersonalKnox_NpcFinds", true, "UI_PersonalKnox_NpcFindsHint")
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
@@ -103,6 +104,7 @@ function Settings.reloadMode()
     return type(choice) == "number" and choice or 2
 end
 function Settings.npcSearchContainers() return value("npcSearchContainers", true) end
+function Settings.npcFinds() return value("npcFinds", true) end
 function Settings.npcStock() return value("npcStock", true) end
 function Settings.npcBandageStock() return value("npcBandageStock", true) end
 function Settings.autoReload() return Settings.reloadMode() == 2 end

@@ -64,5 +64,7 @@
   "UI_PersonalKnox_NpcBandageStock": "Companions keep bandage stock",
   "UI_PersonalKnox_NpcBandageStockHint": "Keep 5 bandages in inventory: after battle take them from cabinets and rip zombie clothing.",
   "UI_PersonalKnox_NpcStock": "Companions keep food and water reserves",
-  "UI_PersonalKnox_NpcStockHint": "Keep 2 food portions, 2 water containers and a can opener; refill from nearby cabinets before need."
+  "UI_PersonalKnox_NpcStockHint": "Keep 2 food portions, 2 water containers and a can opener; refill from nearby cabinets before need.",
+  "UI_PersonalKnox_NpcFinds": "Companions report valuable finds",
+  "UI_PersonalKnox_NpcFindsHint": "Occasionally point out a sledgehammer, axe, hammer or nails in containers; no spam."
 }

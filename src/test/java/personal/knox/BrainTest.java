@@ -76,6 +76,7 @@ public final class BrainTest {
         assert api.chooseDialogue("help_call", 0.5, 50, 50, 0) > 0 : "Help call dialogue required";
         assert api.chooseDialogue("help_rush", 0.5, 50, 50, 0) > 0 : "Help rush dialogue required";
         assert api.chooseDialogue("smalltalk", 0.5, 50, 50, 0) > 0 : "Smalltalk dialogue required";
+        assert api.chooseDialogue("find_valuable", 0.5, 50, 50, 0) > 0 : "Find dialogue required";
         assert api.groupChoice(1, 5, 1, 0).equals("hold") : "Weighted consensus";
         assert api.groupChoice(1, 1, 5, 0).equals("retreat") : "Tie retreats";
         assert api.groupChoice(1, 5, 1, 1).equals("attack") : "Leader override";

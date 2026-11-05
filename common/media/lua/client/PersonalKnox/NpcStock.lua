@@ -43,6 +43,7 @@ local function nearestSource(body, kind)
     local cell = getCell()
     local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
     local best, bestContainer, bestDistance = nil, nil, math.huge
+    local processed = 0
     for dx = -6, 6 do
         for dy = -6, 6 do
             local square = cell:getGridSquare(px + dx, py + dy, pz)
@@ -50,6 +51,7 @@ local function nearestSource(body, kind)
                 local objects = square:getObjects()
                 for i = 0, objects:size() - 1 do
                     local object = objects:get(i)
+                    processed = processed + 1
                     local container = object.getContainer and object:getContainer()
                     if container then
                         local items = container:getItems()
@@ -66,6 +68,7 @@ local function nearestSource(body, kind)
                             end
                         end
                     end
+                    if processed >= 200 then return best, bestContainer, bestDistance end
                 end
             end
         end
