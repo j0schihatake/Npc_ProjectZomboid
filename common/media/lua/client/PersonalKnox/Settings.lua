@@ -27,6 +27,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("careSearchBags", "UI_PersonalKnox_CareSearchBags", true, "UI_PersonalKnox_CareSearchBagsHint")
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
+    ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     if page and not page:getOption("npcNeedRate") then
         local combo = page:addComboBox("npcNeedRate", getText("UI_PersonalKnox_NpcNeedRate"),
             getText("UI_PersonalKnox_NpcNeedRateHint"))
@@ -70,6 +71,7 @@ function Settings.infiniteAmmo() return value("infiniteAmmo", true) end
 function Settings.autoUnstick() return value("autoUnstick", true) end
 function Settings.careSearchBags() return value("careSearchBags", true) end
 function Settings.npcVoices() return value("npcVoices", true) end
+function Settings.npcItemAsks() return value("npcItemAsks", true) end
 function Settings.performanceMode() return value("performanceMode", false) end
 function Settings.chatterFrequency()
     local option = page and page:getOption("chatterFrequency")

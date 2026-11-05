@@ -52,5 +52,7 @@
   "UI_PersonalKnox_ChatterNormal": "Обычно",
   "UI_PersonalKnox_ChatterOften": "Часто",
   "UI_PersonalKnox_PerformanceMode": "Режим производительности",
-  "UI_PersonalKnox_PerformanceModeHint": "Отключает фоновую болтовню, переговоры и вызовы помощи, чтобы не нагружать игру. Ручные действия остаются."
+  "UI_PersonalKnox_PerformanceModeHint": "Отключает фоновую болтовню, переговоры и вызовы помощи, чтобы не нагружать игру. Ручные действия остаются.",
+  "UI_PersonalKnox_NpcItemAsks": "Союзники делятся едой и водой",
+  "UI_PersonalKnox_NpcItemAsksHint": "Голодный или испытывающий жажду союзник сам просит у товарища еду/воду; сытый отдаёт, если у него есть запас."
 }

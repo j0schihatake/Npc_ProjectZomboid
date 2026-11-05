@@ -43,5 +43,7 @@
   "UI_PersonalKnox_ChatterNormal": "Normal",
   "UI_PersonalKnox_ChatterOften": "Often",
   "UI_PersonalKnox_PerformanceMode": "Performance mode",
-  "UI_PersonalKnox_PerformanceModeHint": "Disables background chatter, negotiations and help calls to reduce load. Manual actions stay available."
+  "UI_PersonalKnox_PerformanceModeHint": "Disables background chatter, negotiations and help calls to reduce load. Manual actions stay available.",
+  "UI_PersonalKnox_NpcItemAsks": "Companions share food and water",
+  "UI_PersonalKnox_NpcItemAsksHint": "A hungry or thirsty companion asks a squadmate; a fed companion shares if they have a spare."
 }
