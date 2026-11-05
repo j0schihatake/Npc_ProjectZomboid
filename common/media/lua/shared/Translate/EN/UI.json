@@ -52,5 +52,10 @@
   "UI_PersonalKnox_ReloadModeHint": "Standard — manual only; automatic — reload when the magazine is not full; never — leave the weapon as is.",
   "UI_PersonalKnox_ReloadStandard": "Standard (manual)",
   "UI_PersonalKnox_ReloadAuto": "Automatic",
-  "UI_PersonalKnox_ReloadNever": "Never reload"
+  "UI_PersonalKnox_ReloadNever": "Never reload",
+  "UI_PersonalKnox_AmmoMode": "Ammunition",
+  "UI_PersonalKnox_AmmoModeHint": "Normal — finite supply; infinite reserve — ammo/magazines are replenished, reload still needed; infinite magazine — magazine is always full, no reload.",
+  "UI_PersonalKnox_AmmoNormal": "Normal",
+  "UI_PersonalKnox_AmmoInfiniteReserve": "Infinite reserve (with reload)",
+  "UI_PersonalKnox_AmmoInfiniteMagazine": "Infinite magazine (no reload)"
 }

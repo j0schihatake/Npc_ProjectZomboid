@@ -47,6 +47,13 @@ local function ammo(player)
     if not gun or not gun:IsWeapon() or not gun:isRanged() then return end
     local maximum = gun:getMaxAmmo()
     if not maximum or maximum <= 0 then return end
+    if Settings.infiniteMagazine() then
+        if gun.getCurrentAmmoCount and gun:getCurrentAmmoCount() < maximum and gun.setCurrentAmmoCount then
+            gun:setCurrentAmmoCount(maximum)
+            if Settings.diagnosticsEnabled() then print("[PersonalKnox][upkeep] magazine=" .. tostring(maximum)) end
+        end
+        return
+    end
     local ammoType = gun:getAmmoType()
     if not ammoType then return end
     local key = ammoType:getItemKey()

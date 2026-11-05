@@ -61,5 +61,10 @@
   "UI_PersonalKnox_ReloadModeHint": "Стандартная — только вручную; автоматическая — перезаряжать при неполном магазине; не перезаряжать — оружие остаётся как есть.",
   "UI_PersonalKnox_ReloadStandard": "Стандартная (вручную)",
   "UI_PersonalKnox_ReloadAuto": "Автоматическая",
-  "UI_PersonalKnox_ReloadNever": "Не перезаряжать"
+  "UI_PersonalKnox_ReloadNever": "Не перезаряжать",
+  "UI_PersonalKnox_AmmoMode": "Патроны",
+  "UI_PersonalKnox_AmmoModeHint": "Обычные — конечный запас; бесконечный запас — патроны/магазины пополняются, но перезарядка нужна; бесконечный магазин — магазин сразу полный, перезарядка не нужна.",
+  "UI_PersonalKnox_AmmoNormal": "Обычные",
+  "UI_PersonalKnox_AmmoInfiniteReserve": "Бесконечный запас (с перезарядкой)",
+  "UI_PersonalKnox_AmmoInfiniteMagazine": "Бесконечный магазин (без перезарядки)"
 }

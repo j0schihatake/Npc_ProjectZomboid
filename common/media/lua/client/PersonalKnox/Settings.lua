@@ -22,12 +22,18 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("autoDrink", "UI_PersonalKnox_AutoDrink", true, "UI_PersonalKnox_AutoDrinkHint")
     ensure("autoEat", "UI_PersonalKnox_AutoEat", true, "UI_PersonalKnox_AutoEatHint")
     ensure("infiniteDurability", "UI_PersonalKnox_InfiniteDurability", true, "UI_PersonalKnox_InfiniteDurabilityHint")
-    ensure("infiniteAmmo", "UI_PersonalKnox_InfiniteAmmo", true, "UI_PersonalKnox_InfiniteAmmoHint")
     ensure("autoUnstick", "UI_PersonalKnox_AutoUnstick", true, "UI_PersonalKnox_AutoUnstickHint")
     ensure("careSearchBags", "UI_PersonalKnox_CareSearchBags", true, "UI_PersonalKnox_CareSearchBagsHint")
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
+    if page and not page:getOption("ammoMode") then
+        local combo = page:addComboBox("ammoMode", getText("UI_PersonalKnox_AmmoMode"),
+            getText("UI_PersonalKnox_AmmoModeHint"))
+        combo:addItem("UI_PersonalKnox_AmmoNormal")
+        combo:addItem("UI_PersonalKnox_AmmoInfiniteReserve", true)
+        combo:addItem("UI_PersonalKnox_AmmoInfiniteMagazine")
+    end
     if page and not page:getOption("reloadMode") then
         local combo = page:addComboBox("reloadMode", getText("UI_PersonalKnox_ReloadMode"),
             getText("UI_PersonalKnox_ReloadModeHint"))
@@ -74,7 +80,14 @@ function Settings.autoMedic() return value("autoMedic", true) end
 function Settings.autoDrink() return value("autoDrink", true) end
 function Settings.autoEat() return value("autoEat", true) end
 function Settings.infiniteDurability() return value("infiniteDurability", true) end
-function Settings.infiniteAmmo() return value("infiniteAmmo", true) end
+function Settings.ammoMode()
+    local option = page and page:getOption("ammoMode")
+    if not option then return 2 end
+    local choice = option:getValue()
+    return type(choice) == "number" and choice or 2
+end
+function Settings.infiniteAmmo() return Settings.ammoMode() >= 2 end
+function Settings.infiniteMagazine() return Settings.ammoMode() == 3 end
 function Settings.autoUnstick() return value("autoUnstick", true) end
 function Settings.careSearchBags() return value("careSearchBags", true) end
 function Settings.npcVoices() return value("npcVoices", true) end
