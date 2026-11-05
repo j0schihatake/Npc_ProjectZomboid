@@ -174,8 +174,9 @@ public final class OwnNpcBodyAdapter {
             } catch (Throwable ignored) { }
         }
         if (cached != null && cached.index() < cached.points().size()) {
-            var point = cached.points().get(cached.index());
-            pathCache.put(id, new PathState(cached.tx(), cached.ty(), cached.points(), cached.index() + 1));
+            int next = Math.min(cached.points().size(), cached.index() + 2);
+            var point = cached.points().get(next - 1);
+            pathCache.put(id, new PathState(cached.tx(), cached.ty(), cached.points(), next));
             return new double[]{point.x(), point.y()};
         }
         return null;
