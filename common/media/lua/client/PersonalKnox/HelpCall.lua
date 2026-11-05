@@ -7,13 +7,16 @@ local INTERVAL_MS, RADIUS, MAX_NPCS, MAX_OBJECTS = 5000, 4, 4, 128
 local lastCheck = 0
 local lastScan = 0
 local assist = {}
+local retreating = {}
+local lastRequest = nil
 
-local function threats(body)
+local function threats(body, radius)
+    radius = radius or RADIUS
     local cell = getCell()
     local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
     local count, processed = 0, 0
-    for dx = -RADIUS, RADIUS do
-        for dy = -RADIUS, RADIUS do
+    for dx = -radius, radius do
+        for dy = -radius, radius do
             local square = cell:getGridSquare(px + dx, py + dy, pz)
             if square then
                 local objects = square:getMovingObjects()
@@ -53,8 +56,19 @@ local function poll(player, deps)
     end
     for ally, state in pairs(assist) do
         local targetBody = state.target and state.target:getWorldObject()
-        local engaged = targetBody and not targetBody:isDead() and threats(targetBody) >= 3
-        if now >= state.untilAt or not engaged then
+        local close = targetBody and not targetBody:isDead() and threats(targetBody, RADIUS) or 0
+        local incoming = targetBody and not targetBody:isDead() and threats(targetBody, 12) or 0
+        if targetBody and not targetBody:isDead() and close < 3 and incoming > 0
+                and not retreating[state.target] then
+            retreating[state.target] = now + 10000
+            Call.one(player, state.target, true)
+            lastRequest = nil
+            if Settings.diagnosticsEnabled() then
+                print("[PersonalKnox][help-fallback] npc=" .. tostring(state.target:getId())
+                    .. " incoming=" .. tostring(incoming))
+            end
+        end
+        if now >= state.untilAt or not targetBody or targetBody:isDead() or close < 3 then
             assist[ally] = nil
             Call.one(player, ally, true)
             if Settings.diagnosticsEnabled() then
@@ -69,10 +83,16 @@ local function poll(player, deps)
     end
     if best and Help.allowed(now) then
         deps.say(player, best, "help_call")
+        lastRequest = {npc = best, untilAt = now + 20000}
         if Settings.diagnosticsEnabled() then
             print("[PersonalKnox][help-call] npc=" .. tostring(best:getId()) .. " zombies=" .. tostring(bestCount))
         end
-        local bestBody = best:getWorldObject()
+        local request = best
+        local requestBody = lastRequest.npc:getWorldObject()
+        if lastRequest.npc ~= best and requestBody and not requestBody:isDead() and threats(requestBody) > 0 then
+            request = lastRequest.npc
+        end
+        local bestBody = request:getWorldObject()
         local sent = 0
         for _, ally in ipairs(deps.roster(player)) do
             if sent >= 2 then break end
@@ -91,11 +111,11 @@ local function poll(player, deps)
                         end
                         local ok = pcall(tellNpcStay, ally, coverX, coverY, bestBody:getZ())
                         if ok then
-                            assist[ally] = {untilAt = now + 20000, target = best}
+                            assist[ally] = {untilAt = now + 20000, target = request}
                             sent = sent + 1
                             if Settings.diagnosticsEnabled() then
                                 print("[PersonalKnox][help-cover] npc=" .. tostring(ally:getId())
-                                    .. " to=" .. tostring(best:getId()))
+                                    .. " to=" .. tostring(request:getId()))
                             end
                         end
                     end
