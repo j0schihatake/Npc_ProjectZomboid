@@ -43,5 +43,9 @@
   "ContextMenu_PersonalKnox_RoutineApplied": "Распорядок задан: отдых 22–06, работа 08–12 и 13–18. Часы охраны сохранены.",
   "ContextMenu_PersonalKnox_RoutineRestored": "Прежнее расписание восстановлено.",
   "ContextMenu_PersonalKnox_ReturningHome": "Передан приказ вернуться в убежище.",
-  "ContextMenu_PersonalKnox_KnoxActions": "Knox — взаимодействие"
+  "ContextMenu_PersonalKnox_KnoxActions": "Knox — взаимодействие",
+  "ContextMenu_PersonalKnox_CallOne": "Ко мне — прекратить текущее занятие",
+  "ContextMenu_PersonalKnox_CallName": "%1, ко мне!",
+  "ContextMenu_PersonalKnox_CallAll": "Все ко мне — прекратить занятия",
+  "ContextMenu_PersonalKnox_CallAllVoice": "Все ко мне!"
 }

@@ -3,6 +3,11 @@ local Core = require "PersonalKnox/Core"
 local Supply = { enabled = {}, pending = {}, visited = {} }
 local deps
 
+function Supply.cancel(npc)
+    Supply.pending[npc] = nil
+    Supply.enabled[npc] = nil
+end
+
 local function settings(player)
     local data = player:getModData()
     data.PersonalKnox = data.PersonalKnox or {}
