@@ -20,7 +20,8 @@ public final class AlifeWorld {
     private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
     private final Map<String, FactionEconomy> economies = new LinkedHashMap<>();
     private final Map<String, Long> lastExpand = new LinkedHashMap<>();
-    private final Map<String, ResourceNode> nodes = new LinkedHashMap<>();
+    private final Map<String, ResourceNodeState> nodes = new LinkedHashMap<>();
+    private long lastNodeIncome = Long.MIN_VALUE / 2;
     private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
     private long now;
@@ -51,16 +52,25 @@ public final class AlifeWorld {
     public void addResourceNode(ResourceNode node) {
         if (node == null || nodes.containsKey(node.id()))
             throw new IllegalArgumentException("Duplicate or missing resource node");
-        nodes.put(node.id(), node);
+        nodes.put(node.id(), new ResourceNodeState(node));
     }
 
-    public ResourceNode resourceNode(String id) { return nodes.get(id); }
-    public java.util.List<ResourceNode> resourceNodes() { return java.util.List.copyOf(nodes.values()); }
+    public ResourceNode resourceNode(String id) {
+        var state = nodes.get(id);
+        return state == null ? null : state.node();
+    }
+
+    public java.util.List<ResourceNode> resourceNodes() {
+        var result = new java.util.ArrayList<ResourceNode>();
+        for (var state : nodes.values()) result.add(state.node());
+        return java.util.List.copyOf(result);
+    }
 
     public AlifeEvent captureResourceNode(String nodeId, String factionId, long time) {
-        var node = nodes.get(nodeId);
-        if (node == null) throw new IllegalArgumentException("Unknown resource node");
-        nodes.put(nodeId, node.withController(factionId));
+        var state = nodes.get(nodeId);
+        if (state == null) throw new IllegalArgumentException("Unknown resource node");
+        var node = state.node().withController(factionId);
+        nodes.put(nodeId, new ResourceNodeState(node));
         return new AlifeEvent(AlifeEvent.Type.NODE_CAPTURED, nodeId, factionId,
                 node.x(), node.y(), node.z(), "captured");
     }
@@ -166,6 +176,20 @@ public final class AlifeWorld {
             if (!radio) {
                 events.add(new AlifeEvent(AlifeEvent.Type.OUTPOST_SILENT, outpost.id(), outpost.factionId(),
                         outpost.x(), outpost.y(), outpost.z(), "radio_off"));
+            }
+        }
+        if (time - lastNodeIncome >= 60_000L) {
+            lastNodeIncome = time;
+            for (var state : nodes.values()) {
+                int harvested = state.harvest(1);
+                var economy = economies.get(state.node().controller());
+                if (harvested > 0 && economy != null) {
+                    economy.add(FactionEconomy.Resource.valueOf(state.node().kind().name()), harvested);
+                }
+                if (!state.active() && state.refreshAt() == 0) {
+                    state.scheduleRefresh(time, 600_000L);
+                }
+                state.tryRefresh(time);
             }
         }
         for (var entry : economies.entrySet()) {

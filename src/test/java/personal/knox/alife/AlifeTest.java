@@ -127,6 +127,12 @@ public final class AlifeTest {
         var captured = nodeWorld.captureResourceNode("farm", "own", 100);
         assert captured.type() == AlifeEvent.Type.NODE_CAPTURED;
         assert nodeWorld.resourceNode("farm").controller().equals("own");
+        var incomeWorld = new AlifeWorld(23);
+        var incomeEconomy = new FactionEconomy(0);
+        incomeWorld.addFactionEconomy("own", incomeEconomy);
+        incomeWorld.addResourceNode(new ResourceNode("farm2", ResourceNode.Kind.FOOD, 0, 0, 0, "own", 7));
+        for (long i = 0; i < 7; i++) incomeWorld.tick(i * 60_000L, 0, 0, 0, 10);
+        assert incomeEconomy.get(FactionEconomy.Resource.FOOD) >= 7;
         var economyWorld = new AlifeWorld(17);
         economyWorld.addFactionEconomy("hungry", new FactionEconomy(2));
         var starvingEvents = economyWorld.tick(100, 0, 0, 0, 10);
