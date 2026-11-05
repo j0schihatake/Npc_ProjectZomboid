@@ -75,7 +75,9 @@ end
 
 function Ask.install(adapters)
     deps = adapters
-    Events.OnFillInventoryObjectContextMenu.Add(addOption)
+    if Events.OnFillInventoryObjectContextMenu then
+        Events.OnFillInventoryObjectContextMenu.Add(addOption)
+    end
 end
 
 return Ask
