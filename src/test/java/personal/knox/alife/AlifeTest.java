@@ -150,6 +150,7 @@ public final class AlifeTest {
         var outcome = raidWorld.resolveRaid("r1", 0.9, 2, 0.2, 50);
         assert outcome.attackersWin();
         assert raidWorld.raids().get(0).state() == Raid.State.WON;
+        personal.knox.alife.EscortPolicyTest.run();
         System.out.println("A-Life model tests passed: factions, squads, relations, revenge, budget, determinism.");
     }
 }
