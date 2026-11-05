@@ -19,23 +19,30 @@ CharacterStat={HUNGER={},THIRST={},FATIGUE={}}
 local function list(items)
  return {size=function() return #items end,get=function(_,index) return items[index+1] end}
 end
+local square
 local function window(planks,opposite)
- local w={planks=planks,valid=true,metal=false}
+ local w={kind='IsoWindow',planks=planks,valid=true,metal=false}
  local side={getNumPlanks=function() return w.planks end,isMetal=function() return w.metal end,isMetalBar=function() return false end}
  w.getBarricadeOnSameSquare=function() return not opposite and side or nil end
  w.getBarricadeOnOppositeSquare=function() return opposite and side or nil end
  w.isBarricadeAllowed=function() return true end
  w.getObjectIndex=function() return w.valid and 0 or -1 end
  w.getSquare=function() return w.valid and {} or nil end
+ w.getIndoorSquare=function() return square end
  return w
 end
 local w1,w2=window(1,false),window(1,true)
-local windows={w1,w2}
-local room={getWindows=function() return list(windows) end}
-local def={getRooms=function() return list({{getIsoRoom=function() return not unloaded and room or nil end}}) end}
+local foreign=window(0,false)
+foreign.getIndoorSquare=function() return {getBuilding=function() return {getDef=function() return {equals=function() return false end} end} end} end
+local windows={w1,w2,foreign}
+-- Reproduce the real house: cached room windows empty, world windows on exterior squares.
+local room={getWindows=function() return list({}) end}
+local maxX=0
+local def={getRooms=function() return list({{getIsoRoom=function() return not unloaded and room or nil end,getZ=function() return 0 end}}) end,
+ getX=function() return 0 end,getY=function() return 0 end,getX2=function() return maxX end,getY2=function() return 0 end}
 function def:equals(other) return other==self end
 local building={getDef=function() return def end}
-local square={getBuilding=function() return building end}
+square={getBuilding=function() return building end}
 local stock={['Base.Plank']=2,['Base.Nails']=3}
 local hammers={{isBroken=function() return true end}}
 local inventory={getItemCount=function(_,name,recurse) assert(recurse);return stock[name] or 0 end,
@@ -69,7 +76,15 @@ local function npc()
  n.getWorldObject=function() return body end
  n.getGoal=function() return n.goal end;n.getSubGoal=function() return n.subGoal end
  n.setGoal=function(_,v) n.goal=v end;n.setSubGoal=function(_,v) n.subGoal=v end
- n.getBehaviorTree=function() return {getChildWithName=function(_,name) assert(name=='BarricadeSubTree');return allowNode and {} or nil end} end
+ n.getBehaviorTree=function() return {
+  getChildWithName=function(_,name) assert(name=='BarricadeSubTree');return nil end,
+  getGoalNode=function() return {getChildWithNameWithDepth=function(_,name,depth)
+   assert(depth==1)
+   if name=='SafehouseSubTree' and n.goal=='SafehouseSubTree' then
+    return {getChildWithName=function(_,child) assert(child=='BarricadeSubTree');return allowNode and {} or nil end}
+   end
+  end} end
+ } end
  return n
 end
 function instanceof(obj,kind) return obj.kind==kind end
@@ -81,7 +96,8 @@ function getGameTime() return {getWorldAgeHours=function() return now end} end
 local reads=0
 function getCell() return {getGridSquare=function(_,x,y,z)
  reads=reads+1
- if x==0 and y==0 then return {getMovingObjects=function() return list(dangerObjects) end} end
+ return {getMovingObjects=function() return list(x==0 and y==0 and dangerObjects or {}) end,
+  getObjects=function() return list(x==-1 and y==0 and windows or {}) end}
 end,getZombieList=function() error('No whole-world zombie scan allowed') end} end
 PersonalKnoxAPI={getInstance=function() return {
  barricadeMissing=function(_,planks,metal) assert(planks>=0 and planks<=4);return metal and 0 or 4-planks end,
@@ -96,10 +112,10 @@ Barricade.install({isMember=function() return member end,journal=function() end,
  say=function(_,_,topic) assert(topic=='plan_barricade');announced=announced+1 end,cancelSupply=function() end})
 local n=npc()
 local report=Barricade.inspect(player,n)
-assert(report:find('hunger=0.4',1,true) and report:find('nativeBarricade=true',1,true))
+assert(report:find('hunger=0.4',1,true) and report:find('nativeBarricadeCurrent=false',1,true) and report:find('windows=2',1,true))
 assert(granted==0 and stopped==0 and transferred==0 and #Barricade.active==0,'Inspection must not issue orders, grant materials or interrupt actions')
 Barricade.start(player,n)
-assert(#Barricade.active==1 and stock['Base.Plank']==4 and stock['Base.Nails']==8 and #hammers==2)
+assert(#Barricade.active==1 and #Barricade.active[1].windows==2 and stock['Base.Plank']==4 and stock['Base.Nails']==8 and #hammers==2)
 assert(announced==1 and n.subGoal=='BarricadeSubTree')
 local before=granted
 tick();tick();assert(granted==before,'Never accumulate unused materials or duplicate healthy tools')
@@ -134,11 +150,14 @@ newWindow.metal=true;tick();assert(#Barricade.active==0,'Existing metal protecti
 w1.planks=0;Barricade.start(player,n);w1.valid=false;tick()
 assert(#Barricade.active==0 and messages[#messages]~='ContextMenu_PersonalKnox_BarricadeDone')
 w1.valid=true
--- Reject unsafe/unsupported starts before modifying inventory or native tasks.
+-- Reject invalid geometry before changing tasks; roll back a missing native branch after assignment.
 before=granted;unloaded=true;Barricade.start(player,n);unloaded=false
 assert(#Barricade.active==0 and granted==before)
 allowNode=false;Barricade.start(player,n);allowNode=true
 assert(#Barricade.active==0 and granted==before)
+assert(n.goal=='RoamingSubTree' and n.subGoal=='FollowSubTree','Unsupported lazy native assignment must roll back')
+maxX=10000;local beforeBounds=reads;Barricade.start(player,n);maxX=0
+assert(#Barricade.active==0 and granted==before and reads==beforeBounds,'Reject oversized geometry before scanning cells')
 safehouse={equals=function() return false end};Barricade.start(player,n);safehouse=def
 assert(#Barricade.active==0 and granted==before)
 local zombie={kind='IsoZombie',isDead=function() return false end}
