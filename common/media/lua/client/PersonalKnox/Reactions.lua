@@ -9,6 +9,17 @@ local function need(body, stat)
     return -1 -- Unknown is not evidence of hunger; keep other reactions working.
 end
 
+local function directionalTopic(java, body, zombie, topic)
+    if topic ~= "react_zombies" or not zombie then return topic end
+    -- Keep the generic line if an older core or an unavailable direction API is loaded.
+    local ok, result = pcall(function()
+        local facing = body:getForwardDirection()
+        return java:directionalReaction(topic, facing:getX(), facing:getY(),
+            zombie:getX() - body:getX(), zombie:getY() - body:getY())
+    end)
+    return ok and type(result) == "string" and result ~= "" and result or topic
+end
+
 local function enabled(player)
     local data = player:getModData()
     data.PersonalKnox = data.PersonalKnox or {}
@@ -76,10 +87,14 @@ function Reactions.poll()
         local npc = members[((Reactions.cursor + offset - 1) % #members) + 1]
         local body = npc:getWorldObject()
         if body and not body:isDead() and adapters.isMember(player, npc) then
-            local visible = 0
+            local visible, nearest, nearestDistance = 0, nil, math.huge
             for _, zombie in ipairs(threats) do
                 local dx, dy = body:getX() - zombie:getX(), body:getY() - zombie:getY()
-                if dx * dx + dy * dy <= 64 and body:CanSee(zombie) then visible = visible + 1 end
+                local distance = dx * dx + dy * dy
+                if distance <= 64 and body:CanSee(zombie) then
+                    visible = visible + 1
+                    if distance < nearestDistance then nearest, nearestDistance = zombie, distance end
+                end
             end
             local outside = body:getCurrentSquare() and body:getCurrentSquare():isOutside() or false
             local damage = body:getBodyDamage()
@@ -89,7 +104,7 @@ function Reactions.poll()
                 need(body, CharacterStat and CharacterStat.HUNGER),
                 need(body, CharacterStat and CharacterStat.THIRST),
                 need(body, CharacterStat and CharacterStat.FATIGUE))
-            if topic ~= "" then adapters.say(player, npc, topic) end
+            if topic ~= "" then adapters.say(player, npc, directionalTopic(java, body, nearest, topic)) end
         end
     end
     Reactions.cursor = (Reactions.cursor + 4) % #members

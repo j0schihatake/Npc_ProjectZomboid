@@ -68,6 +68,8 @@ public final class ReactionDirector {
         states.put(key, state);
         while (states.size() > 128) states.remove(states.keySet().iterator().next());
         if (state.pending != null && now > state.expires) state.pending = null;
+        if (zombies <= 0 && ("react_zombies".equals(state.pending) || "react_horde".equals(state.pending)))
+            state.pending = null; // A target lost from sight must not produce a stale warning.
         // Explicit policy on the game's 0..1 scales, with hysteresis near the threshold.
         boolean hungry = needs(hunger, state.hungry, .25, .15);
         boolean thirsty = needs(thirst, state.thirsty, .20, .10);

@@ -83,6 +83,10 @@ public final class PersonalKnoxAPI {
 
     public void resetWorldReactions() { reactions.reset(); }
 
+    public String directionalReaction(String topic, double facingX, double facingY, double dx, double dy) {
+        return ThreatDirection.topic(topic, facingX, facingY, dx, dy);
+    }
+
     public boolean isCleanBandage(String itemType, boolean canBandage, boolean infected) {
         return CompanionBrain.cleanBandage(itemType, canBandage, infected);
     }
