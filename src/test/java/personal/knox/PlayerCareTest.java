@@ -19,9 +19,11 @@ public final class PlayerCareTest {
                 : "Never interrupt a timed action";
 
         var danger = new PlayerCare();
-        assert danger.decide(1000, 100, 1, 50, .5, .5, false, true, true, true, true).equals("bandage")
-                : "Bandaging is allowed under threat";
-        assert danger.decide(5000, 100, 0, 50, .5, .5, false, true, true, true, true).equals("none")
+        assert danger.decide(1000, 100, 1, 50, .5, .5, false, true, true, true, true).equals("none")
+                : "No bandaging mid-fight at full health";
+        assert danger.decide(5000, 30, 1, 50, .5, .5, false, true, true, true, true).equals("bandage")
+                : "Critical bleeding outranks the fight";
+        assert danger.decide(9000, 100, 0, 50, .5, .5, false, true, true, true, true).equals("none")
                 : "No pills or food while threatened";
 
         var flags = new PlayerCare();

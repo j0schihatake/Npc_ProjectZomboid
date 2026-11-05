@@ -2,6 +2,9 @@
 pcall(require, "TimedActions/ISTimedActionQueue")
 pcall(require, "TimedActions/ISApplyBandage")
 pcall(require, "TimedActions/ISTakePillAction")
+pcall(require, "TimedActions/ISEatFoodAction")
+pcall(require, "TimedActions/ISDrinkFluidAction")
+pcall(require, "TimedActions/ISInventoryTransferAction")
 
 local Care = {}
 local Settings = require "PersonalKnox/Settings"
@@ -53,64 +56,93 @@ local function woundCount(player)
     return count
 end
 
-local function findBandage(player)
+local function scan(container, predicate, depth, budget)
+    if not container or depth > 2 then return nil end
+    local items = container:getItems()
+    for i = 0, items:size() - 1 do
+        local item = items:get(i)
+        budget.n = budget.n + 1
+        if budget.n > 200 then return nil end
+        if predicate(item) then return item end
+        if item:IsInventoryContainer() then
+            local found = scan(item:getInventory(), predicate, depth + 1, budget)
+            if found then return found end
+        end
+    end
+end
+
+local function findItem(player, predicate)
     local items = player:getInventory():getItems()
     for i = 0, items:size() - 1 do
         local item = items:get(i)
-        local power = 0
-        pcall(function() power = item:getBandagePower() end)
-        if power > 0 then
-            local dirty = false
-            pcall(function() dirty = typeOf(item):find("Dirty", 1, true) ~= nil end)
-            local infected = false
-            pcall(function() infected = item:isInfected() end)
-            if not dirty and not infected then return item end
+        if predicate(item) then return item end
+    end
+    if not Settings.careSearchBags() then return nil end
+    local budget = {n = 0}
+    for i = 0, items:size() - 1 do
+        local item = items:get(i)
+        if item:IsInventoryContainer() then
+            local found = scan(item:getInventory(), predicate, 1, budget)
+            if found then return found end
         end
     end
+end
+
+local function findBandage(player)
+    local best, bestScore = nil, 0
+    findItem(player, function(item)
+        local power = 0
+        pcall(function() power = item:getBandagePower() end)
+        local canBandage = false
+        pcall(function() canBandage = item:isCanBandage() end)
+        if power <= 0 and not canBandage then return false end
+        local infected = false
+        pcall(function() infected = item:isInfected() end)
+        if infected then return false end
+        local dirty = false
+        pcall(function() dirty = typeOf(item):find("Dirty", 1, true) ~= nil end)
+        local score = dirty and 1 or 2
+        if score > bestScore then best, bestScore = item, score end
+        return false
+    end)
+    return best
 end
 
 local function findPainkiller(player)
-    local items = player:getInventory():getItems()
-    for i = 0, items:size() - 1 do
-        local item = items:get(i)
+    return findItem(player, function(item)
         local full = item:getFullType()
-        if full == "Base.Pills" or (item:getType() and item:getType():find("Painkiller", 1, true)) then
-            local uses = 0
-            pcall(function() uses = item:getCurrentUsesFloat() end)
-            if uses > 0 then return item end
-        end
-    end
+        if full ~= "Base.Pills" and not (item:getType() and item:getType():find("Painkiller", 1, true)) then return false end
+        local uses = 0
+        pcall(function() uses = item:getCurrentUsesFloat() end)
+        return uses > 0
+    end)
 end
 
 local function findDrink(player)
-    local items = player:getInventory():getItems()
-    for i = 0, items:size() - 1 do
-        local item = items:get(i)
+    return findItem(player, function(item)
         local source = false
         pcall(function() source = item:isWaterSource() end)
-        if source then
-            local uses = 0
-            pcall(function() uses = item:getCurrentUsesFloat() end)
-            if uses > 0 then return item end
-            local fluid = item:getFluidContainer()
-            if fluid and fluid:getAmount() > 0 then return item end
-        end
-    end
+        if not source then return false end
+        local uses = 0
+        pcall(function() uses = item:getCurrentUsesFloat() end)
+        if uses > 0 then return true end
+        local fluid = item:getFluidContainer()
+        return fluid ~= nil and fluid:getAmount() > 0
+    end)
 end
 
 local function findFood(player)
-    local items = player:getInventory():getItems()
-    local best, bestChange
-    for i = 0, items:size() - 1 do
-        local item = items:get(i)
-        if instanceof(item, "Food") then
-            local change = item:getHungerChange()
-            if change < 0 and not item:isRotten() and not item:isBurnt() then
-                if not bestChange or change < bestChange then best, bestChange = item, change end
-            end
-        end
+    return findItem(player, function(item)
+        return instanceof(item, "Food") and item:getHungerChange() < 0
+            and not item:isRotten() and not item:isBurnt()
+    end)
+end
+
+local function ensureMain(player, item)
+    local inventory = player:getInventory()
+    if item:getContainer() and item:getContainer() ~= inventory then
+        ISTimedActionQueue.add(ISInventoryTransferAction:new(player, item, item:getContainer(), inventory, 10))
     end
-    return best
 end
 
 local function busy(player)
@@ -126,19 +158,27 @@ local function execute(player, action)
         local part = woundPart(player)
         local item = part and findBandage(player)
         if not part or not item then return false end
+        ensureMain(player, item)
         ISTimedActionQueue.add(ISApplyBandage:new(player, player, item, part, true))
         return true
     elseif action == "painkiller" then
         local item = findPainkiller(player)
         if not item then return false end
+        ensureMain(player, item)
         ISTimedActionQueue.add(ISTakePillAction:new(player, item))
         return true
     elseif action == "drink" then
         local item = findDrink(player)
-        return item ~= nil and player:DrinkFluid(item, 0.5, false) == true
+        if not item then return false end
+        ensureMain(player, item)
+        ISTimedActionQueue.add(ISDrinkFluidAction:new(player, item, 0.5))
+        return true
     elseif action == "eat" then
         local item = findFood(player)
-        return item ~= nil and player:Eat(item, 1.0, false) == true
+        if not item then return false end
+        ensureMain(player, item)
+        ISTimedActionQueue.add(ISEatFoodAction:new(player, item, 1))
+        return true
     end
     return false
 end

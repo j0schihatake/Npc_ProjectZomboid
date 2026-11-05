@@ -24,6 +24,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("infiniteDurability", "UI_PersonalKnox_InfiniteDurability", true, "UI_PersonalKnox_InfiniteDurabilityHint")
     ensure("infiniteAmmo", "UI_PersonalKnox_InfiniteAmmo", true, "UI_PersonalKnox_InfiniteAmmoHint")
     ensure("autoUnstick", "UI_PersonalKnox_AutoUnstick", true, "UI_PersonalKnox_AutoUnstickHint")
+    ensure("careSearchBags", "UI_PersonalKnox_CareSearchBags", true, "UI_PersonalKnox_CareSearchBagsHint")
 end
 
 local function value(key, fallback)
@@ -40,4 +41,5 @@ function Settings.autoEat() return value("autoEat", true) end
 function Settings.infiniteDurability() return value("infiniteDurability", true) end
 function Settings.infiniteAmmo() return value("infiniteAmmo", true) end
 function Settings.autoUnstick() return value("autoUnstick", true) end
+function Settings.careSearchBags() return value("careSearchBags", true) end
 return Settings

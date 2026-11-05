@@ -34,7 +34,8 @@ public final class PlayerCare {
                                  double hunger, boolean busy, boolean danger,
                                  boolean medic, boolean drink, boolean eat) {
         // Bleeding outranks everything and is allowed even while a threat is near.
-        if (medic && bleedingParts > 0 && !busy) return BANDAGE;
+        // Do not interrupt a fight with a bandage unless the character is critically hurt.
+        if (medic && bleedingParts > 0 && !busy && (!danger || health < 40)) return BANDAGE;
         if (medic && pain >= 40 && !busy && !danger) return PAINKILLER;
         if (drink && thirst >= 0.20 && !busy && !danger) return DRINK;
         if (eat && hunger >= 0.25 && !busy && !danger) return EAT;
