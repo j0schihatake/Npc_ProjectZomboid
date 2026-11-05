@@ -12,6 +12,7 @@ public final class OwnNpcLayer {
     public static final double STEP_METERS = 2.0;
     private final Map<String, OwnNpcAgent> agents = new LinkedHashMap<>();
     private final Map<String, OwnNpcOrder> orders = new LinkedHashMap<>();
+    private final Map<String, Double> targetZ = new LinkedHashMap<>();
     private double followX, followY;
     private double needRate = 1;
 
@@ -40,6 +41,7 @@ public final class OwnNpcLayer {
         var state = new personal.knox.npc.NpcState(100, 0.2, 0.2, 0.2, 0.7,
                 false, false, personal.knox.npc.NpcState.Role.SCAVENGER,
                 personal.knox.npc.NpcState.Task.FOLLOW);
+        targetZ.put(id, z);
         return spawn(new OwnNpcAgent(id, "own", x + ox, y + oy, z, x + ox + 3, y + oy, 2, state));
     }
 
@@ -62,6 +64,17 @@ public final class OwnNpcLayer {
         followX = x;
         followY = y;
     }
+
+    public void followTarget(double x, double y, double z) {
+        followTarget(x, y);
+        if (!Double.isFinite(z)) throw new IllegalArgumentException("Invalid follow floor");
+        targetZ.put("__follow__", z);
+    }
+
+    public double targetZ(String id) {
+        return targetZ.getOrDefault(id, targetZ.getOrDefault("__follow__", 0.0));
+    }
+
 
     public OwnNpcOrder orderOf(String id) { return orders.getOrDefault(id, OwnNpcOrder.HOLD); }
 
@@ -89,6 +102,7 @@ public final class OwnNpcLayer {
 
     public OwnNpcEvent remove(String id) {
         orders.remove(id);
+        targetZ.remove(id);
         var agent = agents.remove(id);
         if (agent == null) throw new IllegalArgumentException("Unknown agent");
         return new OwnNpcEvent(OwnNpcEvent.Type.REMOVED, id, agent.x(), agent.y(), agent.z(), "remove");

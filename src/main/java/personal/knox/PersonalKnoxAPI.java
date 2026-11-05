@@ -45,6 +45,10 @@ public final class PersonalKnoxAPI {
 
     public void ownFollowTarget(double x, double y) { ownLayer.followTarget(x, y); }
 
+    public void ownFollowTarget3(double x, double y, double z) { ownLayer.followTarget(x, y, z); }
+
+    public double ownTargetZ(String id) { return ownLayer.targetZ(id); }
+
     public String ownOrder(String id, double x, double y) {
         return ownLayer.order(id, x, y).agentId();
     }
