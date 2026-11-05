@@ -44,5 +44,11 @@
   "UI_PersonalKnox_NeedNormal": "Обычно",
   "UI_PersonalKnox_NeedFast": "Быстро",
   "UI_PersonalKnox_NeedVeryFast": "Очень быстро",
-  "UI_optionscreen_binding_PersonalKnoxAnswer": "Ответ отряду: открыть меню"
+  "UI_optionscreen_binding_PersonalKnoxAnswer": "Ответ отряду: открыть меню",
+  "UI_PersonalKnox_ChatterFrequency": "Частота болтовни союзников",
+  "UI_PersonalKnox_ChatterFrequencyHint": "Как часто союзники сами начинают разговор: выкл, редко, обычно или часто.",
+  "UI_PersonalKnox_ChatterOff": "Выкл",
+  "UI_PersonalKnox_ChatterRare": "Редко",
+  "UI_PersonalKnox_ChatterNormal": "Обычно",
+  "UI_PersonalKnox_ChatterOften": "Часто"
 }

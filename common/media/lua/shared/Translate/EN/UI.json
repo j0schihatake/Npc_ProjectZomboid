@@ -35,5 +35,11 @@
   "UI_PersonalKnox_NeedNormal": "Normal",
   "UI_PersonalKnox_NeedFast": "Fast",
   "UI_PersonalKnox_NeedVeryFast": "Very fast",
-  "UI_optionscreen_binding_PersonalKnoxAnswer": "Answer the squad: open menu"
+  "UI_optionscreen_binding_PersonalKnoxAnswer": "Answer the squad: open menu",
+  "UI_PersonalKnox_ChatterFrequency": "Companion chatter rate",
+  "UI_PersonalKnox_ChatterFrequencyHint": "How often companions start a conversation: off, rare, normal or often.",
+  "UI_PersonalKnox_ChatterOff": "Off",
+  "UI_PersonalKnox_ChatterRare": "Rare",
+  "UI_PersonalKnox_ChatterNormal": "Normal",
+  "UI_PersonalKnox_ChatterOften": "Often"
 }

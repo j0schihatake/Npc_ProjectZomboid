@@ -135,3 +135,20 @@
 135	item_object	default	Отдай, мне это нужнее.
 136	item_object	default	У меня пусто — я возьму.
 137	item_object	low_morale	Мне бы самому пригодилось...
+138	smalltalk	default	Как день проходит?
+139	smalltalk	default	Что нового?
+140	smalltalk	default	Тихо, как в могиле.
+141	smalltalk	default	Есть планы?
+142	smalltalk	default	Я на минуту.
+143	smalltalk	default	Не люблю эту тишину.
+144	smalltalk	default	Держись рядом.
+145	smalltalk	default	Как рана?
+146	smalltalk	low_trust	Я занят.
+147	smalltalk	low_trust	Ну?
+148	smalltalk	low_trust	Что надо?
+149	smalltalk	low_morale	Устал...
+150	smalltalk	low_morale	Не сегодня.
+151	smalltalk	low_morale	Хочется просто сесть.
+152	smalltalk	low_morale	Сил нет.
+153	smalltalk	brave	Нормально держимся.
+154	smalltalk	brave	Не дрейфь.

@@ -35,6 +35,14 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_NeedFast")
         combo:addItem("UI_PersonalKnox_NeedVeryFast")
     end
+    if page and not page:getOption("chatterFrequency") then
+        local combo = page:addComboBox("chatterFrequency", getText("UI_PersonalKnox_ChatterFrequency"),
+            getText("UI_PersonalKnox_ChatterFrequencyHint"))
+        combo:addItem("UI_PersonalKnox_ChatterOff")
+        combo:addItem("UI_PersonalKnox_ChatterRare")
+        combo:addItem("UI_PersonalKnox_ChatterNormal", true)
+        combo:addItem("UI_PersonalKnox_ChatterOften")
+    end
     if page and not page:getOption("helpFrequency") then
         local combo = page:addComboBox("helpFrequency", getText("UI_PersonalKnox_HelpFrequency"),
             getText("UI_PersonalKnox_HelpFrequencyHint"))
@@ -61,6 +69,12 @@ function Settings.infiniteAmmo() return value("infiniteAmmo", true) end
 function Settings.autoUnstick() return value("autoUnstick", true) end
 function Settings.careSearchBags() return value("careSearchBags", true) end
 function Settings.npcVoices() return value("npcVoices", true) end
+function Settings.chatterFrequency()
+    local option = page and page:getOption("chatterFrequency")
+    if not option then return 3 end
+    local choice = option:getValue()
+    return type(choice) == "number" and choice or 3
+end
 function Settings.npcNeedRate()
     local option = page and page:getOption("npcNeedRate")
     if not option then return 3 end

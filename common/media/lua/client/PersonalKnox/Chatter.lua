@@ -2,11 +2,20 @@
 local Chatter = {}
 local Settings = require "PersonalKnox/Settings"
 local Util = require "PersonalKnox/Util"
-local CHECK_MS, MIN_GAP_MS, MAX_GAP_MS = 15000, 90000, 180000
+local CHECK_MS = 15000
+local function gap()
+    local rate = Settings.chatterFrequency()
+    if rate == 1 then return nil end
+    if rate == 2 then return 240000, 420000 end
+    if rate == 4 then return 45000, 90000 end
+    return 90000, 180000
+end
 local lastCheck, nextAt, deps = 0, 0, nil
 
 local function poll(player)
     if not deps or not Settings.speechEnabled() or isClient() then return end
+    local minGap, maxGap = gap()
+    if not minGap then return end
     local now = getTimestampMs()
     if now - lastCheck < CHECK_MS then return end
     lastCheck = now
@@ -23,7 +32,7 @@ local function poll(player)
     end
     if not speaker then return end
     deps.say(player, speaker, "smalltalk")
-    nextAt = now + MIN_GAP_MS + math.random() * (MAX_GAP_MS - MIN_GAP_MS)
+    nextAt = now + minGap + math.random() * (maxGap - minGap)
     if Settings.diagnosticsEnabled() then
         print("[PersonalKnox][chatter] npc=" .. tostring(Util.id(speaker)))
     end
