@@ -11,6 +11,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+from dev_trust import policy as trust_policy, approve as approve_projects
 
 ROOT = Path(__file__).resolve().parents[1]
 GAME = Path('/home/j0schi/SteamLibrary/steamapps/common/ProjectZomboid')
@@ -35,7 +36,9 @@ def mod_metadata(root):
                 r'^([^=\r\n]+)\s*=\s*(.*?)\s*$',path.read_text(errors='replace'),re.M))
     if not info.get('id'):
         return None
+    jar=info.get('javaJarFile')
     return {'id':info['id'],'root':root.resolve(),
+            'java_jar':(selected/jar.lstrip('\\')) if jar else None,
             'requires':[x.strip().lstrip('\\') for x in info.get('require','').split(',') if x.strip()]}
 
 
@@ -166,7 +169,9 @@ def main():
     parser.add_argument('--detach',action='store_true',help='Return PID immediately; no launch timeout or automatic process termination')
     parser.add_argument('--prepare-only',action='store_true')
     parser.add_argument('--dry-run',action='store_true',help='Resolve mods and print the plan without changing files or launching')
-    parser.add_argument('--approve-own',action='store_true',help='Persist ZombieBuddy approval for the current source JAR before launch')
+    parser.add_argument('--approve-own',action='store_true',help='Alias for --trust-local-builds')
+    parser.add_argument('--trust-local-builds',action='store_true',help='Authorize standing trust for the two local project roots')
+    parser.add_argument('--approval-store',type=Path,default=Path.home()/'.zombie_buddy/mod_approvals.json')
     args=parser.parse_args()
     source=args.source.expanduser().resolve();userdata=args.userdata.expanduser().resolve()
     cache=args.cache_dir.expanduser().resolve();game=args.game_root.expanduser().resolve()
@@ -177,8 +182,6 @@ def main():
     own=mod_metadata(source)
     if not own or own['id']!='PersonalKnox':
         raise ValueError('--source must declare id=PersonalKnox for B42.21')
-    if args.approve_own:
-        approve_own(source)
     engine=game/'projectzomboid';binary=engine/'ProjectZomboid64'
     if not binary.is_file():
         raise ValueError('Game executable not found: '+str(binary))
@@ -194,6 +197,11 @@ def main():
     else:
         requested=MINIMAL.copy()
     ids,mods=resolve(discover(source,userdata,workshop),requested+['PersonalKnox']+args.add_mod)
+    if args.approve_own or args.trust_local_builds:
+        trusted = trust_policy(cache, {'PersonalKnox': source}, True)
+        changed = approve_projects(mods, trusted, args.approval_store, cache/'approval-backups')
+        if changed: print('Approved local build for ZombieBuddy: ' + ', '.join(changed), flush=True)
+
     command=[str(binary),'-debug','-cachedir='+str(cache)]+(['-nosteam'] if args.nosteam else [])
     if args.dry_run:
         print(json.dumps({'command':command,'cwd':str(engine),'cache':str(cache),'source':str(source),
