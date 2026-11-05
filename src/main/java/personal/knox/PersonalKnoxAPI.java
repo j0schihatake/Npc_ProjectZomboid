@@ -126,6 +126,17 @@ public final class PersonalKnoxAPI {
 
     public void resetCare() { care.reset(); }
 
+    public boolean helpAllowed(int frequency, double nowMillis, double lastAtMillis) {
+        if (!Double.isFinite(nowMillis) || !Double.isFinite(lastAtMillis)
+                || nowMillis < 0 || lastAtMillis < 0
+                || nowMillis > Long.MAX_VALUE || lastAtMillis > Long.MAX_VALUE) return false;
+        return HelpPolicy.allowed(frequency, (long) nowMillis, (long) lastAtMillis);
+    }
+
+    public double helpInterval(int frequency) {
+        return HelpPolicy.interval(frequency);
+    }
+
     public boolean upkeepNeedsRepair(int condition, int max) {
         return UpkeepPolicy.needsRepair(condition, max);
     }

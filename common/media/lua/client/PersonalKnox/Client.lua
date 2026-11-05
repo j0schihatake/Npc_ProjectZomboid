@@ -13,6 +13,8 @@ local Settings = require "PersonalKnox/Settings"
 local Care = require "PersonalKnox/Care"
 local Upkeep = require "PersonalKnox/Upkeep"
 local Stuck = require "PersonalKnox/Stuck"
+local Crowd = require "PersonalKnox/Crowd"
+local Help = require "PersonalKnox/Help"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -62,6 +64,23 @@ local function speak(body, text)
     if not ok then body:Say(text) end
 end
 
+local function voice(body, topic)
+    if not Settings.npcVoices() then return end
+    local prefix = "VoiceMale"
+    local ok, female = pcall(function() return body:isFemale() end)
+    if ok and female then prefix = "VoiceFemale" end
+    local sound = prefix
+    if topic == "react_injury" or topic == "react_player_injury" then
+        sound = prefix .. "PainFromHitBlunt"
+    elseif topic:find("zombies", 1, true) or topic == "react_horde" then
+        sound = prefix .. "ShoutHey"
+    end
+    local played = pcall(function() body:playSound(sound) end)
+    if Settings.diagnosticsEnabled() then
+        print("[PersonalKnox][voice] sound=" .. sound .. " ok=" .. tostring(played))
+    end
+end
+
 local function say(player, npc, topic)
     if not Settings.speechEnabled() then return end
     if not isMember(player, npc) then return end
@@ -79,6 +98,7 @@ local function say(player, npc, topic)
     local row = Core.pickDialogue(Dialogues, topic, state, ZombRand(10000))
     if row then
         speak(body, row.text)
+        voice(body, topic)
         journal(player, npc, "dialogue", tostring(row.id))
     end
 end
@@ -226,4 +246,6 @@ end)
 Care.install()
 Upkeep.install()
 Stuck.install({isMember=isMember,roster=roster})
+Crowd.install({isMember=isMember})
+Help.install()
 print("[PersonalKnox] Lua addon loaded; Russian dialogues and elevation diagnostics ready.")

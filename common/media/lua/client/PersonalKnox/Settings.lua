@@ -25,6 +25,15 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("infiniteAmmo", "UI_PersonalKnox_InfiniteAmmo", true, "UI_PersonalKnox_InfiniteAmmoHint")
     ensure("autoUnstick", "UI_PersonalKnox_AutoUnstick", true, "UI_PersonalKnox_AutoUnstickHint")
     ensure("careSearchBags", "UI_PersonalKnox_CareSearchBags", true, "UI_PersonalKnox_CareSearchBagsHint")
+    ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
+    if page and not page:getOption("helpFrequency") then
+        local combo = page:addComboBox("helpFrequency", getText("UI_PersonalKnox_HelpFrequency"),
+            getText("UI_PersonalKnox_HelpFrequencyHint"))
+        combo:addItem("UI_PersonalKnox_HelpOff")
+        combo:addItem("UI_PersonalKnox_HelpRare")
+        combo:addItem("UI_PersonalKnox_HelpNormal", true)
+        combo:addItem("UI_PersonalKnox_HelpOften")
+    end
 end
 
 local function value(key, fallback)
@@ -42,4 +51,11 @@ function Settings.infiniteDurability() return value("infiniteDurability", true) 
 function Settings.infiniteAmmo() return value("infiniteAmmo", true) end
 function Settings.autoUnstick() return value("autoUnstick", true) end
 function Settings.careSearchBags() return value("careSearchBags", true) end
+function Settings.npcVoices() return value("npcVoices", true) end
+function Settings.helpFrequency()
+    local option = page and page:getOption("helpFrequency")
+    if not option then return 3 end
+    local choice = option:getValue()
+    return type(choice) == "number" and choice or 3
+end
 return Settings
