@@ -62,6 +62,8 @@ public final class BrainTest {
         assert !api.isCleanBandage("Base.Bandage",true,true);
         assert !api.isCleanBandage("Base.Bandage",false,false);
         assert api.chooseDialogue("plan_supplies", 0.1, 10, 10, 0) > 0 : "Fallback to default template";
+        assert api.chooseDialogue("plan_house", 0.5, 50, 50, 0) > 0;
+        assert api.chooseDialogue("plan_barricade", 0.5, 50, 50, 0) > 0;
         ReactionTest.run();
         System.out.println("Java tests passed: squad policy, Russian dialogues, floor/range classification, supply priorities.");
     }
