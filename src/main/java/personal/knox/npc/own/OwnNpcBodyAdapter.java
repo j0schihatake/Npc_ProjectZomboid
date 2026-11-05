@@ -29,7 +29,7 @@ public final class OwnNpcBodyAdapter {
                     if (body == null) continue;
                     bodies.put(agent.id(), body);
                 }
-                move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY());
+                move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
             }
             var stale = new HashSet<>(bodies.keySet());
             stale.removeAll(seen);
@@ -108,7 +108,7 @@ public final class OwnNpcBodyAdapter {
         System.out.println("[PersonalKnox] Own body dress failed");
     }
 
-    private void move(String id, Object body, double x, double y, double z, double tx, double ty) {
+    private void move(String id, Object body, double x, double y, double z, double tx, double ty, double targetZ) {
         double sx = x, sy = y;
         try {
             Object cell = currentCell();
@@ -129,6 +129,10 @@ public final class OwnNpcBodyAdapter {
                 }
             }
         } catch (Throwable ignored) { }
+        if (Math.hypot(tx - sx, ty - sy) < 1.5 && Math.abs(targetZ - z) > 0.4) {
+            z = targetZ;
+            pathCache.remove(id);
+        }
         invoke(body, "setX", new Class<?>[]{float.class}, (float) sx);
         invoke(body, "setY", new Class<?>[]{float.class}, (float) sy);
         invoke(body, "setZ", new Class<?>[]{float.class}, (float) z);
