@@ -37,6 +37,7 @@ local function tick()
         lastSave = now
         player:getModData().PersonalKnoxOwnNpc = api:ownSnapshot()
         player:getModData().PersonalKnoxOwnPopulation = api:ownPopulationSnapshot()
+        player:getModData().PersonalKnoxTargetZ = api:ownTargetZSnapshot()
     end
     if not logged then
         logged = true
@@ -56,6 +57,9 @@ function OwnNpc.install(adapters)
         if data and data.PersonalKnoxOwnNpc and PersonalKnoxAPI then
             local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownRestore(data.PersonalKnoxOwnNpc) end)
             if not ok then print("[PersonalKnox] Own-NPC restore error: " .. tostring(err)) end
+        end
+        if data and data.PersonalKnoxTargetZ and PersonalKnoxAPI then
+            pcall(function() PersonalKnoxAPI.getInstance():ownTargetZRestore(data.PersonalKnoxTargetZ) end)
         end
         if data and data.PersonalKnoxOwnPopulation and PersonalKnoxAPI then
             local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownPopulationRestore(data.PersonalKnoxOwnPopulation) end)

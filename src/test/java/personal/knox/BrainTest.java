@@ -114,6 +114,7 @@ public final class BrainTest {
         personal.knox.npc.own.OwnNpcLayerTest.run();
         personal.knox.npc.own.OwnNpcCodecTest.run();
         personal.knox.npc.own.OwnNpcPopulationCodecTest.run();
+        personal.knox.npc.own.OwnNpcTargetZCodecTest.run();
         personal.knox.npc.own.OwnNpcTraversalTest.run();
         personal.knox.npc.own.OwnNpcPathfinderTest.run();
         personal.knox.npc.own.OwnNpcTraversalGridTest.run();

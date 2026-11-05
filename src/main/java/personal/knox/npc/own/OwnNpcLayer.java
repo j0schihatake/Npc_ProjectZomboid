@@ -71,6 +71,14 @@ public final class OwnNpcLayer {
         targetZ.put("__follow__", z);
     }
 
+    public java.util.Map<String, Double> targetZMap() { return new LinkedHashMap<>(targetZ); }
+
+    public void restoreTargetZ(java.util.Map<String, Double> values) {
+        if (values == null) throw new IllegalArgumentException("Missing target floors");
+        targetZ.clear();
+        targetZ.putAll(values);
+    }
+
     public double targetZ(String id) {
         return targetZ.getOrDefault(id, targetZ.getOrDefault("__follow__", 0.0));
     }
