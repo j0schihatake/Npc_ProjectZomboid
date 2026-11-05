@@ -14,6 +14,14 @@ public final class QuestLogTest {
         log.offer(q2);
         log.decline("q2");
         assert log.get("q2").state() == Quest.State.DECLINED;
+        var markerLog = new QuestLog();
+        var marked = new Quest("qm", Quest.Kind.SPECIAL_ZOMBIE, "own", "key-zombie", 1, Quest.State.OFFERED);
+        markerLog.offer(marked);
+        markerLog.accept("qm");
+        markerLog.setMarker(new QuestMarker("qm", 10, 20, 0, "Key zombie"));
+        assert markerLog.marker("qm").label().equals("Key zombie");
+        markerLog.complete("qm");
+        assert markerLog.marker("qm") == null : "Completed marker removed";
         try { log.offer(q); throw new AssertionError("Duplicate quest accepted"); }
         catch (IllegalArgumentException expected) { }
         try { log.accept("missing"); throw new AssertionError("Unknown quest accepted"); }

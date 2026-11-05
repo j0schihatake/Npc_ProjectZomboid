@@ -103,6 +103,7 @@ public final class BrainTest {
         personal.knox.base.BaseTest.run();
         personal.knox.quest.QuestTest.run();
         personal.knox.quest.QuestLogTest.run();
+        personal.knox.quest.SiegePolicyTest.run();
         SurrenderPolicyTest.run();
         BetrayalRiskTest.run();
         personal.knox.alife.AlifeTest.run();
