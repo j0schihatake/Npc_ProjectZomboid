@@ -24,6 +24,7 @@ local AutoAsk = require "PersonalKnox/AutoAsk"
 local NpcCare = require "PersonalKnox/NpcCare"
 local NpcEat = require "PersonalKnox/NpcEat"
 local AutoReload = require "PersonalKnox/AutoReload"
+local NpcReload = require "PersonalKnox/NpcReload"
 local Ask = require "PersonalKnox/Ask"
 
 local function attempt(fn, fallback)
@@ -272,5 +273,6 @@ AutoAsk.install({roster=roster,say=say})
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
 AutoReload.install()
+NpcReload.install({roster=roster,say=say})
 Ask.install({roster=roster,say=say})
 print("[PersonalKnox] Lua addon 0.4.54 loaded; Russian dialogues and elevation diagnostics ready.")
