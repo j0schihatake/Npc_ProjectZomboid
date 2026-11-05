@@ -9,6 +9,7 @@ local function kindOf(item)
     if item:IsFood() then return "food" end
     local script = item:getScriptItem()
     if script and script:getThirstChange() < 0 then return "water" end
+    if item:isCanBandage() then return "medical" end
     return nil
 end
 
@@ -47,16 +48,22 @@ local function poll(player)
             checked = checked + 1
             local hunger = body:getStats():get(CharacterStat.HUNGER)
             local thirst = body:getStats():get(CharacterStat.THIRST)
-            local kind = hunger >= 0.60 and "food" or (thirst >= 0.60 and "water" or nil)
+            local bleeding = body:getBodyDamage():getNumPartsBleeding() > 0
+            local kind = nil
+            if bleeding and not findItem(body, "medical") then kind = "medical"
+            elseif hunger >= 0.60 then kind = "food"
+            elseif thirst >= 0.60 then kind = "water" end
             if kind then
                 for _, donor in ipairs(roster) do
                     if donor ~= npc then
                         local donorBody = donor:getWorldObject()
                         if donorBody and not donorBody:isDead() and not donorBody:hasTimedActions() then
+                            local donorHealthy = donorBody:getBodyDamage():getHealth() >= 60
+                                and donorBody:getBodyDamage():getNumPartsBleeding() == 0
                             local donorNeed = kind == "food"
                                 and donorBody:getStats():get(CharacterStat.HUNGER)
                                 or donorBody:getStats():get(CharacterStat.THIRST)
-                            if donorNeed < 0.40 then
+                            if (kind == "medical" and donorHealthy) or (kind ~= "medical" and donorNeed < 0.40) then
                                 local item = findItem(donorBody, kind)
                                 if item and share(player, donor, npc, item, kind) then break end
                             end
