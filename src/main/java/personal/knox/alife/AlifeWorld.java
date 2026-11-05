@@ -19,6 +19,7 @@ public final class AlifeWorld {
     private final Map<String, Outpost> outposts = new LinkedHashMap<>();
     private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
     private final Map<String, FactionEconomy> economies = new LinkedHashMap<>();
+    private final Map<String, Long> lastExpand = new LinkedHashMap<>();
     private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
     private long now;
@@ -150,9 +151,20 @@ public final class AlifeWorld {
             }
         }
         for (var entry : economies.entrySet()) {
-            if (entry.getValue().tick(1, 1)) {
+            var economy = entry.getValue();
+            if (economy.tick(1, 1)) {
                 events.add(new AlifeEvent(AlifeEvent.Type.FACTION_STARVING, entry.getKey(), entry.getKey(),
                         px, py, pz, "supplies"));
+            }
+            long last = lastExpand.getOrDefault(entry.getKey(), 0L);
+            boolean ready = !lastExpand.containsKey(entry.getKey()) || time - last >= 3_600_000L;
+            if (economy.canExpand() && ready) {
+                economy.consume(FactionEconomy.Resource.FOOD, 20);
+                economy.consume(FactionEconomy.Resource.WATER, 10);
+                economy.consume(FactionEconomy.Resource.MATERIALS, 10);
+                lastExpand.put(entry.getKey(), time);
+                events.add(new AlifeEvent(AlifeEvent.Type.FACTION_EXPAND, entry.getKey(), entry.getKey(),
+                        px, py, pz, "base"));
             }
         }
         for (var factionId : respawnReady(time, respawnDelayMillis)) {

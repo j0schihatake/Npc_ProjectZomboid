@@ -114,6 +114,14 @@ public final class AlifeTest {
         personal.knox.alife.DynamicRelationsTest.run();
         personal.knox.alife.FactionPresenceTest.run();
         personal.knox.alife.FactionEconomyTest.run();
+        var expanding = new AlifeWorld(19);
+        var rich = new FactionEconomy(2);
+        rich.add(FactionEconomy.Resource.FOOD, 100);
+        rich.add(FactionEconomy.Resource.WATER, 100);
+        rich.add(FactionEconomy.Resource.MATERIALS, 100);
+        expanding.addFactionEconomy("rich", rich);
+        assert expanding.tick(0, 0, 0, 0, 10).stream().anyMatch(e -> e.type() == AlifeEvent.Type.FACTION_EXPAND);
+        assert expanding.tick(1000, 0, 0, 0, 10).stream().noneMatch(e -> e.type() == AlifeEvent.Type.FACTION_EXPAND);
         var economyWorld = new AlifeWorld(17);
         economyWorld.addFactionEconomy("hungry", new FactionEconomy(2));
         var starvingEvents = economyWorld.tick(100, 0, 0, 0, 10);
