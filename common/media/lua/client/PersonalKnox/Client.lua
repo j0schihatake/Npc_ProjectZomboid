@@ -53,6 +53,12 @@ local function journal(player, npc, kind, detail)
     }, 100)
 end
 
+local function speak(body, text)
+    -- Say() goes to the chat panel for NPCs; ChatElement draws the bubble above the character.
+    local ok = pcall(function() body:addLineChatElement(text, 1, 1, 1) end)
+    if not ok then body:Say(text) end
+end
+
 local function say(player, npc, topic)
     if not Settings.speechEnabled() then return end
     if not isMember(player, npc) then return end
@@ -69,7 +75,7 @@ local function say(player, npc, topic)
     local state = stateFor(player, npc)
     local row = Core.pickDialogue(Dialogues, topic, state, ZombRand(10000))
     if row then
-        body:Say(row.text)
+        speak(body, row.text)
         journal(player, npc, "dialogue", tostring(row.id))
     end
 end
