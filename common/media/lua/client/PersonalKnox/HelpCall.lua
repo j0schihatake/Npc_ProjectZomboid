@@ -5,6 +5,7 @@ local Call = require "PersonalKnox/Call"
 local Settings = require "PersonalKnox/Settings"
 local INTERVAL_MS, RADIUS, MAX_NPCS, MAX_OBJECTS = 5000, 4, 4, 128
 local lastCheck = 0
+local lastScan = 0
 local assist = {}
 
 local function threats(body)
@@ -36,6 +37,7 @@ local function poll(player, deps)
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
     local best, bestCount, checked = nil, 0, 0
+    local maxNpc, maxCount = nil, 0
     for _, npc in ipairs(deps.roster(player)) do
         if checked >= MAX_NPCS then break end
         local body = npc:getWorldObject()
@@ -44,6 +46,7 @@ local function poll(player, deps)
             if dx * dx + dy * dy <= 900 then
                 checked = checked + 1
                 local count = threats(body)
+                if count > maxCount then maxNpc, maxCount = npc, count end
                 if count >= 3 and count > bestCount then best, bestCount = npc, count end
             end
         end
@@ -53,6 +56,11 @@ local function poll(player, deps)
             assist[ally] = nil
             Call.one(player, ally, true)
         end
+    end
+    if Settings.diagnosticsEnabled() and now - lastScan >= 60000 then
+        lastScan = now
+        print("[PersonalKnox][help-scan] npc=" .. tostring(maxNpc and maxNpc:getId() or "none")
+            .. " threats=" .. tostring(maxCount))
     end
     if best and Help.allowed(now) then
         deps.say(player, best, "react_horde")
