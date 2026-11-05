@@ -38,7 +38,7 @@
 
 ## Включённые моды
 
-В рабочей 0.4.2 добавлены только речевые реакции на потребности: новый Java-вход `worldReactionWithNeeds`, прежний `worldReactionTopic` сохранён. Lua читает `CharacterStat.HUNGER/THIRST/FATIGUE` из Stats; при недоступном чтении передаёт неизвестное значение и продолжает реакции на мир. Число опрашиваемых NPC/клеток/целей не увеличено. Проверки охватывают восстановленные потребности, подавление боем и кровотечением, интервалы и границы работы. В активной игре эти новые реплики ещё не проверены и версия пока не подключена.
+В подключённой для проверки 0.4.2 добавлены речевые реакции на потребности: новый Java-вход `worldReactionWithNeeds`, прежний `worldReactionTopic` сохранён. Lua читает `CharacterStat.HUNGER/THIRST/FATIGUE` из Stats; при недоступном чтении передаёт неизвестное значение и продолжает реакции на мир. Число опрашиваемых NPC/клеток/целей не увеличено. Проверки охватывают восстановленные потребности, подавление боем и кровотечением, интервалы и границы работы. Эти новые реплики ещё не проверены в мире. Первый запуск после установки остановился до загрузки мода: SteamAPI сообщил, что Steam не запущен; это не ошибка Lua/Java PersonalKnox.
 
 Реальная диагностика 0.4.0 в мире: `npc=3129 goal=RoamingSubTree subGoal=FollowSubTree nativeBarricade=false health=100 hunger=0.0011070530163124204 thirst=0.009371641092002392 fatigue=0 planks=0 nails=0 healthyHammer=false safehouseMatches=true windows=0`. Это подтверждает чтение потребностей/инвентаря и совпадение убежища, но опровергает достаточность исходного поиска ветки/кеша окон для запуска баррикадирования.
 
@@ -80,7 +80,7 @@
 | Maplewood | 3644794945 | не указана | — |
 | NepInfiniteAmmo | 3408420806 | не указана | — |
 | aparosa_ViewpointI18n | 3822634333 | 0.0.14 | ZombieBuddy,Viewpoint |
-| PersonalKnox | локальный | 0.4.0 | ZombieBuddy, KnoxEventExpandedNpc |
+| PersonalKnox | локальный | 0.4.2 | ZombieBuddy, KnoxEventExpandedNpc |
 | IWD | 3657654953 | не указана | — |
 | FarSnowGround | 3830920925 | 1.0.0 | Viewpoint |
 | ViewpointLivingProps | 3816442251 | 1.0.3 | Viewpoint,ZombieBuddy |
