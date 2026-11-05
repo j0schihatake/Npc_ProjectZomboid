@@ -2,7 +2,7 @@
 local Chatter = {}
 local Settings = require "PersonalKnox/Settings"
 local Util = require "PersonalKnox/Util"
-local CHECK_MS = 15000
+local CHECK_MS = 30000
 local function gap()
     local rate = Settings.chatterFrequency()
     if rate == 1 then return nil end

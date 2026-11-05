@@ -2,7 +2,7 @@
 local Negotiation = {}
 local Settings = require "PersonalKnox/Settings"
 local Call = require "PersonalKnox/Call"
-local INTERVAL_MS, ANSWER_MS, COOLDOWN_MS = 2000, 8000, 120000
+local INTERVAL_MS, ANSWER_MS, COOLDOWN_MS = 5000, 8000, 120000
 local lastCheck, lastStart = 0, 0
 local pending, deps, assault = nil, nil, nil
 
@@ -95,6 +95,7 @@ local function poll(player)
         return
     end
     if now - lastStart < COOLDOWN_MS then return end
+    if #deps.roster(player) == 0 then return end
     if player:isTargetedByZombie() then return end
     local count, nearest = visibleThreats(player)
     if count < 1 or count > 2 then return end

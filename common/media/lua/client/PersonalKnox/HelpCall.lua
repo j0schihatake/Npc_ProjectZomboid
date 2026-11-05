@@ -4,7 +4,7 @@ local Help = require "PersonalKnox/Help"
 local Util = require "PersonalKnox/Util"
 local Call = require "PersonalKnox/Call"
 local Settings = require "PersonalKnox/Settings"
-local INTERVAL_MS, RADIUS, MAX_NPCS, MAX_OBJECTS = 5000, 4, 4, 128
+local INTERVAL_MS, RADIUS, MAX_NPCS, MAX_OBJECTS = 10000, 3, 2, 96
 local lastCheck = 0
 local lastScan = 0
 local assist = {}
@@ -40,6 +40,7 @@ local function poll(player, deps)
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
+    if #deps.roster(player) == 0 then return end
     local best, bestCount, checked = nil, 0, 0
     local maxNpc, maxCount = nil, 0
     for _, npc in ipairs(deps.roster(player)) do
