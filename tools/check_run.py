@@ -31,7 +31,7 @@ def startup_matches(report: dict, expected_core: str, expected_lua: str) -> bool
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--console', type=Path, default=Path.home() / 'Zomboid/console.txt')
-    parser.add_argument('--expect', default='0.7.3')
+    parser.add_argument('--expect', default='0.7.4')
     parser.add_argument('--expect-lua', help='Expected Lua release; defaults to --expect. May differ after a Lua-only update.')
     args = parser.parse_args()
     report = summarize(args.console.read_text(errors='replace'))

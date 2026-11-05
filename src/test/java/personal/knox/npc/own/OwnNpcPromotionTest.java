@@ -8,6 +8,11 @@ public final class OwnNpcPromotionTest {
         assert OwnNpcPromotion.promote(population, layer, "base", 100) == OwnNpcLayer.MAX_NPCS;
         assert layer.count() == OwnNpcLayer.MAX_NPCS;
         assert OwnNpcPromotion.promote(population, layer, "base", 10) == 0 : "Active limit holds";
+        assert OwnNpcPromotion.demote(population, layer, "base", 10) == OwnNpcLayer.MAX_NPCS - 10;
+        assert layer.count() == 10;
+        assert population.group("base").members() == 200 : "Strategic population unchanged";
+        assert OwnNpcPromotion.demote(population, layer, "base", 0) == 10;
+        assert layer.count() == 0;
         try { OwnNpcPromotion.promote(population, layer, "missing", 1); throw new AssertionError("Unknown group accepted"); }
         catch (IllegalArgumentException expected) { }
         System.out.println("Own-NPC promotion tests passed: 200 strategic -> 64 active, cap and unknown group.");

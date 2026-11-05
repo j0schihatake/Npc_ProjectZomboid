@@ -26,4 +26,20 @@ public final class OwnNpcPromotion {
         }
         return created;
     }
+
+    /** Removes active bodies of a group above {@code leaveActive}; strategic population is unchanged. */
+    public static int demote(OwnNpcPopulation population, OwnNpcLayer layer,
+                             String groupId, int leaveActive) {
+        if (population == null || layer == null || groupId == null || leaveActive < 0)
+            throw new IllegalArgumentException("Invalid demotion");
+        if (population.group(groupId) == null) throw new IllegalArgumentException("Unknown group");
+        var active = new java.util.ArrayList<String>();
+        for (var agent : layer.agents()) {
+            if (agent.id().startsWith(groupId + "#")) active.add(agent.id());
+        }
+        active.sort(String::compareTo);
+        int remove = Math.max(0, active.size() - leaveActive);
+        for (int i = 0; i < remove; i++) layer.remove(active.get(i));
+        return remove;
+    }
 }
