@@ -13,7 +13,10 @@ local function tick()
     local player = getSpecificPlayer(0)
     if not player or player:isDead() then return end
     local now = getTimestampMs()
-    if now - last < INTERVAL_MS then return end
+    local interval = INTERVAL_MS
+    local okFps, fps = pcall(function() return getAverageFPS() end)
+    if okFps and type(fps) == "number" and fps > 0 and fps < 30 then interval = 5000 end
+    if now - last < interval then return end
     last = now
     if Perf.skip() then return end
     local api = PersonalKnoxAPI.getInstance()
