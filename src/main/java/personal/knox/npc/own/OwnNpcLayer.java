@@ -105,6 +105,10 @@ public final class OwnNpcLayer {
                         Math.max(0, nextState.thirst() - 0.5), nextState.fatigue());
                 supplies--;
             }
+            if (nextState.bleeding() && supplies > 0) {
+                nextState = nextState.withBleeding(false);
+                supplies--;
+            }
             double dx = agent.targetX() - agent.x();
             double dy = agent.targetY() - agent.y();
             double length = Math.hypot(dx, dy);

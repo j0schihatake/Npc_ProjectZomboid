@@ -20,6 +20,13 @@ public final class OwnNpcLayerTest {
         assert layer.agent("n1").targetX() == 60 && layer.agent("n1").targetY() == 60;
         layer.order("n1", 50, 0);
         assert layer.agent("n1").targetX() == 50;
+        var bleeder = new OwnNpcAgent("n3", "own", 0, 0, 0, 0, 0, 1,
+                new NpcState(60, 0.1, 0.1, 0.1, 0.5, true, false,
+                        NpcState.Role.GUARD, NpcState.Task.GUARD));
+        layer.spawn(bleeder);
+        layer.tick(0.01, 8);
+        assert !layer.agent("n3").state().bleeding() : "Bleeding treated";
+        layer.remove("n3");
         var hungryState = new NpcState(100, 0.9, 0.9, 0.1, 0.8, false, false,
                 NpcState.Role.SCAVENGER, NpcState.Task.FOLLOW);
         var hungry = new OwnNpcAgent("n2", "own", 0, 0, 0, 0, 0, 2, hungryState);
