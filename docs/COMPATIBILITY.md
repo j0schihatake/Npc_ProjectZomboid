@@ -40,6 +40,17 @@
 (`Lua/ModOptions.ini`, 15:13), поэтому строка `[capabilities]` не печаталась —
 это не ошибка мода. Для следующей проверки включать диагностику до загрузки мира.
 
+## Подтверждено в игре (0.4.12)
+
+- `[care-init] classFilesInstalled=true api=true diagnostics=true` — модуль инициализирован.
+- `[care-state] ... wounds=1 ... action=bandage` и `[care] action=bandage ok=true wounds=1`:
+  автобинт сработал без нажатия, рана закрылась (`wounds` 1 → 0), здоровье 88.8 → 99.1.
+- `[voice] sound=VoiceFemaleShoutHey ok=true`, `VoiceFemale`, `VoiceMale`, `VoiceMaleShoutHey` —
+  голоса NPC играют.
+- `[help] frequency=3 interval_ms=480000` — настройка частоты читается.
+- Ошибок PersonalKnox в журнале нет. Ядро в этом запуске — 0.4.12; 0.4.13/0.4.14
+  (модель NPC, скорость потребностей) ещё не запускались.
+
 ## 0.4.14 — скорость потребностей NPC
 
 - Настройка «Снижение потребностей NPC»: очень медленно/медленно/обычно/быстро/очень быстро.
