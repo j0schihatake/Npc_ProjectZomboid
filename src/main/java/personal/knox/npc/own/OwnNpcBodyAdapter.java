@@ -143,10 +143,28 @@ public final class OwnNpcBodyAdapter {
             Object b = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
                     .invoke(cell, (int) x1, (int) y1, (int) z0);
             if (a == null || b == null) return false;
+            boolean blocked = (boolean) a.getClass().getMethod("isBlockedTo", squareClass).invoke(a, b);
+            if (!blocked) return true;
+            openDoor(b);
             return !(boolean) a.getClass().getMethod("isBlockedTo", squareClass).invoke(a, b);
         } catch (Throwable ignored) {
             return true;
         }
+    }
+
+    private static void openDoor(Object square) {
+        try {
+            Object objects = square.getClass().getMethod("getObjects").invoke(square);
+            int size = (int) objects.getClass().getMethod("size").invoke(objects);
+            Class<?> doorClass = Class.forName("zombie.iso.objects.IsoDoor");
+            for (int i = 0; i < size; i++) {
+                Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
+                if (doorClass.isInstance(object)) {
+                    object.getClass().getMethod("setOpen", boolean.class).invoke(object, true);
+                    return;
+                }
+            }
+        } catch (Throwable ignored) { }
     }
 
     private static void call(Object target, String name) {
