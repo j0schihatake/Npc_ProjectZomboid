@@ -78,6 +78,22 @@ public final class OwnNpcBodyAdapter {
         try {
             body.getClass().getMethod("Dressup", desc.getClass()).invoke(body, desc);
         } catch (Throwable ignored) { }
+        try {
+            Class<?> playerClass = Class.forName("zombie.characters.IsoPlayer");
+            Object player = playerClass.getMethod("getInstance").invoke(null);
+            if (player != null) {
+                Object playerVisual = player.getClass().getMethod("getHumanVisual").invoke(player);
+                Object bodyVisual = body.getClass().getMethod("getHumanVisual").invoke(body);
+                if (playerVisual != null && bodyVisual != null) {
+                    Class<?> base = Class.forName("zombie.core.skinnedmodel.visual.BaseVisual");
+                    bodyVisual.getClass().getMethod("copyFrom", base).invoke(bodyVisual, playerVisual);
+                    System.out.println("[PersonalKnox] Own body visual copied from player");
+                    return;
+                }
+            }
+        } catch (Throwable error) {
+            System.out.println("[PersonalKnox] Own body visual copy failed: " + error);
+        }
         for (var name : new String[]{"dressInRandomNonSillyOutfit", "dressInRandomOutfit"}) {
             try {
                 body.getClass().getMethod(name).invoke(body);
