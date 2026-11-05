@@ -58,5 +58,7 @@
   "UI_PersonalKnox_AmmoNormal": "Normal",
   "UI_PersonalKnox_AmmoInfiniteReserve": "Infinite reserve (with reload)",
   "UI_PersonalKnox_AmmoInfiniteMagazine": "Infinite magazine (no reload)",
-  "UI_PersonalKnox_AmmoInfiniteReload": "Infinite reserve, reload only when empty"
+  "UI_PersonalKnox_AmmoInfiniteReload": "Infinite reserve, reload only when empty",
+  "UI_PersonalKnox_NpcSearchContainers": "Companions search cabinets for bandages",
+  "UI_PersonalKnox_NpcSearchContainersHint": "A wounded companion without a bandage searches nearby cabinets/crates for a clean bandage, then bandages."
 }

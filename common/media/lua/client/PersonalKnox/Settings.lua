@@ -24,6 +24,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("infiniteDurability", "UI_PersonalKnox_InfiniteDurability", true, "UI_PersonalKnox_InfiniteDurabilityHint")
     ensure("autoUnstick", "UI_PersonalKnox_AutoUnstick", true, "UI_PersonalKnox_AutoUnstickHint")
     ensure("careSearchBags", "UI_PersonalKnox_CareSearchBags", true, "UI_PersonalKnox_CareSearchBagsHint")
+    ensure("npcSearchContainers", "UI_PersonalKnox_NpcSearchContainers", true, "UI_PersonalKnox_NpcSearchContainersHint")
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
@@ -99,6 +100,7 @@ function Settings.reloadMode()
     local choice = option:getValue()
     return type(choice) == "number" and choice or 2
 end
+function Settings.npcSearchContainers() return value("npcSearchContainers", true) end
 function Settings.autoReload() return Settings.reloadMode() == 2 end
 function Settings.npcItemAsks() return value("npcItemAsks", true) end
 function Settings.performanceMode() return value("performanceMode", false) end

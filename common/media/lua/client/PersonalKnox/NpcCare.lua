@@ -28,6 +28,37 @@ local function bleedingPart(body)
     return nil
 end
 
+local function searchBandage(body)
+    local cell = getCell()
+    local px, py, pz = math.floor(body:getX()), math.floor(body:getY()), math.floor(body:getZ())
+    local processed = 0
+    for dx = -6, 6 do
+        for dy = -6, 6 do
+            local square = cell:getGridSquare(px + dx, py + dy, pz)
+            if square then
+                local objects = square:getObjects()
+                for i = 0, objects:size() - 1 do
+                    processed = processed + 1
+                    local object = objects:get(i)
+                    local container = object.getContainer and object:getContainer()
+                    if container then
+                        local items = container:getItems()
+                        for j = 0, items:size() - 1 do
+                            local item = items:get(j)
+                            if item:isCanBandage() then
+                                local kind = (item:getType() or ""):lower()
+                                if not kind:find("dirty", 1, true) then return item, container end
+                            end
+                        end
+                    end
+                    if processed >= 200 then return nil end
+                end
+            end
+        end
+    end
+    return nil
+end
+
 local function poll(player)
     if isClient() or not deps or Perf.skip() or not Settings.autoMedic() then return end
     local now = getTimestampMs()
@@ -41,6 +72,16 @@ local function poll(player)
             checked = checked + 1
             local part = bleedingPart(body)
             local bandage = part and cleanBandage(body)
+            if part and not bandage and Settings.npcSearchContainers() then
+                local found, container = searchBandage(body)
+                if found and container and ISInventoryTransferAction and ISTimedActionQueue then
+                    ISTimedActionQueue.add(ISInventoryTransferAction:new(body, found, container, body:getInventory()))
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-care] take=" .. tostring(found:getFullType()))
+                    end
+                    bandage = nil
+                end
+            end
             if part and bandage and ISApplyBandage and ISTimedActionQueue then
                 ISTimedActionQueue.add(ISApplyBandage:new(body, body, bandage, part, true))
                 if Settings.diagnosticsEnabled() then

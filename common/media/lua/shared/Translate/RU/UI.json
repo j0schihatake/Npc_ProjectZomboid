@@ -67,5 +67,7 @@
   "UI_PersonalKnox_AmmoNormal": "Обычные",
   "UI_PersonalKnox_AmmoInfiniteReserve": "Бесконечный запас (с перезарядкой)",
   "UI_PersonalKnox_AmmoInfiniteMagazine": "Бесконечный магазин (без перезарядки)",
-  "UI_PersonalKnox_AmmoInfiniteReload": "Бесконечный запас, перезарядка после пустого магазина"
+  "UI_PersonalKnox_AmmoInfiniteReload": "Бесконечный запас, перезарядка после пустого магазина",
+  "UI_PersonalKnox_NpcSearchContainers": "Союзники ищут бинты в шкафах",
+  "UI_PersonalKnox_NpcSearchContainersHint": "Раненый союзник без бинта обыскивает ближайшие шкафы/ящики и берёт чистый бинт, затем перевязывается."
 }
