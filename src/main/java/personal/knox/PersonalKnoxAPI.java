@@ -36,6 +36,14 @@ public final class PersonalKnoxAPI {
     public int ownActive() { return ownLayer.count(); }
 
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
+    public String ownDebugSpawn(double x, double y, double z) {
+        var event = ownLayer.debugSpawn(x, y, z);
+        return event.agentId();
+    }
+
+    public int ownDebugBodySync() { return ownBodies.sync(ownLayer); }
+
+
     public int ownCount() { return ownLayer.count(); }
 
     public String ownId(int index) {

@@ -30,6 +30,14 @@ public final class OwnNpcLayer {
         return new OwnNpcEvent(OwnNpcEvent.Type.SPAWNED, agent.id(), agent.x(), agent.y(), agent.z(), "spawn");
     }
 
+    public OwnNpcEvent debugSpawn(double x, double y, double z) {
+        String id = "debug#" + (agents.size() + 1);
+        var state = new personal.knox.npc.NpcState(100, 0.2, 0.2, 0.2, 0.7,
+                false, false, personal.knox.npc.NpcState.Role.SCAVENGER,
+                personal.knox.npc.NpcState.Task.FOLLOW);
+        return spawn(new OwnNpcAgent(id, "own", x, y, z, x, y, 2, state));
+    }
+
     public void restore(List<OwnNpcAgent> restored) {
         if (restored == null) throw new IllegalArgumentException("Missing agents");
         if (restored.size() > MAX_NPCS) throw new IllegalArgumentException("Too many agents");
