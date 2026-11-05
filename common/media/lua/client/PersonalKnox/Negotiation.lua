@@ -1,6 +1,7 @@
 -- Prototype: a small threat is discussed; leader may answer, otherwise NPCs agree.
 local Negotiation = {}
 local Settings = require "PersonalKnox/Settings"
+local Call = require "PersonalKnox/Call"
 local INTERVAL_MS, ANSWER_MS, COOLDOWN_MS = 2000, 8000, 120000
 local lastCheck, lastStart = 0, 0
 local pending, deps, assault = nil, nil, nil
