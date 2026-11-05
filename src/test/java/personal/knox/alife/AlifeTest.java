@@ -85,6 +85,16 @@ public final class AlifeTest {
         try { new Outpost("x", "own", Outpost.Kind.CAMP, 0, 0, 0, 65, 1, true); throw new AssertionError("Too many guards"); }
         catch (IllegalArgumentException expected) { }
 
+        var presenceWorld = new AlifeWorld(13);
+        presenceWorld.addFactionPresence(new FactionPresence.State("own", 2, true, 100));
+        presenceWorld.loseFactionSquad("own", 200);
+        assert presenceWorld.factionPresence("own").members() == 0;
+        assert presenceWorld.respawnReady(300, 1000).isEmpty();
+        assert presenceWorld.respawnReady(1200, 1000).contains("own");
+        presenceWorld.respawnFaction("own", 3, 1300);
+        assert presenceWorld.factionPresence("own").members() == 3;
+        try { presenceWorld.addFactionPresence(new FactionPresence.State("own", 1, true, 0)); throw new AssertionError("Duplicate presence accepted"); }
+        catch (IllegalArgumentException expected) { }
         var camp = new AlifeWorld(9);
         camp.addOutpost(new Outpost("camp", "own", Outpost.Kind.CAMP, 10, 20, 0, 4, 1, true));
         assert camp.outpostCount() == 1 && camp.canDispatch("camp");

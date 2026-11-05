@@ -17,6 +17,7 @@ public final class AlifeWorld {
     private final Random random;
     private final Map<String, Squad> squads = new LinkedHashMap<>();
     private final Map<String, Outpost> outposts = new LinkedHashMap<>();
+    private final Map<String, FactionPresence.State> presence = new LinkedHashMap<>();
     private final Relations relations = new Relations();
     private long now;
 
@@ -37,6 +38,37 @@ public final class AlifeWorld {
     }
 
     public Outpost removeOutpost(String id) { return outposts.remove(id); }
+
+    public void addFactionPresence(FactionPresence.State state) {
+        if (state == null || presence.containsKey(state.factionId()))
+            throw new IllegalArgumentException("Duplicate or missing faction presence");
+        presence.put(state.factionId(), state);
+    }
+
+    public FactionPresence.State factionPresence(String factionId) {
+        return presence.get(factionId);
+    }
+
+    public void loseFactionSquad(String factionId, long nowMillis) {
+        var state = presence.get(factionId);
+        if (state == null) throw new IllegalArgumentException("Unknown faction");
+        presence.put(factionId, FactionPresence.afterLoss(state, nowMillis));
+    }
+
+    public java.util.List<String> respawnReady(long nowMillis, long delayMillis) {
+        var ready = new java.util.ArrayList<String>();
+        for (var entry : presence.entrySet()) {
+            if (FactionPresence.shouldRespawn(entry.getValue(), nowMillis, delayMillis))
+                ready.add(entry.getKey());
+        }
+        return java.util.List.copyOf(ready);
+    }
+
+    public void respawnFaction(String factionId, int members, long nowMillis) {
+        var state = presence.get(factionId);
+        if (state == null) throw new IllegalArgumentException("Unknown faction");
+        presence.put(factionId, FactionPresence.respawn(state, members, nowMillis));
+    }
 
     public boolean canDispatch(String outpostId) {
         var outpost = outposts.get(outpostId);
