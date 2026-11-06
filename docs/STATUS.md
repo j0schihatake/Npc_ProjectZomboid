@@ -121,3 +121,8 @@ A-Life события, задания и сумки — нужен загруж�
 - `Own body debug#1 at 7990.0,11756.0,0.0`, `debug#2 at 7991.0,11756.0,0.0`.
 - `bodies=1`, затем `bodies=2`; `Own body visual copied from player` дважды.
 - Сценарий: `OK: Sandbox loaded...`, мир `PersonalKnox-scenario-e8cf63eb82d2241ad2ef165e753fad9c`.
+
+### 0.9.34 — сценарий OK
+
+- `OK: Sandbox loaded...`, мир `PersonalKnox-scenario-56591c2d1265f8fb8d40730d2aea4708`.
+- `setVisible(true)` добавлен; F10 в этом прогоне не сработал из-за паузы/открытого окна персонажа.
