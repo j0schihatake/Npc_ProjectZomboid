@@ -84,10 +84,23 @@ public final class OwnNpcBodyAdapter {
 
     public int count() { return bodies.size(); }
     public String startDismantle(String id) {
+        return startDismantle(id, Double.NaN, Double.NaN);
+    }
+
+    public String startDismantle(String id, double targetX, double targetY) {
         Object body = bodies.get(id);
         if (body == null) return "";
         try {
-            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            Object square = null;
+            Object cell = currentCell();
+            if (cell != null && Double.isFinite(targetX + targetY)) {
+                try {
+                    square = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                            .invoke(cell, (int) targetX, (int) targetY,
+                                    (int) ((Number) body.getClass().getMethod("getZ").invoke(body)).doubleValue());
+                } catch (Throwable ignored) { }
+            }
+            if (square == null) square = body.getClass().getMethod("getCurrentSquare").invoke(body);
             if (square == null) return "";
             Object objects = square.getClass().getMethod("getObjects").invoke(square);
             int size = (int) objects.getClass().getMethod("size").invoke(objects);
@@ -380,7 +393,7 @@ public final class OwnNpcBodyAdapter {
                 } else if (passable(cell, bx, by, z, bx, y)) {
                     sx = bx;
                 } else {
-                    String obstacle = startDismantle(id);
+                    String obstacle = startDismantle(id, tx, ty);
                     if (!obstacle.isEmpty())
                         System.out.println("[PersonalKnox][own-dismantle] " + id + " start " + obstacle);
                     invoke(body, "setMoving", new Class<?>[]{boolean.class}, false);
