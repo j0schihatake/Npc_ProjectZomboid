@@ -7,7 +7,7 @@ if ! protocol=$(python3 "$SCRIPT_DIR/dev_launch.py" --launcher-protocol 2>/dev/n
   exit 1
 fi
 # Tested default workflow; callers only need to run this existing script.
-DEFAULT_ARGS=(--restart --build --detach --no-debug --nosteam)
+DEFAULT_ARGS=(--restart --build --detach --no-debug --nosteam --trust-local-builds)
 if (( $# == 0 )); then
   set -- "${DEFAULT_ARGS[@]}"
 elif (( $# == 1 )) && [[ "$1" == "--menu-only" ]]; then
