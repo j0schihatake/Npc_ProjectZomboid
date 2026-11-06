@@ -30,6 +30,12 @@ public final class OwnNpcLayerTest {
 
         layer.order("n1", 50, 0);
         assert layer.agent("n1").targetX() == 50;
+        var healer = new OwnNpcAgent("n4", "own", 0, 0, 0, 0, 0, 2,
+                new NpcState(50, 0.1, 0.1, 0.1, 0.5, false, false, NpcState.Role.GUARD, NpcState.Task.GUARD));
+        layer.spawn(healer);
+        layer.tick(1, 8);
+        assert layer.agent("n4").state().health() > 50 : "Health regenerates";
+        layer.remove("n4");
         var bleeder = new OwnNpcAgent("n3", "own", 0, 0, 0, 0, 0, 1,
                 new NpcState(60, 0.1, 0.1, 0.1, 0.5, true, false,
                         NpcState.Role.GUARD, NpcState.Task.GUARD));

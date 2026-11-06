@@ -22,6 +22,12 @@ public record NpcState(double health, double hunger, double thirst, double fatig
         return new NpcState(health, newHunger, newThirst, newFatigue, morale, bleeding, downed, role, task);
     }
 
+    public NpcState withHealth(double value) {
+        if (!Double.isFinite(value) || value < 0 || value > 100)
+            throw new IllegalArgumentException("Invalid health");
+        return new NpcState(value, hunger, thirst, fatigue, morale, bleeding, downed, role, task);
+    }
+
     public NpcState withTask(Task value) {
         return new NpcState(health, hunger, thirst, fatigue, morale, bleeding, downed, role, value);
     }
