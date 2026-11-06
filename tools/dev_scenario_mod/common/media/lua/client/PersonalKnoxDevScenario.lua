@@ -74,7 +74,9 @@ Events.OnGameStart.Add(function()
     local started=getTimestampMs();local ticks=0
     local npcReader=getFileReader('PersonalKnox-dev-npc.txt',false)
     local testNpc=npcReader and npcReader:readLine()==config.nonce
+    local restoreNpc=testNpc and npcReader:readLine()=='own-restore'
     if npcReader then npcReader:close() end
+    local restoredIds=nil
     local npcId=nil
     local npcReadyTicks=0
     local npcStarted=nil
@@ -146,10 +148,30 @@ Events.OnGameStart.Add(function()
                 local api=PersonalKnoxAPI.getInstance()
                 if not npcId then
                     npcStarted=getTimestampMs()
-                    npcId=api:ownCreateCompanion(player)
-                    print('[PersonalKnox][dev-scenario] run='..config.nonce..' npc_created='..tostring(npcId))
+                    if restoreNpc then
+                        local snapshot=player:getModData().PersonalKnoxOwnNpc
+                        restoredIds={}
+                        for line in tostring(snapshot or ''):gmatch('[^\n]+') do
+                            local id=line:match('^([^|]+)|')
+                            if not id then error('Invalid saved NPC row') end
+                            table.insert(restoredIds,id)
+                        end
+                        if #restoredIds==0 then error('No saved NPCs; restore must never create a replacement') end
+                        if api:ownActive()~=#restoredIds then error('Restored NPC count differs from saved snapshot') end
+                        api:ownBodiesSync()
+                        npcId=restoredIds[1]
+                        print('[PersonalKnox][dev-scenario] npc_restored='..table.concat(restoredIds,','))
+                    else
+                        npcId=api:ownCreateCompanion(player)
+                    end
+                    print('[PersonalKnox][dev-scenario] run='..config.nonce..(restoreNpc and ' npc_restore_id=' or ' npc_created=')..tostring(npcId))
                 end
-                if api:ownBodyReady(npcId) then npcReadyTicks=npcReadyTicks+1 else npcReadyTicks=0 end
+                local ready=api:ownBodyReady(npcId)
+                if restoredIds then
+                    if api:ownActive()~=#restoredIds then error('Duplicate or missing restored NPC') end
+                    for _,id in ipairs(restoredIds) do ready=api:ownBodyReady(id) and ready end
+                end
+                if ready then npcReadyTicks=npcReadyTicks+1 else npcReadyTicks=0 end
                 if getTimestampMs()-npcStarted>15000 and npcReadyTicks<3 then
                     error(api:ownBodyInspect(npcId))
                 end
@@ -180,7 +202,7 @@ Events.OnGameStart.Add(function()
         if testNpc then
             print('[PersonalKnox][dev-scenario] run='..config.nonce..' '..PersonalKnoxAPI.getInstance():ownBodyInspect(npcId))
         end
-        result('OK',testNpc and 'own_npc_registered_model_saved' or 'world_player_api_ticks_knox_saved')
+        result('OK',restoreNpc and 'own_npc_restored_model_saved' or (testNpc and 'own_npc_registered_model_saved' or 'world_player_api_ticks_knox_saved'))
     end
     Events.OnTick.Add(poll)
     print('[PersonalKnox][dev-scenario] run='..config.nonce..' world_started=true')

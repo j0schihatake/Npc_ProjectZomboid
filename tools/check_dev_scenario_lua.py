@@ -83,7 +83,7 @@ now=30000;fire('tick');fire('paused');assert(saved==1,'A failed scenario must no
 print('Lua scenario passed: one-shot load, paused Knox setup, inventory/welcome cleanup, preserved error dialogs, late welcome, no cleanup after OK and terminal cleanup errors.')
 
 # The dedicated scenario must create a real-body request and refuse missing bodies.
-def npc_case(token, succeeds):
+def npc_case(token, succeeds, restore=False, empty=False, active=2):
     lua.globals().testToken=token
     lua.execute('''
     now=0;world='menu';NpcProcGenWorldMap_instance=nil
@@ -101,12 +101,27 @@ def npc_case(token, succeeds):
       ownBodyInspect=function()return 'id=debug#1 ready='..tostring(bodyReady)end,
     }end}
     ''')
+    lua.globals().restoreActive=active
+    if restore:
+        lua.execute("files['PersonalKnox-dev-npc.txt']=files['PersonalKnox-dev-npc.txt']..'own-restore\\n';modData={PersonalKnoxOwnNpc='first|saved\\nsecond|saved\\n'}")
+        lua.execute("local api=PersonalKnoxAPI.getInstance();api.ownActive=function()return restoreActive end;api.ownBodiesSync=function()return 2 end;PersonalKnoxAPI.getInstance=function()return api end")
+        if empty:
+            lua.execute("modData.PersonalKnoxOwnNpc=''")
     lua.execute(script.read_text())
-    lua.execute("fire('menu');fire('start');fire('paused');now=100;fire('tick');assert(createdBodies==1)")
+    lua.execute("fire('menu');fire('start');fire('paused');now=100;fire('tick')")
+    expected=0 if restore else 1
+    assert lua.globals().createdBodies==expected
+    if empty or (restore and active!=2):
+        lua.execute("assert(files['PersonalKnox-dev-scenario-result.json']:find('own_npc_spawn_failed',1,true))")
+        return
     if succeeds:
-        lua.execute("bodyReady=true;now=11000;fire('tick');fire('tick');fire('tick');assert(createdBodies==1);assert(modData.PersonalKnoxOwnNpc=='npc-snapshot');assert(files['PersonalKnox-dev-scenario-result.json']:find('own_npc_registered_model_saved',1,true))")
+        lua.execute("bodyReady=true;now=11000;fire('tick');fire('tick');fire('tick');assert(modData.PersonalKnoxOwnNpc=='npc-snapshot');assert(files['PersonalKnox-dev-scenario-result.json']:find('model_saved',1,true))")
     else:
         lua.execute("now=20000;fire('tick');assert(files['PersonalKnox-dev-scenario-result.json']:find('own_npc_spawn_failed',1,true))")
+    assert lua.globals().createdBodies==expected, 'Restore completion must never spawn a replacement'
 npc_case('c',True)
 npc_case('d',False)
+npc_case('e',True,restore=True)
+npc_case('f',False,restore=True,empty=True)
+npc_case('0',False,restore=True,active=3)
 print('Own NPC scenario passed: creates once, waits for registered/model-ready body and rejects absent bodies.')

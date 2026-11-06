@@ -1,4 +1,4 @@
--- Distance sync for our own NPC layer; bodies are created by the future adapter.
+-- Thin game-event bridge; own NPC state and bodies live in the Java core.
 local OwnNpc = {}
 local Settings = require "PersonalKnox/Settings"
 local Perf = require "PersonalKnox/Perf"
@@ -7,6 +7,18 @@ local Util = require "PersonalKnox/Util"
 local deps
 local INTERVAL_MS, LOG_MS = 2000, 60000
 local last, lastLog, logged, lastSave = 0, 0, false, 0
+
+local function saveState()
+    if isClient() or not PersonalKnoxAPI then return end
+    local player=getSpecificPlayer(0)
+    if not player then return end
+    local api=PersonalKnoxAPI.getInstance()
+    local data=player:getModData()
+    local agents,population,targetZ=api:ownSnapshot(),api:ownPopulationSnapshot(),api:ownTargetZSnapshot()
+    data.PersonalKnoxOwnNpc=agents
+    data.PersonalKnoxOwnPopulation=population
+    data.PersonalKnoxTargetZ=targetZ
+end
 
 local function tick()
     if isClient() or not PersonalKnoxAPI then return end
@@ -35,9 +47,7 @@ local function tick()
     local bodies = api:ownBodiesSync()
     if now - lastSave >= 60000 then
         lastSave = now
-        player:getModData().PersonalKnoxOwnNpc = api:ownSnapshot()
-        player:getModData().PersonalKnoxOwnPopulation = api:ownPopulationSnapshot()
-        player:getModData().PersonalKnoxTargetZ = api:ownTargetZSnapshot()
+        saveState()
     end
     if not logged then
         logged = true
@@ -65,6 +75,10 @@ function OwnNpc.install(adapters)
             local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownPopulationRestore(data.PersonalKnoxOwnPopulation) end)
             if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
         end
+    end)
+    Events.OnSave.Add(function()
+        local ok,err=pcall(saveState)
+        if not ok then print("[PersonalKnox] Own-NPC save error: "..tostring(err)) end
     end)
     Events.OnPlayerUpdate.Add(function()
         local ok, err = pcall(tick)

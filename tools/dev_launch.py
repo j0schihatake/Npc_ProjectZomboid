@@ -250,7 +250,7 @@ def main():
     parser.add_argument('--restart',action='store_true',help='SIGTERM only this recorded dev process, wait for exit, then launch again')
     parser.add_argument('--build',action='store_true',help='Run the selected project build scripts after stopping the old dev process')
     parser.add_argument('--status',action='store_true',help='Read the actual dev PID and loading phase without changing anything')
-    parser.add_argument('--scenario',choices=['smoke','own-npc'],help='Load a disposable Sandbox copy and wait for a verified OK/FAIL result')
+    parser.add_argument('--scenario',choices=['smoke','own-npc','own-restore'],help='Load a disposable Sandbox copy and wait for a verified OK/FAIL result')
     parser.add_argument('--scenario-save',type=Path,help='Closed Sandbox save to copy; defaults to normal latestSave.ini')
     parser.add_argument('--scenario-seconds',type=int,default=10)
     parser.add_argument('--scenario-timeout',type=int,default=600)
@@ -344,8 +344,8 @@ def main():
         prepare(cache,userdata,source,ids,mods,maps)
         scenario_record=prepare_scenario(cache,scenario_source,args.scenario_seconds,atomic) if args.scenario else None
         npc_control=cache/'Lua/PersonalKnox-dev-npc.txt'
-        if scenario_record and args.scenario=='own-npc':
-            atomic(npc_control,scenario_record['nonce']+'\n')
+        if scenario_record and args.scenario in ('own-npc','own-restore'):
+            atomic(npc_control,scenario_record['nonce']+'\n'+args.scenario+'\n')
         else:
             npc_control.unlink(missing_ok=True)
         trusted=trust_policy(cache,{'PersonalKnox':source,'PersonalWorldGen':worldgen},args.trust_local_builds)
