@@ -115,3 +115,9 @@ A-Life события, задания и сумки — нужен загруж�
 - В живом мире F10 дважды создал тела:
   `Own body visual copied from player`, `own-debug id=debug#1 bodies=1`, `debug#2 bodies=2`.
 - Ошибок `Own body`/`dress failed` нет; игра осталась на паузе, поэтому камера показывает только игрока.
+
+### 0.9.33 — тела остаются, сценарий OK
+
+- `Own body debug#1 at 7990.0,11756.0,0.0`, `debug#2 at 7991.0,11756.0,0.0`.
+- `bodies=1`, затем `bodies=2`; `Own body visual copied from player` дважды.
+- Сценарий: `OK: Sandbox loaded...`, мир `PersonalKnox-scenario-e8cf63eb82d2241ad2ef165e753fad9c`.
