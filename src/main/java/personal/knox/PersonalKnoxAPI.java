@@ -131,7 +131,8 @@ public final class PersonalKnoxAPI {
     public String ownCreateCompanion(Object player) {
         double[] p=personal.knox.npc.own.OwnNpcBodyAdapter.spawnPosition(player);
         String id=ownDebugSpawn(p[0],p[1],p[2]);
-        ownLayer.order(id,personal.knox.npc.own.OwnNpcOrder.HOLD,p[0],p[1]);
+        ownLayer.order(id,personal.knox.npc.own.OwnNpcOrder.FOLLOW,p[0],p[1]);
+        ownLayer.followTarget(p[0],p[1],p[2]);
         ownBodies.sync(ownLayer);
         return id;
     }
