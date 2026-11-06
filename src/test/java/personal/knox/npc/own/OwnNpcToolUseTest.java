@@ -10,6 +10,8 @@ public final class OwnNpcToolUseTest {
         assert OwnNpcToolUse.required(OwnNpcToolUse.Obstacle.WALL).size() == 2;
         try { OwnNpcToolUse.seconds(EnumSet.noneOf(OwnNpcToolUse.Tool.class), OwnNpcToolUse.Obstacle.WALL); throw new AssertionError("Wall without tools accepted"); }
         catch (IllegalStateException expected) { }
+        var plan = OwnNpcToolUse.plan(EnumSet.of(OwnNpcToolUse.Tool.HAMMER), OwnNpcToolUse.Obstacle.FENCE);
+        assert plan.seconds() == 6 && plan.noise() == 4 && plan.wear() == 1;
         System.out.println("Own-NPC tool-use tests passed: window, fence, wall, missing tools and invalid state.");
     }
 }
