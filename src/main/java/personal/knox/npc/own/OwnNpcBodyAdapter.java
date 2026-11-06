@@ -75,6 +75,29 @@ public final class OwnNpcBodyAdapter {
     }
 
     public int count() { return bodies.size(); }
+    public java.util.Set<OwnNpcToolUse.Tool> tools(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return java.util.Set.of();
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            var types = new java.util.ArrayList<String>();
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                try {
+                    types.add(String.valueOf(item.getClass().getMethod("getFullType").invoke(item)));
+                } catch (NoSuchMethodException missing) {
+                    types.add(String.valueOf(item.getClass().getMethod("getType").invoke(item)));
+                }
+            }
+            return OwnNpcToolUse.fromItems(types);
+        } catch (Throwable ignored) {
+            return java.util.Set.of();
+        }
+    }
+
 
     /** Bounded search at spawn time only, never a per-frame world scan. */
     public static double[] spawnPosition(Object player) {

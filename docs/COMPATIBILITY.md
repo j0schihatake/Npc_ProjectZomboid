@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.45 — инструменты из инвентаря тела
+
+- `OwnNpcBodyAdapter.tools(id)` читает `getInventory().getItems()`, `getFullType`
+  (fallback `getType`) и отдаёт `OwnNpcToolUse.fromItems`; API `ownBodyTools(id)`.
+- Java-ядро 0.9.45, JAR пересобран; тесты проходят.
+
 ## 0.9.44 — инструменты из item type
 
 - `OwnNpcToolUse.fromItems` распознаёт `Base.Hammer`, `Base.Screwdriver`, пилу, лом
