@@ -152,3 +152,8 @@ A-Life события, задания и сумки — нужен загруж�
   `bodyType=IsoPlayer$PersonalKnoxNpc`, `model=true`, `render=true`, `culled=false`, `alpha=1.0`.
 - `status=OK reason=own_npc_registered_model_saved`.
 - Авторазбор в этом прогоне не запускался: путь NPC не был заблокирован.
+
+### 0.9.53 — сценарий OK
+
+- Мир `PersonalKnox-scenario-079559e3b4360553eb40e5a826ae5e9a`.
+- `status=OK`; NPC создан и зарегистрирован, рендер/модель активны.
