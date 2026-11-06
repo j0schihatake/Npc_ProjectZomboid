@@ -13,6 +13,8 @@ public final class OwnNpcBodyAdapter {
     private boolean unavailable;
     private final Map<String, PathState> pathCache = new HashMap<>();
     private long lastMoveLog;
+    private final Map<String, DismantleTask> dismantles = new HashMap<>();
+    private record DismantleTask(OwnNpcDismantleJob job, Object object) { }
 
     public int sync(OwnNpcLayer layer) {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
@@ -75,6 +77,45 @@ public final class OwnNpcBodyAdapter {
     }
 
     public int count() { return bodies.size(); }
+    public String startDismantle(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            if (square == null) return "";
+            Object objects = square.getClass().getMethod("getObjects").invoke(square);
+            int size = (int) objects.getClass().getMethod("size").invoke(objects);
+            var tools = tools(id);
+            for (int i = 0; i < size; i++) {
+                Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
+                if (object == null) continue;
+                OwnNpcToolUse.Obstacle obstacle;
+                try { obstacle = OwnNpcToolUse.classify(object.getClass().getName()); }
+                catch (IllegalArgumentException unknown) { continue; }
+                if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
+                dismantles.put(id, new DismantleTask(OwnNpcDismantleJob.start(tools, obstacle), object));
+                return obstacle.name();
+            }
+        } catch (Throwable ignored) { }
+        return "";
+    }
+
+    public String tickDismantle(String id, double seconds) {
+        var task = dismantles.get(id);
+        if (task == null) return "";
+        try {
+            task.job().tick(seconds);
+            if (task.job().done()) {
+                call(task.object(), "removeFromWorld");
+                dismantles.remove(id);
+                return "DONE:" + task.job().obstacle().name();
+            }
+            return String.format(java.util.Locale.ROOT, "%.1f", task.job().remaining());
+        } catch (Throwable ignored) {
+            return "";
+        }
+    }
+
     public String dismantleNearby(String id) {
         Object body = bodies.get(id);
         if (body == null) return "";

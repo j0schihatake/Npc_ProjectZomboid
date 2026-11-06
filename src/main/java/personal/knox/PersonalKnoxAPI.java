@@ -80,6 +80,11 @@ public final class PersonalKnoxAPI {
 
     public double ownTargetZ(String id) { return ownLayer.targetZ(id); }
     public String ownDismantleNearby(String id) { return ownBodies.dismantleNearby(id); }
+    public String ownDismantleStart(String id) { return ownBodies.startDismantle(id); }
+
+    public String ownDismantleTick(String id, double seconds) { return ownBodies.tickDismantle(id, seconds); }
+
+
 
     public String ownBodyTools(String id) {
         var tools = ownBodies.tools(id);
