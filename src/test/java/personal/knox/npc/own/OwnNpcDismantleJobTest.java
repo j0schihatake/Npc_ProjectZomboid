@@ -12,6 +12,8 @@ public final class OwnNpcDismantleJobTest {
         catch (IllegalArgumentException expected) { }
         try { OwnNpcDismantleJob.start(EnumSet.noneOf(OwnNpcToolUse.Tool.class), OwnNpcToolUse.Obstacle.WALL); throw new AssertionError("No tools accepted"); }
         catch (IllegalStateException expected) { }
+        var fast = OwnNpcDismantleJob.start(EnumSet.of(OwnNpcToolUse.Tool.HAMMER), OwnNpcToolUse.Obstacle.FENCE, 10);
+        assert fast.remaining() == 3;
         System.out.println("Own-NPC dismantle-job tests passed: countdown, done, noise and invalid time.");
     }
 }

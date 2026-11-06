@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.56 — навык из тела
+
+- `woodwork(id)` читает `getPerkLevel(Perks.Woodwork)` у тела; `startDismantle`
+  передаёт навык в `OwnNpcDismantleJob.start(tools, obstacle, skill)`.
+- Java-ядро 0.9.56, JAR пересобран; тесты проходят.
+
 ## 0.9.55 — навык ускоряет разбор
 
 - `OwnNpcToolUse.seconds(..., skill)`: 5% за уровень, но не быстрее половины базы;

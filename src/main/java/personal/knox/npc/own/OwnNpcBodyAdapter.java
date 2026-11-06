@@ -114,7 +114,7 @@ public final class OwnNpcBodyAdapter {
                 try { obstacle = OwnNpcToolUse.classify(object.getClass().getName()); }
                 catch (IllegalArgumentException unknown) { continue; }
                 if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
-                dismantles.put(id, new DismantleTask(OwnNpcDismantleJob.start(tools, obstacle), object));
+                dismantles.put(id, new DismantleTask(OwnNpcDismantleJob.start(tools, obstacle, woodwork(id)), object));
                 return obstacle.name();
             }
         } catch (Throwable ignored) { }
@@ -161,6 +161,18 @@ public final class OwnNpcBodyAdapter {
             }
         } catch (Throwable ignored) { }
         return "";
+    }
+
+    private int woodwork(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return 0;
+        try {
+            Class<?> perks = Class.forName("zombie.characters.skills.PerkFactory$Perks");
+            Object woodwork = perks.getField("Woodwork").get(null);
+            return ((Number) body.getClass().getMethod("getPerkLevel", woodwork.getClass()).invoke(body, woodwork)).intValue();
+        } catch (Throwable ignored) {
+            return 0;
+        }
     }
 
     public java.util.Set<OwnNpcToolUse.Tool> tools(String id) {

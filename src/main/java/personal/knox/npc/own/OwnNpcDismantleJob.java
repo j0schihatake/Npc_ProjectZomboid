@@ -13,7 +13,11 @@ public final class OwnNpcDismantleJob {
     }
 
     public static OwnNpcDismantleJob start(Set<OwnNpcToolUse.Tool> tools, OwnNpcToolUse.Obstacle obstacle) {
-        return new OwnNpcDismantleJob(OwnNpcToolUse.plan(tools, obstacle));
+        return start(tools, obstacle, 0);
+    }
+
+    public static OwnNpcDismantleJob start(Set<OwnNpcToolUse.Tool> tools, OwnNpcToolUse.Obstacle obstacle, int skill) {
+        return new OwnNpcDismantleJob(OwnNpcToolUse.plan(tools, obstacle, skill));
     }
 
     public double tick(double seconds) {
