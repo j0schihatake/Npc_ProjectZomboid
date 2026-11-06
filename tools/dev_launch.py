@@ -15,7 +15,7 @@ import signal
 import select
 import time
 from dev_trust import policy as trust_policy, approve as approve_projects
-from dev_scenario import choose_save, prepare_scenario, wait_scenario, build_agent
+from dev_scenario import choose_save, prepare_scenario, wait_scenario, build_agent, runtime_errors
 
 ROOT = Path(__file__).resolve().parents[1]
 GAME = Path('/home/j0schi/SteamLibrary/steamapps/common/ProjectZomboid')
@@ -169,6 +169,12 @@ def show_status(cache):
             if result.get('nonce')==state['scenario']['nonce'] and result.get('world')==state['scenario']['world']:
                 scenario=result
                 phase='scenario_'+result.get('status','unknown').lower() if live else phase
+                errors=runtime_errors(text,state['scenario']['nonce'])
+                if errors:
+                    scenario['runtime_errors']=errors
+                    if live: phase='scenario_failed'
+                elif state.get('scenario_verification',{}).get('exit_code',0)!=0 and live:
+                    phase='scenario_failed'
         except (FileNotFoundError,json.JSONDecodeError):
             pass
     print(json.dumps({'live':live,'pid':state.get('pid'),'phase':phase,'loaded_mods':int(counts[-1]) if counts else None,
@@ -382,7 +388,10 @@ def main():
         atomic(cache/'dev-launch.json',json.dumps(state,ensure_ascii=False,indent=2)+'\n')
         print(f'PID: {process.pid}\nConsole: {cache/"console.txt"}\nLauncher log: {log}',flush=True)
         if scenario_record:
-            return wait_scenario(cache,scenario_record,process,args.scenario_timeout)
+            result=wait_scenario(cache,scenario_record,process,args.scenario_timeout)
+            state['scenario_verification']={'exit_code':result,'finished':datetime.now().isoformat()}
+            atomic(cache/'dev-launch.json',json.dumps(state,ensure_ascii=False,indent=2)+'\n')
+            return result
         if args.detach:
             return 0
         result=process.wait()  # No timeout: map/NPC loading may take several minutes.

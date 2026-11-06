@@ -4,7 +4,7 @@ from pathlib import Path
 import sqlite3
 import tempfile
 from unittest.mock import patch
-from dev_scenario import choose_save,prepare_scenario,wait_scenario
+from dev_scenario import choose_save,prepare_scenario,wait_scenario,runtime_errors
 from dev_launch import atomic
 from prepare_probe_world import fingerprint
 
@@ -46,6 +46,12 @@ with tempfile.TemporaryDirectory() as tmp:
     assert wait_scenario(cache,record,Process(),10)==1
     path.write_text(json.dumps(dict(record,status='OK',reason='world_player_api_ticks')))
     assert wait_scenario(cache,record,Process(),10)==0
+    console=cache/'console.txt'
+    console.write_text('run='+record['nonce']+'\nERROR: General > dumping Lua stack trace\nLua((MOD:Personal Knox — наш отряд)).tick(OwnNpc.lua:32)\nLOG: General > next\n')
+    assert wait_scenario(cache,record,Process(),10)==1,'Own NPC exceptions must reject a raw Lua OK'
+    assert runtime_errors(console.read_text(),'another-run')==[],'Old exceptions must not contaminate another run'
+    console.write_text('run='+record['nonce']+'\nERROR: General > vanilla font warning\n')
+    assert wait_scenario(cache,record,Process(),10)==0,'Unrelated vanilla warnings must not reject readiness'
     jar=cache/'PersonalKnox.jar';jar.write_bytes(b'current build')
     import hashlib
     record['java_jars']={str(jar):hashlib.sha256(jar.read_bytes()).hexdigest()}

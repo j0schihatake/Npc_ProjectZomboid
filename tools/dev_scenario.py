@@ -1,6 +1,7 @@
 """Disposable Sandbox smoke scenario and token-bound result protocol."""
 import json
 import hashlib
+import re
 from pathlib import Path
 import secrets
 import shutil
@@ -72,6 +73,22 @@ def prepare_scenario(cache, source, seconds, atomic):
     return record
 
 
+def runtime_errors(text, nonce):
+    """Only inspect the current scenario; do not confuse vanilla warnings with addon exceptions."""
+    if 'run='+nonce not in text:
+        return []
+    errors=[]
+    own_frame=r'Lua\(\(MOD:Personal[ -]?Knox\b[^\r\n]*'
+    for block in re.split(r'(?=^(?:ERROR|LOG|WARN|DEBUG)\s*:)',text,flags=re.M):
+        if block.startswith('ERROR'):
+            match=re.search(own_frame,block,re.I)
+            if match and match.group() not in errors:
+                errors.append(match.group())
+    for match in re.finditer(r'\[PersonalKnox\][^\r\n]*\berror:[^\r\n]*',text,re.I):
+        if match.group() not in errors: errors.append(match.group())
+    return errors[:3]
+
+
 def wait_scenario(cache, record, process, timeout):
     deadline=time.monotonic()+timeout
     result_path=cache/'Lua/PersonalKnox-dev-scenario-result.json'
@@ -83,6 +100,10 @@ def wait_scenario(cache, record, process, timeout):
             result={}
         if result.get('nonce')==record['nonce'] and result.get('world')==record['world']:
             if result.get('status')=='OK':
+                console=cache/'console.txt'
+                errors=runtime_errors(console.read_text(errors='replace') if console.exists() else '',record['nonce'])
+                if errors:
+                    print('FAIL: PersonalKnox runtime errors: '+'; '.join(errors),flush=True);return 1
                 jars=dict(record.get('java_jars',{}))
                 agent=record.get('scenario_agent')
                 if agent: jars[agent['path']]=agent['sha256']

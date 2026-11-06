@@ -26,7 +26,7 @@ local function tick()
             if npc:getWorldObject() and not npc:getWorldObject():isDead() then members = members + 1 end
         end
     end
-    local px, py = player:getX(), player:getY()
+    local px, py, pz = player:getX(), player:getY(), player:getZ()
     api:ownGroup("player-squad", "own", members, px, py)
     api:ownSync(px, py, 80, members)
     api:ownFollowTarget3(px, py, pz)
