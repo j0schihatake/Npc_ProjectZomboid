@@ -32,6 +32,12 @@ public final class OwnNpcBodyAdapter {
                     syncHealth(layer, agent.id(), body);
                     attack(body, zombies);
                 }
+                if (dismantles.containsKey(agent.id())) {
+                    String state = tickDismantle(agent.id(), 2.0);
+                    if (state.startsWith("DONE:")) {
+                        System.out.println("[PersonalKnox][own-dismantle] " + agent.id() + " " + state);
+                    }
+                }
                 if (layer.agent(agent.id()) == null) {
                     var dead = bodies.remove(agent.id());
                     if (dead != null) call(dead, "removeFromWorld");
