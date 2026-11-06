@@ -4,6 +4,8 @@ import io
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import shutil
 from unittest.mock import patch
 
 import dev_launch as launch
@@ -113,3 +115,14 @@ with tempfile.TemporaryDirectory(prefix='pk-dev-launch-') as tmp:
         except ValueError:
             pass
 print('Dev launcher checks passed: isolated profile/settings, dependency links, no save/probe copying, full map order, running-game/cache guards, debug/native environment, detach and exit status. No real game was launched.')
+
+# The actual historical launcher must be rejected by the current shell entry point.
+with tempfile.TemporaryDirectory(prefix='pk-old-launcher-') as tmp:
+    folder=Path(tmp)
+    shutil.copy2(Path(__file__).with_name('launch_dev.sh'),folder/'launch_dev.sh')
+    shutil.copy2(Path(__file__).with_name('dev_trust.py'),folder/'dev_trust.py')
+    old=subprocess.check_output(['git','show','42fd5bd:tools/dev_launch.py'],cwd=Path(__file__).resolve().parents[1])
+    (folder/'dev_launch.py').write_bytes(old)
+    rejected=subprocess.run(['bash',str(folder/'launch_dev.sh'),'--detach'],capture_output=True,text=True)
+    assert rejected.returncode==1 and 'incompatible or incomplete launcher files' in rejected.stderr
+print('Shell entry point rejects the historical launcher that lacks the world scenario.')

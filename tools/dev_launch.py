@@ -225,6 +225,7 @@ def prepare(cache, userdata, source, ids, mods, maps):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--launcher-protocol',action='store_true',help=argparse.SUPPRESS)
     parser.add_argument('--profile',choices=['minimal','full','worldgen','both'],default='minimal')
     parser.add_argument('--source',type=Path,default=ROOT,help='Mod worktree containing 42/mod.info and the built JAR')
     parser.add_argument('--worldgen-source',type=Path,default=ROOT.parent/'PersonalWorldGen-dev')
@@ -250,6 +251,8 @@ def main():
     parser.add_argument('--prepare-only',action='store_true')
     parser.add_argument('--dry-run',action='store_true',help='Resolve mods and print the plan without changing files or launching')
     args=parser.parse_args()
+    if args.launcher_protocol:
+        print('PersonalKnoxDevLauncher2');return 0
     if args.menu_only and args.scenario:
         parser.error('--menu-only and --scenario are mutually exclusive')
     if not args.menu_only and not (args.status or args.prepare_only or args.dry_run):
