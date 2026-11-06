@@ -85,6 +85,18 @@ public final class OwnNpcBodyAdapter {
     }
 
     public int count() { return bodies.size(); }
+    public String plan(String id, String obstacleName) {
+        try {
+            var obstacle = OwnNpcToolUse.Obstacle.valueOf(obstacleName);
+            var tools = tools(id);
+            if (!OwnNpcToolUse.canDismantle(tools, obstacle)) return "";
+            var plan = OwnNpcToolUse.plan(tools, obstacle, woodwork(id));
+            return String.format(java.util.Locale.ROOT, "%d|%.1f|%.1f", plan.seconds(), plan.noise(), plan.wear());
+        } catch (Throwable ignored) {
+            return "";
+        }
+    }
+
     public String startDismantle(String id) {
         return startDismantle(id, Double.NaN, Double.NaN);
     }
