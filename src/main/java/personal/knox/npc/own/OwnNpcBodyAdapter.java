@@ -380,6 +380,9 @@ public final class OwnNpcBodyAdapter {
                 } else if (passable(cell, bx, by, z, bx, y)) {
                     sx = bx;
                 } else {
+                    String obstacle = startDismantle(id);
+                    if (!obstacle.isEmpty())
+                        System.out.println("[PersonalKnox][own-dismantle] " + id + " start " + obstacle);
                     invoke(body, "setMoving", new Class<?>[]{boolean.class}, false);
                     return;
                 }
