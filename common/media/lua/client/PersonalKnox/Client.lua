@@ -245,30 +245,31 @@ local function onContext(playerIndex, context, worldObjects, test)
     if not player or not api() then return end
     local members = roster(player)
     local apiRef = PersonalKnoxAPI.getInstance()
-    local ownCount = apiRef:ownCount()
-    if ownCount > 0 then
-        local ownRoot = context:addOption("Свой NPC", nil, nil)
-        local ownMenu = context:getNew(context)
-        context:addSubMenu(ownRoot, ownMenu)
-        for i = 0, ownCount - 1 do
-            local npcId = apiRef:ownId(i)
-            if npcId and npcId ~= "" then
-                local entry = ownMenu:addOption(npcId, nil, nil)
-                local sub = context:getNew(context)
-                ownMenu:addSubMenu(entry, sub)
-                sub:addOption("Следовать за мной", player, function()
-                    apiRef:ownOrderMode(npcId, "FOLLOW", player:getX(), player:getY())
-                    apiRef:ownFollowTarget3(player:getX(), player:getY(), player:getZ())
-                end)
-                sub:addOption("Стоять", player, function()
-                    apiRef:ownOrderMode(npcId, "HOLD", player:getX(), player:getY())
-                end)
-                sub:addOption("Охранять", player, function()
-                    apiRef:ownOrderMode(npcId, "GUARD", player:getX(), player:getY())
-                end)
-                sub:addOption("Разобрать рядом", player, function()
-                    print("[PersonalKnox][own-menu] dismantle=" .. tostring(apiRef:ownDismantleStart(npcId)))
-                end)
+    local seenOwn = {}
+    for _, obj in ipairs(worldObjects or {}) do
+        if instanceof(obj, "IsoPlayer") then
+            local okName, name = pcall(function() return obj:getUsername() end)
+            if okName and type(name) == "string" and name:sub(1, 3) == "PK-" then
+                local npcId = name:sub(4)
+                if npcId ~= "" and not seenOwn[npcId] then
+                    seenOwn[npcId] = true
+                    local entry = context:addOption("Свой NPC: " .. npcId, nil, nil)
+                    local sub = context:getNew(context)
+                    context:addSubMenu(entry, sub)
+                    sub:addOption("Следовать за мной", player, function()
+                        apiRef:ownOrderMode(npcId, "FOLLOW", player:getX(), player:getY())
+                        apiRef:ownFollowTarget3(player:getX(), player:getY(), player:getZ())
+                    end)
+                    sub:addOption("Стоять", player, function()
+                        apiRef:ownOrderMode(npcId, "HOLD", player:getX(), player:getY())
+                    end)
+                    sub:addOption("Охранять", player, function()
+                        apiRef:ownOrderMode(npcId, "GUARD", player:getX(), player:getY())
+                    end)
+                    sub:addOption("Разобрать рядом", player, function()
+                        print("[PersonalKnox][own-menu] dismantle=" .. tostring(apiRef:ownDismantleStart(npcId)))
+                    end)
+                end
             end
         end
     end

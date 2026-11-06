@@ -329,8 +329,12 @@ public final class OwnNpcBodyAdapter {
         }
         if (ctor == null) throw new IllegalStateException("No IsoPlayer constructor");
         Object body = ctor.newInstance(cell, desc, x, y, z);
-        invoke(body, "setNpc", new Class<?>[]{boolean.class}, false);
+        invoke(body, "setNpc", new Class<?>[]{boolean.class}, true);
         invoke(body, "setZombiesDontAttack", new Class<?>[]{boolean.class}, false);
+        try {
+            body.getClass().getField("playerIndex").setInt(body, -1);
+            body.getClass().getField("serverPlayerIndex").setInt(body, -1);
+        } catch (Throwable ignored) { }
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
         invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
         try {
