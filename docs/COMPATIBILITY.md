@@ -98,6 +98,12 @@
 - `OwnNpcPathfinder.Grid.canStep(from,to)` — проходимость ребра, а не только клетки;
   нужно для стен/дверей в реальном `IsoCell`.
 
+## 0.9.31 — удар по зомби
+
+- Java-адаптер ищет `IsoZombie` в радиусе 1.6 м, наносит 10 урона через
+  `BodyDamage.ReduceHealth`, ставит `setAttackTargetSquare` и `setAttackStarted(true)`.
+- Java-ядро 0.9.31, JAR пересобран; тесты проходят.
+
 ## 0.9.30 — удаление тела при смерти
 
 - Если агент исчез из слоя (DIED), Java-адаптер вызывает `removeFromWorld` для тела,

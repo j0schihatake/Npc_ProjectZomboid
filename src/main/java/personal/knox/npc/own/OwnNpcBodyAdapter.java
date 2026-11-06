@@ -24,7 +24,10 @@ public final class OwnNpcBodyAdapter {
             for (var agent : layer.agents()) {
                 seen.add(agent.id());
                 Object body = bodies.get(agent.id());
-                if (body != null) syncHealth(layer, agent.id(), body);
+                if (body != null) {
+                    syncHealth(layer, agent.id(), body);
+                    attack(body);
+                }
                 if (layer.agent(agent.id()) == null) {
                     var dead = bodies.remove(agent.id());
                     if (dead != null) call(dead, "removeFromWorld");
@@ -113,6 +116,31 @@ public final class OwnNpcBodyAdapter {
             } catch (Throwable ignored) { }
         }
         System.out.println("[PersonalKnox] Own body dress failed");
+    }
+
+    private static void attack(Object body) {
+        try {
+            Object cell = currentCell();
+            if (cell == null) return;
+            Object zombies = cell.getClass().getMethod("getZombieList").invoke(cell);
+            int size = (int) zombies.getClass().getMethod("size").invoke(zombies);
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            for (int i = 0; i < size; i++) {
+                Object zombie = zombies.getClass().getMethod("get", int.class).invoke(zombies, i);
+                if (zombie == null || !zombie.getClass().getName().equals("zombie.characters.IsoZombie")) continue;
+                double zx = ((Number) zombie.getClass().getMethod("getX").invoke(zombie)).doubleValue();
+                double zy = ((Number) zombie.getClass().getMethod("getY").invoke(zombie)).doubleValue();
+                if (Math.hypot(zx - bx, zy - by) > 1.6) continue;
+                Object damage = zombie.getClass().getMethod("getBodyDamage").invoke(zombie);
+                damage.getClass().getMethod("ReduceHealth", float.class).invoke(damage, 10f);
+                Object square = zombie.getClass().getMethod("getCurrentSquare").invoke(zombie);
+                body.getClass().getMethod("setAttackTargetSquare", Class.forName("zombie.iso.IsoGridSquare"))
+                        .invoke(body, square);
+                body.getClass().getMethod("setAttackStarted", boolean.class).invoke(body, true);
+                return;
+            }
+        } catch (Throwable ignored) { }
     }
 
     private static void syncHealth(OwnNpcLayer layer, String id, Object body) {
