@@ -47,6 +47,7 @@ public final class OwnNpcBodyAdapter {
                 for (var agent : layer.agents()) {
                     var body = bodies.get(agent.id());
                     if (body == null) continue;
+                    System.out.println("[PersonalKnox][own-render] " + inspect(agent.id()));
                     try {
                         System.out.println("[PersonalKnox][own-body-move] " + agent.id()
                                 + " body=" + body.getClass().getMethod("getX").invoke(body) + ","
@@ -118,6 +119,12 @@ public final class OwnNpcBodyAdapter {
                     +" square="+(square!=null)
                     +" squareMember="+(square!=null && ((java.util.Collection<?>)square.getClass().getMethod("getMovingObjects").invoke(square)).contains(body))
                     +" model="+body.getClass().getMethod("hasActiveModel").invoke(body)
+                    +" render="+body.getClass().getMethod("getDoRender").invoke(body)
+                    +" culled="+body.getClass().getMethod("isSceneCulled").invoke(body)
+                    +" spriteInvisible="+body.getClass().getMethod("isSpriteInvisible").invoke(body)
+                    +" alpha="+body.getClass().getMethod("getAlpha",int.class).invoke(body,0)
+                    +" targetAlpha="+body.getClass().getMethod("getTargetAlpha",int.class).invoke(body,0)
+                    +" angle="+body.getClass().getMethod("getDirectionAngle").invoke(body)
                     +" bodyXYZ="+body.getClass().getMethod("getX").invoke(body)+","+body.getClass().getMethod("getY").invoke(body)+","+body.getClass().getMethod("getZ").invoke(body);
         } catch(Exception error) { return "id="+id+" inspect_error="+error.getClass().getSimpleName(); }
     }
@@ -281,7 +288,7 @@ public final class OwnNpcBodyAdapter {
         double dx = tx - sx;
         double dy = ty - sy;
         if (Math.hypot(dx, dy) > 0.15) {
-            invoke(body, "setDirectionAngle", new Class<?>[]{float.class}, (float) Math.atan2(dy, dx));
+            invoke(body, "setDirectionAngle", new Class<?>[]{float.class}, (float) Math.toDegrees(Math.atan2(dy, dx)));
             invoke(body, "setMoving", new Class<?>[]{boolean.class}, true);
             invoke(body, "setAnimated", new Class<?>[]{boolean.class}, true);
         } else {
