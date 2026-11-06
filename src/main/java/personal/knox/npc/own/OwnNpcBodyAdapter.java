@@ -14,7 +14,7 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, PathState> pathCache = new HashMap<>();
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
-    private record DismantleTask(OwnNpcDismantleJob job, Object object) { }
+    private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
 
     public int sync(OwnNpcLayer layer) {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
@@ -114,7 +114,9 @@ public final class OwnNpcBodyAdapter {
                 try { obstacle = OwnNpcToolUse.classify(object.getClass().getName()); }
                 catch (IllegalArgumentException unknown) { continue; }
                 if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
-                dismantles.put(id, new DismantleTask(OwnNpcDismantleJob.start(tools, obstacle, woodwork(id)), object));
+                double ox = ((Number) object.getClass().getMethod("getX").invoke(object)).doubleValue();
+                double oy = ((Number) object.getClass().getMethod("getY").invoke(object)).doubleValue();
+                dismantles.put(id, new DismantleTask(OwnNpcDismantleJob.start(tools, obstacle, woodwork(id)), object, ox, oy));
                 return obstacle.name();
             }
         } catch (Throwable ignored) { }
@@ -125,6 +127,14 @@ public final class OwnNpcBodyAdapter {
         var task = dismantles.get(id);
         if (task == null) return "";
         try {
+            Object body = bodies.get(id);
+            if (body == null) { dismantles.remove(id); return ""; }
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            if (Math.hypot(bx - task.x(), by - task.y()) > 2.5) {
+                dismantles.remove(id);
+                return "CANCELLED";
+            }
             task.job().tick(seconds);
             if (task.job().done()) {
                 call(task.object(), "removeFromWorld");
