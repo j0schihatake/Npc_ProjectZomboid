@@ -6,6 +6,8 @@ from pathlib import Path
 import tempfile
 import subprocess
 import shutil
+import os
+import sys
 from unittest.mock import patch
 
 import dev_launch as launch
@@ -126,3 +128,20 @@ with tempfile.TemporaryDirectory(prefix='pk-old-launcher-') as tmp:
     rejected=subprocess.run(['bash',str(folder/'launch_dev.sh'),'--detach'],capture_output=True,text=True)
     assert rejected.returncode==1 and 'incompatible or incomplete launcher files' in rejected.stderr
 print('Shell entry point rejects the historical launcher that lacks the world scenario.')
+
+with tempfile.TemporaryDirectory(prefix='pk-default-command-') as tmp:
+    folder=Path(tmp);binary=folder/'bin';binary.mkdir()
+    wrapper=folder/'launch_dev.sh'
+    shutil.copy2(Path(__file__).with_name('launch_dev.sh'),wrapper)
+    spy=binary/'python3'
+    spy.write_text('#!'+sys.executable+'\nimport sys,os,json\nfrom pathlib import Path\nif "--launcher-protocol" in sys.argv: print("PersonalKnoxDevLauncher2")\nelse: Path(os.environ["PK_LAUNCH_ARGS"]).write_text(json.dumps(sys.argv[1:]))\n')
+    spy.chmod(0o755)
+    output=folder/'args.json'
+    env={**os.environ,'PATH':str(binary)+os.pathsep+os.environ['PATH'],'PK_LAUNCH_ARGS':str(output)}
+    subprocess.run(['bash',str(wrapper)],env=env,check=True)
+    assert json.loads(output.read_text())[1:]==['--restart','--build','--detach','--no-debug','--nosteam']
+    subprocess.run(['bash',str(wrapper),'--menu-only'],env=env,check=True)
+    assert json.loads(output.read_text())[1:]==['--restart','--build','--detach','--no-debug','--nosteam','--menu-only']
+    subprocess.run(['bash',str(wrapper),'--status'],env=env,check=True)
+    assert json.loads(output.read_text())[1:]==['--status'],'Status must not rebuild or stop the game'
+print('Existing launch_dev.sh supplies the tested defaults with no arguments and keeps status read-only.')

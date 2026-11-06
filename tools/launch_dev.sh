@@ -6,4 +6,11 @@ if ! protocol=$(python3 "$SCRIPT_DIR/dev_launch.py" --launcher-protocol 2>/dev/n
   echo "Dev launch: incompatible or incomplete launcher files. Restore the current tools from Git; an old dev_launch.py cannot run the automatic world scenario." >&2
   exit 1
 fi
+# Tested default workflow; callers only need to run this existing script.
+DEFAULT_ARGS=(--restart --build --detach --no-debug --nosteam)
+if (( $# == 0 )); then
+  set -- "${DEFAULT_ARGS[@]}"
+elif (( $# == 1 )) && [[ "$1" == "--menu-only" ]]; then
+  set -- "${DEFAULT_ARGS[@]}" --menu-only
+fi
 exec python3 "$SCRIPT_DIR/dev_launch.py" "$@"

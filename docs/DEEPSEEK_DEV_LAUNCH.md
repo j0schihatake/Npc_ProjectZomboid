@@ -5,8 +5,15 @@
 
 ```bash
 cd /home/j0schi/Zomboid/PersonalKnox-dev
-./tools/launch_dev.sh --restart --build --detach --no-debug --nosteam
+./tools/launch_dev.sh
 ```
+
+Параметры уже вписаны в DEFAULT_ARGS существующего shell-скрипта:
+`--restart --build --detach --no-debug --nosteam`. Для обычного запуска их вводить
+не нужно. Единственный флаг `--menu-only` сохраняет эти параметры, но отключает
+сценарий и оставляет игру в главном меню. Если передан другой набор явных
+аргументов, используются они — это позволяет проверить готовый JAR без
+пересборки или выполнить только `--status`.
 
 `--restart` завершает только свою записанную dev-игру через SIGTERM и ждёт выхода.
 Нужное состояние dev-мира заранее сохранить через меню; SIGTERM не гарантирует
@@ -49,7 +56,7 @@ cd /home/j0schi/Zomboid/PersonalKnox-dev
 ./tools/launch_dev.sh --scenario-save /absolute/path/to/Sandbox/world --detach
 ./tools/launch_dev.sh --scenario-timeout 1200 --detach
 ./tools/launch_dev.sh --profile full --detach
-./tools/launch_dev.sh --menu-only --detach    # Явно открыть только меню
+./tools/launch_dev.sh --menu-only             # Подготовить/перезапустить и остаться в меню
 ./tools/launch_dev.sh --prepare-only         # Подготовить профиль без запуска
 ./tools/launch_dev.sh --dry-run              # Показать план без записей
 ```
@@ -93,3 +100,9 @@ DeepSeek (tool/call seq 15907) убрала запуск сценария и в�
 Если ему подложили старый dev_launch.py без сценария, он сразу возвращает ошибку,
 а не открывает меню с ложным успехом. Регрессия проверена на настоящем файле из
 42fd5bd. Результат --launcher-protocol не меняет файлы и не запускает игру.
+
+Последняя проверка свежего PersonalKnox.jar выполнена без его пересборки:
+отдельный ScenarioAgent.jar, совпадение хешей обоих файлов до/после, 6 модов,
+core/Lua 0.9.30, закрыты 3 окна, Knox сгенерирован и экспортирован, мир сохранён,
+сценарий вернул OK/0. Запуск без аргументов и единственный --menu-only проверены
+на передачу встроенных параметров; --status не останавливает игру и не собирает JAR.

@@ -6,12 +6,12 @@
 ## Автоматический dev-запуск
 
 ```bash
-./tools/launch_dev.sh --restart --build --detach --no-debug --nosteam
+./tools/launch_dev.sh
 ```
 
 Существующий launcher сам включает моды, загружает совместимую копию мира,
 проходит стартовые окна/генерацию Knox и возвращает код 0 после `OK`.
-Только меню: `--menu-only`. Статус: `./tools/launch_dev.sh --status`.
+Только меню: `./tools/launch_dev.sh --menu-only`. Статус: `./tools/launch_dev.sh --status`.
 [Инструкция для DeepSeek](docs/DEEPSEEK_DEV_LAUNCH.md).
 
 ## Что есть сейчас

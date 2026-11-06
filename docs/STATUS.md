@@ -57,7 +57,7 @@ A-Life события, задания и сумки — нужен загруж�
 
 ## Минимальный тестовый запуск
 
-Использовать `tools/launch_dev.sh --restart --build --detach --no-debug --nosteam`.
+Использовать `tools/launch_dev.sh`.
 Скрипт включает моды в отдельном dev-cache, загружает совместимую копию мира,
 проходит старт/Knox и закрывает стартовые окна. Успех — код 0 и `scenario_ok`.
 `tools/launch_test.sh` вызывает тот же launcher, обычный default.txt не заменяется.
