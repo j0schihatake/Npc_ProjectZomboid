@@ -112,6 +112,7 @@ public final class BrainTest {
         personal.knox.quest.QuestServiceTest.run();
         personal.knox.quest.QuestAssignmentTest.run();
         personal.knox.npc.own.OwnNpcLayerTest.run();
+        personal.knox.npc.own.OwnNpcScheduleTest.run();
         personal.knox.npc.own.OwnNpcBodyAdapterTest.run();
         personal.knox.npc.own.OwnNpcCodecTest.run();
         personal.knox.npc.own.OwnNpcPopulationCodecTest.run();

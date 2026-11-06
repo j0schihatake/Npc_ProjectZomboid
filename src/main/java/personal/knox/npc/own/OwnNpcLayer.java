@@ -1,6 +1,7 @@
 package personal.knox.npc.own;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,11 @@ public final class OwnNpcLayer {
     private final Map<String, OwnNpcAgent> agents = new LinkedHashMap<>();
     private final Map<String, OwnNpcOrder> orders = new LinkedHashMap<>();
     private final Map<String, Double> targetZ = new LinkedHashMap<>();
+    private final List<String> schedule = new ArrayList<>();
+    private final Map<String, Double> lastNeedClock = new LinkedHashMap<>();
+    private final ArrayDeque<OwnNpcEvent> pendingEvents = new ArrayDeque<>();
+    private int cursor;
+    private double needClock;
     private double followX, followY;
     private double needRate = 1;
 
@@ -25,11 +31,21 @@ public final class OwnNpcLayer {
     public OwnNpcAgent agent(String id) { return agents.get(id); }
     public List<OwnNpcAgent> agents() { return List.copyOf(agents.values()); }
 
+    /** Catch up deferred need time for persistence only; normal body sync stays cheap. */
+    public List<OwnNpcAgent> snapshotAgents() {
+        return agents.values().stream().map(agent -> {
+            double hours=needClock-lastNeedClock.get(agent.id());
+            return hours==0 ? agent : agent.withState(NpcNeeds.tick(agent.state(),hours));
+        }).toList();
+    }
+
     public OwnNpcEvent spawn(OwnNpcAgent agent) {
         if (agent == null || agents.containsKey(agent.id()))
             throw new IllegalArgumentException("Duplicate or missing agent");
         if (agents.size() >= MAX_NPCS) throw new IllegalStateException("NPC budget exhausted");
         agents.put(agent.id(), agent);
+        schedule.add(agent.id());
+        lastNeedClock.put(agent.id(),needClock);
         return new OwnNpcEvent(OwnNpcEvent.Type.SPAWNED, agent.id(), agent.x(), agent.y(), agent.z(), "spawn");
     }
 
@@ -40,15 +56,27 @@ public final class OwnNpcLayer {
         var state = new personal.knox.npc.NpcState(100, 0.2, 0.2, 0.2, 0.7,
                 false, false, personal.knox.npc.NpcState.Role.SCAVENGER,
                 personal.knox.npc.NpcState.Task.FOLLOW);
+        var event=spawn(new OwnNpcAgent(id, "own", x, y, z, x + 3, y, 2, state));
         targetZ.put(id, z);
-        return spawn(new OwnNpcAgent(id, "own", x, y, z, x + 3, y, 2, state));
+        return event;
     }
 
     public void restore(List<OwnNpcAgent> restored) {
         if (restored == null) throw new IllegalArgumentException("Missing agents");
         if (restored.size() > MAX_NPCS) throw new IllegalArgumentException("Too many agents");
-        agents.clear();
-        for (var agent : restored) agents.put(agent.id(), agent);
+        var validated=new LinkedHashMap<String,OwnNpcAgent>();
+        for (var agent : restored) {
+            if(agent==null || validated.putIfAbsent(agent.id(),agent)!=null)
+                throw new IllegalArgumentException("Null or duplicate restored agent");
+        }
+        agents.clear();agents.putAll(validated);
+        schedule.clear();schedule.addAll(validated.keySet());
+        orders.clear();targetZ.clear();lastNeedClock.clear();pendingEvents.clear();
+        cursor=0;needClock=0;followX=0;followY=0;
+        for(var agent : restored) {
+            lastNeedClock.put(agent.id(),0.0);
+            targetZ.put(agent.id(),agent.z());
+        }
     }
 
     public OwnNpcEvent order(String id, OwnNpcOrder order, double tx, double ty) {
@@ -108,26 +136,40 @@ public final class OwnNpcLayer {
     }
 
     public OwnNpcEvent remove(String id) {
-        orders.remove(id);
-        targetZ.remove(id);
-        var agent = agents.remove(id);
-        if (agent == null) throw new IllegalArgumentException("Unknown agent");
+        var agent=agents.get(id);
+        if(agent==null) throw new IllegalArgumentException("Unknown agent");
+        int index=schedule.indexOf(id);
+        agents.remove(id);schedule.remove(index);
+        orders.remove(id);targetZ.remove(id);lastNeedClock.remove(id);
+        pendingEvents.removeIf(event -> event.agentId().equals(id));
+        if(index<cursor) cursor--;
+        cursor=schedule.isEmpty() ? 0 : cursor%schedule.size();
         return new OwnNpcEvent(OwnNpcEvent.Type.REMOVED, id, agent.x(), agent.y(), agent.z(), "remove");
     }
 
-    /** One bounded simulation step; returns at most {@code budget} events. */
+    /** Rotate agents fairly, emitting at most budget events. Deferred NPCs retain
+     * elapsed need time; an extra movement notification is delivered next call. */
     public List<OwnNpcEvent> tick(double hours, int budget) {
         if (!Double.isFinite(hours) || hours < 0 || budget < 0)
             throw new IllegalArgumentException("Invalid tick");
+        double nextClock=needClock+hours*needRate;
+        if(!Double.isFinite(nextClock)) throw new IllegalArgumentException("Need time overflow");
+        needClock=nextClock;
+        if(budget==0 || agents.isEmpty()) return List.of();
         var events = new ArrayList<OwnNpcEvent>();
-        for (var entry : new ArrayList<>(agents.entrySet())) {
-            if (events.size() >= budget) break;
-            var agent = entry.getValue();
+        while(!pendingEvents.isEmpty() && events.size()<budget) events.add(pendingEvents.removeFirst());
+        int processed=0;
+        while(processed<schedule.size() && events.size()<budget) {
+            String id=schedule.get(cursor);
+            cursor=(cursor+1)%schedule.size();
+            processed++;
+            var agent=agents.get(id);
             if (orders.getOrDefault(agent.id(), OwnNpcOrder.HOLD) == OwnNpcOrder.FOLLOW) {
                 agent = agent.withTarget(followX, followY);
                 agents.put(agent.id(), agent);
             }
-            var nextState = NpcNeeds.tick(agent.state(), hours, needRate);
+            var nextState = NpcNeeds.tick(agent.state(),needClock-lastNeedClock.get(id));
+            lastNeedClock.put(id,needClock);
             int supplies = agent.supplies();
             if (nextState.hunger() >= 0.6 && supplies > 0) {
                 nextState = nextState.withNeeds(Math.max(0, nextState.hunger() - 0.5),
@@ -158,7 +200,9 @@ public final class OwnNpcLayer {
             events.add(new OwnNpcEvent(OwnNpcEvent.Type.NEEDS, agent.id(), nx, ny, agent.z(),
                     String.format(java.util.Locale.ROOT, "hunger=%.3f thirst=%.3f", nextState.hunger(), nextState.thirst())));
             if (length > STEP_METERS) {
-                events.add(new OwnNpcEvent(OwnNpcEvent.Type.MOVED, agent.id(), nx, ny, agent.z(), "step"));
+                var moved=new OwnNpcEvent(OwnNpcEvent.Type.MOVED,agent.id(),nx,ny,agent.z(),"step");
+                if(events.size()<budget) events.add(moved);
+                else pendingEvents.addLast(moved);
             }
         }
         return List.copyOf(events);

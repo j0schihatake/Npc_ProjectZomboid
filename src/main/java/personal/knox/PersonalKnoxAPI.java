@@ -155,7 +155,7 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownSnapshot() {
-        return personal.knox.npc.own.OwnNpcCodec.encode(ownLayer.agents());
+        return personal.knox.npc.own.OwnNpcCodec.encode(ownLayer.snapshotAgents());
     }
 
     public int ownRestore(String text) {
