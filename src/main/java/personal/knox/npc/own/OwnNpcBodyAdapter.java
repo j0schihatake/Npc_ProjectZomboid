@@ -84,7 +84,16 @@ public final class OwnNpcBodyAdapter {
         invoke(body, "setSceneCulled", new Class<?>[]{boolean.class}, false);
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
         invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
+        try {
+            if (body.getClass().getMethod("getCurrentSquare").invoke(body) == null) {
+                cell.getClass().getMethod("addMovingObject", Class.forName("zombie.iso.IsoMovingObject"))
+                        .invoke(cell, body);
+                System.out.println("[PersonalKnox] Own body added to cell " + id);
+            }
+        } catch (Throwable ignored) { }
         dress(body, desc);
+        System.out.println("[PersonalKnox] Own body " + id + " at "
+                + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", x, y, z));
         return body;
     }
 
