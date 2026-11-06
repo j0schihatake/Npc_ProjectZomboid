@@ -3,6 +3,17 @@
 Личное Java-дополнение к Knox Event Expanded для Project Zomboid 42.21.0.
 Ничего не загружается в Workshop или удалённый репозиторий.
 
+## Автоматический dev-запуск
+
+```bash
+./tools/launch_dev.sh --restart --build --detach --no-debug --nosteam
+```
+
+Существующий launcher сам включает моды, загружает совместимую копию мира,
+проходит стартовые окна/генерацию Knox и возвращает код 0 после `OK`.
+Только меню: `--menu-only`. Статус: `./tools/launch_dev.sh --status`.
+[Инструкция для DeepSeek](docs/DEEPSEEK_DEV_LAUNCH.md).
+
 ## Что есть сейчас
 
 Подготовлена 0.4.53: исправлен вызов отсутствующего в Kahlua `math.random`

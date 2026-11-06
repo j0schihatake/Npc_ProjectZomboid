@@ -21,6 +21,13 @@ with tempfile.TemporaryDirectory() as tmp:
     vanilla=save('old',['Muldraugh, KY']);expanded=save('latest',['Missing City','Muldraugh, KY'])
     (userdata/'latestSave.ini').write_text('latest\nSandbox\n')
     assert choose_save(userdata,None,{'Muldraugh, KY'})==vanilla
+    (userdata/'latestSave.ini').unlink()
+    assert choose_save(userdata,None,{'Muldraugh, KY'})==vanilla,'Missing latest-save pointer must not block available templates'
+    dead=save('zz-dead',['Muldraugh, KY'])
+    connection=sqlite3.connect(dead/'players.db');connection.execute('UPDATE localPlayers SET isDead=1');connection.commit();connection.close()
+    (userdata/'latestSave.ini').write_text('zz-dead\nSandbox\n')
+    assert choose_save(userdata,None,{'Muldraugh, KY'})==vanilla,'A dead latest player must fall back to a living template'
+
     try:choose_save(userdata,expanded,{'Muldraugh, KY'});raise AssertionError('Missing map accepted')
     except ValueError:pass
     before=fingerprint(vanilla)
