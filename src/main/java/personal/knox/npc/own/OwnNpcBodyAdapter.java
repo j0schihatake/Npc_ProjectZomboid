@@ -93,7 +93,7 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable ignored) { }
         dress(body, desc);
         System.out.println("[PersonalKnox] Own body " + id + " at "
-                + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", x, y, z));
+                + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", (double) x, (double) y, (double) z));
         return body;
     }
 
