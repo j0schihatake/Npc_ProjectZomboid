@@ -12,6 +12,8 @@ public final class OwnNpcToolUseTest {
         catch (IllegalStateException expected) { }
         var plan = OwnNpcToolUse.plan(EnumSet.of(OwnNpcToolUse.Tool.HAMMER), OwnNpcToolUse.Obstacle.FENCE);
         assert plan.seconds() == 6 && plan.noise() == 4 && plan.wear() == 1;
+        assert OwnNpcToolUse.fromItems(java.util.List.of("Base.Hammer", "Base.Screwdriver"))
+                .equals(EnumSet.of(OwnNpcToolUse.Tool.HAMMER, OwnNpcToolUse.Tool.SCREWDRIVER));
         System.out.println("Own-NPC tool-use tests passed: window, fence, wall, missing tools and invalid state.");
     }
 }

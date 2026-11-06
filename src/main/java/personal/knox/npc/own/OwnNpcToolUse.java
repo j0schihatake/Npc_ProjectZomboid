@@ -34,6 +34,20 @@ public final class OwnNpcToolUse {
         };
     }
 
+    public static Set<Tool> fromItems(java.util.Collection<String> itemTypes) {
+        if (itemTypes == null) throw new IllegalArgumentException("Missing item types");
+        var tools = EnumSet.noneOf(Tool.class);
+        for (var type : itemTypes) {
+            if (type == null) continue;
+            String lower = type.toLowerCase(java.util.Locale.ROOT);
+            if (lower.contains("hammer") || lower.contains("молот")) tools.add(Tool.HAMMER);
+            if (lower.contains("saw") || lower.contains("пила")) tools.add(Tool.SAW);
+            if (lower.contains("crowbar") || lower.contains("лом")) tools.add(Tool.CROWBAR);
+            if (lower.contains("screwdriver") || lower.contains("отверт")) tools.add(Tool.SCREWDRIVER);
+        }
+        return tools;
+    }
+
     public static Plan plan(Set<Tool> tools, Obstacle obstacle) {
         int seconds = seconds(tools, obstacle);
         double noise = switch (obstacle) {
