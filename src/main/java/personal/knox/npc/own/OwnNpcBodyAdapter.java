@@ -118,6 +118,7 @@ public final class OwnNpcBodyAdapter {
                     +" registered="+((java.util.Collection<?>)cell.getClass().getMethod("getObjectList").invoke(cell)).contains(body)
                     +" square="+(square!=null)
                     +" squareMember="+(square!=null && ((java.util.Collection<?>)square.getClass().getMethod("getMovingObjects").invoke(square)).contains(body))
+                    +" bodyType="+body.getClass().getName()
                     +" model="+body.getClass().getMethod("hasActiveModel").invoke(body)
                     +" render="+body.getClass().getMethod("getDoRender").invoke(body)
                     +" culled="+body.getClass().getMethod("isSceneCulled").invoke(body)
@@ -148,7 +149,7 @@ public final class OwnNpcBodyAdapter {
         Class<?> factory = Class.forName("zombie.characters.SurvivorFactory");
         Object desc = factory.getMethod("CreateSurvivor").invoke(null);
         Constructor<?> ctor = null;
-        for (var candidate : playerClass.getConstructors()) {
+        for (var candidate : OwnNpcBodyType.forBase(playerClass).getConstructors()) {
             var p = candidate.getParameterTypes();
             if (p.length == 5 && p[0].isInstance(cell) && p[1].isInstance(desc)) { ctor = candidate; break; }
         }

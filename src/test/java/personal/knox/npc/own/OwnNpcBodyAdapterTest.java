@@ -13,8 +13,23 @@ public final class OwnNpcBodyAdapterTest {
         public void setMoving(boolean v){moving=v;}
         public void setAnimated(boolean v){}
     }
+    public static class EnginePlayer {
+        final Object cell,desc; final int x,y,z;
+        public EnginePlayer(Object cell,Object desc,int x,int y,int z) {
+            this.cell=cell;this.desc=desc;this.x=x;this.y=y;this.z=z;
+        }
+    }
     public static void run() {
         try {
+        Class<?> type=OwnNpcBodyType.forBase(EnginePlayer.class);
+        assert type!=EnginePlayer.class && type.getSuperclass()==EnginePlayer.class
+                : "B42 exact-player renderer filter must not discard the NPC";
+        assert OwnNpcBodyType.forBase(EnginePlayer.class)==type : "Generate once per engine class";
+        Object cell=new Object(),desc=new Object();
+        var npc=(EnginePlayer)type.getConstructor(Object.class,Object.class,int.class,int.class,int.class)
+                .newInstance(cell,desc,10,20,2);
+        assert npc.cell==cell && npc.desc==desc && npc.x==10 && npc.y==20 && npc.z==2
+                : "Delegate the engine constructor without replacing its behavior";
         var method=OwnNpcBodyAdapter.class.getDeclaredMethod("move",String.class,Object.class,
                 double.class,double.class,double.class,double.class,double.class,double.class);
         method.setAccessible(true);
