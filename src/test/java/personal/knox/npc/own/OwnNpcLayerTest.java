@@ -18,6 +18,8 @@ public final class OwnNpcLayerTest {
         layer.followTarget(60, 60);
         layer.tick(1, 8);
         assert layer.agent("n1").targetX() == 60 && layer.agent("n1").targetY() == 60;
+        assert layer.agent("n1").x() > 0 : "FOLLOW moves toward follow target";
+
         layer.order("n1", 50, 0);
         assert layer.agent("n1").targetX() == 50;
         var bleeder = new OwnNpcAgent("n3", "own", 0, 0, 0, 0, 0, 1,
