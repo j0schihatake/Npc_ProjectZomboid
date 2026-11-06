@@ -34,15 +34,14 @@ public final class OwnNpcLayer {
     }
 
     public OwnNpcEvent debugSpawn(double x, double y, double z) {
-        int index = agents.size();
-        String id = "debug#" + (index + 1);
-        double ox = (index % 4) * 0.9;
-        double oy = ((index / 4) % 4) * 0.9;
+        int index=1;
+        while(agents.containsKey("debug#"+index)) index++;
+        String id="debug#"+index;
         var state = new personal.knox.npc.NpcState(100, 0.2, 0.2, 0.2, 0.7,
                 false, false, personal.knox.npc.NpcState.Role.SCAVENGER,
                 personal.knox.npc.NpcState.Task.FOLLOW);
         targetZ.put(id, z);
-        return spawn(new OwnNpcAgent(id, "own", x + ox, y + oy, z, x + ox + 3, y + oy, 2, state));
+        return spawn(new OwnNpcAgent(id, "own", x, y, z, x + 3, y, 2, state));
     }
 
     public void restore(List<OwnNpcAgent> restored) {

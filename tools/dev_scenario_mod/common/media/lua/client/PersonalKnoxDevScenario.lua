@@ -72,6 +72,13 @@ Events.OnGameStart.Add(function()
     if not current or current.nonce~=config.nonce or current.state~='loading' then return end
     setGameSpeed(1)
     local started=getTimestampMs();local ticks=0
+    local npcReader=getFileReader('PersonalKnox-dev-npc.txt',false)
+    local testNpc=npcReader and npcReader:readLine()==config.nonce
+    if npcReader then npcReader:close() end
+    local npcId=nil
+    local npcReadyTicks=0
+    local npcStarted=nil
+
     local nextUI=0
     local cleanUI
     cleanUI=function()
@@ -134,6 +141,25 @@ Events.OnGameStart.Add(function()
         if not inWorld() then Events.OnTick.Remove(poll);result('FAIL','world_changed');return end
         if player:isDead() then Events.OnTick.Remove(poll);result('FAIL','player_dead');return end
         ticks=ticks+1
+        if testNpc and knoxReady then
+            local ok,err=pcall(function()
+                local api=PersonalKnoxAPI.getInstance()
+                if not npcId then
+                    npcStarted=getTimestampMs()
+                    npcId=api:ownCreateCompanion(player)
+                    print('[PersonalKnox][dev-scenario] run='..config.nonce..' npc_created='..tostring(npcId))
+                end
+                if api:ownBodyReady(npcId) then npcReadyTicks=npcReadyTicks+1 else npcReadyTicks=0 end
+                if getTimestampMs()-npcStarted>15000 and npcReadyTicks<3 then
+                    error(api:ownBodyInspect(npcId))
+                end
+            end)
+            if not ok then
+                print('[PersonalKnox][dev-scenario] npc_failure='..tostring(err))
+                Events.OnTick.Remove(poll);result('FAIL','own_npc_spawn_failed');return
+            end
+            if npcReadyTicks<3 then return end
+        end
         if not knoxReady or getTimestampMs()-started<config.seconds*1000 then return end
         Events.OnTick.Remove(poll)
         local ok,api=pcall(function() return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() end)
@@ -141,9 +167,20 @@ Events.OnGameStart.Add(function()
         local cleared=pcall(closeStartupUI)
         Events.OnTickEvenPaused.Remove(cleanUI)
         if not cleared then result('FAIL','startup_ui_cleanup_failed');return end
-        local saved=pcall(saveGame)
+        local saved=pcall(function()
+            if testNpc then
+                local data=player:getModData()
+                data.PersonalKnoxOwnNpc=api:ownSnapshot()
+                data.PersonalKnoxOwnPopulation=api:ownPopulationSnapshot()
+                data.PersonalKnoxTargetZ=api:ownTargetZSnapshot()
+            end
+            saveGame()
+        end)
         if not saved then result('FAIL','save_failed');return end
-        result('OK','world_player_api_ticks_knox_saved')
+        if testNpc then
+            print('[PersonalKnox][dev-scenario] run='..config.nonce..' '..PersonalKnoxAPI.getInstance():ownBodyInspect(npcId))
+        end
+        result('OK',testNpc and 'own_npc_registered_model_saved' or 'world_player_api_ticks_knox_saved')
     end
     Events.OnTick.Add(poll)
     print('[PersonalKnox][dev-scenario] run='..config.nonce..' world_started=true')

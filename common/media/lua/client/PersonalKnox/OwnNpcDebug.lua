@@ -6,7 +6,7 @@ local function spawn()
     local player = getSpecificPlayer(0)
     if not player or player:isDead() then return end
     local api = PersonalKnoxAPI.getInstance()
-    local id = api:ownDebugSpawn(player:getX() + 1, player:getY() + 1, player:getZ())
+    local id = api:ownCreateCompanion(player)
     local bodies = api:ownDebugBodySync()
     print("[PersonalKnox][own-debug] id=" .. tostring(id) .. " bodies=" .. tostring(bodies))
 end

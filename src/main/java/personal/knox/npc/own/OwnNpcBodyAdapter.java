@@ -74,7 +74,55 @@ public final class OwnNpcBodyAdapter {
 
     public int count() { return bodies.size(); }
 
-    private static Object currentCell() throws Exception {
+    /** Bounded search at spawn time only, never a per-frame world scan. */
+    public static double[] spawnPosition(Object player) {
+        if(player==null) throw new IllegalArgumentException("Missing player");
+        try {
+            Object cell=currentCell();
+            int x=(int)Math.floor(((Number)player.getClass().getMethod("getX").invoke(player)).doubleValue());
+            int y=(int)Math.floor(((Number)player.getClass().getMethod("getY").invoke(player)).doubleValue());
+            int z=(int)Math.floor(((Number)player.getClass().getMethod("getZ").invoke(player)).doubleValue());
+            var squareAt=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class);
+            for(int radius=1;radius<=3;radius++) for(int dx=-radius;dx<=radius;dx++) for(int dy=-radius;dy<=radius;dy++) {
+                if(Math.max(Math.abs(dx),Math.abs(dy))!=radius) continue;
+                Object square=squareAt.invoke(cell,x+dx,y+dy,z);
+                if(square!=null && (boolean)square.getClass().getMethod("isFree",boolean.class).invoke(square,false))
+                    return new double[]{x+dx+0.5,y+dy+0.5,z};
+            }
+            throw new IllegalStateException("No free loaded square near player");
+        } catch(ReflectiveOperationException error) { throw new IllegalStateException("Cannot select NPC spawn square",error); }
+    }
+
+    public boolean ready(String id) {
+        Object body=bodies.get(id);
+        if(body==null) return false;
+        try {
+            Object cell=currentCell();
+            Object square=body.getClass().getMethod("getCurrentSquare").invoke(body);
+            Object player=Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
+            return square!=null && body!=player
+                    && ((java.util.Collection<?>)cell.getClass().getMethod("getObjectList").invoke(cell)).contains(body)
+                    && ((java.util.Collection<?>)square.getClass().getMethod("getMovingObjects").invoke(square)).contains(body)
+                    && (boolean)body.getClass().getMethod("hasActiveModel").invoke(body)
+                    && !(boolean)body.getClass().getMethod("isDead").invoke(body);
+        } catch(Exception error) { return false; }
+    }
+
+    public String inspect(String id) {
+        Object body=bodies.get(id);
+        if(body==null) return "id="+id+" body=missing";
+        try {
+            Object cell=currentCell();Object square=body.getClass().getMethod("getCurrentSquare").invoke(body);
+            return "id="+id+" ready="+ready(id)
+                    +" registered="+((java.util.Collection<?>)cell.getClass().getMethod("getObjectList").invoke(cell)).contains(body)
+                    +" square="+(square!=null)
+                    +" squareMember="+(square!=null && ((java.util.Collection<?>)square.getClass().getMethod("getMovingObjects").invoke(square)).contains(body))
+                    +" model="+body.getClass().getMethod("hasActiveModel").invoke(body)
+                    +" bodyXYZ="+body.getClass().getMethod("getX").invoke(body)+","+body.getClass().getMethod("getY").invoke(body)+","+body.getClass().getMethod("getZ").invoke(body);
+        } catch(Exception error) { return "id="+id+" inspect_error="+error.getClass().getSimpleName(); }
+    }
+
+    private static Object currentCell() throws ReflectiveOperationException {
         Class<?> world = Class.forName("zombie.iso.IsoWorld");
         Object value = world.getField("instance").get(null);
         if (value == null) return null;
@@ -86,6 +134,9 @@ public final class OwnNpcBodyAdapter {
     }
 
     private Object create(Object cell, String id, int x, int y, int z) throws Exception {
+        Class<?> squareClass=Class.forName("zombie.iso.IsoGridSquare");
+        Object square=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class).invoke(cell,x,y,z);
+        if(square==null) throw new IllegalStateException("NPC spawn square is not loaded");
         Class<?> playerClass = Class.forName("zombie.characters.IsoPlayer");
         Class<?> factory = Class.forName("zombie.characters.SurvivorFactory");
         Object desc = factory.getMethod("CreateSurvivor").invoke(null);
@@ -97,17 +148,25 @@ public final class OwnNpcBodyAdapter {
         if (ctor == null) throw new IllegalStateException("No IsoPlayer constructor");
         Object body = ctor.newInstance(cell, desc, x, y, z);
         invoke(body, "setNpc", new Class<?>[]{boolean.class}, true);
-        invoke(body, "setSceneCulled", new Class<?>[]{boolean.class}, false);
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
         invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
         try {
-            if (body.getClass().getMethod("getCurrentSquare").invoke(body) == null) {
-                cell.getClass().getMethod("addMovingObject", Class.forName("zombie.iso.IsoMovingObject"))
-                        .invoke(cell, body);
-                System.out.println("[PersonalKnox] Own body added to cell " + id);
-            }
-        } catch (Throwable ignored) { }
-        dress(body, desc);
+            dress(body, desc);
+            body.getClass().getMethod("setCurrentSquare",squareClass).invoke(body,square);
+            // A non-null current square does not mean membership in the simulation.
+            // IsoCell queues additions safely when its object list is being updated.
+            cell.getClass().getMethod("addMovingObject",Class.forName("zombie.iso.IsoMovingObject")).invoke(cell,body);
+            @SuppressWarnings("unchecked")
+            var moving=(java.util.Collection<Object>)square.getClass().getMethod("getMovingObjects").invoke(square);
+            if(!moving.contains(body)) moving.add(body);
+            invoke(body,"setSceneCulled",new Class<?>[]{boolean.class},false);
+            Class<?> models=Class.forName("zombie.core.skinnedmodel.ModelManager");
+            models.getMethod("Add",Class.forName("zombie.characters.IsoGameCharacter"))
+                    .invoke(models.getField("instance").get(null),body);
+        } catch(Exception failure) {
+            call(body,"removeFromWorld");call(body,"removeFromSquare");
+            throw failure;
+        }
         System.out.println("[PersonalKnox] Own body " + id + " at "
                 + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", (double) x, (double) y, (double) z));
         return body;
@@ -183,8 +242,8 @@ public final class OwnNpcBodyAdapter {
         double sx = x, sy = y;
         try {
             Object cell = currentCell();
-            double bx = (double) body.getClass().getMethod("getX").invoke(body);
-            double by = (double) body.getClass().getMethod("getY").invoke(body);
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
             if (Math.abs(targetZ - z) > 0.4) {
                 double[] stair = findStairs(cell, bx, by, z);
                 if (stair != null) {

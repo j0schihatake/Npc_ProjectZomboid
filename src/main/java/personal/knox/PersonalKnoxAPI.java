@@ -107,6 +107,15 @@ public final class PersonalKnoxAPI {
     }
 
     public int ownDebugBodySync() { return ownBodies.sync(ownLayer); }
+    public String ownCreateCompanion(Object player) {
+        double[] p=personal.knox.npc.own.OwnNpcBodyAdapter.spawnPosition(player);
+        String id=ownDebugSpawn(p[0],p[1],p[2]);
+        ownLayer.order(id,personal.knox.npc.own.OwnNpcOrder.HOLD,p[0],p[1]);
+        ownBodies.sync(ownLayer);
+        return id;
+    }
+    public boolean ownBodyReady(String id) { return ownBodies.ready(id); }
+    public String ownBodyInspect(String id) { return ownBodies.inspect(id); }
 
 
     public int ownCount() { return ownLayer.count(); }

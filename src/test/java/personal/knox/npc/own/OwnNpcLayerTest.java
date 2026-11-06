@@ -4,6 +4,14 @@ import personal.knox.npc.NpcState;
 
 public final class OwnNpcLayerTest {
     public static void run() {
+        var spawnLayer=new OwnNpcLayer();
+        String first=spawnLayer.debugSpawn(10.5,20.5,2).agentId();
+        String second=spawnLayer.debugSpawn(11.5,20.5,2).agentId();
+        assert spawnLayer.agent(first).x()==10.5 && spawnLayer.agent(first).z()==2;
+        spawnLayer.remove(first);
+        String replacement=spawnLayer.debugSpawn(12.5,20.5,2).agentId();
+        assert !replacement.equals(second) && spawnLayer.count()==2 : "Deleting a body must not cause duplicate IDs";
+
         var layer = new OwnNpcLayer();
         var state = new NpcState(100, 0.1, 0.1, 0.1, 0.8, false, false,
                 NpcState.Role.SCAVENGER, NpcState.Task.FOLLOW);
