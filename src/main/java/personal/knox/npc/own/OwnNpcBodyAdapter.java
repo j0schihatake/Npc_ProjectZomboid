@@ -406,8 +406,15 @@ public final class OwnNpcBodyAdapter {
             double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
             double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
             for (var entry : zombies) {
-                if (Math.hypot((double) entry[1] - bx, (double) entry[2] - by) > 1.6) continue;
+                double distance = Math.hypot((double) entry[1] - bx, (double) entry[2] - by);
                 Object zombie = entry[0];
+                if (distance <= 8) {
+                    try {
+                        zombie.getClass().getMethod("setTarget", Class.forName("zombie.iso.IsoMovingObject"))
+                                .invoke(zombie, body);
+                    } catch (Throwable ignored) { }
+                }
+                if (distance > 1.6) continue;
                 Object damage = zombie.getClass().getMethod("getBodyDamage").invoke(zombie);
                 damage.getClass().getMethod("ReduceHealth", float.class).invoke(damage, 10f);
                 Object square = zombie.getClass().getMethod("getCurrentSquare").invoke(zombie);
