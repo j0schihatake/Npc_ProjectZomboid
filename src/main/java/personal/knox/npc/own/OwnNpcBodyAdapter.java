@@ -82,6 +82,7 @@ public final class OwnNpcBodyAdapter {
         Object body = ctor.newInstance(cell, desc, x, y, z);
         invoke(body, "setNpc", new Class<?>[]{boolean.class}, true);
         invoke(body, "setSceneCulled", new Class<?>[]{boolean.class}, false);
+        invoke(body, "setVisible", new Class<?>[]{boolean.class}, true);
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
         invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
         try {
