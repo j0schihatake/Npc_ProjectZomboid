@@ -20,7 +20,7 @@ function OwnNpcDebug.install()
         if key == Keyboard.KEY_F10 then
             local ok, err = pcall(spawn)
             if not ok then print("[PersonalKnox] Own debug error: " .. tostring(err)) end
-        elseif key == Keyboard.KEY_F11 then
+        elseif key == Keyboard.KEY_F9 then
             if not lastId then return end
             local ok, result = pcall(function()
                 return PersonalKnoxAPI.getInstance():ownDismantleStart(lastId)
