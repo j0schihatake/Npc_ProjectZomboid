@@ -85,6 +85,24 @@ public final class OwnNpcBodyAdapter {
     }
 
     public int count() { return bodies.size(); }
+    public String nearbyObstacle(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            if (square == null) return "";
+            Object objects = square.getClass().getMethod("getObjects").invoke(square);
+            int size = (int) objects.getClass().getMethod("size").invoke(objects);
+            for (int i = 0; i < size; i++) {
+                Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
+                if (object == null) continue;
+                try { return OwnNpcToolUse.classify(object.getClass().getName()).name(); }
+                catch (IllegalArgumentException ignored) { }
+            }
+        } catch (Throwable ignored) { }
+        return "";
+    }
+
     public String plan(String id, String obstacleName) {
         try {
             var obstacle = OwnNpcToolUse.Obstacle.valueOf(obstacleName);

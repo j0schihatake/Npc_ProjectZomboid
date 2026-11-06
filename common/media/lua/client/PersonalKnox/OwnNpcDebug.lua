@@ -22,10 +22,12 @@ function OwnNpcDebug.install()
             if not ok then print("[PersonalKnox] Own debug error: " .. tostring(err)) end
         elseif key == Keyboard.KEY_F9 then
             if not lastId then return end
-            local ok, result = pcall(function()
-                return PersonalKnoxAPI.getInstance():ownDismantleStart(lastId)
-            end)
-            print("[PersonalKnox][own-debug] dismantle=" .. tostring(ok and result or "error"))
+            local api = PersonalKnoxAPI.getInstance()
+            local obstacle = api:ownNearbyObstacle(lastId)
+            local plan = obstacle ~= "" and api:ownDismantlePlan(lastId, obstacle) or ""
+            local ok, result = pcall(function() return api:ownDismantleStart(lastId) end)
+            print("[PersonalKnox][own-debug] obstacle=" .. tostring(obstacle)
+                .. " plan=" .. tostring(plan) .. " dismantle=" .. tostring(ok and result or "error"))
         end
     end)
 end

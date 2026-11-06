@@ -81,6 +81,9 @@ public final class PersonalKnoxAPI {
     public double ownTargetZ(String id) { return ownLayer.targetZ(id); }
     public String ownDismantleNearby(String id) { return ownBodies.dismantleNearby(id); }
     public String ownDismantlePlan(String id, String obstacle) { return ownBodies.plan(id, obstacle); }
+    public String ownNearbyObstacle(String id) { return ownBodies.nearbyObstacle(id); }
+
+
 
 
     public String ownDismantleStart(String id) { return ownBodies.startDismantle(id); }
