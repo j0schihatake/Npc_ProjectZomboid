@@ -14,6 +14,10 @@ public final class OwnNpcToolUseTest {
         assert plan.seconds() == 6 && plan.noise() == 4 && plan.wear() == 1;
         assert OwnNpcToolUse.fromItems(java.util.List.of("Base.Hammer", "Base.Screwdriver"))
                 .equals(EnumSet.of(OwnNpcToolUse.Tool.HAMMER, OwnNpcToolUse.Tool.SCREWDRIVER));
+        assert OwnNpcToolUse.classify("zombie.iso.objects.IsoWindow") == OwnNpcToolUse.Obstacle.WINDOW;
+        assert OwnNpcToolUse.classify("IsoBarricade") == OwnNpcToolUse.Obstacle.BARRICADE;
+        try { OwnNpcToolUse.classify("tree"); throw new AssertionError("Unknown obstacle accepted"); }
+        catch (IllegalArgumentException expected) { }
         System.out.println("Own-NPC tool-use tests passed: window, fence, wall, missing tools and invalid state.");
     }
 }

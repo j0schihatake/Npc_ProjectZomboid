@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.46 — классификация препятствий
+
+- `OwnNpcToolUse.classify`: `IsoWindow` → WINDOW, `IsoBarricade` → BARRICADE,
+  fence/wall/door по имени класса; неизвестное — ошибка.
+- Java-ядро 0.9.46, JAR пересобран; тесты проходят.
+
 ## 0.9.45 — инструменты из инвентаря тела
 
 - `OwnNpcBodyAdapter.tools(id)` читает `getInventory().getItems()`, `getFullType`

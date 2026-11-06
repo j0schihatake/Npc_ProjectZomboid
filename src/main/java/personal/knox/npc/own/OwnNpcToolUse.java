@@ -34,6 +34,17 @@ public final class OwnNpcToolUse {
         };
     }
 
+    public static Obstacle classify(String className) {
+        if (className == null || className.isBlank()) throw new IllegalArgumentException("Missing class name");
+        String lower = className.toLowerCase(java.util.Locale.ROOT);
+        if (lower.contains("barricade")) return Obstacle.BARRICADE;
+        if (lower.contains("window")) return Obstacle.WINDOW;
+        if (lower.contains("fence")) return Obstacle.FENCE;
+        if (lower.contains("door")) return Obstacle.DOOR;
+        if (lower.contains("wall")) return Obstacle.WALL;
+        throw new IllegalArgumentException("Unknown obstacle: " + className);
+    }
+
     public static Set<Tool> fromItems(java.util.Collection<String> itemTypes) {
         if (itemTypes == null) throw new IllegalArgumentException("Missing item types");
         var tools = EnumSet.noneOf(Tool.class);
