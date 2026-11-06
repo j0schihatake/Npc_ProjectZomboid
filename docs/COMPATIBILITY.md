@@ -1368,6 +1368,13 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.47 — разбор ближайшего объекта
+
+- `OwnNpcBodyAdapter.dismantleNearby(id)` перебирает `getObjects` клетки тела,
+  классифицирует объект, проверяет инструменты и вызывает `removeFromWorld`;
+  API `ownDismantleNearby(id)` возвращает тип препятствия или пустую строку.
+- Java-ядро 0.9.47, JAR пересобран; тесты проходят. Автоматического вызова пока нет.
+
 ## 0.9.46 — классификация препятствий
 
 - `OwnNpcToolUse.classify`: `IsoWindow` → WINDOW, `IsoBarricade` → BARRICADE,

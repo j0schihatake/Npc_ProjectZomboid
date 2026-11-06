@@ -79,6 +79,8 @@ public final class PersonalKnoxAPI {
     public void ownFollowTarget3(double x, double y, double z) { ownLayer.followTarget(x, y, z); }
 
     public double ownTargetZ(String id) { return ownLayer.targetZ(id); }
+    public String ownDismantleNearby(String id) { return ownBodies.dismantleNearby(id); }
+
     public String ownBodyTools(String id) {
         var tools = ownBodies.tools(id);
         var text = new StringBuilder();

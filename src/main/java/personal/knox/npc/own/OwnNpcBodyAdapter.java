@@ -75,6 +75,32 @@ public final class OwnNpcBodyAdapter {
     }
 
     public int count() { return bodies.size(); }
+    public String dismantleNearby(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            if (square == null) return "";
+            Object objects = square.getClass().getMethod("getObjects").invoke(square);
+            int size = (int) objects.getClass().getMethod("size").invoke(objects);
+            var tools = tools(id);
+            for (int i = 0; i < size; i++) {
+                Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
+                if (object == null) continue;
+                OwnNpcToolUse.Obstacle obstacle;
+                try {
+                    obstacle = OwnNpcToolUse.classify(object.getClass().getName());
+                } catch (IllegalArgumentException unknown) {
+                    continue;
+                }
+                if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
+                call(object, "removeFromWorld");
+                return obstacle.name();
+            }
+        } catch (Throwable ignored) { }
+        return "";
+    }
+
     public java.util.Set<OwnNpcToolUse.Tool> tools(String id) {
         Object body = bodies.get(id);
         if (body == null) return java.util.Set.of();
