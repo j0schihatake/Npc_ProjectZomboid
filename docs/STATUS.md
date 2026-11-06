@@ -144,3 +144,11 @@ A-Life события, задания и сумки — нужен загруж�
 - `OK: Sandbox loaded...`, мир `PersonalKnox-scenario-25424a7f05a7deabe94657cccda6ea61`.
 - `[dev-scenario] id=debug#1 ... bodyType=zombie.characters.IsoPlayer$PersonalKnoxNpc model=true render=true culled=false alpha=1.0`
 - Это подтверждает подкласс IsoPlayer, проходящий фильтр изометрии; FPS/изометрия проверены Codex.
+
+### 0.9.51 — сценарий OK
+
+- Мир `PersonalKnox-scenario-496e2e4087c80793fe8c638e6750702b`.
+- `npc_created=debug#1`, `ready=true`, `registered=true`, `squareMember=true`,
+  `bodyType=IsoPlayer$PersonalKnoxNpc`, `model=true`, `render=true`, `culled=false`, `alpha=1.0`.
+- `status=OK reason=own_npc_registered_model_saved`.
+- Авторазбор в этом прогоне не запускался: путь NPC не был заблокирован.
