@@ -144,6 +144,11 @@ public final class OwnNpcBodyAdapter {
                 try { obstacle = OwnNpcToolUse.classify(object.getClass().getName()); }
                 catch (IllegalArgumentException unknown) { continue; }
                 if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
+                if (obstacle == OwnNpcToolUse.Obstacle.DOOR) {
+                    try { object.getClass().getMethod("setOpen", boolean.class).invoke(object, true); }
+                    catch (Throwable ignored) { call(object, "removeFromWorld"); }
+                    return "DOOR_OPEN";
+                }
                 double ox = ((Number) object.getClass().getMethod("getX").invoke(object)).doubleValue();
                 double oy = ((Number) object.getClass().getMethod("getY").invoke(object)).doubleValue();
                 dismantles.put(id, new DismantleTask(OwnNpcDismantleJob.start(tools, obstacle, woodwork(id)), object, ox, oy));
@@ -196,6 +201,11 @@ public final class OwnNpcBodyAdapter {
                     continue;
                 }
                 if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
+                if (obstacle == OwnNpcToolUse.Obstacle.DOOR) {
+                    try { object.getClass().getMethod("setOpen", boolean.class).invoke(object, true); }
+                    catch (Throwable ignored) { call(object, "removeFromWorld"); }
+                    return "DOOR_OPEN";
+                }
                 call(object, "removeFromWorld");
                 return obstacle.name();
             }
