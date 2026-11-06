@@ -346,8 +346,10 @@ def main():
         if approved:
             print('Approved current local builds: '+', '.join(approved),flush=True)
         env=os.environ.copy()
+        scenario_agent=None
         if scenario_record:
             agent=build_agent(cache,ROOT)
+            scenario_agent={'path':str(agent),'sha256':hashlib.sha256(agent.read_bytes()).hexdigest()}
             option='-javaagent:'+str(agent)+'='+str(cache/'Lua/PersonalKnox-dev-scenario.txt')
             env['JAVA_TOOL_OPTIONS']=env.get('JAVA_TOOL_OPTIONS','')+' '+shlex.quote(option)
         env['PATH']=str(engine/'jre64/bin')+os.pathsep+env.get('PATH','')
@@ -356,6 +358,12 @@ def main():
         env['XMODIFIERS']=''
         logs=cache/'launch-logs';logs.mkdir(exist_ok=True)
         log=logs/(datetime.now().strftime('%Y%m%d-%H%M%S-%f')+'.log')
+        java_jars={str(mod['java_jar'].resolve()):hashlib.sha256(mod['java_jar'].read_bytes()).hexdigest()
+                   for mod in mods.values() if mod.get('java_jar') and mod['java_jar'].is_file()}
+        if scenario_record:
+            scenario_record['java_jars']=java_jars
+            scenario_record['scenario_agent']=scenario_agent
+            atomic(cache/'dev-scenario.json',json.dumps(scenario_record,ensure_ascii=False,indent=2)+'\n')
         started_ns=time.time_ns()
         with log.open('wb') as output:
             process=subprocess.Popen(command,cwd=engine,env=env,stdin=subprocess.DEVNULL,
@@ -366,6 +374,8 @@ def main():
                'profile':args.profile,'mods':ids,'launcher_log':str(log),'console':str(cache/'console.txt')}
         if scenario_record:
             state['scenario']={key:scenario_record[key] for key in ('nonce','world','source')}
+            state['java_jars']=java_jars
+            state['scenario_agent']=scenario_agent
         atomic(cache/'dev-launch.json',json.dumps(state,ensure_ascii=False,indent=2)+'\n')
         print(f'PID: {process.pid}\nConsole: {cache/"console.txt"}\nLauncher log: {log}',flush=True)
         if scenario_record:

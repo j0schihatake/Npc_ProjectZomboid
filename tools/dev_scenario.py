@@ -1,5 +1,6 @@
 """Disposable Sandbox smoke scenario and token-bound result protocol."""
 import json
+import hashlib
 from pathlib import Path
 import secrets
 import shutil
@@ -82,6 +83,12 @@ def wait_scenario(cache, record, process, timeout):
             result={}
         if result.get('nonce')==record['nonce'] and result.get('world')==record['world']:
             if result.get('status')=='OK':
+                jars=dict(record.get('java_jars',{}))
+                agent=record.get('scenario_agent')
+                if agent: jars[agent['path']]=agent['sha256']
+                for path,digest in jars.items():
+                    if not Path(path).is_file() or hashlib.sha256(Path(path).read_bytes()).hexdigest()!=digest:
+                        print('FAIL: a tested JAR changed during the scenario: '+path,flush=True);return 1
                 if fingerprint(Path(record['source']))!=record['source_sha256']:
                     print('FAIL: scenario source changed during the run',flush=True);return 1
                 print('OK: Sandbox loaded, living player, PersonalKnox API and game updates verified. World: '+record['world'],flush=True)

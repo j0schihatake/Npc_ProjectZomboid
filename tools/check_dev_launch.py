@@ -80,6 +80,7 @@ with tempfile.TemporaryDirectory(prefix='pk-dev-launch-') as tmp:
     assert invoke(['--detach'],popen=popen)==0 and captured['start_new_session'] is True
     assert invoke(['--no-debug','--detach'],popen=popen)==0
     assert '-debug' not in captured['command'],'Preserve the agent no-debug option'
+    (base/'agent.jar').write_bytes(b'separate dev agent fixture')
     scenario={'nonce':'a'*32,'world':'PersonalKnox-scenario-'+'a'*32,'source':str(source)}
     scenario_args=[arg for arg in args if arg!='--menu-only']+['--detach']
     with patch('sys.argv',scenario_args),patch.object(launch,'game_processes',return_value=[]),patch.object(launch.subprocess,'Popen',popen),patch.object(launch,'choose_save',return_value=source),patch.object(launch,'prepare_scenario',return_value=scenario),patch.object(launch,'build_agent',return_value=base/'agent.jar'),patch.object(launch,'wait_scenario',return_value=0) as wait,redirect_stdout(io.StringIO()):

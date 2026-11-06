@@ -46,6 +46,13 @@ with tempfile.TemporaryDirectory() as tmp:
     assert wait_scenario(cache,record,Process(),10)==1
     path.write_text(json.dumps(dict(record,status='OK',reason='world_player_api_ticks')))
     assert wait_scenario(cache,record,Process(),10)==0
+    jar=cache/'PersonalKnox.jar';jar.write_bytes(b'current build')
+    import hashlib
+    record['java_jars']={str(jar):hashlib.sha256(jar.read_bytes()).hexdigest()}
+    assert wait_scenario(cache,record,Process(),10)==0
+    jar.write_bytes(b'concurrent rebuild')
+    assert wait_scenario(cache,record,Process(),10)==1,'A changed JAR must invalidate the result'
+    record.pop('java_jars')
     (vanilla/'mods.txt').write_text('external mutation')
     assert wait_scenario(cache,record,Process(),10)==1
 print('Scenario checks passed: map guards/fallback, independent copy, original hashes, nonce/world binding and error exit codes.')
