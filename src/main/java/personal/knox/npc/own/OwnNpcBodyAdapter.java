@@ -52,7 +52,7 @@ public final class OwnNpcBodyAdapter {
                 }
                 move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
             }
-            if (System.currentTimeMillis() - lastMoveLog >= 60_000L) {
+            if (System.currentTimeMillis() - lastMoveLog >= 10_000L) {
                 lastMoveLog = System.currentTimeMillis();
                 for (var agent : layer.agents()) {
                     var body = bodies.get(agent.id());
