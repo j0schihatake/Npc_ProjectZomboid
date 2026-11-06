@@ -42,6 +42,7 @@ public final class OwnNpcBodyAdapter {
                     var dead = bodies.remove(agent.id());
                     if (dead != null) call(dead, "removeFromWorld");
                     pathCache.remove(agent.id());
+                    dismantles.remove(agent.id());
                     continue;
                 }
                 if (body == null) {
@@ -71,6 +72,7 @@ public final class OwnNpcBodyAdapter {
             stale.removeAll(seen);
             for (var id : stale) {
                 pathCache.remove(id);
+                dismantles.remove(id);
                 var body = bodies.remove(id);
                 call(body, "removeFromWorld");
             }
