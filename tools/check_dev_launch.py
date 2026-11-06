@@ -29,7 +29,7 @@ with tempfile.TemporaryDirectory(prefix='pk-dev-launch-') as tmp:
     (userdata/'Lua/ModOptions.ini').write_text('my dev defaults\n')
     (userdata/'Lua/PersonalKnox-probe.txt').write_text('must not be copied')
     (game/'projectzomboid').mkdir(parents=True);(game/'projectzomboid/ProjectZomboid64').write_bytes(b'fixture executable')
-    args=['launch_dev','--source',str(source),'--userdata',str(userdata),'--cache-dir',str(cache),
+    args=['launch_dev','--menu-only','--source',str(source),'--userdata',str(userdata),'--cache-dir',str(cache),
           '--game-root',str(game),'--workshop',str(workshop)]
     def invoke(extra,processes=None,popen=None):
         with patch('sys.argv',args+extra),patch.object(launch,'game_processes',return_value=processes or []),redirect_stdout(io.StringIO()):
@@ -37,8 +37,9 @@ with tempfile.TemporaryDirectory(prefix='pk-dev-launch-') as tmp:
                 return launch.main()
             with patch.object(launch.subprocess,'Popen',popen):
                 return launch.main()
-    assert invoke(['--dry-run'])==0 and not cache.exists(),'Dry run must not write'
+    assert invoke(['--dry-run','--approve-own'])==0 and not cache.exists(),'Dry run including trust aliases must not write'
     assert invoke(['--prepare-only'])==0
+    assert (cache/'mods/reset-mods-42_00.txt').is_file(),'First B42 startup must not clear the prepared selection'
     assert (userdata/'mods/default.txt').read_text()==original
     assert not (cache/'Saves').exists() and not (cache/'Lua/PersonalKnox-probe.txt').exists()
     assert (cache/'options.ini').read_text()=='language=RU\n'
@@ -77,6 +78,20 @@ with tempfile.TemporaryDirectory(prefix='pk-dev-launch-') as tmp:
     state=json.loads((cache/'dev-launch.json').read_text())
     assert state['returncode']==7 and state['pid']==424242
     assert invoke(['--detach'],popen=popen)==0 and captured['start_new_session'] is True
+    assert invoke(['--no-debug','--detach'],popen=popen)==0
+    assert '-debug' not in captured['command'],'Preserve the agent no-debug option'
+    scenario={'nonce':'a'*32,'world':'PersonalKnox-scenario-'+'a'*32,'source':str(source)}
+    scenario_args=[arg for arg in args if arg!='--menu-only']+['--detach']
+    with patch('sys.argv',scenario_args),patch.object(launch,'game_processes',return_value=[]),patch.object(launch.subprocess,'Popen',popen),patch.object(launch,'choose_save',return_value=source),patch.object(launch,'prepare_scenario',return_value=scenario),patch.object(launch,'build_agent',return_value=base/'agent.jar'),patch.object(launch,'wait_scenario',return_value=0) as wait,redirect_stdout(io.StringIO()):
+        assert launch.main()==0
+        wait.assert_called_once()
+    assert '-javaagent:' in captured['env']['JAVA_TOOL_OPTIONS']
+    assert json.loads((cache/'dev-launch.json').read_text())['scenario']['nonce']==scenario['nonce']
+    assert (cache/'mods/default.txt').read_text().count('mod = PersonalKnoxDevScenario,')==1
+
+    with patch.object(launch,'restart_owned') as restart:
+        assert invoke(['--restart','--detach'],popen=popen)==0
+        restart.assert_called_once_with(cache)
     assert (userdata/'mods/default.txt').read_text()==original
     with patch('sys.argv',args+['--cache-dir',str(userdata),'--dry-run']):
         try:
@@ -90,4 +105,10 @@ with tempfile.TemporaryDirectory(prefix='pk-dev-launch-') as tmp:
         except ValueError:
             pass
     assert (unmanaged/'keep.txt').read_text()=='keep'
+    with patch.object(launch,'game_processes',return_value=[(999,['ProjectZomboid64','-cachedir=/another/cache'])]):
+        try:
+            launch.restart_owned(cache)
+            raise AssertionError('Unowned game accepted for restart')
+        except ValueError:
+            pass
 print('Dev launcher checks passed: isolated profile/settings, dependency links, no save/probe copying, full map order, running-game/cache guards, debug/native environment, detach and exit status. No real game was launched.')

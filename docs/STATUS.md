@@ -56,9 +56,11 @@ A-Life события, задания и сумки — нужен загруж�
 
 ## Минимальный тестовый запуск
 
-`tools/launch_test.sh` временно оставляет только ZombieBuddy, Viewpoint, Knox и PersonalKnox,
-запускает `-debug -nosteam` и восстанавливает `mods/default.txt` после выхода. Это не
-официальный «быстрый режим» движка, но убирает лишние карты/моды из загрузки.
+Использовать `tools/launch_dev.sh --restart --build --detach --no-debug --nosteam`.
+Скрипт включает моды в отдельном dev-cache, загружает совместимую копию мира,
+проходит старт/Knox и закрывает стартовые окна. Успех — код 0 и `scenario_ok`.
+`tools/launch_test.sh` вызывает тот же launcher, обычный default.txt не заменяется.
+Полная инструкция: [DEEPSEEK_DEV_LAUNCH.md](DEEPSEEK_DEV_LAUNCH.md).
 
 ## 0.8.7, что проверено и что нет
 
@@ -72,11 +74,11 @@ A-Life события, задания и сумки — нужен загруж�
 
 ## Dev-сценарий и F10 (проверено 06.11)
 
-- `tools/launch_dev.sh --detach` поднимает отдельный cachedir; если игра на паузе, снять её **F2**.
+- `tools/launch_dev.sh --detach` теперь сам проходит dev-сценарий; только меню — `--menu-only`.
 - F10 в игре создаёт своих NPC:
   `[PersonalKnox] Own body visual copied from player`,
   `[own-debug] id=debug#1 bodies=1`, `debug#2 bodies=2`.
 - Тела используют внешность игрока; позиции разносятся по сетке 0.9 м.
 - В dev-профиле сценарий завершился `status=OK reason=world_player_api_ticks_knox_saved`.
-- Обнаружен баг launcher: `mods/default.txt` оказался пустым (0 модов). После ручной записи
-  списка ZombieBuddy/Viewpoint/Knox/KnoxRU/PersonalKnox загрузились 6 модов и Java core 0.8.7.
+- Прежние случаи пустого default.txt исправлены: launcher создаёт маркер первого запуска B42
+  и каждый раз готовит профиль, включая служебный dev-сценарий. Ручная расстановка галочек не требуется.
