@@ -83,3 +83,14 @@ A-Life события, задания и сумки — нужен загруж�
 - В dev-профиле сценарий завершился `status=OK reason=world_player_api_ticks_knox_saved`.
 - Прежние случаи пустого default.txt исправлены: launcher создаёт маркер первого запуска B42
   и каждый раз готовит профиль, включая служебный dev-сценарий. Ручная расстановка галочек не требуется.
+
+## Dev-сценарий 0.9.31 — OK (06.11)
+
+- `tools/launch_dev.sh` без параметров: собрал JAR, перезапустил игру, прошёл сценарий.
+- Результат:
+  `OK: Sandbox loaded, living player, PersonalKnox API and game updates verified.`
+- Мир: `PersonalKnox-scenario-4fc588c30e7e391e2a9d6cfecf846e40`
+- В логе: `Java core 0.9.31`, `Lua addon 0.9.31`.
+- `KnoxBridge` работает: `knox=ok world=0 meta=1645 safehouses=843`.
+- `OwnNpc`: `members=0 active=0 bodies=0` — в сценарии нет группы игрока, тел нет.
+- F10 в сценарии не проверен: команда ввода была прервана.
