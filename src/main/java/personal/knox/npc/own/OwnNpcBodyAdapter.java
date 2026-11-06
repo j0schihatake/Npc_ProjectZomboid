@@ -12,6 +12,7 @@ public final class OwnNpcBodyAdapter {
     private record PathState(double tx, double ty, java.util.List<OwnNpcPathfinder.Point> points, int index) { }
     private boolean unavailable;
     private final Map<String, PathState> pathCache = new HashMap<>();
+    private long lastMoveLog;
 
     public int sync(OwnNpcLayer layer) {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
@@ -40,6 +41,21 @@ public final class OwnNpcBodyAdapter {
                     bodies.put(agent.id(), body);
                 }
                 move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
+            }
+            if (System.currentTimeMillis() - lastMoveLog >= 60_000L) {
+                lastMoveLog = System.currentTimeMillis();
+                for (var agent : layer.agents()) {
+                    var body = bodies.get(agent.id());
+                    if (body == null) continue;
+                    try {
+                        System.out.println("[PersonalKnox][own-body-move] " + agent.id()
+                                + " body=" + body.getClass().getMethod("getX").invoke(body) + ","
+                                + body.getClass().getMethod("getY").invoke(body)
+                                + " agent=" + String.format(java.util.Locale.ROOT, "%.1f,%.1f", agent.x(), agent.y())
+                                + " target=" + String.format(java.util.Locale.ROOT, "%.1f,%.1f", agent.targetX(), agent.targetY()));
+                    } catch (Throwable ignored) { }
+                    break;
+                }
             }
             var stale = new HashSet<>(bodies.keySet());
             stale.removeAll(seen);
