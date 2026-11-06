@@ -22,12 +22,13 @@ public final class OwnNpcBodyAdapter {
             Object cell = currentCell();
             if (cell == null) return 0;
             var seen = new HashSet<String>();
+            var zombies = zombieSnapshot(cell);
             for (var agent : layer.agents()) {
                 seen.add(agent.id());
                 Object body = bodies.get(agent.id());
                 if (body != null) {
                     syncHealth(layer, agent.id(), body);
-                    attack(body);
+                    attack(body, zombies);
                 }
                 if (layer.agent(agent.id()) == null) {
                     var dead = bodies.remove(agent.id());
@@ -210,20 +211,29 @@ public final class OwnNpcBodyAdapter {
         System.out.println("[PersonalKnox] Own body dress failed");
     }
 
-    private static void attack(Object body) {
+    private static java.util.List<Object[]> zombieSnapshot(Object cell) {
+        var result = new java.util.ArrayList<Object[]>();
         try {
-            Object cell = currentCell();
-            if (cell == null) return;
             Object zombies = cell.getClass().getMethod("getZombieList").invoke(cell);
             int size = (int) zombies.getClass().getMethod("size").invoke(zombies);
-            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
-            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
             for (int i = 0; i < size; i++) {
                 Object zombie = zombies.getClass().getMethod("get", int.class).invoke(zombies, i);
                 if (zombie == null || !zombie.getClass().getName().equals("zombie.characters.IsoZombie")) continue;
-                double zx = ((Number) zombie.getClass().getMethod("getX").invoke(zombie)).doubleValue();
-                double zy = ((Number) zombie.getClass().getMethod("getY").invoke(zombie)).doubleValue();
-                if (Math.hypot(zx - bx, zy - by) > 1.6) continue;
+                double x = ((Number) zombie.getClass().getMethod("getX").invoke(zombie)).doubleValue();
+                double y = ((Number) zombie.getClass().getMethod("getY").invoke(zombie)).doubleValue();
+                result.add(new Object[]{zombie, x, y});
+            }
+        } catch (Throwable ignored) { }
+        return result;
+    }
+
+    private static void attack(Object body, java.util.List<Object[]> zombies) {
+        try {
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            for (var entry : zombies) {
+                if (Math.hypot((double) entry[1] - bx, (double) entry[2] - by) > 1.6) continue;
+                Object zombie = entry[0];
                 Object damage = zombie.getClass().getMethod("getBodyDamage").invoke(zombie);
                 damage.getClass().getMethod("ReduceHealth", float.class).invoke(damage, 10f);
                 Object square = zombie.getClass().getMethod("getCurrentSquare").invoke(zombie);
