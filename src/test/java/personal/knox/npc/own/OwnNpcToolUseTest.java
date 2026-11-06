@@ -18,6 +18,9 @@ public final class OwnNpcToolUseTest {
         assert OwnNpcToolUse.classify("IsoBarricade") == OwnNpcToolUse.Obstacle.BARRICADE;
         try { OwnNpcToolUse.classify("tree"); throw new AssertionError("Unknown obstacle accepted"); }
         catch (IllegalArgumentException expected) { }
+        assert OwnNpcToolUse.seconds(EnumSet.of(OwnNpcToolUse.Tool.HAMMER), OwnNpcToolUse.Obstacle.FENCE, 10) == 3;
+        try { OwnNpcToolUse.seconds(EnumSet.of(OwnNpcToolUse.Tool.HAMMER), OwnNpcToolUse.Obstacle.FENCE, 11); throw new AssertionError("Bad skill accepted"); }
+        catch (IllegalArgumentException expected) { }
         System.out.println("Own-NPC tool-use tests passed: window, fence, wall, missing tools and invalid state.");
     }
 }

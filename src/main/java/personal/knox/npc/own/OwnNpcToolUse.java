@@ -24,14 +24,21 @@ public final class OwnNpcToolUse {
     }
 
     public static int seconds(Set<Tool> tools, Obstacle obstacle) {
+        return seconds(tools, obstacle, 0);
+    }
+
+    public static int seconds(Set<Tool> tools, Obstacle obstacle, int skill) {
         if (!canDismantle(tools, obstacle)) throw new IllegalStateException("Missing tools");
-        return switch (obstacle) {
+        if (skill < 0 || skill > 10) throw new IllegalArgumentException("Invalid skill");
+        int base = switch (obstacle) {
             case WINDOW -> 3;
             case FENCE -> 6;
             case DOOR -> 8;
             case BARRICADE -> 10;
             case WALL -> 20;
         };
+        double factor = Math.max(0.5, 1 - skill * 0.05);
+        return Math.max(1, (int) Math.ceil(base * factor));
     }
 
     public static Obstacle classify(String className) {
@@ -60,7 +67,11 @@ public final class OwnNpcToolUse {
     }
 
     public static Plan plan(Set<Tool> tools, Obstacle obstacle) {
-        int seconds = seconds(tools, obstacle);
+        return plan(tools, obstacle, 0);
+    }
+
+    public static Plan plan(Set<Tool> tools, Obstacle obstacle, int skill) {
+        int seconds = seconds(tools, obstacle, skill);
         double noise = switch (obstacle) {
             case WINDOW -> 2;
             case FENCE -> 4;
