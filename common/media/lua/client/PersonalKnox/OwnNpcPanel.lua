@@ -42,6 +42,10 @@ function OwnNpcPanel:createChildren()
 end
 
 function OwnNpcPanel:update()
+    if not self.visibilityLogged then
+        self.visibilityLogged = true
+        print("[PersonalKnox][own-panel] update visible=" .. tostring(self:getIsVisible()))
+    end
     ISPanel.update(self)
     local now = getTimestampMs()
     if self.lastRefresh and now - self.lastRefresh < 1000 then return end
