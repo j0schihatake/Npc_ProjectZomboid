@@ -1368,6 +1368,13 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.13.1 — in-game obstacle course
+
+- `OwnNpcInGameTests`: 12 проверок spawn/id, регистрации тела, summary, инструментов,
+  FOLLOW/HOLD/LOOT, tick, target-floor, inspect, A-Life; PASS/FAIL в лог.
+- `body-ready` заменён на регистрацию (модель может быть готова на следующем кадре).
+- Java-ядро 0.13.1, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.12.6 — автоокно отключено
 
 - Самодельный `ISPanel` не рисуется в B42; `openSquad` по умолчанию выключен,

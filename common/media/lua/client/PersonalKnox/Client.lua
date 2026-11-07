@@ -344,6 +344,18 @@ AmmoWeight.install({roster=roster})
 OwnNpc.install({roster=roster})
 OwnNpcDebug.install()
 TextFix.install()
+Events.OnGameStart.Add(function()
+    if not Settings.inGameTests() then return end
+    local player = getSpecificPlayer(0)
+    if not player then return end
+    Events.OnPlayerUpdate.Add(function()
+        if not player:getModData().PersonalKnoxTestsStarted then
+            player:getModData().PersonalKnoxTestsStarted = true
+            local ok, tests = pcall(require, "PersonalKnox/OwnNpcInGameTests")
+            if ok and tests then tests.run(player) end
+        end
+    end)
+end)
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
 AutoReload.install()

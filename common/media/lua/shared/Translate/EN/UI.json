@@ -95,5 +95,7 @@
   "UI_trait_PersonalCompanions3": "Three personal companions",
   "UI_trait_PersonalCompanions3Desc": "Start with three own NPCs.",
   "UI_PersonalKnox_OpenSquad": "Open squad window on start",
-  "UI_PersonalKnox_OpenSquadHint": "Show the own-NPC window right after entering the world."
+  "UI_PersonalKnox_OpenSquadHint": "Show the own-NPC window right after entering the world.",
+  "UI_PersonalKnox_InGameTests": "In-game NPC tests",
+  "UI_PersonalKnox_InGameTestsHint": "Run own-NPC checks on start and print PASS/FAIL to the log."
 }

@@ -104,5 +104,7 @@
   "UI_trait_PersonalCompanions3": "Три своих спутника",
   "UI_trait_PersonalCompanions3Desc": "Начать игру с тремя своими NPC.",
   "UI_PersonalKnox_OpenSquad": "Открывать окно отряда при старте",
-  "UI_PersonalKnox_OpenSquadHint": "Показывать окно своих NPC сразу после входа в мир."
+  "UI_PersonalKnox_OpenSquadHint": "Показывать окно своих NPC сразу после входа в мир.",
+  "UI_PersonalKnox_InGameTests": "Внутриигровые тесты NPC",
+  "UI_PersonalKnox_InGameTestsHint": "При старте прогнать проверки своего NPC и вывести PASS/FAIL в лог."
 }
