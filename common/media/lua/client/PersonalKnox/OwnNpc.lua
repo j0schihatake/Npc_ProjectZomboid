@@ -61,6 +61,24 @@ local function tick()
     end
 end
 
+local function ensurePlayerClothes(player)
+    if not player then return end
+    local worn = player:getWornItems()
+    if worn and worn:size() >= 3 then return end
+    local inventory = player:getInventory()
+    local slots = ItemBodyLocation
+    local items = {
+        {"Base.Tshirt_WhiteLongSleeve", slots.TSHIRT},
+        {"Base.Trousers", slots.PANTS},
+        {"Base.Shoes_Black", slots.SHOES},
+    }
+    for _, entry in ipairs(items) do
+        local item = inventory:AddItem(entry[1])
+        if item then player:setWornItem(entry[2], item) end
+    end
+    print("[PersonalKnox] player clothes restored")
+end
+
 function OwnNpc.install(adapters)
     deps = adapters
     Events.OnGameStart.Add(function()
@@ -79,6 +97,7 @@ function OwnNpc.install(adapters)
         else
             print("[PersonalKnox] Own-NPC bootstrap error: " .. tostring(result))
         end
+        pcall(ensurePlayerClothes, player)
     end)
     Events.OnSave.Add(function()
         local ok,err=pcall(saveState)
