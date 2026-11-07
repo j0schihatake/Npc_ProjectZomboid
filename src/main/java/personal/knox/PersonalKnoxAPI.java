@@ -140,6 +140,20 @@ public final class PersonalKnoxAPI {
     public String ownBodyInspect(String id) { return ownBodies.inspect(id); }
 
 
+    public String ownStartCompanions(Object player, int fallbackCount) {
+        if (player == null || fallbackCount < 0 || fallbackCount > 4)
+            throw new IllegalArgumentException("Invalid starting companion request");
+        int count = ownCompanionTraitCount(player);
+        if (count == 0) count = fallbackCount;
+        var ids = new java.lang.StringBuilder();
+        for (int i = 0; i < count; i++) {
+            String id = ownCreateCompanion(player);
+            if (id == null || id.isBlank()) break;
+            ids.append(id).append(';');
+        }
+        return ids.toString();
+    }
+
     public int ownCompanionTraitCount(Object player) {
         if (player == null) return 0;
         try {

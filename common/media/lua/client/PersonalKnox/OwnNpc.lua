@@ -75,23 +75,14 @@ function OwnNpc.install(adapters)
             local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownPopulationRestore(data.PersonalKnoxOwnPopulation) end)
             if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
         end
-        local count = 0
-        if PersonalKnoxAPI then
-            local okCount, javaCount = pcall(function()
-                return PersonalKnoxAPI.getInstance():ownCompanionTraitCount(player)
+        if not (data and data.PersonalKnoxOwnNpc) and PersonalKnoxAPI then
+            local ok, created = pcall(function()
+                return PersonalKnoxAPI.getInstance():ownStartCompanions(player, Settings.companionCount())
             end)
-            if okCount and type(javaCount) == "number" then count = javaCount end
-        end
-        if count == 0 then count = Settings.companionCount() end
-        if count > 0 and not (data and data.PersonalKnoxOwnNpc) and PersonalKnoxAPI then
-            local api = PersonalKnoxAPI.getInstance()
-            for i = 1, count do
-                local ok, created = pcall(function() return api:ownCreateCompanion(player) end)
-                if ok then
-                    print("[PersonalKnox][own-npc] starting companion " .. tostring(created))
-                else
-                    print("[PersonalKnox] Starting companion error: " .. tostring(created))
-                end
+            if ok then
+                print("[PersonalKnox][own-npc] starting companions " .. tostring(created))
+            else
+                print("[PersonalKnox] Starting companions error: " .. tostring(created))
             end
         end
     end)
