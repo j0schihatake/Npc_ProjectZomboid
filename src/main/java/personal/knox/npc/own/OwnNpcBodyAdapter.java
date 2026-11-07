@@ -351,7 +351,6 @@ public final class OwnNpcBodyAdapter {
             System.out.println("[PersonalKnox] Own body starting tools added");
         } catch (Throwable ignored) { }
         dress(body, desc, id);
-        dress(body, desc, id);
             body.getClass().getMethod("setCurrentSquare",squareClass).invoke(body,square);
             // A non-null current square does not mean membership in the simulation.
             // IsoCell queues additions safely when its object list is being updated.
