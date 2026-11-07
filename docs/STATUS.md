@@ -317,3 +317,8 @@ A-Life события, задания и сумки — нужен загруж�
 - `mod.info` больше не требует Knox; `pcall`-загрузка не сломала сценарий.
 - A-Life — наш `personal.knox.alife`, не код Knox.
 - Игра выключена.
+
+### 0.11.1 — guards Knox и сценарий
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-18a54f5ac31c1039325374c97b4f59b4`.
+- `Barricade/BaseRoutine/Call` не падают без Knox; игра выключена.
