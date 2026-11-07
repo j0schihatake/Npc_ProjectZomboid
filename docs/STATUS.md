@@ -377,3 +377,9 @@ A-Life события, задания и сумки — нужен загруж�
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-2badfa10ff4cef25ca413c16431a6817`.
 - Второй `[own-panel] opened ... h=164` после 5 c; на экране окна нет.
 - Игра выключена.
+
+### 0.13.4 — in-game tests 12/12
+
+- Включён `inGameTests`, штатный запуск: `OK`, мир
+  `PersonalKnox-scenario-1aeee720f725b47b08cbad79cc21a3ac`.
+- Лог: `summary passed=12 failed=0`; игра выключена, тесты снова отключены.
