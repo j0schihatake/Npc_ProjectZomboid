@@ -128,6 +128,14 @@ function Tests.run(player)
         local p = api:ownRetreatPoint(8, 0, 0, 0, 6)
         return string.find(p, "x=8.00", 1, true) ~= nil
     end)
+    check("squad-panel", function()
+        local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
+        if not ok or not panel then return false end
+        panel.toggle(player)
+        local open = panel.isOpen()
+        panel.closeOpen()
+        return open
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
