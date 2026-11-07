@@ -1960,3 +1960,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 
 - Собственное меню NPC: REST и показ `ownSummary`.
 - In-game тест `rest-order`; без Knox 18/18.
+## 0.14.3 — реплика своего NPC
+
+- `ownSpeakById`: Java находит тело и пишет реплику в чат.
+- In-game тест `speak`; без Knox 19/19.

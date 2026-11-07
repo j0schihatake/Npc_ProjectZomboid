@@ -68,6 +68,13 @@ public final class PersonalKnoxAPI {
 
     public String ownTextForChat(String text) { return TextCodec.forChat(text); }
 
+    public boolean ownSpeakById(String id, String text) {
+        Object body = ownBodies.body(id);
+        if (body == null) return false;
+        ownSpeak(body, text);
+        return true;
+    }
+
     public void ownSpeak(Object speaker, String text) {
         if (speaker == null) return;
         String value = TextCodec.forChat(text);

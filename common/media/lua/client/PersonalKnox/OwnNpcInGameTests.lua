@@ -67,6 +67,7 @@ function Tests.run(player)
         local after = tonumber((api:ownSummary(id):match("health=([%d%.]+)")) or "0")
         return after < before
     end)
+    check("speak", function() return api:ownSpeakById(id, "Тест связи.") end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)

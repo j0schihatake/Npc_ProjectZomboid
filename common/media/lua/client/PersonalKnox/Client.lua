@@ -296,6 +296,11 @@ local function onContext(playerIndex, context, worldObjects, test)
                     sub:addOption("Состояние", player, function()
                         message(player, apiRef:ownSummary(npcId))
                     end)
+                    sub:addOption("Поговорить", player, function()
+                        if apiRef:ownSpeakById(npcId, "На связи.") then
+                            message(player, "NPC ответил.")
+                        end
+                    end)
                     sub:addOption("Разобрать рядом", player, function()
                         print("[PersonalKnox][own-menu] dismantle=" .. tostring(apiRef:ownDismantleStart(npcId)))
                     end)
