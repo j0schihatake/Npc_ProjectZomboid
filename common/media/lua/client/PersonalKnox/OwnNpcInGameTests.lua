@@ -50,6 +50,10 @@ function Tests.run(player)
         api:ownCommand(id, "HOLD", x, y, z)
         return string.find(api:ownSummary(id), "order=HOLD", 1, true) ~= nil
     end)
+    check("rest-order", function()
+        api:ownCommand(id, "REST", x, y, z)
+        return string.find(api:ownSummary(id), "order=REST", 1, true) ~= nil
+    end)
     check("loot-order", function()
         api:ownCommand(id, "LOOT", x, y, z)
         return string.find(api:ownSummary(id), "order=LOOT", 1, true) ~= nil

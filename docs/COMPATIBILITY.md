@@ -1956,3 +1956,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 
 - Care/Upkeep/Stuck/Reactions больше не зависят от флага Knox.
 - Профиль без Knox: 17/17; игрок и NPC одеты.
+## 0.14.2 — REST и сводка в меню NPC
+
+- Собственное меню NPC: REST и показ `ownSummary`.
+- In-game тест `rest-order`; без Knox 18/18.
