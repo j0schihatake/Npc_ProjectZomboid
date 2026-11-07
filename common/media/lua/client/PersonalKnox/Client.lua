@@ -348,12 +348,12 @@ Events.OnGameStart.Add(function()
     if not Settings.inGameTests() then return end
     local player = getSpecificPlayer(0)
     if not player then return end
+    local due = getTimestampMs() + 2000
     Events.OnPlayerUpdate.Add(function()
-        if not player:getModData().PersonalKnoxTestsStarted then
-            player:getModData().PersonalKnoxTestsStarted = true
-            local ok, tests = pcall(require, "PersonalKnox/OwnNpcInGameTests")
-            if ok and tests then tests.run(player) end
-        end
+        if getTimestampMs() < due or player:getModData().PersonalKnoxTestsStarted then return end
+        player:getModData().PersonalKnoxTestsStarted = true
+        local ok, tests = pcall(require, "PersonalKnox/OwnNpcInGameTests")
+        if ok and tests then tests.run(player) end
     end)
 end)
 NpcCare.install({roster=roster,say=say})
