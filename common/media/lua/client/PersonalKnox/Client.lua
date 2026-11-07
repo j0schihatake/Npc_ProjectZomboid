@@ -252,7 +252,17 @@ local function onContext(playerIndex, context, worldObjects, test)
     local members = roster(player)
     local apiRef = PersonalKnoxAPI.getInstance()
     local ownTotal = apiRef:ownCount()
-    if ownTotal > 0 then
+    local lookedOwn = false
+    for _, obj in ipairs(worldObjects or {}) do
+        if instanceof(obj, "IsoPlayer") then
+            local okName, name = pcall(function() return obj:getUsername() end)
+            if okName and type(name) == "string" and name:sub(1, 3) == "PK-" then
+                lookedOwn = true
+                break
+            end
+        end
+    end
+    if ownTotal > 0 and not lookedOwn then
         local root = context:addOption("Свой отряд", nil, nil)
         local menu = context:getNew(context)
         context:addSubMenu(root, menu)
