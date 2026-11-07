@@ -144,6 +144,10 @@ function Tests.run(player)
         api:ownDismantleTick(id, 30)
         return true
     end)
+    check("give-items", function()
+        api:ownDebugEquip(id, "Base.Pistol", 0)
+        return api:ownGiveItems(id, player) >= 1
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
