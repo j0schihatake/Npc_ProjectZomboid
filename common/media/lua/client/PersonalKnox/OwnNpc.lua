@@ -38,6 +38,8 @@ local function tick()
             if npc:getWorldObject() and not npc:getWorldObject():isDead() then members = members + 1 end
         end
     end
+    local ownActive = api:ownActive()
+    if ownActive > members then members = ownActive end
     local px, py, pz = player:getX(), player:getY(), player:getZ()
     api:ownGroup("player-squad", "own", members, px, py)
     api:ownSync(px, py, 80, members)

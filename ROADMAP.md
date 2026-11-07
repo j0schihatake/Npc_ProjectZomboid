@@ -1865,3 +1865,4 @@ Project A-Life 1.4.6 (Workshop 3803984183, B42.21) — самостоятель�
 - [ ] Убрать прямые `KnoxEventLoader` из `Barricade/BaseRoutine/Call`.
 - [ ] Свой roster вместо Knox-группы; свои реплики/задания без Knox API.
 - [ ] Проверить запуск и игру вообще без Knox.
+- [x] `player-squad` считает своих NPC, даже если Knox-группа пуста.
