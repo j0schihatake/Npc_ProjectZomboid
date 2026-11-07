@@ -654,7 +654,9 @@ public final class OwnNpcBodyAdapter {
                     + " damage=" + String.format(java.util.Locale.ROOT, "%.1f", damage) + " skill=" + skill + " ranged=" + ranged + " scope=" + scope
                     + " weather=" + weather + " range=" + String.format(java.util.Locale.ROOT, "%.1f", range)
                     + " distance=" + String.format(java.util.Locale.ROOT, "%.1f", nearestDistance));
-        } catch (Throwable ignored) { }
+        } catch (Throwable error) {
+            System.out.println("[PersonalKnox][own-combat] error: " + error);
+        }
     }
 
     private static int skillLevel(Object body, boolean ranged) {

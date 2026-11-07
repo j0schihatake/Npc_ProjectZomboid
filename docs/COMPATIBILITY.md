@@ -2016,3 +2016,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 ## 0.18.2 — upkeep и прочность в игре
 
 - In-game: `upkeep-repair`, `upkeep-ammo`, `durability-setting`; без Knox 38/38.
+## 0.18.3 — диагностика attack, стабильные 38
+
+- `attack` логирует исключения; добавлен `ownDebugAttack`.
+- Боевой in-game тест по-прежнему не проходит и исключён из набора.
+- Стабильно: 38/38.
