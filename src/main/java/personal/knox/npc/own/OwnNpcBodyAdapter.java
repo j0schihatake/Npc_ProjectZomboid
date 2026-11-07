@@ -380,8 +380,27 @@ public final class OwnNpcBodyAdapter {
             try {
                 body.getClass().getMethod(name).invoke(body);
                 System.out.println("[PersonalKnox] Own body dressed via " + name);
-                return;
+                break;
             } catch (Throwable ignored) { }
+        }
+        try {
+            Object visual = body.getClass().getMethod("getHumanVisual").invoke(body);
+            Object items = visual.getClass().getMethod("getBodyVisuals").invoke(visual);
+            int count = (int) items.getClass().getMethod("size").invoke(items);
+            if (count > 0) return;
+        } catch (Throwable ignored) { }
+        try {
+            Object player = Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
+            if (player != null) {
+                Object playerVisual = player.getClass().getMethod("getHumanVisual").invoke(player);
+                Object bodyVisual = body.getClass().getMethod("getHumanVisual").invoke(body);
+                Class<?> base = Class.forName("zombie.core.skinnedmodel.visual.BaseVisual");
+                bodyVisual.getClass().getMethod("copyFrom", base).invoke(bodyVisual, playerVisual);
+                System.out.println("[PersonalKnox] Own body visual fallback copied from player");
+                return;
+            }
+        } catch (Throwable error) {
+            System.out.println("[PersonalKnox] Own body visual fallback failed: " + error);
         }
         System.out.println("[PersonalKnox] Own body dress failed");
     }
