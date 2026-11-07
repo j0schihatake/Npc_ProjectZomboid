@@ -245,6 +245,24 @@ local function onContext(playerIndex, context, worldObjects, test)
     if not player or not api() then return end
     local members = roster(player)
     local apiRef = PersonalKnoxAPI.getInstance()
+    local ownTotal = apiRef:ownCount()
+    if ownTotal > 0 then
+        local root = context:addOption("Свой отряд", nil, nil)
+        local menu = context:getNew(context)
+        context:addSubMenu(root, menu)
+        local function all(mode)
+            for i = 0, ownTotal - 1 do
+                local id = apiRef:ownId(i)
+                if id and id ~= "" then
+                    apiRef:ownOrderMode(id, mode, player:getX(), player:getY())
+                end
+            end
+            if mode == "FOLLOW" then apiRef:ownFollowTarget3(player:getX(), player:getY(), player:getZ()) end
+        end
+        menu:addOption("Все за мной", player, function() all("FOLLOW") end)
+        menu:addOption("Все стоять", player, function() all("HOLD") end)
+        menu:addOption("Все охранять", player, function() all("GUARD") end)
+    end
     local seenOwn = {}
     for _, obj in ipairs(worldObjects or {}) do
         if instanceof(obj, "IsoPlayer") then
