@@ -229,3 +229,9 @@ A-Life события, задания и сумки — нужен загруж�
 - `starting companions debug#1;debug#2;` — цикл и выбор числа уже в Java.
 - `active=2 bodies=2`; инструменты выданы; затем dev `debug#3`.
 - Игра выключена.
+
+### 0.9.81 — команды меню в Java
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-09d067e104ef9268f46ab8361b39359e`.
+- Меню вызывает `ownCommand`/`ownCommandAll`; Lua только UI.
+- Игра выключена.
