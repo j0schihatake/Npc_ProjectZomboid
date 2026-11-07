@@ -50,6 +50,10 @@ public final class OwnNpcBodyAdapter {
                     if (body == null) continue;
                     bodies.put(agent.id(), body);
                 }
+                if (layer.orderOf(agent.id()) == OwnNpcOrder.LOOT) {
+                    double[] loot = findLoot(cell, agent.x(), agent.y());
+                    if (loot != null) layer.order(agent.id(), loot[0], loot[1]);
+                }
                 move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
             }
             if (System.currentTimeMillis() - lastMoveLog >= 10_000L) {
@@ -426,6 +430,30 @@ public final class OwnNpcBodyAdapter {
             System.out.println("[PersonalKnox] Own body visual fallback failed: " + error);
         }
         System.out.println("[PersonalKnox] Own body dress failed");
+    }
+
+    private static double[] findLoot(Object cell, double cx, double cy) {
+        try {
+            for (int radius = 1; radius <= 8; radius++) {
+                for (int dx = -radius; dx <= radius; dx++) for (int dy = -radius; dy <= radius; dy++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dy)) != radius) continue;
+                    Object square = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                            .invoke(cell, (int) cx + dx, (int) cy + dy, 0);
+                    if (square == null) continue;
+                    Object objects = square.getClass().getMethod("getObjects").invoke(square);
+                    int size = (int) objects.getClass().getMethod("size").invoke(objects);
+                    for (int i = 0; i < size; i++) {
+                        Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
+                        if (object == null) continue;
+                        String name = object.getClass().getName().toLowerCase(java.util.Locale.ROOT);
+                        if (name.contains("container") || name.contains("fridge") || name.contains("crate")) {
+                            return new double[]{(int) cx + dx + 0.5, (int) cy + dy + 0.5};
+                        }
+                    }
+                }
+            }
+        } catch (Throwable ignored) { }
+        return null;
     }
 
     private static java.util.List<Object[]> zombieSnapshot(Object cell) {
