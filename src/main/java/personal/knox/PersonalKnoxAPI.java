@@ -66,6 +66,18 @@ public final class PersonalKnoxAPI {
 
 
 
+    public String ownSummary(String id) {
+        var agent = ownLayer.agents().stream().filter(a -> a.id().equals(id)).findFirst().orElse(null);
+        if (agent == null) return "";
+        var tools = new StringBuilder();
+        for (var tool : ownBodies.tools(id)) tools.append(tool.name()).append(';');
+        return "id=" + id + " order=" + ownLayer.orderOf(id)
+                + " task=" + agent.state().task()
+                + " health=" + String.format(java.util.Locale.ROOT, "%.0f", agent.state().health())
+                + " pos=" + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", agent.x(), agent.y(), agent.z())
+                + " tools=" + tools;
+    }
+
     public int ownActive() { return ownLayer.count(); }
 
     public String ownDamage(String id, double amount) {
