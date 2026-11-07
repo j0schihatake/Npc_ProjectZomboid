@@ -55,7 +55,7 @@ public final class OwnNpcBodyAdapter {
                     double[] loot = findLoot(cell, agent.x(), agent.y(), agent.z(), agent.id());
                     if (loot != null) {
                         layer.order(agent.id(), loot[0], loot[1]);
-                        if (Math.hypot(agent.x() - loot[0], agent.y() - loot[1]) < 1.8) loot(agent.id(), body);
+                        if (Math.hypot(agent.x() - loot[0], agent.y() - loot[1]) < 1.8) loot(agent.id(), body, layer);
                     }
                 }
                 move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
@@ -463,7 +463,7 @@ public final class OwnNpcBodyAdapter {
         return null;
     }
 
-    private void loot(String id, Object body) {
+    private void loot(String id, Object body, OwnNpcLayer layer) {
         Object object = lootObjects.remove(id);
         if (object == null) return;
         try {
@@ -485,7 +485,10 @@ public final class OwnNpcBodyAdapter {
                     }
                 } catch (Throwable ignored) { }
             }
-            if (moved > 0) System.out.println("[PersonalKnox][own-loot] " + id + " items=" + moved);
+            if (moved > 0) {
+                layer.addSupplies(id, moved);
+                System.out.println("[PersonalKnox][own-loot] " + id + " items=" + moved);
+            }
         } catch (Throwable ignored) { }
     }
 

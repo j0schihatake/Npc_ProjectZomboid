@@ -131,6 +131,15 @@ public final class OwnNpcLayer {
         return new OwnNpcEvent(OwnNpcEvent.Type.MOVED, id, updated.x(), updated.y(), updated.z(), "order");
     }
 
+    public OwnNpcEvent addSupplies(String id, int amount) {
+        if (amount < 0) throw new IllegalArgumentException("Invalid supplies");
+        var agent = agents.get(id);
+        if (agent == null) throw new IllegalArgumentException("Unknown agent");
+        var updated = agent.withSupplies(agent.supplies() + amount);
+        agents.put(id, updated);
+        return new OwnNpcEvent(OwnNpcEvent.Type.NEEDS, id, updated.x(), updated.y(), updated.z(), "supplies");
+    }
+
     public OwnNpcEvent damage(String id, double amount) {
         if (!Double.isFinite(amount) || amount <= 0) throw new IllegalArgumentException("Invalid damage");
         var agent = agents.get(id);
