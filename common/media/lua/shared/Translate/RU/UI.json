@@ -93,5 +93,11 @@
   "UI_PersonalKnox_CompanionNone": "Ни одного",
   "UI_PersonalKnox_CompanionOne": "1 спутник",
   "UI_PersonalKnox_CompanionTwo": "2 спутника",
-  "UI_PersonalKnox_CompanionFour": "4 спутника"
+  "UI_PersonalKnox_CompanionFour": "4 спутника",
+  "UI_trait_PersonalCompanions1": "Свой спутник",
+  "UI_trait_PersonalCompanions1Desc": "Начать игру с одним своим NPC.",
+  "UI_trait_PersonalCompanions2": "Два своих спутника",
+  "UI_trait_PersonalCompanions2Desc": "Начать игру с двумя своими NPC.",
+  "UI_trait_PersonalCompanions4": "Четыре своих спутника",
+  "UI_trait_PersonalCompanions4Desc": "Начать игру с четырьмя своими NPC."
 }

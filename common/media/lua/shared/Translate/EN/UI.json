@@ -84,5 +84,11 @@
   "UI_PersonalKnox_CompanionNone": "None",
   "UI_PersonalKnox_CompanionOne": "1 companion",
   "UI_PersonalKnox_CompanionTwo": "2 companions",
-  "UI_PersonalKnox_CompanionFour": "4 companions"
+  "UI_PersonalKnox_CompanionFour": "4 companions",
+  "UI_trait_PersonalCompanions1": "Personal companion",
+  "UI_trait_PersonalCompanions1Desc": "Start with one own NPC.",
+  "UI_trait_PersonalCompanions2": "Two personal companions",
+  "UI_trait_PersonalCompanions2Desc": "Start with two own NPCs.",
+  "UI_trait_PersonalCompanions4": "Four personal companions",
+  "UI_trait_PersonalCompanions4Desc": "Start with four own NPCs."
 }
