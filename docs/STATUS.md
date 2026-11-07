@@ -400,3 +400,10 @@ A-Life события, задания и сумки — нужен загруж�
 - `worn=Tshirt_WhiteLongSleeve,Shoes_Black,Trousers`.
 - Тест нашёл отсутствие `Base.Shoes`; заменено на `Base.Shoes_Black`.
 - Итог: `summary passed=15 failed=0`; игра выключена.
+
+### 0.13.10 — один прогон тестов
+
+- `python3 tools/run_ingame_tests.py`: включает тесты, запускает штатный скрипт,
+  собирает `[ingame-test]`, пишет `build/ingame-tests.log`, закрывает игру и
+  возвращает код 0/1.
+- Прогон: `passed=15 failed=0`; игра выключена.

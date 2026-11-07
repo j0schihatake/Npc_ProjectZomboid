@@ -35,3 +35,21 @@
 - после смены B42/Viewpoint/Knox.
 
 Если `failed > 0`, общий лог ошибок — `console.txt`, строки `ingame-test`.
+
+## Один прогон
+
+```bash
+python3 tools/run_ingame_tests.py
+```
+
+Скрипт:
+
+1. включает `inGameTests` в `ModOptions.ini`;
+2. запускает **штатный** `tools/launch_dev.sh`;
+3. собирает все `[ingame-test]` строки;
+4. пишет `build/ingame-tests.log`;
+5. возвращает `0`, если `failed=0`, иначе `1`;
+6. выключает тесты обратно;
+7. закрывает игру после прогона.
+
+Скрипт запуска игры не меняется.
