@@ -87,5 +87,11 @@
   "UI_PersonalKnox_AmmoWeightHint": "0%% / 50%% от оригинала / 100%% (оригинал).",
   "UI_PersonalKnox_AmmoWeightZero": "0%% (нет веса)",
   "UI_PersonalKnox_AmmoWeightHalf": "50%% (половина)",
-  "UI_PersonalKnox_AmmoWeightFull": "100%% (оригинал)"
+  "UI_PersonalKnox_AmmoWeightFull": "100%% (оригинал)",
+  "UI_PersonalKnox_CompanionCount": "Спутники при старте",
+  "UI_PersonalKnox_CompanionCountHint": "Сколько своих NPC создать при входе в игру (до 4).",
+  "UI_PersonalKnox_CompanionNone": "Ни одного",
+  "UI_PersonalKnox_CompanionOne": "1 спутник",
+  "UI_PersonalKnox_CompanionTwo": "2 спутника",
+  "UI_PersonalKnox_CompanionFour": "4 спутника"
 }

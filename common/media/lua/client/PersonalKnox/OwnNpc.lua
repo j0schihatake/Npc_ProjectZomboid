@@ -75,6 +75,18 @@ function OwnNpc.install(adapters)
             local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownPopulationRestore(data.PersonalKnoxOwnPopulation) end)
             if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
         end
+        local count = Settings.companionCount()
+        if count > 0 and not (data and data.PersonalKnoxOwnNpc) and PersonalKnoxAPI then
+            local api = PersonalKnoxAPI.getInstance()
+            for i = 1, count do
+                local ok, created = pcall(function() return api:ownCreateCompanion(player) end)
+                if ok then
+                    print("[PersonalKnox][own-npc] starting companion " .. tostring(created))
+                else
+                    print("[PersonalKnox] Starting companion error: " .. tostring(created))
+                end
+            end
+        end
     end)
     Events.OnSave.Add(function()
         local ok,err=pcall(saveState)

@@ -53,6 +53,14 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_AmmoWeightHalf")
         combo:addItem("UI_PersonalKnox_AmmoWeightFull", true)
     end
+    if page and not page:getOption("companionCount") then
+        local combo = page:addComboBox("companionCount", getText("UI_PersonalKnox_CompanionCount"),
+            getText("UI_PersonalKnox_CompanionCountHint"))
+        combo:addItem("UI_PersonalKnox_CompanionNone")
+        combo:addItem("UI_PersonalKnox_CompanionOne")
+        combo:addItem("UI_PersonalKnox_CompanionTwo", true)
+        combo:addItem("UI_PersonalKnox_CompanionFour")
+    end
     if page and not page:getOption("raidMax") then
         page:addSlider("raidMax", getText("UI_PersonalKnox_RaidMax"), 10, 30, 5, 30,
             getText("UI_PersonalKnox_RaidMaxHint"))
@@ -145,6 +153,13 @@ function Settings.ammoWeightFactor()
     if choice == 1 then return 0 end
     if choice == 2 then return 0.5 end
     return 1
+end
+function Settings.companionCount()
+    local option = page and page:getOption("companionCount")
+    if not option then return 2 end
+    local choice = option:getValue()
+    local map = {0, 1, 2, 4}
+    return map[choice] or 2
 end
 function Settings.raidMax()
     local option = page and page:getOption("raidMax")

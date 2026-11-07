@@ -78,5 +78,11 @@
   "UI_PersonalKnox_AmmoWeightHint": "0%% / 50%% of original / 100%% (original).",
   "UI_PersonalKnox_AmmoWeightZero": "0%%",
   "UI_PersonalKnox_AmmoWeightHalf": "50%%",
-  "UI_PersonalKnox_AmmoWeightFull": "100%% (original)"
+  "UI_PersonalKnox_AmmoWeightFull": "100%% (original)",
+  "UI_PersonalKnox_CompanionCount": "Starting companions",
+  "UI_PersonalKnox_CompanionCountHint": "How many own NPCs to create on game start (up to 4).",
+  "UI_PersonalKnox_CompanionNone": "None",
+  "UI_PersonalKnox_CompanionOne": "1 companion",
+  "UI_PersonalKnox_CompanionTwo": "2 companions",
+  "UI_PersonalKnox_CompanionFour": "4 companions"
 }
