@@ -131,6 +131,31 @@ public final class OwnNpcLayer {
         return new OwnNpcEvent(OwnNpcEvent.Type.MOVED, id, updated.x(), updated.y(), updated.z(), "order");
     }
 
+    private double baseX, baseY, baseZ;
+    private boolean hasBase;
+
+    public synchronized String setBase(double x, double y, double z) {
+        if (!Double.isFinite(x + y + z)) throw new IllegalArgumentException("Invalid base");
+        baseX = x; baseY = y; baseZ = z; hasBase = true;
+        return String.format(java.util.Locale.ROOT, "base=%.1f,%.1f,%.1f", x, y, z);
+    }
+
+    public synchronized String baseSummary() {
+        if (!hasBase) return "base=none";
+        return String.format(java.util.Locale.ROOT, "base=%.1f,%.1f,%.1f", baseX, baseY, baseZ);
+    }
+
+    public synchronized int guardBase() {
+        if (!hasBase) throw new IllegalStateException("No base");
+        int count = 0;
+        for (var agent : agents.values()) {
+            orders.put(agent.id(), OwnNpcOrder.GUARD);
+            agents.put(agent.id(), agent.withTarget(baseX, baseY));
+            count++;
+        }
+        return count;
+    }
+
     public OwnNpcEvent addSupplies(String id, int amount) {
         if (amount < 0) throw new IllegalArgumentException("Invalid supplies");
         var agent = agents.get(id);

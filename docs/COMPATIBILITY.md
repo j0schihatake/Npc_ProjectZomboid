@@ -1964,3 +1964,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 
 - `ownSpeakById`: Java находит тело и пишет реплику в чат.
 - In-game тест `speak`; без Knox 19/19.
+## 0.15.0 — база отряда
+
+- `OwnNpcLayer.setBase/baseSummary/guardBase`; API `ownBaseSet/ownBaseSummary/ownBaseGuardAll`.
+- ПКМ-меню: «База здесь»; in-game `base`, `base-guard`; без Knox 21/21.

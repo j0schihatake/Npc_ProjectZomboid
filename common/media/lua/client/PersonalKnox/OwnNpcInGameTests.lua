@@ -68,6 +68,8 @@ function Tests.run(player)
         return after < before
     end)
     check("speak", function() return api:ownSpeakById(id, "Тест связи.") end)
+    check("base", function() return string.find(api:ownBaseSet(x, y, z), "base=", 1, true) ~= nil end)
+    check("base-guard", function() return api:ownBaseGuardAll() >= 1 end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)

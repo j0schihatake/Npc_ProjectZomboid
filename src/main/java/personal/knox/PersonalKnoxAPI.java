@@ -192,6 +192,10 @@ public final class PersonalKnoxAPI {
 
 
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
+    public String ownBaseSet(double x, double y, double z) { return ownLayer.setBase(x, y, z); }
+    public String ownBaseSummary() { return ownLayer.baseSummary(); }
+    public int ownBaseGuardAll() { return ownLayer.guardBase(); }
+
     public String ownRemove(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("Invalid own NPC id");
         ownLayer.remove(id);

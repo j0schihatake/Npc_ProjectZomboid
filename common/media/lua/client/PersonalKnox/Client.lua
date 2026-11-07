@@ -259,6 +259,11 @@ local function onContext(playerIndex, context, worldObjects, test)
         local function all(mode)
             apiRef:ownCommandAll(mode, player:getX(), player:getY(), player:getZ())
         end
+        menu:addOption("База здесь", player, function()
+            apiRef:ownBaseSet(player:getX(), player:getY(), player:getZ())
+            local count = apiRef:ownBaseGuardAll()
+            message(player, "База: охраняют " .. tostring(count))
+        end)
         menu:addOption("Открыть окно отряда", player, function()
             local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
             if ok and panel then panel.toggle(player) end
