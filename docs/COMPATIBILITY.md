@@ -1926,3 +1926,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - Оставлены заглушки `updateLOS`/`updateAlpha`; профиль с Knox: 15/15.
 - Без Knox остаётся падение `MultiTextureFBO2.getDisplayZoom`; нужен другой способ.
 
+## 0.13.16 — сценарий без Knox прошёл
+
+- `playerIndex/serverPlayerIndex=1` вместо `-1`: валидный индекс для рендера B42.
+- Полный профиль без Knox: `knox=unavailable`, `status=OK`,
+  `own_npc_registered_model_saved`; 16 своих тел, движок не падает.
+- Штатный профиль с Knox: 15/15.
+- Замечание: в тестовом сохранении игрок без одежды и один debug-NPC без одежды;
+  это отдельная проверка внешнего вида, не откат Knox.
+
