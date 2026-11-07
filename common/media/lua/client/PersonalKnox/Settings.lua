@@ -31,6 +31,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
+    ensure("openSquad", "UI_PersonalKnox_OpenSquad", true, "UI_PersonalKnox_OpenSquadHint")
     if page and not page:getOption("ammoMode") then
         local combo = page:addComboBox("ammoMode", getText("UI_PersonalKnox_AmmoMode"),
             getText("UI_PersonalKnox_AmmoModeHint"))
@@ -154,6 +155,9 @@ function Settings.ammoWeightFactor()
     if choice == 1 then return 0 end
     if choice == 2 then return 0.5 end
     return 1
+end
+function Settings.openSquad()
+    return value("openSquad", true)
 end
 function Settings.companionCount()
     local option = page and page:getOption("companionCount")

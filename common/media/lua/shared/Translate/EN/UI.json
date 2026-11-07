@@ -93,5 +93,7 @@
   "UI_trait_PersonalCompanions4Desc": "Start with four own NPCs.",
   "UI_PersonalKnox_CompanionThree": "3 companions",
   "UI_trait_PersonalCompanions3": "Three personal companions",
-  "UI_trait_PersonalCompanions3Desc": "Start with three own NPCs."
+  "UI_trait_PersonalCompanions3Desc": "Start with three own NPCs.",
+  "UI_PersonalKnox_OpenSquad": "Open squad window on start",
+  "UI_PersonalKnox_OpenSquadHint": "Show the own-NPC window right after entering the world."
 }

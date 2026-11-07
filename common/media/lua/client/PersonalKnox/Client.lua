@@ -344,6 +344,14 @@ AmmoWeight.install({roster=roster})
 OwnNpc.install({roster=roster})
 OwnNpcDebug.install()
 TextFix.install()
+Events.OnGameStart.Add(function()
+    if not Settings.openSquad() then return end
+    local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
+    if ok and panel then
+        local player = getSpecificPlayer(0)
+        if player then panel.toggle(player) end
+    end
+end)
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
 AutoReload.install()
