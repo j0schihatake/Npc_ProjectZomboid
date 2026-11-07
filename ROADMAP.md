@@ -1873,3 +1873,4 @@ Project A-Life 1.4.6 (Workshop 3803984183, B42.21) — самостоятель�
 - [x] `IsoPlayer.updateLOS` заглушён у своих NPC: `playerIndex=-1` больше не даёт Index -1.
 - [x] `playerIndex=0` проверен и отклонён: раздевает игрока; возвращён `-1`.
 - [x] Мир без Knox проходит сценарий с `playerIndex=1`; осталось проверить внешний вид.
+- [x] In-game test `player-clothed` для проверки одежды игрока.
