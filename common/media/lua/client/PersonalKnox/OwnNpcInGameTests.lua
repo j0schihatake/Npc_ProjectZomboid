@@ -24,6 +24,7 @@ function Tests.run(player)
     check("spawn-returns-id", function() return id ~= nil and id ~= "" end)
     check("body-sync", function() return bodies >= 1 end)
     check("body-registered", function()
+        api:ownBodiesSync()
         local inspect = api:ownBodyInspect(id)
         return string.find(inspect, "registered=true", 1, true) ~= nil
                 and string.find(inspect, "squareMember=true", 1, true) ~= nil
