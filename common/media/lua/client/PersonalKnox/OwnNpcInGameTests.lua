@@ -19,6 +19,7 @@ function Tests.run(player)
     local api = PersonalKnoxAPI.getInstance()
     local x, y, z = player:getX(), player:getY(), player:getZ()
     print("[PersonalKnox][ingame-test] start")
+    check("class-files", function() return classFilesInstalled == true end)
     check("player-clothed", function()
         local worn = player:getWornItems()
         return worn ~= nil and worn:size() >= 3

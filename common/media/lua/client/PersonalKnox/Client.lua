@@ -4,6 +4,7 @@ local Version = require "PersonalKnox/Version"
 local Probe = require "PersonalKnox/Probe"
 local Dialogues = nil -- Phrases are loaded by Java from the SQLite export.
 PersonalKnox = PersonalKnox or {}
+classFilesInstalled = true
 local Supply = require "PersonalKnox/Supplies"
 local Reactions = require "PersonalKnox/Reactions"
 local Routine = require "PersonalKnox/BaseRoutine"

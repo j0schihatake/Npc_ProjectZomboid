@@ -1952,3 +1952,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 
 - Удалён `loadModAfter` с Knox; мод не требует и не ждёт Knox.
 - Java-ядро 0.14.0; профиль без Knox — 16/16.
+## 0.14.1 — classFilesInstalled без Knox
+
+- Care/Upkeep/Stuck/Reactions больше не зависят от флага Knox.
+- Профиль без Knox: 17/17; игрок и NPC одеты.
