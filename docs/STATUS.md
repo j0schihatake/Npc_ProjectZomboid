@@ -222,3 +222,10 @@ A-Life события, задания и сумки — нужен загруж�
 - Lua-ошибок `hasTrait/getTraits` больше нет; старт создал `debug#1`, `debug#2`,
   `active=2 bodies=2`, затем dev `debug#3`.
 - Игра выключена после теста.
+
+### 0.9.80 — старт полностью в Java
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-edd1e62d7e127df857f9a949ee9cd37d`.
+- `starting companions debug#1;debug#2;` — цикл и выбор числа уже в Java.
+- `active=2 bodies=2`; инструменты выданы; затем dev `debug#3`.
+- Игра выключена.
