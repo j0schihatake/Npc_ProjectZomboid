@@ -248,3 +248,9 @@ A-Life события, задания и сумки — нужен загруж�
 - `active=2 bodies=2`, затем dev `debug#3`; инструменты выданы.
 - `alife-init squads=0` — собственная population-группа пока не входит в A-Life squads,
   это следующий разрыв интеграции; игра выключена.
+
+### 0.9.85 — свои NPC в A-Life
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-c6329a9898ee10f6bf76dceb303109be`.
+- Поздний лог: `[alife] squads=3 events={NEAR_SQUAD=3}` — свои NPC попали в A-Life.
+- Игра выключена.
