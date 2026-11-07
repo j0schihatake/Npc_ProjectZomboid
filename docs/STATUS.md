@@ -215,3 +215,10 @@ A-Life события, задания и сумки — нужен загруж�
 - `Own body starting tools added` для каждого спутника.
 - `debug#1` 7989,11754; `debug#2` 7989,11756; dev `debug#3` 7990,11754.
 - `active=2 bodies=2`, затем `active=3 bodies=3`; игра выключена.
+
+### 0.9.79 — черты читаются Java, старт OK
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-3c33c394f5479b143ca3d7132c3e45da`.
+- Lua-ошибок `hasTrait/getTraits` больше нет; старт создал `debug#1`, `debug#2`,
+  `active=2 bodies=2`, затем dev `debug#3`.
+- Игра выключена после теста.
