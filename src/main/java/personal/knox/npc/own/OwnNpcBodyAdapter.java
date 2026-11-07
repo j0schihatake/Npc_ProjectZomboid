@@ -380,7 +380,8 @@ public final class OwnNpcBodyAdapter {
             for (var pair : items) {
                 Object location = locations.getField(pair[0]).get(null);
                 Object item = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, pair[1]);
-                if (item != null) body.getClass().getMethod("setWornItem", location.getClass(), item.getClass())
+                if (item != null) body.getClass().getMethod("setWornItem", location.getClass(),
+                                Class.forName("zombie.inventory.InventoryItem"))
                         .invoke(body, location, item);
             }
             System.out.println("[PersonalKnox] Own body worn clothes applied");

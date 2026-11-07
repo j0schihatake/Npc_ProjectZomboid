@@ -1368,6 +1368,11 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.96 — правильный setWornItem
+
+- `setWornItem` ожидает `InventoryItem`, а не `Clothing`; исправлен reflection-тип.
+- Java-ядро 0.9.96, JAR пересобран; тесты проходят.
+
 ## 0.9.95 — принудительно надетая одежда
 
 - `wear(body)` добавляет `Base.Tshirt_WhiteLongSleeve`, `Base.Trousers`, `Base.Shoes`
