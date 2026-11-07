@@ -11,6 +11,9 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, Object> bodies = new HashMap<>();
     private record PathState(double tx, double ty, java.util.List<OwnNpcPathfinder.Point> points, int index) { }
     private boolean unavailable;
+    private boolean matchPlayerClothes;
+    public void setMatchPlayerClothes(boolean value) { matchPlayerClothes = value; }
+
     private final Map<String, PathState> pathCache = new HashMap<>();
     private final Map<String, Object> lootObjects = new HashMap<>();
     private long lastMoveLog;
@@ -378,8 +381,10 @@ public final class OwnNpcBodyAdapter {
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Saw");
             System.out.println("[PersonalKnox] Own body starting tools added");
         } catch (Throwable ignored) { }
-        dress(body, desc, id);
-        wear(body);
+        if (!matchPlayerClothes || !dressLikePlayer(body)) {
+            dress(body, desc, id);
+            wear(body);
+        }
             body.getClass().getMethod("setCurrentSquare",squareClass).invoke(body,square);
             // A non-null current square does not mean membership in the simulation.
             // IsoCell queues additions safely when its object list is being updated.
@@ -418,6 +423,33 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+
+    private boolean dressLikePlayer(Object body) {
+        try {
+            Object player = Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
+            if (player == null) return false;
+            Object worn = player.getClass().getMethod("getWornItems").invoke(player);
+            int size = (int) worn.getClass().getMethod("size").invoke(worn);
+            if (size == 0) return false;
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            int copied = 0;
+            for (int i = 0; i < size; i++) {
+                Object entry = worn.getClass().getMethod("get", int.class).invoke(worn, i);
+                Object item = entry.getClass().getMethod("getItem").invoke(entry);
+                Object location = entry.getClass().getMethod("getLocation").invoke(entry);
+                if (item == null) continue;
+                String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                Object added = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, type);
+                if (added == null) continue;
+                body.getClass().getMethod("setWornItem", location.getClass(),
+                        Class.forName("zombie.inventory.InventoryItem")).invoke(body, location, added);
+                copied++;
+            }
+            if (copied == 0) return false;
+            System.out.println("[PersonalKnox] Own body clothes match player: " + copied);
+            return true;
+        } catch (Throwable ignored) { return false; }
+    }
 
     private static void dress(Object body, Object desc, String id) {
         try {

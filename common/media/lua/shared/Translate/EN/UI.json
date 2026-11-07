@@ -97,5 +97,7 @@
   "UI_PersonalKnox_OpenSquad": "Open squad window on start",
   "UI_PersonalKnox_OpenSquadHint": "Show the own-NPC window right after entering the world.",
   "UI_PersonalKnox_InGameTests": "In-game NPC tests",
-  "UI_PersonalKnox_InGameTestsHint": "Run own-NPC checks on start and print PASS/FAIL to the log."
+  "UI_PersonalKnox_InGameTestsHint": "Run own-NPC checks on start and print PASS/FAIL to the log.",
+  "UI_PersonalKnox_MatchPlayerClothes": "Dress NPCs like player",
+  "UI_PersonalKnox_MatchPlayerClothesHint": "Starting NPCs copy the player’s worn clothes."
 }

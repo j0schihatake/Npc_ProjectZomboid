@@ -90,7 +90,8 @@ function OwnNpc.install(adapters)
                 player, Settings.companionCount(),
                 data.PersonalKnoxOwnNpc or "",
                 data.PersonalKnoxTargetZ or "",
-                data.PersonalKnoxOwnPopulation or "")
+                data.PersonalKnoxOwnPopulation or "",
+                Settings.matchPlayerClothes())
         end)
         if ok then
             print("[PersonalKnox][own-npc] bootstrap " .. tostring(result))

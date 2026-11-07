@@ -1985,3 +1985,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
   оружия даёт штраф до 50%, итог 5..60.
 - Тело NPC читает `getWeaponLevel`, condition, `PerkList` (Firearm/Axe).
 - In-game: damage-weapon/skill/broken/ranged; без Knox 34/34.
+## 0.16.0 — одежда NPC как у игрока
+
+- Настройка `matchPlayerClothes`: стартовые NPC копируют надетые вещи игрока
+  (`getWornItems` → `AddItem` → `setWornItem`), иначе прежний случайный стиль.
+- Проверка: `Own body clothes match player: 3`; без Knox 34/34.

@@ -32,6 +32,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
+    ensure("matchPlayerClothes", "UI_PersonalKnox_MatchPlayerClothes", false, "UI_PersonalKnox_MatchPlayerClothesHint")
     ensure("inGameTests", "UI_PersonalKnox_InGameTests", false, "UI_PersonalKnox_InGameTestsHint")
     if page and not page:getOption("ammoMode") then
         local combo = page:addComboBox("ammoMode", getText("UI_PersonalKnox_AmmoMode"),
@@ -159,6 +160,10 @@ function Settings.ammoWeightFactor()
 end
 function Settings.inGameTests()
     return value("inGameTests", false)
+end
+
+function Settings.matchPlayerClothes()
+    return value("matchPlayerClothes", false)
 end
 
 function Settings.openSquad()

@@ -311,6 +311,12 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownBootstrap(Object player, int fallbackCount, String agents, String targetZ, String population) {
+        return ownBootstrap(player, fallbackCount, agents, targetZ, population, false);
+    }
+
+    public String ownBootstrap(Object player, int fallbackCount, String agents, String targetZ, String population,
+                               boolean matchPlayerClothes) {
+        ownBodies.setMatchPlayerClothes(matchPlayerClothes);
         if (agents != null && !agents.isBlank()) {
             int restored = ownRestore(agents);
             if (targetZ != null && !targetZ.isBlank()) ownTargetZRestore(targetZ);
