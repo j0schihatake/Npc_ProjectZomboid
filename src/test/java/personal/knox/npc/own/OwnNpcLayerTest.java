@@ -18,6 +18,8 @@ public final class OwnNpcLayerTest {
         var agent = new OwnNpcAgent("n1", "own", 0, 0, 0, 10, 0, 2, state);
         assert layer.spawn(agent).type() == OwnNpcEvent.Type.SPAWNED;
         assert layer.count() == 1;
+        layer.order("n1", OwnNpcOrder.FOLLOW, 10, 0);
+        layer.followTarget(10, 0);
         var events = layer.tick(1, 8);
         assert !events.isEmpty();
         assert layer.agent("n1").x() > 0 : "Agent moved toward target";

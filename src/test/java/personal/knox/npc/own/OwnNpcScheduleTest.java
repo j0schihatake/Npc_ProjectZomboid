@@ -29,7 +29,11 @@ public final class OwnNpcScheduleTest {
         assert layer.tick(0,1).get(0).agentId().equals("npc1") : "Removal preserves the next turn";
 
         var movers=new OwnNpcLayer();
-        for(int i=0;i<64;i++) movers.spawn(npc("moving"+i,true));
+        for(int i=0;i<64;i++) {
+            movers.spawn(npc("moving"+i,true));
+            movers.order("moving"+i, OwnNpcOrder.FOLLOW, 100, 0);
+        }
+        movers.followTarget(100,0);
         Map<String,Integer> moves=new HashMap<>();Set<String> needs=new HashSet<>();
         for(int i=0;i<128;i++) {
             var events=movers.tick(0,1);
