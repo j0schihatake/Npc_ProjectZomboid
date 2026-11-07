@@ -76,7 +76,7 @@ function OwnNpc.install(adapters)
             if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
         end
         local count = 0
-        for _, n in ipairs({1, 2, 4}) do
+        for _, n in ipairs({1, 2, 3, 4}) do
             if player:hasTrait("PersonalKnox:Companions" .. tostring(n)) then count = n end
         end
         if count == 0 then count = Settings.companionCount() end

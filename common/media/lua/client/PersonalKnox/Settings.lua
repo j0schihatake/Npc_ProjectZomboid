@@ -59,6 +59,7 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_CompanionNone")
         combo:addItem("UI_PersonalKnox_CompanionOne")
         combo:addItem("UI_PersonalKnox_CompanionTwo", true)
+        combo:addItem("UI_PersonalKnox_CompanionThree")
         combo:addItem("UI_PersonalKnox_CompanionFour")
     end
     if page and not page:getOption("raidMax") then
@@ -158,7 +159,7 @@ function Settings.companionCount()
     local option = page and page:getOption("companionCount")
     if not option then return 2 end
     local choice = option:getValue()
-    local map = {0, 1, 2, 4}
+    local map = {0, 1, 2, 3, 4}
     return map[choice] or 2
 end
 function Settings.raidMax()

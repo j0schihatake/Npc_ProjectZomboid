@@ -8,7 +8,7 @@ module PersonalKnox
         Cost = 1,
         UIName = UI_trait_PersonalCompanions1,
         UIDescription = UI_trait_PersonalCompanions1Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions2; PersonalKnox:Companions4,
+        MutuallyExclusiveTraits = PersonalKnox:Companions2; PersonalKnox:Companions3; PersonalKnox:Companions4,
     }
 
     character_trait_definition PersonalKnox:Companions2
@@ -19,7 +19,18 @@ module PersonalKnox
         Cost = 2,
         UIName = UI_trait_PersonalCompanions2,
         UIDescription = UI_trait_PersonalCompanions2Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions4,
+        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions3; PersonalKnox:Companions4,
+    }
+
+    character_trait_definition PersonalKnox:Companions3
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = PersonalKnox:Companions3,
+        Cost = 3,
+        UIName = UI_trait_PersonalCompanions3,
+        UIDescription = UI_trait_PersonalCompanions3Desc,
+        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions2; PersonalKnox:Companions4,
     }
 
     character_trait_definition PersonalKnox:Companions4
@@ -30,6 +41,6 @@ module PersonalKnox
         Cost = 3,
         UIName = UI_trait_PersonalCompanions4,
         UIDescription = UI_trait_PersonalCompanions4Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions2,
+        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions2; PersonalKnox:Companions3,
     }
 }

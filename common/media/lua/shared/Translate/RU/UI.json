@@ -99,5 +99,8 @@
   "UI_trait_PersonalCompanions2": "Два своих спутника",
   "UI_trait_PersonalCompanions2Desc": "Начать игру с двумя своими NPC.",
   "UI_trait_PersonalCompanions4": "Четыре своих спутника",
-  "UI_trait_PersonalCompanions4Desc": "Начать игру с четырьмя своими NPC."
+  "UI_trait_PersonalCompanions4Desc": "Начать игру с четырьмя своими NPC.",
+  "UI_PersonalKnox_CompanionThree": "3 спутника",
+  "UI_trait_PersonalCompanions3": "Три своих спутника",
+  "UI_trait_PersonalCompanions3Desc": "Начать игру с тремя своими NPC."
 }

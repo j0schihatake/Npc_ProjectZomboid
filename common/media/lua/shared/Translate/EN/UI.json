@@ -90,5 +90,8 @@
   "UI_trait_PersonalCompanions2": "Two personal companions",
   "UI_trait_PersonalCompanions2Desc": "Start with two own NPCs.",
   "UI_trait_PersonalCompanions4": "Four personal companions",
-  "UI_trait_PersonalCompanions4Desc": "Start with four own NPCs."
+  "UI_trait_PersonalCompanions4Desc": "Start with four own NPCs.",
+  "UI_PersonalKnox_CompanionThree": "3 companions",
+  "UI_trait_PersonalCompanions3": "Three personal companions",
+  "UI_trait_PersonalCompanions3Desc": "Start with three own NPCs."
 }
