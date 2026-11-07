@@ -1907,3 +1907,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
   а `NpcReload/NpcUpkeep` больше не падают.
 - Java-ядро 0.13.11; тесты проходят.
 
+## 0.13.12 — updateLOS заглушён
+
+- Падение `IsoGridSquare.isCouldSee` из-за `playerIndex=-1` в `IsoPlayer.updateLOS`;
+  ByteBuddy-подтип своих NPC переопределяет `updateLOS` пустым методом.
+- Java-ядро 0.13.12; тесты проходят.
+

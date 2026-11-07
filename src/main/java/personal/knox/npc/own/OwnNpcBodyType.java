@@ -3,6 +3,8 @@ package personal.knox.npc.own;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.scaffold.subclass.ConstructorStrategy;
+import net.bytebuddy.implementation.StubMethod;
+import net.bytebuddy.matcher.ElementMatchers;
 
 /** Engine-only subtype, generated once: B42 FBO skips exact IsoPlayer instances.
  * It inherits engine behavior and constructors; all decisions stay in our Java core.
@@ -21,6 +23,8 @@ final class OwnNpcBodyType {
                     return new ByteBuddy()
                             .subclass(base,ConstructorStrategy.Default.IMITATE_SUPER_CLASS_PUBLIC)
                             .name(name)
+                            .method(ElementMatchers.named("updateLOS"))
+                            .intercept(StubMethod.INSTANCE)
                             .make()
                             .load(base.getClassLoader(),ClassLoadingStrategy.Default.INJECTION)
                             .getLoaded();
