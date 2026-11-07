@@ -597,11 +597,15 @@ public final class OwnNpcBodyAdapter {
                     ? OwnNpcCombat.engagementRange(remoteRange, scope, weather)
                     : 1.6;
             Object cell = currentCell();
+            Object bodySquare = body.getClass().getMethod("getCurrentSquare").invoke(body);
             Object nearest = null;
             double nearestDistance = Double.MAX_VALUE;
             for (var entry : zombies) {
                 Object zombie = entry[0];
-                double distance = Math.hypot((double) entry[1] - bx, (double) entry[2] - by);
+                Object zombieSquare = zombie.getClass().getMethod("getCurrentSquare").invoke(zombie);
+                double distance = zombieSquare == bodySquare
+                        ? 0
+                        : Math.hypot((double) entry[1] - bx, (double) entry[2] - by);
                 if (distance > range) continue;
                 double zz = ((Number) zombie.getClass().getMethod("getZ").invoke(zombie)).doubleValue();
                 boolean clear = distance <= 1.5;
@@ -644,8 +648,9 @@ public final class OwnNpcBodyAdapter {
                     weapon.getClass().getMethod("setCurrentAmmoCount", int.class).invoke(weapon, ammo - 1);
                 } catch (Throwable ignored) { }
             }
-            Object bodyDamage = nearest.getClass().getMethod("getBodyDamage").invoke(nearest);
-            bodyDamage.getClass().getMethod("ReduceHealth", float.class).invoke(bodyDamage, (float) damage);
+            double zombieHealth = ((Number) nearest.getClass().getMethod("getHealth").invoke(nearest)).doubleValue();
+            nearest.getClass().getMethod("setHealth", float.class)
+                    .invoke(nearest, (float) Math.max(0, zombieHealth - damage));
             Object square = nearest.getClass().getMethod("getCurrentSquare").invoke(nearest);
             body.getClass().getMethod("setAttackTargetSquare", Class.forName("zombie.iso.IsoGridSquare"))
                     .invoke(body, square);
@@ -656,6 +661,7 @@ public final class OwnNpcBodyAdapter {
                     + " distance=" + String.format(java.util.Locale.ROOT, "%.1f", nearestDistance));
         } catch (Throwable error) {
             System.out.println("[PersonalKnox][own-combat] error: " + error);
+            error.printStackTrace(System.out);
         }
     }
 

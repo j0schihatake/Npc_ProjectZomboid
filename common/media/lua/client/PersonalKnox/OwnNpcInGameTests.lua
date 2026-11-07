@@ -94,6 +94,13 @@ function Tests.run(player)
     check("damage-broken", function() return api:ownCombatDamage(1, 0, 0, 10, false) == 5 end)
     check("damage-ranged", function() return api:ownCombatDamage(5, 5, 10, 10, true) == 30 end)
     check("factions", function() return api:alifeOutposts() >= 1 end)
+    check("combat", function()
+        local spawned = api:ownDebugZombie(id)
+        if string.find(spawned, "health=", 1, true) == nil then return false end
+        local before = api:ownDebugZombieHealth()
+        api:ownDebugAttack(id)
+        return api:ownDebugZombieHealth() < before
+    end)
     check("upkeep-repair", function() return api:upkeepNeedsRepair(1, 10) end)
     check("upkeep-ammo", function() return api:upkeepAmmo(0, 30) > 0 end)
     check("durability-setting", function() return Settings.infiniteDurability() == true end)

@@ -2021,3 +2021,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `attack` логирует исключения; добавлен `ownDebugAttack`.
 - Боевой in-game тест по-прежнему не проходит и исключён из набора.
 - Стабильно: 38/38.
+## 0.18.4 — реальный урон подтверждён
+
+- Причина: `IsoZombie.getBodyDamage()` возвращает `null`; урон теперь через
+  `getHealth`/`setHealth`.
+- In-game: `PASS combat`, лог `target=IsoZombie damage=10.0`.
+- Без Knox: **39/39**.
