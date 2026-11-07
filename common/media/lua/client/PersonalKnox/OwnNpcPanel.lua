@@ -72,6 +72,10 @@ function OwnNpcPanel:close()
     if instance == self then instance = nil end
 end
 
+function OwnNpcPanel.closeOpen()
+    if instance then instance:close() end
+end
+
 function OwnNpcPanel.isOpen()
     return instance ~= nil and instance:getIsVisible()
 end

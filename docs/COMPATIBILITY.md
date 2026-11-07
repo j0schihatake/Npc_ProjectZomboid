@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.12.5 — closeOpen вместо close на модуле
+
+- `panel.close()` вызывался на таблице модуля, а не на экземпляре; добавлен
+  `OwnNpcPanel.closeOpen()`.
+- Java-ядро 0.12.5, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.12.3 — убран setBackgroundColor
 
 - У `ISPanel` нет `setBackgroundColor`; вызов падал до `initialise`. Удалён.
