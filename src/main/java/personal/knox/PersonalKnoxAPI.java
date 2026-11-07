@@ -22,9 +22,11 @@ public final class PersonalKnoxAPI {
     private final personal.knox.npc.own.OwnNpcBodyAdapter ownBodies = new personal.knox.npc.own.OwnNpcBodyAdapter();
 
     public void ownGroup(String id, String faction, int members, double x, double y) {
+        int effective = members;
+        if ("player-squad".equals(id) && effective <= 0) effective = ownLayer.count();
         var group = new personal.knox.npc.own.OwnNpcPopulation.Group(id, faction,
                 personal.knox.npc.own.OwnNpcPopulation.Group.Kind.PLAYER_SQUAD,
-                members, x, y, x, y);
+                effective, x, y, x, y);
         if (ownPopulation.group(id) == null) ownPopulation.add(group);
         else ownPopulation.update(group);
     }
