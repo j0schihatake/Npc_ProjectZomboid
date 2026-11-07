@@ -251,13 +251,7 @@ local function onContext(playerIndex, context, worldObjects, test)
         local menu = context:getNew(context)
         context:addSubMenu(root, menu)
         local function all(mode)
-            for i = 0, ownTotal - 1 do
-                local id = apiRef:ownId(i)
-                if id and id ~= "" then
-                    apiRef:ownOrderMode(id, mode, player:getX(), player:getY())
-                end
-            end
-            if mode == "FOLLOW" then apiRef:ownFollowTarget3(player:getX(), player:getY(), player:getZ()) end
+            apiRef:ownCommandAll(mode, player:getX(), player:getY(), player:getZ())
         end
         menu:addOption("Все за мной", player, function() all("FOLLOW") end)
         menu:addOption("Все стоять", player, function() all("HOLD") end)
@@ -275,14 +269,13 @@ local function onContext(playerIndex, context, worldObjects, test)
                     local sub = context:getNew(context)
                     context:addSubMenu(entry, sub)
                     sub:addOption("Следовать за мной", player, function()
-                        apiRef:ownOrderMode(npcId, "FOLLOW", player:getX(), player:getY())
-                        apiRef:ownFollowTarget3(player:getX(), player:getY(), player:getZ())
+                        apiRef:ownCommand(npcId, "FOLLOW", player:getX(), player:getY(), player:getZ())
                     end)
                     sub:addOption("Стоять", player, function()
-                        apiRef:ownOrderMode(npcId, "HOLD", player:getX(), player:getY())
+                        apiRef:ownCommand(npcId, "HOLD", player:getX(), player:getY(), player:getZ())
                     end)
                     sub:addOption("Охранять", player, function()
-                        apiRef:ownOrderMode(npcId, "GUARD", player:getX(), player:getY())
+                        apiRef:ownCommand(npcId, "GUARD", player:getX(), player:getY(), player:getZ())
                     end)
                     sub:addOption("Разобрать рядом", player, function()
                         print("[PersonalKnox][own-menu] dismantle=" .. tostring(apiRef:ownDismantleStart(npcId)))

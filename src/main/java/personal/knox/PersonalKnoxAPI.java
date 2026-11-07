@@ -70,6 +70,25 @@ public final class PersonalKnoxAPI {
         return ownLayer.damage(id, amount).type().name();
     }
 
+    public String ownCommand(String id, String mode, double x, double y, double z) {
+        String order = mode == null ? "" : mode.toUpperCase(java.util.Locale.ROOT);
+        ownLayer.order(id, personal.knox.npc.own.OwnNpcOrder.valueOf(order), x, y);
+        if ("FOLLOW".equals(order)) ownLayer.followTarget(x, y, z);
+        return id;
+    }
+
+    public int ownCommandAll(String mode, double x, double y, double z) {
+        String order = mode == null ? "" : mode.toUpperCase(java.util.Locale.ROOT);
+        var value = personal.knox.npc.own.OwnNpcOrder.valueOf(order);
+        int count = 0;
+        for (var agent : ownLayer.agents()) {
+            ownLayer.order(agent.id(), value, x, y);
+            count++;
+        }
+        if ("FOLLOW".equals(order)) ownLayer.followTarget(x, y, z);
+        return count;
+    }
+
     public String ownOrderMode(String id, String order, double x, double y) {
         return ownLayer.order(id, personal.knox.npc.own.OwnNpcOrder.valueOf(order.toUpperCase(java.util.Locale.ROOT)), x, y).agentId();
     }

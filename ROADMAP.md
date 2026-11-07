@@ -1844,3 +1844,4 @@ Project A-Life 1.4.6 (Workshop 3803984183, B42.21) — самостоятель�
 - [x] Черты персонажа `PersonalKnox:Companions1/2/4` в экране создания: пресет спутников до входа в мир.
 - [x] Пресет 3 спутника (черта `Companions3` и пункт Mod Options).
 - [x] Создание стартовых спутников перенесено в Java `ownStartCompanions`; Lua передаёт только fallback из настроек.
+- [x] Команды меню выполняются Java `ownCommand/ownCommandAll`; Lua только строит UI.
