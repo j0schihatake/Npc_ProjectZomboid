@@ -261,3 +261,8 @@ A-Life события, задания и сумки — нужен загруж�
 - `[alife] squads=3 events={NEAR_SQUAD=3}`; приказы обновляют `NpcState.Task`,
   Java переводит их в A-Life REGROUP/HOLD/SCAVENGE/RAID/TRAVEL.
 - Игра выключена.
+
+### 0.9.88 — F8 и сценарий
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-eb892e55cdf0059b81ec0f8fa7f60f4e`.
+- F8 печатает `ownSummary` всех своих NPC; игра выключена.
