@@ -1,9 +1,9 @@
 -- Minimal squad window: one row per own NPC with basic orders.
-local ISPanel = ISPanel
+local ISCollapsableWindow = ISCollapsableWindow
 local ISButton = ISButton
 local ISLabel = ISLabel
 
-local OwnNpcPanel = ISPanel:derive("OwnNpcPanel")
+local OwnNpcPanel = ISCollapsableWindow:derive("OwnNpcPanel")
 local instance = nil
 
 local function api()
@@ -11,11 +11,8 @@ local function api()
 end
 
 function OwnNpcPanel:createChildren()
-    ISPanel.createChildren(self)
-    self:addChild(ISLabel:new(10, 8, 20, "Свой отряд", 1, 1, 1, 1, UIFont.Medium, false))
-    local close = ISButton:new(self.width - 30, 6, 24, 22, "X", self, OwnNpcPanel.close)
-    close:initialise()
-    self:addChild(close)
+    ISCollapsableWindow.createChildren(self)
+    self:addChild(ISLabel:new(10, 8, 20, "Squad", 1, 1, 1, 1, UIFont.Medium, false))
     local a = api()
     if not a then return end
     self.rowLabels = {}
@@ -26,15 +23,17 @@ function OwnNpcPanel:createChildren()
             local label = ISLabel:new(10, y, 20, tostring(a:ownSummary(id)), 1, 1, 1, 1, UIFont.Small, false)
             self:addChild(label)
             self.rowLabels[id] = label
-            local x = self.width - 210
-            local follow = ISButton:new(x, y - 2, 64, 20, "За мной", self, function() a:ownCommand(id, "FOLLOW", self.player:getX(), self.player:getY(), self.player:getZ()) end)
+            local x = self.width - 300
+            local follow = ISButton:new(x, y - 2, 64, 20, "Follow", self, function() a:ownCommand(id, "FOLLOW", self.player:getX(), self.player:getY(), self.player:getZ()) end)
             follow:initialise(); self:addChild(follow)
-            local hold = ISButton:new(x + 68, y - 2, 60, 20, "Стоять", self, function() a:ownCommand(id, "HOLD", self.player:getX(), self.player:getY(), self.player:getZ()) end)
+            local hold = ISButton:new(x + 68, y - 2, 60, 20, "Hold", self, function() a:ownCommand(id, "HOLD", self.player:getX(), self.player:getY(), self.player:getZ()) end)
             hold:initialise(); self:addChild(hold)
-            local guard = ISButton:new(x + 132, y - 2, 68, 20, "Охрана", self, function() a:ownCommand(id, "GUARD", self.player:getX(), self.player:getY(), self.player:getZ()) end)
+            local guard = ISButton:new(x + 132, y - 2, 68, 20, "Guard", self, function() a:ownCommand(id, "GUARD", self.player:getX(), self.player:getY(), self.player:getZ()) end)
             guard:initialise(); self:addChild(guard)
-            local loot = ISButton:new(x + 204, y - 2, 52, 20, "Сбор", self, function() a:ownCommand(id, "LOOT", self.player:getX(), self.player:getY(), self.player:getZ()) end)
+            local loot = ISButton:new(x + 204, y - 2, 48, 20, "Loot", self, function() a:ownCommand(id, "LOOT", self.player:getX(), self.player:getY(), self.player:getZ()) end)
             loot:initialise(); self:addChild(loot)
+            local rest = ISButton:new(x + 254, y - 2, 48, 20, "Rest", self, function() a:ownCommand(id, "REST", self.player:getX(), self.player:getY(), self.player:getZ()) end)
+            rest:initialise(); self:addChild(rest)
             y = y + 24
         end
     end
@@ -42,11 +41,11 @@ function OwnNpcPanel:createChildren()
 end
 
 function OwnNpcPanel:prerender()
-    ISPanel.prerender(self)
+    ISCollapsableWindow.prerender(self)
 end
 
 function OwnNpcPanel:render()
-    ISPanel.render(self)
+    ISCollapsableWindow.render(self)
 end
 
 function OwnNpcPanel:update()
@@ -54,7 +53,7 @@ function OwnNpcPanel:update()
         self.visibilityLogged = true
         print("[PersonalKnox][own-panel] update visible=" .. tostring(self:getIsVisible()))
     end
-    ISPanel.update(self)
+    ISCollapsableWindow.update(self)
     local now = getTimestampMs()
     if self.lastRefresh and now - self.lastRefresh < 1000 then return end
     self.lastRefresh = now
@@ -85,8 +84,11 @@ function OwnNpcPanel.toggle(player)
         instance:close()
         return
     end
-    local panel = OwnNpcPanel:new(80, 80, 560, 120)
+    local screenWidth = getCore():getScreenWidth()
+    local panel = OwnNpcPanel:new(screenWidth - 600, 100, 560, 120)
     panel.player = player
+    panel:setTitle("Squad")
+    panel:setResizable(false)
     panel:initialise()
     panel:setVisible(true)
     panel:addToUIManager()

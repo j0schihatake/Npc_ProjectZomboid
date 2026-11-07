@@ -2051,3 +2051,10 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `ownDebugEquip/ownDebugAmmo`; пистолет, 5 патронов, выстрел тратит один.
 - In-game `ranged-combat`: `ranged=true range=8.0`, урон по зомби, патронов 4.
 - Без Knox: **44/44**.
+## 0.20.0 — окно отряда на ISCollapsableWindow
+
+- Окно теперь `ISCollapsableWindow`, позиция справа (`screenWidth-600, 100`);
+  перекрытие панелью персонажа устранено.
+- Подписи окна — латиница (UI-шрифт B42 не рисует часть кириллицы):
+  Squad / Follow / Hold / Guard / Loot / Rest.
+- Без Knox: 44/44.

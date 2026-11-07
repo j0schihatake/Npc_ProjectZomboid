@@ -378,6 +378,13 @@ OwnFactions.install()
 OwnNpcDebug.install()
 TextFix.install()
 Events.OnGameStart.Add(function()
+    if not Settings.openSquad() then return end
+    local player = getSpecificPlayer(0)
+    if not player then return end
+    local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
+    if ok and panel then panel.toggle(player) end
+end)
+Events.OnGameStart.Add(function()
     if not Settings.inGameTests() then return end
     local player = getSpecificPlayer(0)
     if not player then return end
