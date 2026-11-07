@@ -101,5 +101,15 @@
   "UI_PersonalKnox_MatchPlayerClothes": "Dress NPCs like player",
   "UI_PersonalKnox_MatchPlayerClothesHint": "Starting NPCs copy the player’s worn clothes.",
   "UI_PersonalKnox_FactionCount": "Groups and factions",
-  "UI_PersonalKnox_FactionCountHint": "How many random NPC groups/points to create."
+  "UI_PersonalKnox_FactionCountHint": "How many random NPC groups/points to create.",
+  "UI_PersonalKnox_FactionDistance": "NPC point distance",
+  "UI_PersonalKnox_FactionDistanceHint": "Maximum scatter of random points around the player.",
+  "UI_PersonalKnox_FactionMembers": "Group size",
+  "UI_PersonalKnox_FactionMembersHint": "NPCs in each random group.",
+  "UI_PersonalKnox_FactionSupplies": "Group supplies",
+  "UI_PersonalKnox_FactionSuppliesHint": "Starting supplies per group.",
+  "UI_PersonalKnox_OutpostGarrison": "Outpost garrison",
+  "UI_PersonalKnox_OutpostGarrisonHint": "Defenders at each random point.",
+  "UI_PersonalKnox_OutpostSupplies": "Outpost supplies",
+  "UI_PersonalKnox_OutpostSuppliesHint": "Starting supplies per point."
 }

@@ -56,10 +56,30 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_AmmoWeightHalf")
         combo:addItem("UI_PersonalKnox_AmmoWeightFull", true)
     end
+    if page and not page:getOption("factionDistance") then
+        page:addSlider("factionDistance", getText("UI_PersonalKnox_FactionDistance"), 20, 200, 10, 80,
+            getText("UI_PersonalKnox_FactionDistanceHint"))
+    end
     if page and not page:getOption("factionCount") then
         local box = page:addComboBox("factionCount", getText("UI_PersonalKnox_FactionCount"),
             getText("UI_PersonalKnox_FactionCountHint"))
-        for i = 0, 8 do box:addItem(tostring(i), i == 3) end
+        for i = 0, 16 do box:addItem(tostring(i), i == 3) end
+    end
+    if page and not page:getOption("factionMembers") then
+        page:addSlider("factionMembers", getText("UI_PersonalKnox_FactionMembers"), 1, 12, 1, 3,
+            getText("UI_PersonalKnox_FactionMembersHint"))
+    end
+    if page and not page:getOption("factionSupplies") then
+        page:addSlider("factionSupplies", getText("UI_PersonalKnox_FactionSupplies"), 0, 10, 1, 2,
+            getText("UI_PersonalKnox_FactionSuppliesHint"))
+    end
+    if page and not page:getOption("outpostGarrison") then
+        page:addSlider("outpostGarrison", getText("UI_PersonalKnox_OutpostGarrison"), 0, 6, 1, 1,
+            getText("UI_PersonalKnox_OutpostGarrisonHint"))
+    end
+    if page and not page:getOption("outpostSupplies") then
+        page:addSlider("outpostSupplies", getText("UI_PersonalKnox_OutpostSupplies"), 0, 10, 1, 1,
+            getText("UI_PersonalKnox_OutpostSuppliesHint"))
     end
     if page and not page:getOption("companionCount") then
         local combo = page:addComboBox("companionCount", getText("UI_PersonalKnox_CompanionCount"),
@@ -174,6 +194,41 @@ end
 function Settings.openSquad()
     return value("openSquad", true)
 end
+function Settings.factionMembers()
+    local option = page and page:getOption("factionMembers")
+    if not option then return 3 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 3
+end
+
+function Settings.factionSupplies()
+    local option = page and page:getOption("factionSupplies")
+    if not option then return 2 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 2
+end
+
+function Settings.outpostGarrison()
+    local option = page and page:getOption("outpostGarrison")
+    if not option then return 1 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 1
+end
+
+function Settings.outpostSupplies()
+    local option = page and page:getOption("outpostSupplies")
+    if not option then return 1 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 1
+end
+
+function Settings.factionDistance()
+    local option = page and page:getOption("factionDistance")
+    if not option then return 80 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 80
+end
+
 function Settings.factionCount()
     local option = page and page:getOption("factionCount")
     if not option then return 3 end

@@ -110,5 +110,15 @@
   "UI_PersonalKnox_MatchPlayerClothes": "Одевать NPC как игрока",
   "UI_PersonalKnox_MatchPlayerClothesHint": "Стартовые NPC копируют надетую одежду игрока.",
   "UI_PersonalKnox_FactionCount": "Группы и фракции",
-  "UI_PersonalKnox_FactionCountHint": "Сколько случайных групп/точек NPC создать в мире."
+  "UI_PersonalKnox_FactionCountHint": "Сколько случайных групп/точек NPC создать в мире.",
+  "UI_PersonalKnox_FactionDistance": "Дистанция точек NPC",
+  "UI_PersonalKnox_FactionDistanceHint": "Максимальный разброс случайных точек вокруг игрока.",
+  "UI_PersonalKnox_FactionMembers": "Численность группы",
+  "UI_PersonalKnox_FactionMembersHint": "Сколько NPC в каждой случайной группе.",
+  "UI_PersonalKnox_FactionSupplies": "Припасы группы",
+  "UI_PersonalKnox_FactionSuppliesHint": "Стартовые припасы каждой группы.",
+  "UI_PersonalKnox_OutpostGarrison": "Гарнизон точки",
+  "UI_PersonalKnox_OutpostGarrisonHint": "Сколько защитников в случайной точке.",
+  "UI_PersonalKnox_OutpostSupplies": "Припасы точки",
+  "UI_PersonalKnox_OutpostSuppliesHint": "Стартовые припасы точки."
 }
