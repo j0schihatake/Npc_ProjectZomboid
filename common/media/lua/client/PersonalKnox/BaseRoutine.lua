@@ -49,7 +49,9 @@ local function replace(priorities, plan, original)
 end
 
 local function service()
-    return KnoxEventLoader.getAPI("npc")
+    if not KnoxEventLoader then return nil end
+    local ok, api = pcall(function() return KnoxEventLoader.getAPI("npc") end)
+    return ok and api or nil
 end
 
 local function execute(player, npc, action)
@@ -63,7 +65,8 @@ end
 
 function Routine.apply(player, npc)
     execute(player, npc, function()
-        if not service():getPlayerSafehouse() then
+        local current = service()
+        if not current or not current:getPlayerSafehouse() then
             player:Say(getText("ContextMenu_PersonalKnox_NeedSafehouse")); return
         end
         local priorities = npc:getJobPrioritizer()

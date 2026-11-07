@@ -1,6 +1,6 @@
 name=Personal Knox — наш отряд
 id=PersonalKnox
-modversion=0.11.0
+modversion=0.11.1
 versionMin=42.21
 versionMax=42.21
 require=\ZombieBuddy

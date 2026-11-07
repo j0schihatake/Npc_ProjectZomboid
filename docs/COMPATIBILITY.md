@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.11.1 — меньше прямых вызовов Knox
+
+- `Barricade`, `BaseRoutine`, `Call` проверяют наличие `KnoxEventLoader` и не падают
+  без него; вызовы обёрнуты в pcall/guard.
+- Java-ядро 0.11.1, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.11.0 — Knox становится необязательным
 
 - `mod.info` больше не требует `KnoxEventExpandedNpc`; `require "KnoxEventLoader"`

@@ -13,6 +13,7 @@ end
 function Call.one(player, npc, quiet)
     if not canCall(player, npc) or not tellNpcFollow then return false end
     local ok, err = pcall(function()
+        if not KnoxEventLoader then error("Knox not loaded") end
         local group = KnoxEventLoader.getAPI("npc"):getGroup(player)
         if not group then error("No player group") end
         -- Cancel our pending/autonomous work before it can issue another command.

@@ -16,7 +16,11 @@ function Barricade.cancel(npc)
     if index then table.remove(Barricade.active, index) end
 end
 
-local function api() return KnoxEventLoader.getAPI("npc") end
+local function api()
+    if not KnoxEventLoader then return nil end
+    local ok, service = pcall(function() return KnoxEventLoader.getAPI("npc") end)
+    return ok and service or nil
+end
 local function owns(task)
     return task.npc:getGoal() == "SafehouseSubTree" and task.npc:getSubGoal() == "BarricadeSubTree"
 end
@@ -134,7 +138,9 @@ local function stop(task, reason, restoreStart)
     if body and not body:isDead() and deps.isMember(task.player, task.npc) and (owns(task) or restoreStart) then
         body:StopAllActionQueue()
         if reason == "danger" or task.previousGoal == "RoamingSubTree" then
-            api():getGroup(task.player):sendToGroup(task.npc)
+            local service = api()
+            if not service then return end
+            service:getGroup(task.player):sendToGroup(task.npc)
             tellNpcFollow(nil, task.npc)
         else
             task.npc:setGoal(task.previousGoal)
@@ -159,7 +165,9 @@ local function begin(player, npc)
     if dx*dx+dy*dy > 100 then return end
     local square = player:getCurrentSquare()
     local building = square and square:getBuilding()
-    local safehouse = api():getPlayerSafehouse()
+    local service = api()
+    if not service then return end
+    local safehouse = service:getPlayerSafehouse()
     if not building or not safehouse or not safehouse:equals(building:getDef()) or
         not body:getCurrentSquare() or body:getCurrentSquare():getBuilding() ~= building then
         notice(player, "NeedHome"); return
@@ -178,7 +186,9 @@ local function begin(player, npc)
     deps.cancelSupply(npc)
     deps.say(player, npc, "plan_barricade")
     Barricade.active[#Barricade.active+1] = task
-    api():getGroup(player):sendToSafehouse(npc)
+    local service = api()
+    if not service then return end
+    service:getGroup(player):sendToSafehouse(npc)
     body:StopAllActionQueue()
     npc:setGoal("SafehouseSubTree")
     npc:setSubGoal("BarricadeSubTree")
@@ -205,7 +215,9 @@ local function update(task)
     if not body or body:isDead() or task.player:isDead() or not deps.isMember(task.player,task.npc) then
         stop(task,"interrupted"); return
     end
-    local home = api():getPlayerSafehouse()
+    local service = api()
+    if not service then return end
+    local home = service:getPlayerSafehouse()
     if not home or not home:equals(task.home) then stop(task,"interrupted"); return end
     -- A new native order wins. Never reissue our goal over it.
     if not owns(task) then stop(task,"interrupted"); return end
@@ -287,7 +299,9 @@ function Barricade.inspect(player, npc)
     end)
     read("safehouseMatches",function()
         local building = body:getCurrentSquare():getBuilding()
-        local home = api():getPlayerSafehouse()
+        local service = api()
+    if not service then return end
+    local home = service:getPlayerSafehouse()
         return building ~= nil and home ~= nil and home:equals(building:getDef())
     end)
     read("windows",function() return #windowsFor(body:getCurrentSquare():getBuilding()) end)
