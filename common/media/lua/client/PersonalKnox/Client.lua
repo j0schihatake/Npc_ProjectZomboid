@@ -344,26 +344,6 @@ AmmoWeight.install({roster=roster})
 OwnNpc.install({roster=roster})
 OwnNpcDebug.install()
 TextFix.install()
-Events.OnGameStart.Add(function()
-    local player = getSpecificPlayer(0)
-    if not player then return end
-    local function openPanel(force)
-        if not Settings.openSquad() then return end
-        local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
-        if not ok or not panel then return end
-        if force and panel.isOpen() then panel.closeOpen() end
-        if not panel.isOpen() then panel.toggle(player) end
-    end
-    openPanel(false)
-    local due = getTimestampMs() + 5000
-    local handler
-    handler = function()
-        if getTimestampMs() < due then return end
-        Events.OnPlayerUpdate.Remove(handler)
-        openPanel(true)
-    end
-    Events.OnPlayerUpdate.Add(handler)
-end)
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
 AutoReload.install()

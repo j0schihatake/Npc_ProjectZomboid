@@ -31,7 +31,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
-    ensure("openSquad", "UI_PersonalKnox_OpenSquad", true, "UI_PersonalKnox_OpenSquadHint")
+    ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
     if page and not page:getOption("ammoMode") then
         local combo = page:addComboBox("ammoMode", getText("UI_PersonalKnox_AmmoMode"),
             getText("UI_PersonalKnox_AmmoModeHint"))
