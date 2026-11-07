@@ -187,3 +187,11 @@ A-Life события, задания и сумки — нужен загруж�
   мир `PersonalKnox-scenario-71035bf81df2842f7c627a3e1a59f6d6`.
 - Тело больше не получает `playerIndex` игрока (`-1`), поэтому не должно зеркалить движения.
 - Меню своих NPC привязано к нажатому телу.
+
+### 0.9.72 — пресет спутников проверен
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-ad5802b68d6959c5af7c1ce7478504af`.
+- При старте созданы `debug#1`, `debug#2`; лог:
+  `[own-npc] starting companion debug#1`, `... debug#2`;
+  `active=2 bodies=2`.
+- Затем dev-сценарий добавил `debug#3`: `active=3 bodies=3`.
