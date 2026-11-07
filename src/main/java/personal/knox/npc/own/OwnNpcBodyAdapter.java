@@ -531,6 +531,8 @@ public final class OwnNpcBodyAdapter {
         try {
             double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
             double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            Object nearest = null;
+            double nearestDistance = Double.MAX_VALUE;
             for (var entry : zombies) {
                 double distance = Math.hypot((double) entry[1] - bx, (double) entry[2] - by);
                 Object zombie = entry[0];
@@ -540,15 +542,39 @@ public final class OwnNpcBodyAdapter {
                                 .invoke(zombie, body);
                     } catch (Throwable ignored) { }
                 }
-                if (distance > 1.6) continue;
-                Object damage = zombie.getClass().getMethod("getBodyDamage").invoke(zombie);
-                damage.getClass().getMethod("ReduceHealth", float.class).invoke(damage, 10f);
-                Object square = zombie.getClass().getMethod("getCurrentSquare").invoke(zombie);
-                body.getClass().getMethod("setAttackTargetSquare", Class.forName("zombie.iso.IsoGridSquare"))
-                        .invoke(body, square);
-                body.getClass().getMethod("setAttackStarted", boolean.class).invoke(body, true);
-                return;
+                if (distance < nearestDistance) {
+                    nearest = zombie;
+                    nearestDistance = distance;
+                }
             }
+            if (nearest == null || nearestDistance > 8) return;
+            double damage = 10;
+            boolean ranged = false;
+            Object weapon = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
+            if (weapon != null) {
+                try {
+                    boolean isWeapon = (boolean) weapon.getClass().getMethod("IsWeapon").invoke(weapon);
+                    boolean isRanged = isWeapon && (boolean) weapon.getClass().getMethod("isRanged").invoke(weapon);
+                    if (isRanged) {
+                        int ammo = ((Number) weapon.getClass().getMethod("getCurrentAmmoCount").invoke(weapon)).intValue();
+                        if (ammo > 0) {
+                            weapon.getClass().getMethod("setCurrentAmmoCount", int.class).invoke(weapon, ammo - 1);
+                            damage = 15;
+                            ranged = true;
+                        }
+                    }
+                } catch (Throwable ignored) { }
+            }
+            if (!ranged && nearestDistance > 1.6) return;
+            Object bodyDamage = nearest.getClass().getMethod("getBodyDamage").invoke(nearest);
+            bodyDamage.getClass().getMethod("ReduceHealth", float.class).invoke(bodyDamage, (float) damage);
+            Object square = nearest.getClass().getMethod("getCurrentSquare").invoke(nearest);
+            body.getClass().getMethod("setAttackTargetSquare", Class.forName("zombie.iso.IsoGridSquare"))
+                    .invoke(body, square);
+            body.getClass().getMethod("setAttackStarted", boolean.class).invoke(body, true);
+            System.out.println("[PersonalKnox][own-combat] target=" + nearest.getClass().getSimpleName()
+                    + " damage=" + (int) damage + " ranged=" + ranged + " distance="
+                    + String.format(java.util.Locale.ROOT, "%.1f", nearestDistance));
         } catch (Throwable ignored) { }
     }
 

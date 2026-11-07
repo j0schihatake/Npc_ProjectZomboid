@@ -1968,3 +1968,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 
 - `OwnNpcLayer.setBase/baseSummary/guardBase`; API `ownBaseSet/ownBaseSummary/ownBaseGuardAll`.
 - ПКМ-меню: «База здесь»; in-game `base`, `base-guard`; без Knox 21/21.
+## 0.15.1 — огнестрел своих NPC
+
+- Тело NPC выбирает ближайшую цель в 8 м; при заряженном оружии тратит патрон,
+  урон 15, иначе ближний бой 10 в 1.6 м; лог `[own-combat]`.
+- Без Knox: 21/21, ошибок нет; проверка реального зомби — следующий этап.
