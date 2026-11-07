@@ -66,6 +66,18 @@ public final class PersonalKnoxAPI {
 
 
 
+    public void ownSpeak(Object speaker, String text) {
+        if (speaker == null) return;
+        String value = TextCodec.forChat(text);
+        try {
+            speaker.getClass().getMethod("addLineChatElement", String.class, float.class, float.class, float.class)
+                    .invoke(speaker, value, 1f, 1f, 1f);
+        } catch (Throwable ignored) {
+            try { speaker.getClass().getMethod("Say", String.class).invoke(speaker, value); }
+            catch (Throwable ignored2) { }
+        }
+    }
+
     public String ownSummary(String id) {
         var agent = ownLayer.agents().stream().filter(a -> a.id().equals(id)).findFirst().orElse(null);
         if (agent == null) return "";

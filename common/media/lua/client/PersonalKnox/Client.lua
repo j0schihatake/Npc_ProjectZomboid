@@ -50,7 +50,12 @@ local function api()
 end
 
 local function message(player, text)
-    if player then player:Say(text) end
+    if not player then return end
+    if PersonalKnoxAPI then
+        local ok = pcall(function() PersonalKnoxAPI.getInstance():ownSpeak(player, text) end)
+        if ok then return end
+    end
+    player:Say(text)
 end
 
 local function isMember(player, npc)
@@ -83,9 +88,7 @@ end
 
 local function speak(body, text)
     if not PersonalKnoxAPI then return end
-    -- Say() goes to the chat panel for NPCs; ChatElement draws the bubble above the character.
-    local ok = pcall(function() body:addLineChatElement(text, 1, 1, 1) end)
-    if not ok then body:Say(text) end
+    pcall(function() PersonalKnoxAPI.getInstance():ownSpeak(body, text) end)
 end
 
 local function voice(body, topic)
