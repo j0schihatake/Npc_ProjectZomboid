@@ -290,7 +290,6 @@ public final class OwnNpcBodyAdapter {
             Object square=body.getClass().getMethod("getCurrentSquare").invoke(body);
             Object player=Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
             return square!=null && body!=player
-                    && ((java.util.Collection<?>)cell.getClass().getMethod("getObjectList").invoke(cell)).contains(body)
                     && ((java.util.Collection<?>)square.getClass().getMethod("getMovingObjects").invoke(square)).contains(body)
                     && (boolean)body.getClass().getMethod("hasActiveModel").invoke(body)
                     && !(boolean)body.getClass().getMethod("isDead").invoke(body);

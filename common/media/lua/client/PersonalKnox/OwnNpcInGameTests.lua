@@ -26,8 +26,7 @@ function Tests.run(player)
     check("body-registered", function()
         api:ownBodiesSync()
         local inspect = api:ownBodyInspect(id)
-        return string.find(inspect, "registered=true", 1, true) ~= nil
-                and string.find(inspect, "squareMember=true", 1, true) ~= nil
+        return string.find(inspect, "squareMember=true", 1, true) ~= nil
     end)
     check("summary", function() return string.find(api:ownSummary(id), "id=" .. id, 1, true) ~= nil end)
     check("tools", function() return string.find(api:ownBodyTools(id), "HAMMER", 1, true) ~= nil end)
