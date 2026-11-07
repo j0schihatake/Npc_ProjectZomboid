@@ -32,7 +32,7 @@ def main():
     subprocess.run(['java', '-ea', '-cp', classpath+os.pathsep+str(tests), 'personal.knox.BrainTest'], check=True)
     jar = ROOT/'42/media/java/client/PersonalKnox.jar'
     jar.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(['jar', '--create', '--file', str(jar), '-C', str(classes), '.'], check=True)
+    subprocess.run(['jar', '--create', '--date=2020-01-01T00:00:00Z', '--file', str(jar), '-C', str(classes), '.'], check=True)
     print('Built:', jar)
 
 if __name__ == '__main__': main()

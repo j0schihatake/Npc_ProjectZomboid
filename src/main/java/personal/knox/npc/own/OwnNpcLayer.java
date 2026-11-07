@@ -165,7 +165,10 @@ public final class OwnNpcLayer {
             processed++;
             var agent=agents.get(id);
             if (orders.getOrDefault(agent.id(), OwnNpcOrder.HOLD) == OwnNpcOrder.FOLLOW) {
-                agent = agent.withTarget(followX, followY);
+                double followDistance = Math.hypot(followX - agent.x(), followY - agent.y());
+                agent = followDistance > 2.5
+                        ? agent.withTarget(followX, followY)
+                        : agent.withTarget(agent.x(), agent.y());
                 agents.put(agent.id(), agent);
             }
             var nextState = NpcNeeds.tick(agent.state(),needClock-lastNeedClock.get(id));
