@@ -280,6 +280,12 @@ local function onContext(playerIndex, context, worldObjects, test)
                     sub:addOption("Разобрать рядом", player, function()
                         print("[PersonalKnox][own-menu] dismantle=" .. tostring(apiRef:ownDismantleStart(npcId)))
                     end)
+                    sub:addOption("Осмотреть", player, function()
+                        local body = tostring(apiRef:ownBodyInspect(npcId))
+                        local tools = tostring(apiRef:ownBodyTools(npcId))
+                        print("[PersonalKnox][own-menu] inspect=" .. body .. " tools=" .. tools)
+                        if player and player.Say then player:Say("NPC: " .. body) end
+                    end)
                 end
             end
         end
