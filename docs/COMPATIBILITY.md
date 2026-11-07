@@ -2027,3 +2027,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
   `getHealth`/`setHealth`.
 - In-game: `PASS combat`, лог `target=IsoZombie damage=10.0`.
 - Без Knox: **39/39**.
+## 0.18.5 — командные действия отряда
+
+- Меню отряда: «Собирать всем», «Отдыхать всем», «Следовать всем».
+- In-game `command-all`, `command-all-follow`; без Knox **41/41**.
