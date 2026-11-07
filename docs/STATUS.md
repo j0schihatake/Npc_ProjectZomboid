@@ -371,3 +371,9 @@ A-Life события, задания и сумки — нужен загруж�
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-c1184acda5e7bfe5dc022889501ee86d`.
 - `[own-panel] java=true`, `update visible=true`; на экране окна нет.
 - Игра выключена.
+
+### 0.12.5 — панель пересоздаётся, но не рисуется
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-2badfa10ff4cef25ca413c16431a6817`.
+- Второй `[own-panel] opened ... h=164` после 5 c; на экране окна нет.
+- Игра выключена.
