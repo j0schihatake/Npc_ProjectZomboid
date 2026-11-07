@@ -12,6 +12,7 @@ public final class OwnNpcBodyAdapter {
     private record PathState(double tx, double ty, java.util.List<OwnNpcPathfinder.Point> points, int index) { }
     private boolean unavailable;
     private final Map<String, PathState> pathCache = new HashMap<>();
+    private final Map<String, Object> lootObjects = new HashMap<>();
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
@@ -51,8 +52,11 @@ public final class OwnNpcBodyAdapter {
                     bodies.put(agent.id(), body);
                 }
                 if (layer.orderOf(agent.id()) == OwnNpcOrder.LOOT) {
-                    double[] loot = findLoot(cell, agent.x(), agent.y());
-                    if (loot != null) layer.order(agent.id(), loot[0], loot[1]);
+                    double[] loot = findLoot(cell, agent.x(), agent.y(), agent.z(), agent.id());
+                    if (loot != null) {
+                        layer.order(agent.id(), loot[0], loot[1]);
+                        if (Math.hypot(agent.x() - loot[0], agent.y() - loot[1]) < 1.8) loot(agent.id(), body);
+                    }
                 }
                 move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
             }
@@ -432,28 +436,57 @@ public final class OwnNpcBodyAdapter {
         System.out.println("[PersonalKnox] Own body dress failed");
     }
 
-    private static double[] findLoot(Object cell, double cx, double cy) {
+    private double[] findLoot(Object cell, double cx, double cy, double cz, String id) {
         try {
             for (int radius = 1; radius <= 8; radius++) {
                 for (int dx = -radius; dx <= radius; dx++) for (int dy = -radius; dy <= radius; dy++) {
                     if (Math.max(Math.abs(dx), Math.abs(dy)) != radius) continue;
                     Object square = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
-                            .invoke(cell, (int) cx + dx, (int) cy + dy, 0);
+                            .invoke(cell, (int) cx + dx, (int) cy + dy, (int) cz);
                     if (square == null) continue;
                     Object objects = square.getClass().getMethod("getObjects").invoke(square);
                     int size = (int) objects.getClass().getMethod("size").invoke(objects);
                     for (int i = 0; i < size; i++) {
                         Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
                         if (object == null) continue;
-                        String name = object.getClass().getName().toLowerCase(java.util.Locale.ROOT);
-                        if (name.contains("container") || name.contains("fridge") || name.contains("crate")) {
-                            return new double[]{(int) cx + dx + 0.5, (int) cy + dy + 0.5};
-                        }
+                        try {
+                            Object container = object.getClass().getMethod("getContainer").invoke(object);
+                            if (container != null) {
+                                lootObjects.put(id, object);
+                                return new double[]{(int) cx + dx + 0.5, (int) cy + dy + 0.5};
+                            }
+                        } catch (NoSuchMethodException ignored) { }
                     }
                 }
             }
         } catch (Throwable ignored) { }
         return null;
+    }
+
+    private void loot(String id, Object body) {
+        Object object = lootObjects.remove(id);
+        if (object == null) return;
+        try {
+            Object container = object.getClass().getMethod("getContainer").invoke(object);
+            Object items = container.getClass().getMethod("getItems").invoke(container);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            int moved = 0;
+            for (int i = size - 1; i >= 0 && moved < 8; i--) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                try {
+                    Object added = inventory.getClass().getMethod("AddItem",
+                            Class.forName("zombie.inventory.InventoryItem")).invoke(inventory, item);
+                    if (added != null) {
+                        container.getClass().getMethod("Remove",
+                                Class.forName("zombie.inventory.InventoryItem")).invoke(container, item);
+                        moved++;
+                    }
+                } catch (Throwable ignored) { }
+            }
+            if (moved > 0) System.out.println("[PersonalKnox][own-loot] " + id + " items=" + moved);
+        } catch (Throwable ignored) { }
     }
 
     private static java.util.List<Object[]> zombieSnapshot(Object cell) {
