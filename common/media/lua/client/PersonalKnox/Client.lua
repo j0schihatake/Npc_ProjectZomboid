@@ -1,4 +1,4 @@
-require "KnoxEventLoader"
+pcall(require, "KnoxEventLoader")
 local Core = require "PersonalKnox/Core"
 local Version = require "PersonalKnox/Version"
 local Probe = require "PersonalKnox/Probe"

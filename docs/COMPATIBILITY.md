@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.11.0 — Knox становится необязательным
+
+- `mod.info` больше не требует `KnoxEventExpandedNpc`; `require "KnoxEventLoader"`
+  заменён на `pcall`. A-Life (`personal.knox.alife`) — наш код, не Knox.
+- Java-ядро 0.11.0, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.10.5 — припасы в сводке
 
 - `ownSummary` показывает `supplies`; окно отряда и F8 сразу отражают результат сбора.
