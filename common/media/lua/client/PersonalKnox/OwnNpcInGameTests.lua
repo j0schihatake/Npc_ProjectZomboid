@@ -30,6 +30,12 @@ function Tests.run(player)
     end)
     check("summary", function() return string.find(api:ownSummary(id), "id=" .. id, 1, true) ~= nil end)
     check("tools", function() return string.find(api:ownBodyTools(id), "HAMMER", 1, true) ~= nil end)
+    check("clothing", function()
+        local worn = api:ownBodyWorn(id)
+        return string.find(worn, "Tshirt", 1, true) ~= nil
+                and string.find(worn, "Trousers", 1, true) ~= nil
+                and string.find(worn, "Shoes", 1, true) ~= nil
+    end)
     check("follow-order", function()
         api:ownCommand(id, "FOLLOW", x, y, z)
         return string.find(api:ownSummary(id), "order=FOLLOW", 1, true) ~= nil

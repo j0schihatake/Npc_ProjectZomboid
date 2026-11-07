@@ -211,6 +211,8 @@ public final class PersonalKnoxAPI {
     public boolean ownBodyReady(String id) { return ownBodies.ready(id); }
     public String ownBodyInspect(String id) { return ownBodies.inspect(id); }
 
+    public String ownBodyWorn(String id) { return ownBodies.worn(id); }
+
 
     public String ownStartCompanions(Object player, int fallbackCount) {
         if (player == null || fallbackCount < 0 || fallbackCount > 4)

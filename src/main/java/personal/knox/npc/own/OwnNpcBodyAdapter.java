@@ -296,6 +296,24 @@ public final class OwnNpcBodyAdapter {
         } catch(Exception error) { return false; }
     }
 
+    public String worn(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            Object worn = body.getClass().getMethod("getWornItems").invoke(body);
+            int size = (int) worn.getClass().getMethod("size").invoke(worn);
+            var names = new StringBuilder();
+            for (int i = 0; i < size; i++) {
+                Object entry = worn.getClass().getMethod("get", int.class).invoke(worn, i);
+                Object item = entry.getClass().getMethod("getItem").invoke(entry);
+                if (item == null) continue;
+                if (names.length() > 0) names.append(',');
+                names.append(item.getClass().getMethod("getType").invoke(item));
+            }
+            return names.toString();
+        } catch (Exception error) { return ""; }
+    }
+
     public String inspect(String id) {
         Object body=bodies.get(id);
         if(body==null) return "id="+id+" body=missing";
