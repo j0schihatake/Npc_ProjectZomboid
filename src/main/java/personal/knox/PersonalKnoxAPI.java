@@ -88,6 +88,7 @@ public final class PersonalKnoxAPI {
         return "id=" + id + " order=" + ownLayer.orderOf(id)
                 + " task=" + agent.state().task()
                 + " health=" + String.format(java.util.Locale.ROOT, "%.0f", agent.state().health())
+                + " supplies=" + agent.supplies()
                 + " pos=" + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", agent.x(), agent.y(), agent.z())
                 + " tools=" + tools;
     }
