@@ -38,6 +38,7 @@ local AmmoWeight = require "PersonalKnox/AmmoWeight"
 local OwnNpc = require "PersonalKnox/OwnNpc"
 local OwnNpcBodies = require "PersonalKnox/OwnNpcBodies"
 local OwnNpcDebug = require "PersonalKnox/OwnNpcDebug"
+local TextFix = require "PersonalKnox/TextFix"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
@@ -335,6 +336,7 @@ Alife.install({roster=roster,stockSnapshot=Supply.stockSnapshot})
 AmmoWeight.install({roster=roster})
 OwnNpc.install({roster=roster})
 OwnNpcDebug.install()
+TextFix.install()
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
 AutoReload.install()

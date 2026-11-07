@@ -66,6 +66,8 @@ public final class PersonalKnoxAPI {
 
 
 
+    public String ownTextForChat(String text) { return TextCodec.forChat(text); }
+
     public void ownSpeak(Object speaker, String text) {
         if (speaker == null) return;
         String value = TextCodec.forChat(text);
