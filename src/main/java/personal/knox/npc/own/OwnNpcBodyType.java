@@ -23,7 +23,7 @@ final class OwnNpcBodyType {
                     return new ByteBuddy()
                             .subclass(base,ConstructorStrategy.Default.IMITATE_SUPER_CLASS_PUBLIC)
                             .name(name)
-                            .method(ElementMatchers.named("updateLOS"))
+                            .method(ElementMatchers.named("updateLOS").or(ElementMatchers.named("updateAlpha")))
                             .intercept(StubMethod.INSTANCE)
                             .make()
                             .load(base.getClassLoader(),ClassLoadingStrategy.Default.INJECTION)

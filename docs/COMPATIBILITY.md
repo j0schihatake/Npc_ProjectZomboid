@@ -1913,3 +1913,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
   ByteBuddy-подтип своих NPC переопределяет `updateLOS` пустым методом.
 - Java-ядро 0.13.12; тесты проходят.
 
+## 0.13.13 — updateAlpha заглушён
+
+- Без Knox следующее падение было в `IsoObject.updateAlpha` из-за `playerIndex=-1`;
+  ByteBuddy-подтип своих NPC переопределяет `updateLOS` и `updateAlpha`.
+- Java-ядро 0.13.13; тесты проходят.
+
