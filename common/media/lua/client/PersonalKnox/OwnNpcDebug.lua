@@ -20,6 +20,11 @@ function OwnNpcDebug.install()
         if key == Keyboard.KEY_F10 then
             local ok, err = pcall(spawn)
             if not ok then print("[PersonalKnox] Own debug error: " .. tostring(err)) end
+        elseif key == Keyboard.KEY_F8 then
+            local api = PersonalKnoxAPI.getInstance()
+            for i = 0, api:ownCount() - 1 do
+                print("[PersonalKnox][own-roster] " .. tostring(api:ownSummary(api:ownId(i))))
+            end
         elseif key == Keyboard.KEY_F9 then
             if not lastId then return end
             local api = PersonalKnoxAPI.getInstance()
