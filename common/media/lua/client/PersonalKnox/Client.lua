@@ -360,6 +360,8 @@ AutoAsk.install({roster=roster,say=say})
 Alife.install({roster=roster,stockSnapshot=Supply.stockSnapshot})
 AmmoWeight.install({roster=roster})
 OwnNpc.install({roster=roster})
+local OwnFactions = require "PersonalKnox/OwnFactions"
+OwnFactions.install()
 OwnNpcDebug.install()
 TextFix.install()
 Events.OnGameStart.Add(function()

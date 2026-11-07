@@ -56,6 +56,11 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_AmmoWeightHalf")
         combo:addItem("UI_PersonalKnox_AmmoWeightFull", true)
     end
+    if page and not page:getOption("factionCount") then
+        local box = page:addComboBox("factionCount", getText("UI_PersonalKnox_FactionCount"),
+            getText("UI_PersonalKnox_FactionCountHint"))
+        for i = 0, 8 do box:addItem(tostring(i), i == 3) end
+    end
     if page and not page:getOption("companionCount") then
         local combo = page:addComboBox("companionCount", getText("UI_PersonalKnox_CompanionCount"),
             getText("UI_PersonalKnox_CompanionCountHint"))
@@ -169,6 +174,13 @@ end
 function Settings.openSquad()
     return value("openSquad", true)
 end
+function Settings.factionCount()
+    local option = page and page:getOption("factionCount")
+    if not option then return 3 end
+    local value = option:getValue()
+    return type(value) == "number" and value or 3
+end
+
 function Settings.companionCount()
     local option = page and page:getOption("companionCount")
     if not option then return 2 end

@@ -108,5 +108,7 @@
   "UI_PersonalKnox_InGameTests": "Внутриигровые тесты NPC",
   "UI_PersonalKnox_InGameTestsHint": "При старте прогнать проверки своего NPC и вывести PASS/FAIL в лог.",
   "UI_PersonalKnox_MatchPlayerClothes": "Одевать NPC как игрока",
-  "UI_PersonalKnox_MatchPlayerClothesHint": "Стартовые NPC копируют надетую одежду игрока."
+  "UI_PersonalKnox_MatchPlayerClothesHint": "Стартовые NPC копируют надетую одежду игрока.",
+  "UI_PersonalKnox_FactionCount": "Группы и фракции",
+  "UI_PersonalKnox_FactionCountHint": "Сколько случайных групп/точек NPC создать в мире."
 }

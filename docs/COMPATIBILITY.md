@@ -1990,3 +1990,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - Настройка `matchPlayerClothes`: стартовые NPC копируют надетые вещи игрока
   (`getWornItems` → `AddItem` → `setWornItem`), иначе прежний случайный стиль.
 - Проверка: `Own body clothes match player: 3`; без Knox 34/34.
+## 0.17.0 — случайные фракции и точки NPC
+
+- Mod Options: число групп/фракций 0..8.
+- `OwnFactions`: случайные точки через `ZombRand`, A-Life squads + outposts;
+  фракции Survivors/Raiders/Military/Traders.
+- In-game `factions`; без Knox 35/35.
