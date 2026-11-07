@@ -251,18 +251,24 @@ public final class OwnNpcBodyAdapter {
 
     /** Bounded search at spawn time only, never a per-frame world scan. */
     public static double[] spawnPosition(Object player) {
-        if(player==null) throw new IllegalArgumentException("Missing player");
+        return spawnPosition(player, 0);
+    }
+
+    public static double[] spawnPosition(Object player, int offset) {
+        if(player==null || offset < 0) throw new IllegalArgumentException("Missing player or offset");
         try {
             Object cell=currentCell();
             int x=(int)Math.floor(((Number)player.getClass().getMethod("getX").invoke(player)).doubleValue());
             int y=(int)Math.floor(((Number)player.getClass().getMethod("getY").invoke(player)).doubleValue());
             int z=(int)Math.floor(((Number)player.getClass().getMethod("getZ").invoke(player)).doubleValue());
             var squareAt=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class);
-            for(int radius=1;radius<=3;radius++) for(int dx=-radius;dx<=radius;dx++) for(int dy=-radius;dy<=radius;dy++) {
+            int free = 0;
+            for(int radius=1;radius<=4;radius++) for(int dx=-radius;dx<=radius;dx++) for(int dy=-radius;dy<=radius;dy++) {
                 if(Math.max(Math.abs(dx),Math.abs(dy))!=radius) continue;
                 Object square=squareAt.invoke(cell,x+dx,y+dy,z);
-                if(square!=null && (boolean)square.getClass().getMethod("isFree",boolean.class).invoke(square,false))
-                    return new double[]{x+dx+0.5,y+dy+0.5,z};
+                if(square!=null && (boolean)square.getClass().getMethod("isFree",boolean.class).invoke(square,false)) {
+                    if (free++ >= offset) return new double[]{x+dx+0.5,y+dy+0.5,z};
+                }
             }
             throw new IllegalStateException("No free loaded square near player");
         } catch(ReflectiveOperationException error) { throw new IllegalStateException("Cannot select NPC spawn square",error); }
