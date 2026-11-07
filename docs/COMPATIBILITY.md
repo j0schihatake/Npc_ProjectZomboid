@@ -1368,6 +1368,11 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.12.3 — убран setBackgroundColor
+
+- У `ISPanel` нет `setBackgroundColor`; вызов падал до `initialise`. Удалён.
+- Сохранены явные `prerender`/`render`; Java-ядро 0.12.3.
+
 ## 0.12.1 — isOpen учитывает видимость
 
 - `OwnNpcPanel.isOpen` теперь требует `getIsVisible`; скрытая сценарием панель

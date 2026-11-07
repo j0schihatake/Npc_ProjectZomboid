@@ -41,6 +41,14 @@ function OwnNpcPanel:createChildren()
     self:setHeight(math.max(80, y + 8))
 end
 
+function OwnNpcPanel:prerender()
+    ISPanel.prerender(self)
+end
+
+function OwnNpcPanel:render()
+    ISPanel.render(self)
+end
+
 function OwnNpcPanel:update()
     if not self.visibilityLogged then
         self.visibilityLogged = true
