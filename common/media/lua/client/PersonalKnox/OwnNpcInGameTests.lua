@@ -99,7 +99,9 @@ function Tests.run(player)
         if string.find(spawned, "health=", 1, true) == nil then return false end
         local before = api:ownDebugZombieHealth()
         api:ownDebugAttack(id)
-        return api:ownDebugZombieHealth() < before
+        local damaged = api:ownDebugZombieHealth() < before
+        api:ownDebugZombieClear()
+        return damaged
     end)
     check("upkeep-repair", function() return api:upkeepNeedsRepair(1, 10) end)
     check("upkeep-ammo", function() return api:upkeepAmmo(0, 30) > 0 end)

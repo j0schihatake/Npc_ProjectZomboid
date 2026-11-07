@@ -16,6 +16,8 @@ public final class OwnNpcBodyAdapter {
 
     private final Map<String, PathState> pathCache = new HashMap<>();
     private final Map<String, Object> lootObjects = new HashMap<>();
+    private final Map<String, double[]> lastAim = new HashMap<>();
+
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
@@ -34,7 +36,8 @@ public final class OwnNpcBodyAdapter {
                 Object body = bodies.get(agent.id());
                 if (body != null) {
                     syncHealth(layer, agent.id(), body);
-                    attack(body, zombies);
+                    attack(agent.id(), body, zombies);
+                    retreat(layer, agent.id(), body, agent);
                 }
                 if (dismantles.containsKey(agent.id())) {
                     String state = tickDismantle(agent.id(), 2.0);
@@ -322,7 +325,7 @@ public final class OwnNpcBodyAdapter {
     public void debugAttack(String id) {
         Object body = bodies.get(id);
         if (body == null) return;
-        try { attack(body, zombieSnapshot(currentCell())); } catch (Throwable ignored) { }
+        try { attack(id, body, zombieSnapshot(currentCell())); } catch (Throwable ignored) { }
     }
 
     public String inspect(String id) {
@@ -566,7 +569,7 @@ public final class OwnNpcBodyAdapter {
         return result;
     }
 
-    private static void attack(Object body, java.util.List<Object[]> zombies) {
+    private void attack(String id, Object body, java.util.List<Object[]> zombies) {
         try {
             double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
             double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
@@ -600,6 +603,7 @@ public final class OwnNpcBodyAdapter {
             Object bodySquare = body.getClass().getMethod("getCurrentSquare").invoke(body);
             Object nearest = null;
             double nearestDistance = Double.MAX_VALUE;
+            double nearestX = 0, nearestY = 0;
             for (var entry : zombies) {
                 Object zombie = entry[0];
                 Object zombieSquare = zombie.getClass().getMethod("getCurrentSquare").invoke(zombie);
@@ -628,9 +632,14 @@ public final class OwnNpcBodyAdapter {
                 if (distance < nearestDistance) {
                     nearest = zombie;
                     nearestDistance = distance;
+                    nearestX = (double) entry[1];
+                    nearestY = (double) entry[2];
                 }
             }
-            if (nearest == null) return;
+            if (nearest == null) {
+                lastAim.remove(id);
+                return;
+            }
             int weaponLevel = 1;
             int condition = 1;
             int conditionMax = 1;
@@ -655,6 +664,7 @@ public final class OwnNpcBodyAdapter {
             body.getClass().getMethod("setAttackTargetSquare", Class.forName("zombie.iso.IsoGridSquare"))
                     .invoke(body, square);
             body.getClass().getMethod("setAttackStarted", boolean.class).invoke(body, true);
+            lastAim.put(id, new double[]{nearestX, nearestY, nearestDistance, ranged ? 1 : 0});
             System.out.println("[PersonalKnox][own-combat] target=" + nearest.getClass().getSimpleName()
                     + " damage=" + String.format(java.util.Locale.ROOT, "%.1f", damage) + " skill=" + skill + " ranged=" + ranged + " scope=" + scope
                     + " weather=" + weather + " range=" + String.format(java.util.Locale.ROOT, "%.1f", range)
@@ -679,6 +689,26 @@ public final class OwnNpcBodyAdapter {
             }
         } catch (Throwable ignored) { }
         return 0;
+    }
+
+    private void retreat(OwnNpcLayer layer, String id, Object body, OwnNpcAgent agent) {
+        double[] aim = lastAim.remove(id);
+        if (aim == null || aim[3] < 0.5 || aim[2] > 3.5) return;
+        var order = layer.orderOf(id);
+        if (order == OwnNpcOrder.HOLD || order == OwnNpcOrder.REST) return;
+        try {
+            var point = OwnNpcCombat.retreatPoint(agent.x(), agent.y(), aim[0], aim[1], 6, 2);
+            if (point.x() != agent.x() || point.y() != agent.y()) {
+                layer.order(id, point.x(), point.y());
+                System.out.println("[PersonalKnox][own-combat] retreat=" + id
+                        + " to=" + String.format(java.util.Locale.ROOT, "%.1f,%.1f", point.x(), point.y()));
+            }
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            double angle = Math.toDegrees(Math.atan2(aim[1] - by, aim[0] - bx));
+            try { body.getClass().getMethod("setDirectionAngle", float.class).invoke(body, (float) angle); }
+            catch (Throwable ignored) { }
+        } catch (Throwable ignored) { }
     }
 
     private static void syncHealth(OwnNpcLayer layer, String id, Object body) {

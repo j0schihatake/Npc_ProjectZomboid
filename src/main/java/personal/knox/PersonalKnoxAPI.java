@@ -249,6 +249,19 @@ public final class PersonalKnoxAPI {
 
     public double ownDebugZombieHealth() { return zombieHealth(); }
 
+    public int ownDebugZombieClear() {
+        if (debugZombie == null) return 0;
+        try {
+            debugZombie.getClass().getMethod("setTarget", Class.forName("zombie.iso.IsoMovingObject"))
+                    .invoke(debugZombie, new Object[]{null});
+            debugZombie.getClass().getMethod("setHealth", float.class).invoke(debugZombie, 0f);
+            debugZombie.getClass().getMethod("removeFromWorld").invoke(debugZombie);
+            debugZombie.getClass().getMethod("removeFromSquare").invoke(debugZombie);
+        } catch (Throwable ignored) { }
+        debugZombie = null;
+        return 1;
+    }
+
     public String ownDebugAttack(String id) {
         ownBodies.debugAttack(id);
         return "health=" + zombieHealth();
