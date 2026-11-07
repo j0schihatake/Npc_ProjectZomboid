@@ -383,3 +383,9 @@ A-Life события, задания и сумки — нужен загруж�
 - Включён `inGameTests`, штатный запуск: `OK`, мир
   `PersonalKnox-scenario-1aeee720f725b47b08cbad79cc21a3ac`.
 - Лог: `summary passed=12 failed=0`; игра выключена, тесты снова отключены.
+
+### 0.13.5 — in-game tests 13/13
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-267fe4f10ab84efc10b1199bab51339f`.
+- `summary passed=13 failed=0`, включая `remove`; тестовый NPC удаляется.
+- Игра выключена, тесты в ModOptions отключены.
