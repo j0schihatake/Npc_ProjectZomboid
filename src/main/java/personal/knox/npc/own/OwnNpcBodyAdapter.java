@@ -351,6 +351,7 @@ public final class OwnNpcBodyAdapter {
             System.out.println("[PersonalKnox] Own body starting tools added");
         } catch (Throwable ignored) { }
         dress(body, desc, id);
+        wear(body);
             body.getClass().getMethod("setCurrentSquare",squareClass).invoke(body,square);
             // A non-null current square does not mean membership in the simulation.
             // IsoCell queues additions safely when its object list is being updated.
@@ -370,6 +371,24 @@ public final class OwnNpcBodyAdapter {
                 + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", (double) x, (double) y, (double) z));
         return body;
     }
+
+    private static void wear(Object body) {
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Class<?> locations = Class.forName("zombie.scripting.objects.ItemBodyLocation");
+            String[][] items = {{"TSHIRT", "Base.Tshirt_WhiteLongSleeve"}, {"PANTS", "Base.Trousers"}, {"SHOES", "Base.Shoes"}};
+            for (var pair : items) {
+                Object location = locations.getField(pair[0]).get(null);
+                Object item = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, pair[1]);
+                if (item != null) body.getClass().getMethod("setWornItem", location.getClass(), item.getClass())
+                        .invoke(body, location, item);
+            }
+            System.out.println("[PersonalKnox] Own body worn clothes applied");
+        } catch (Throwable error) {
+            System.out.println("[PersonalKnox] Own body wear failed: " + error);
+        }
+    }
+
 
     private static void dress(Object body, Object desc, String id) {
         try {
