@@ -332,3 +332,10 @@ A-Life события, задания и сумки — нужен загруж�
 
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-ad3bf61094a80a106ef0fd4cb07d06f7`.
 - HOLD/REST держат точку; игра выключена.
+
+### 0.11.3 — запуск без Knox
+
+- Временно профиль без KnoxEventExpandedNpc: `ZombieBuddy, Viewpoint, PersonalKnox`.
+- Лог: `PersonalKnox Java core 0.11.3 loaded`, `Lua addon 0.11.3 loaded`;
+  единственное — ожидаемый `WARN require("KnoxEventLoader") failed`.
+- Игра выключена, dev-профиль с Knox восстановлен.
