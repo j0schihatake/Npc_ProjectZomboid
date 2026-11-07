@@ -69,7 +69,14 @@ function OwnNpcPanel.toggle(player)
     panel.player = player
     panel:initialise()
     panel:addToUIManager()
+    panel:setVisible(true)
+    panel:setAlwaysOnTop(true)
+    panel:bringToTop()
     instance = panel
+    print("[PersonalKnox][own-panel] opened x=" .. tostring(panel:getX())
+        .. " y=" .. tostring(panel:getY())
+        .. " w=" .. tostring(panel:getWidth())
+        .. " h=" .. tostring(panel:getHeight()))
 end
 
 return OwnNpcPanel

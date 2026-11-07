@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.11.6 — панель принудительно видима
+
+- После `addToUIManager` вызываются `setVisible(true)`, `setAlwaysOnTop(true)`,
+  `bringToTop`; лог `[own-panel] opened x/y/w/h`.
+- Java-ядро 0.11.6, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.11.5 — диагностика окна
 
 - `OnGameStart` пишет `[own-panel] enabled=... player=... loaded=...`, чтобы понять,
