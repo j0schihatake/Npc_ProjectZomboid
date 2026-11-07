@@ -109,6 +109,12 @@ Events.OnGameStart.Add(function()
         local now=getTimestampMs()
         if now<nextSetup then return end
         nextSetup=now+500
+        if not KnoxEventLoader then
+            knoxReady=true
+            print('[PersonalKnox][dev-scenario] run='..config.nonce..' knox=unavailable')
+            Events.OnTickEvenPaused.Remove(setup)
+            return
+        end
         local ok=pcall(function()
             local ui=NpcProcGenWorldMap_instance
             if ui then
