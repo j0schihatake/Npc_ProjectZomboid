@@ -322,3 +322,8 @@ A-Life события, задания и сумки — нужен загруж�
 
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-18a54f5ac31c1039325374c97b4f59b4`.
 - `Barricade/BaseRoutine/Call` не падают без Knox; игра выключена.
+
+### 0.11.2 — свой состав в player-squad
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-254ec6c71d0cb2fcaea63c22ff333b38`.
+- `player-squad` считает `ownActive`; игра выключена.
