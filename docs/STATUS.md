@@ -327,3 +327,8 @@ A-Life события, задания и сумки — нужен загруж�
 
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-254ec6c71d0cb2fcaea63c22ff333b38`.
 - `player-squad` считает `ownActive`; игра выключена.
+
+### 0.11.3 — HOLD/REST и сценарий
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-ad3bf61094a80a106ef0fd4cb07d06f7`.
+- HOLD/REST держат точку; игра выключена.
