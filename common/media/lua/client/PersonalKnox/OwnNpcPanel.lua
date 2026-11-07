@@ -1,7 +1,7 @@
 -- Minimal squad window: one row per own NPC with basic orders.
-local ISPanel = require "ISUI/ISPanel"
-local ISButton = require "ISUI/ISButton"
-local ISLabel = require "ISUI/ISLabel"
+local ISPanel = ISPanel
+local ISButton = ISButton
+local ISLabel = ISLabel
 
 local OwnNpcPanel = ISPanel:derive("OwnNpcPanel")
 local instance = nil
