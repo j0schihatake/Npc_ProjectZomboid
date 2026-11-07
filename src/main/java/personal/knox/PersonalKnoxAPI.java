@@ -137,8 +137,15 @@ public final class PersonalKnoxAPI {
     }
 
     public int ownTick(double hours, int budget) {
-        return ownLayer.tick(hours, budget).size();
+        int events = ownLayer.tick(hours, budget).size();
+        for (var agent : ownLayer.agents()) {
+            alifeSquad(agent.id(), agent.factionId(), 1, agent.state().health(), agent.supplies(),
+                    agent.state().task().name(), agent.x(), agent.y(), agent.z(),
+                    agent.targetX(), agent.targetY());
+        }
+        return events;
     }
+
 
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
     public String ownDebugSpawn(double x, double y, double z) {

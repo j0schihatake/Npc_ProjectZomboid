@@ -62,10 +62,10 @@ local function tick()
     end
     if not firstLogged then
         firstLogged = true
-        print("[PersonalKnox][alife-init] squads=" .. tostring(submitted) .. " events=" .. tostring(summary))
+        print("[PersonalKnox][alife-init] squads=" .. tostring(api:alifeSquads()) .. " events=" .. tostring(summary))
     elseif Settings.diagnosticsEnabled() and now - lastLog >= LOG_MS then
         lastLog = now
-        print("[PersonalKnox][alife] squads=" .. tostring(submitted) .. " events=" .. tostring(summary))
+        print("[PersonalKnox][alife] squads=" .. tostring(api:alifeSquads()) .. " events=" .. tostring(summary))
     end
 end
 

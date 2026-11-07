@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.85 — свои NPC в A-Life squads
+
+- `ownTick` каждый раз submit-ит агентов в `AlifeRuntime`; лог `alife-init/alife`
+  показывает `api:alifeSquads()` вместо числа Knox-отрядов.
+- Java-ядро 0.9.85, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.9.84 — A-Life видит своих NPC
 
 - `ownGroup("player-squad", ...)`: если Knox-состав 0, берётся `ownLayer.count()`;
