@@ -65,7 +65,7 @@ function OwnNpcPanel:close()
 end
 
 function OwnNpcPanel.isOpen()
-    return instance ~= nil
+    return instance ~= nil and instance:getIsVisible()
 end
 
 function OwnNpcPanel.toggle(player)
