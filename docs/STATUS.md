@@ -235,3 +235,9 @@ A-Life события, задания и сумки — нужен загруж�
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-09d067e104ef9268f46ab8361b39359e`.
 - Меню вызывает `ownCommand`/`ownCommandAll`; Lua только UI.
 - Игра выключена.
+
+### 0.9.82 — bootstrap в Java
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-62ba8d36b012da787c747b562f571f44`.
+- Лог: `bootstrap STARTED:debug#1;debug#2;`, `active=2 bodies=2`.
+- Java сам решил создать стартовый отряд; игра выключена.
