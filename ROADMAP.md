@@ -1848,3 +1848,4 @@ Project A-Life 1.4.6 (Workshop 3803984183, B42.21) — самостоятель�
 - [x] `ownBootstrap`: Java решает, восстановить сохранённый отряд или создать стартовый.
 - [x] Пункт меню «Осмотреть»: состояние тела и инструменты из Java API.
 - [x] Свои NPC автоматически submit в A-Life squads из `ownTick`; лог берёт `alifeSquads`.
+- [x] Приказы своих NPC обновляют `NpcState.Task`; A-Life получает REGROUP/SCAVENGE/HOLD/RAID/TRAVEL.

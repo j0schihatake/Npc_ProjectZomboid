@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.86 — приказы в A-Life задачи
+
+- `order` обновляет `NpcState.Task` (FOLLOW/HOLD/GUARD/LOOT/REST); `ownTick`
+  переводит их в REGROUP/HOLD/SCAVENGE/RAID/TRAVEL для A-Life.
+- Java-ядро 0.9.86, JAR пересобран; тесты проходят.
+
 ## 0.9.85 — свои NPC в A-Life squads
 
 - `ownTick` каждый раз submit-ит агентов в `AlifeRuntime`; лог `alife-init/alife`

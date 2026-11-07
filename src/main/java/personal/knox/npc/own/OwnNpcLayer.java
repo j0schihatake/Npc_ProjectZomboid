@@ -83,6 +83,15 @@ public final class OwnNpcLayer {
         if (order == null) throw new IllegalArgumentException("Missing order");
         var event = order(id, tx, ty);
         orders.put(id, order);
+        var agent = agents.get(id);
+        var task = switch (order) {
+            case FOLLOW -> personal.knox.npc.NpcState.Task.FOLLOW;
+            case HOLD -> personal.knox.npc.NpcState.Task.IDLE;
+            case GUARD -> personal.knox.npc.NpcState.Task.GUARD;
+            case LOOT -> personal.knox.npc.NpcState.Task.LOOT;
+            case REST -> personal.knox.npc.NpcState.Task.REST;
+        };
+        agents.put(id, agent.withState(agent.state().withTask(task)));
         return event;
     }
 

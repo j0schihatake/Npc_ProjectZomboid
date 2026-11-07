@@ -136,11 +136,21 @@ public final class PersonalKnoxAPI {
         return ownLayer.order(id, x, y).agentId();
     }
 
+    private static String alifeTask(personal.knox.npc.NpcState.Task task) {
+        return switch (task) {
+            case FOLLOW, GUARD -> "REGROUP";
+            case WORK, LOOT -> "SCAVENGE";
+            case REST, IDLE -> "HOLD";
+            case FIGHT -> "RAID";
+            case FLEE -> "TRAVEL";
+        };
+    }
+
     public int ownTick(double hours, int budget) {
         int events = ownLayer.tick(hours, budget).size();
         for (var agent : ownLayer.agents()) {
             alifeSquad(agent.id(), agent.factionId(), 1, agent.state().health(), agent.supplies(),
-                    agent.state().task().name(), agent.x(), agent.y(), agent.z(),
+                    alifeTask(agent.state().task()), agent.x(), agent.y(), agent.z(),
                     agent.targetX(), agent.targetY());
         }
         return events;
