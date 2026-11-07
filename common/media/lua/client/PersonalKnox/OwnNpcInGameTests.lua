@@ -103,6 +103,18 @@ function Tests.run(player)
         api:ownDebugZombieClear()
         return damaged
     end)
+    check("ranged-combat", function()
+        local spawned = api:ownDebugZombie(id)
+        if string.find(spawned, "health=", 1, true) == nil then return false end
+        local equip = api:ownDebugEquip(id, "Base.Pistol", 5)
+        if string.find(equip, "equipped=", 1, true) == nil then return false end
+        local before = api:ownDebugZombieHealth()
+        api:ownDebugAttack(id)
+        local damaged = api:ownDebugZombieHealth() < before
+        local ammo = api:ownDebugAmmo(id)
+        api:ownDebugZombieClear()
+        return damaged and ammo == 4
+    end)
     check("upkeep-repair", function() return api:upkeepNeedsRepair(1, 10) end)
     check("upkeep-ammo", function() return api:upkeepAmmo(0, 30) > 0 end)
     check("durability-setting", function() return Settings.infiniteDurability() == true end)

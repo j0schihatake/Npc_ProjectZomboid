@@ -211,6 +211,29 @@ public final class PersonalKnoxAPI {
 
     private Object debugZombie;
 
+    public String ownDebugEquip(String id, String type, int ammo) {
+        Object body = ownBodies.body(id);
+        if (body == null) return "no-body";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object item = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, type);
+            body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                    .invoke(body, item);
+            item.getClass().getMethod("setCurrentAmmoCount", int.class).invoke(item, ammo);
+            return "equipped=" + type + " ammo=" + ammo;
+        } catch (Throwable error) { return "equip-failed=" + error.getClass().getSimpleName(); }
+    }
+
+    public int ownDebugAmmo(String id) {
+        Object body = ownBodies.body(id);
+        if (body == null) return -1;
+        try {
+            Object item = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
+            if (item == null) return -1;
+            return ((Number) item.getClass().getMethod("getCurrentAmmoCount").invoke(item)).intValue();
+        } catch (Throwable error) { return -1; }
+    }
+
     public String ownDebugZombie(String id) {
         Object body = ownBodies.body(id);
         if (body == null) return "no-body";
