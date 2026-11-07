@@ -310,3 +310,10 @@ A-Life события, задания и сумки — нужен загруж�
 
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-389d63ddada16e7aabde4205c953a988`.
 - `addSupplies` обновляет припасы; игра выключена.
+
+### 0.11.0 — Knox необязателен, сценарий OK
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-d681274291582734cf805be2fe2b94f5`.
+- `mod.info` больше не требует Knox; `pcall`-загрузка не сломала сценарий.
+- A-Life — наш `personal.knox.alife`, не код Knox.
+- Игра выключена.
