@@ -236,6 +236,16 @@ public final class PersonalKnoxAPI {
         return personal.knox.npc.own.OwnNpcCodec.encode(ownLayer.snapshotAgents());
     }
 
+    public String ownBootstrap(Object player, int fallbackCount, String agents, String targetZ, String population) {
+        if (agents != null && !agents.isBlank()) {
+            int restored = ownRestore(agents);
+            if (targetZ != null && !targetZ.isBlank()) ownTargetZRestore(targetZ);
+            if (population != null && !population.isBlank()) ownPopulationRestore(population);
+            return "RESTORED:" + restored;
+        }
+        return "STARTED:" + ownStartCompanions(player, fallbackCount);
+    }
+
     public int ownRestore(String text) {
         ownLayer.restore(personal.knox.npc.own.OwnNpcCodec.decode(text));
         return ownLayer.count();

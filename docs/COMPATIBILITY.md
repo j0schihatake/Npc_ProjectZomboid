@@ -1368,6 +1368,12 @@ Reactions/Supplies эта метка не учитывается: такие п�
 высоты pz исправлена в 0bd38a9; повторный сценарий 223bffcee59710204d2c88aedd51a469
 вернул 0 с проверкой отсутствия исключений PersonalKnox. Подробности в STATUS.md.
 
+## 0.9.82 — bootstrap отряда в Java
+
+- `ownBootstrap(player, fallback, agents, targetZ, population)`: восстановить сохранённый
+  отряд или создать стартовый; Lua передаёт строки ModData и логирует результат.
+- Java-ядро 0.9.82, JAR пересобран; Lua-синтаксис и тесты проходят.
+
 ## 0.9.81 — команды меню в Java
 
 - `ownCommand(id, mode, x,y,z)` и `ownCommandAll(mode, x,y,z)` выполняют приказы

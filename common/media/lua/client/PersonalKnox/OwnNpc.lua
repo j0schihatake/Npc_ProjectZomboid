@@ -63,27 +63,19 @@ function OwnNpc.install(adapters)
     deps = adapters
     Events.OnGameStart.Add(function()
         local player = getSpecificPlayer(0)
-        local data = player and player:getModData()
-        if data and data.PersonalKnoxOwnNpc and PersonalKnoxAPI then
-            local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownRestore(data.PersonalKnoxOwnNpc) end)
-            if not ok then print("[PersonalKnox] Own-NPC restore error: " .. tostring(err)) end
-        end
-        if data and data.PersonalKnoxTargetZ and PersonalKnoxAPI then
-            pcall(function() PersonalKnoxAPI.getInstance():ownTargetZRestore(data.PersonalKnoxTargetZ) end)
-        end
-        if data and data.PersonalKnoxOwnPopulation and PersonalKnoxAPI then
-            local ok, err = pcall(function() PersonalKnoxAPI.getInstance():ownPopulationRestore(data.PersonalKnoxOwnPopulation) end)
-            if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
-        end
-        if not (data and data.PersonalKnoxOwnNpc) and PersonalKnoxAPI then
-            local ok, created = pcall(function()
-                return PersonalKnoxAPI.getInstance():ownStartCompanions(player, Settings.companionCount())
-            end)
-            if ok then
-                print("[PersonalKnox][own-npc] starting companions " .. tostring(created))
-            else
-                print("[PersonalKnox] Starting companions error: " .. tostring(created))
-            end
+        if not player or not PersonalKnoxAPI then return end
+        local data = player:getModData() or {}
+        local ok, result = pcall(function()
+            return PersonalKnoxAPI.getInstance():ownBootstrap(
+                player, Settings.companionCount(),
+                data.PersonalKnoxOwnNpc or "",
+                data.PersonalKnoxTargetZ or "",
+                data.PersonalKnoxOwnPopulation or "")
+        end)
+        if ok then
+            print("[PersonalKnox][own-npc] bootstrap " .. tostring(result))
+        else
+            print("[PersonalKnox] Own-NPC bootstrap error: " .. tostring(result))
         end
     end)
     Events.OnSave.Add(function()

@@ -1845,3 +1845,4 @@ Project A-Life 1.4.6 (Workshop 3803984183, B42.21) — самостоятель�
 - [x] Пресет 3 спутника (черта `Companions3` и пункт Mod Options).
 - [x] Создание стартовых спутников перенесено в Java `ownStartCompanions`; Lua передаёт только fallback из настроек.
 - [x] Команды меню выполняются Java `ownCommand/ownCommandAll`; Lua только строит UI.
+- [x] `ownBootstrap`: Java решает, восстановить сохранённый отряд или создать стартовый.
