@@ -136,6 +136,14 @@ function Tests.run(player)
         panel.closeOpen()
         return open
     end)
+    check("dismantle", function()
+        local obstacle = api:ownDebugObstacle(id)
+        if obstacle == nil or obstacle == "" then return false end
+        local started = api:ownDismantleStart(id)
+        if started == nil or started == "" then return false end
+        api:ownDismantleTick(id, 30)
+        return true
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)

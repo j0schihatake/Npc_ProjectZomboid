@@ -129,6 +129,39 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String debugFindObstacle(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            Object cell = currentCell();
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            double bz = ((Number) body.getClass().getMethod("getZ").invoke(body)).doubleValue();
+            var tools = tools(id);
+            for (int dx = -6; dx <= 6; dx++) for (int dy = -6; dy <= 6; dy++) {
+                Object square = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                        .invoke(cell, (int) bx + dx, (int) by + dy, (int) bz);
+                if (square == null) continue;
+                Object objects = square.getClass().getMethod("getObjects").invoke(square);
+                int size = (int) objects.getClass().getMethod("size").invoke(objects);
+                for (int i = 0; i < size; i++) {
+                    Object object = objects.getClass().getMethod("get", int.class).invoke(objects, i);
+                    if (object == null) continue;
+                    OwnNpcToolUse.Obstacle obstacle;
+                    try { obstacle = OwnNpcToolUse.classify(object.getClass().getName()); }
+                    catch (IllegalArgumentException unknown) { continue; }
+                    if (!OwnNpcToolUse.canDismantle(tools, obstacle)) continue;
+                    body.getClass().getMethod("setX", float.class).invoke(body, (float) ((int) bx + dx) + 0.5f);
+                    body.getClass().getMethod("setY", float.class).invoke(body, (float) ((int) by + dy) + 0.5f);
+                    body.getClass().getMethod("setCurrentSquare", Class.forName("zombie.iso.IsoGridSquare"))
+                            .invoke(body, square);
+                    return obstacle.name();
+                }
+            }
+        } catch (Throwable ignored) { }
+        return "";
+    }
+
     public String startDismantle(String id) {
         return startDismantle(id, Double.NaN, Double.NaN);
     }
