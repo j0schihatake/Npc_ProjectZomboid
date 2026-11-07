@@ -195,3 +195,10 @@ A-Life события, задания и сумки — нужен загруж�
   `[own-npc] starting companion debug#1`, `... debug#2`;
   `active=2 bodies=2`.
 - Затем dev-сценарий добавил `debug#3`: `active=3 bodies=3`.
+
+### 0.9.73 — спутники в разных клетках
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-b2fc68aea2788d7fa13b501318f0661c`.
+- `debug#1` 7989,11754; `debug#2` 7989,11756; `debug#3` 7990,11754.
+- `active=2 bodies=2`, затем dev-сценарий добавил третьего.
+- `build.py` сам регистрирует хеш PersonalKnox в approval store; диалог не появлялся.
