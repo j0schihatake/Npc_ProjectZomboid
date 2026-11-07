@@ -350,8 +350,8 @@ public final class OwnNpcBodyAdapter {
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Screwdriver");
             System.out.println("[PersonalKnox] Own body starting tools added");
         } catch (Throwable ignored) { }
-        dress(body, desc);
-        dress(body, desc);
+        dress(body, desc, id);
+        dress(body, desc, id);
             body.getClass().getMethod("setCurrentSquare",squareClass).invoke(body,square);
             // A non-null current square does not mean membership in the simulation.
             // IsoCell queues additions safely when its object list is being updated.
@@ -372,7 +372,7 @@ public final class OwnNpcBodyAdapter {
         return body;
     }
 
-    private static void dress(Object body, Object desc) {
+    private static void dress(Object body, Object desc, String id) {
         try {
             body.getClass().getMethod("Dressup", desc.getClass()).invoke(body, desc);
         } catch (Throwable ignored) { }
@@ -384,19 +384,23 @@ public final class OwnNpcBodyAdapter {
             } catch (Throwable ignored) { }
         }
         try {
-            Object visual = body.getClass().getMethod("getHumanVisual").invoke(body);
-            Object items = visual.getClass().getMethod("getBodyVisuals").invoke(visual);
-            int count = (int) items.getClass().getMethod("size").invoke(items);
-            if (count > 0) return;
-        } catch (Throwable ignored) { }
-        try {
             Object player = Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
             if (player != null) {
                 Object playerVisual = player.getClass().getMethod("getHumanVisual").invoke(player);
                 Object bodyVisual = body.getClass().getMethod("getHumanVisual").invoke(body);
                 Class<?> base = Class.forName("zombie.core.skinnedmodel.visual.BaseVisual");
                 bodyVisual.getClass().getMethod("copyFrom", base).invoke(bodyVisual, playerVisual);
-                System.out.println("[PersonalKnox] Own body visual fallback copied from player");
+                int seed = id.hashCode();
+                Class<?> colorType = Class.forName("zombie.core.ImmutableColor");
+                java.lang.reflect.Constructor<?> color = colorType.getConstructor(float.class, float.class, float.class);
+                float r = 0.55f + Math.floorMod(seed, 25) / 100f;
+                float g = 0.55f + Math.floorMod(seed / 7, 25) / 100f;
+                float b = 0.55f + Math.floorMod(seed / 13, 25) / 100f;
+                Object skin = color.newInstance(r, g, b);
+                bodyVisual.getClass().getMethod("setSkinColor", colorType).invoke(bodyVisual, skin);
+                bodyVisual.getClass().getMethod("setHairColor", colorType).invoke(bodyVisual, skin);
+                bodyVisual.getClass().getMethod("setNaturalHairColor", colorType).invoke(bodyVisual, skin);
+                System.out.println("[PersonalKnox] Own body clothed and tinted " + id);
                 return;
             }
         } catch (Throwable error) {
