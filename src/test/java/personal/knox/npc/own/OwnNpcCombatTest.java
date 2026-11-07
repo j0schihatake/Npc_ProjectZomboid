@@ -20,6 +20,10 @@ public final class OwnNpcCombatTest {
         assert OwnNpcCombat.engagementRange(10, false, "rain") == 6.5;
         assert OwnNpcCombat.engagementRange(10, false, "storm") == 4.5;
         assert OwnNpcCombat.engagementRange(0, false, null) == 8;
+        assert OwnNpcCombat.damage(1, 0, 10, 10, false) == 10;
+        assert OwnNpcCombat.damage(1, 3, 10, 10, false) == 16;
+        assert OwnNpcCombat.damage(1, 0, 0, 10, false) == 5;
+        assert OwnNpcCombat.damage(5, 5, 10, 10, true) == 30;
         System.out.println("Own-NPC combat tests passed: nearest visible, melee kill, ranged ammo and invalid input.");
     }
 }

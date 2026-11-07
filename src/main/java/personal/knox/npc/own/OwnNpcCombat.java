@@ -30,6 +30,16 @@ public final class OwnNpcCombat {
         return Math.max(4, Math.min(40, range));
     }
 
+    /** Weapon and skill damage; condition reduces it, never below 5. */
+    public static double damage(int weaponLevel, int skill, int condition, int conditionMax, boolean ranged) {
+        double base = (ranged ? 10 : 8) + Math.max(0, weaponLevel) * 2 + Math.max(0, skill) * 2;
+        if (conditionMax > 0) {
+            double ratio = Math.max(0, Math.min(1, condition / (double) conditionMax));
+            base *= 0.5 + 0.5 * ratio;
+        }
+        return Math.max(5, Math.min(60, base));
+    }
+
     public static Target nearest(List<Target> targets, double x, double y, double range) {
         if (targets == null || range < 0 || !Double.isFinite(x + y + range))
             throw new IllegalArgumentException("Invalid target query");

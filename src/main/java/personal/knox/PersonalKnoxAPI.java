@@ -192,6 +192,10 @@ public final class PersonalKnoxAPI {
 
 
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
+    public double ownCombatDamage(int weaponLevel, int skill, int condition, int conditionMax, boolean ranged) {
+        return personal.knox.npc.own.OwnNpcCombat.damage(weaponLevel, skill, condition, conditionMax, ranged);
+    }
+
     public double ownCombatRange(int remoteRange, boolean scope, String weather) {
         return personal.knox.npc.own.OwnNpcCombat.engagementRange(remoteRange, scope, weather);
     }

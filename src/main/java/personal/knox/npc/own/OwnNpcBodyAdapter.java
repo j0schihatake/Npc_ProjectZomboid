@@ -588,7 +588,18 @@ public final class OwnNpcBodyAdapter {
                 }
             }
             if (nearest == null) return;
-            double damage = ranged ? 15 : 10;
+            int weaponLevel = 1;
+            int condition = 1;
+            int conditionMax = 1;
+            if (weapon != null) {
+                try {
+                    weaponLevel = ((Number) weapon.getClass().getMethod("getWeaponLevel").invoke(weapon)).intValue();
+                    condition = ((Number) weapon.getClass().getMethod("getCondition").invoke(weapon)).intValue();
+                    conditionMax = ((Number) weapon.getClass().getMethod("getConditionMax").invoke(weapon)).intValue();
+                } catch (Throwable ignored) { }
+            }
+            int skill = skillLevel(body, ranged);
+            double damage = OwnNpcCombat.damage(weaponLevel, skill, condition, conditionMax, ranged);
             if (ranged) {
                 try {
                     weapon.getClass().getMethod("setCurrentAmmoCount", int.class).invoke(weapon, ammo - 1);
@@ -601,10 +612,26 @@ public final class OwnNpcBodyAdapter {
                     .invoke(body, square);
             body.getClass().getMethod("setAttackStarted", boolean.class).invoke(body, true);
             System.out.println("[PersonalKnox][own-combat] target=" + nearest.getClass().getSimpleName()
-                    + " damage=" + (int) damage + " ranged=" + ranged + " scope=" + scope
+                    + " damage=" + String.format(java.util.Locale.ROOT, "%.1f", damage) + " skill=" + skill + " ranged=" + ranged + " scope=" + scope
                     + " weather=" + weather + " range=" + String.format(java.util.Locale.ROOT, "%.1f", range)
                     + " distance=" + String.format(java.util.Locale.ROOT, "%.1f", nearestDistance));
         } catch (Throwable ignored) { }
+    }
+
+    private static int skillLevel(Object body, boolean ranged) {
+        try {
+            Object perks = Class.forName("zombie.characters.skills.PerkFactory").getField("PerkList").get(null);
+            int size = (int) perks.getClass().getMethod("size").invoke(perks);
+            for (int i = 0; i < size; i++) {
+                Object perk = perks.getClass().getMethod("get", int.class).invoke(perks, i);
+                String name = String.valueOf(perk.getClass().getField("name").get(perk));
+                if (ranged && name.equalsIgnoreCase("Firearm") || !ranged && name.equalsIgnoreCase("Axe")) {
+                    return ((Number) body.getClass().getMethod("getPerkLevel",
+                            Class.forName("zombie.characters.skills.PerkFactory$Perk")).invoke(body, perk)).intValue();
+                }
+            }
+        } catch (Throwable ignored) { }
+        return 0;
     }
 
     private static void syncHealth(OwnNpcLayer layer, String id, Object body) {

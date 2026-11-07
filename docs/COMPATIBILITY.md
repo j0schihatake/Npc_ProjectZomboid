@@ -1979,3 +1979,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - Добавлены проверки body-model, tools-all, snapshot, population, base-summary,
   range-clear/scope/rain/storm.
 - Без Knox: **30/30**.
+## 0.15.4 — урон от оружия и навыка
+
+- `OwnNpcCombat.damage`: база 8/10 + уровень оружия*2 + навык*2, состояние
+  оружия даёт штраф до 50%, итог 5..60.
+- Тело NPC читает `getWeaponLevel`, condition, `PerkList` (Firearm/Axe).
+- In-game: damage-weapon/skill/broken/ranged; без Knox 34/34.
