@@ -319,6 +319,12 @@ public final class OwnNpcBodyAdapter {
 
     public Object body(String id) { return bodies.get(id); }
 
+    public void debugAttack(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return;
+        try { attack(body, zombieSnapshot(currentCell())); } catch (Throwable ignored) { }
+    }
+
     public String inspect(String id) {
         Object body=bodies.get(id);
         if(body==null) return "id="+id+" body=missing";

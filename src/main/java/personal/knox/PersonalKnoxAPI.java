@@ -213,8 +213,19 @@ public final class PersonalKnoxAPI {
             Object world = Class.forName("zombie.iso.IsoWorld").getField("instance").get(null);
             Object cell = world.getClass().getMethod("getCell").invoke(world);
             Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            Object zombieList = cell.getClass().getMethod("getZombieList").invoke(cell);
+            int size = (int) zombieList.getClass().getMethod("size").invoke(zombieList);
+            if (size == 0) return "no-zombies";
+            Object zombie = null;
+            for (int i = 0; i < size; i++) {
+                Object candidate = zombieList.getClass().getMethod("get", int.class).invoke(zombieList, i);
+                if (candidate != null && candidate.getClass().getName().equals("zombie.characters.IsoZombie")) {
+                    zombie = candidate;
+                    break;
+                }
+            }
+            if (zombie == null) return "no-exact-zombie";
             Class<?> zombieClass = Class.forName("zombie.characters.IsoZombie");
-            Object zombie = zombieClass.getConstructor(Class.forName("zombie.iso.IsoCell")).newInstance(cell);
             float x = ((Number) body.getClass().getMethod("getX").invoke(body)).floatValue() + 0.6f;
             float y = ((Number) body.getClass().getMethod("getY").invoke(body)).floatValue();
             float z = ((Number) body.getClass().getMethod("getZ").invoke(body)).floatValue();
@@ -222,15 +233,9 @@ public final class PersonalKnoxAPI {
             zombieClass.getMethod("setY", float.class).invoke(zombie, y);
             zombieClass.getMethod("setZ", float.class).invoke(zombie, z);
             zombieClass.getMethod("setCurrentSquare", Class.forName("zombie.iso.IsoGridSquare")).invoke(zombie, square);
-            cell.getClass().getMethod("addMovingObject", Class.forName("zombie.iso.IsoMovingObject")).invoke(cell, zombie);
-            @SuppressWarnings("unchecked")
-            var moving = (java.util.Collection<Object>) square.getClass().getMethod("getMovingObjects").invoke(square);
-            if (!moving.contains(zombie)) moving.add(zombie);
-            Object zombieList = cell.getClass().getMethod("getZombieList").invoke(cell);
-            zombieList.getClass().getMethod("add", Object.class).invoke(zombieList, zombie);
             debugZombie = zombie;
             zombieClass.getMethod("setHealth", float.class).invoke(zombie, 100f);
-            return "zombie=spawned health=" + zombieHealth();
+            return "zombie=reused health=" + zombieHealth();
         } catch (Throwable error) {
             System.out.println("[PersonalKnox][own-combat] spawn failed: " + error);
             return "zombie-failed=" + error.getClass().getSimpleName();
@@ -238,6 +243,11 @@ public final class PersonalKnoxAPI {
     }
 
     public double ownDebugZombieHealth() { return zombieHealth(); }
+
+    public String ownDebugAttack(String id) {
+        ownBodies.debugAttack(id);
+        return "health=" + zombieHealth();
+    }
 
     private double zombieHealth() {
         if (debugZombie == null) return -1;
