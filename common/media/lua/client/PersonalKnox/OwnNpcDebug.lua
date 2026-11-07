@@ -20,7 +20,7 @@ function OwnNpcDebug.install()
         if key == Keyboard.KEY_F10 then
             local ok, err = pcall(spawn)
             if not ok then print("[PersonalKnox] Own debug error: " .. tostring(err)) end
-        elseif key == Keyboard.KEY_F7 then
+        elseif key == Keyboard.KEY_F7 or key == Keyboard.KEY_F6 then
             local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
             if ok and panel then panel.toggle(getSpecificPlayer(0)) end
         elseif key == Keyboard.KEY_F8 then
