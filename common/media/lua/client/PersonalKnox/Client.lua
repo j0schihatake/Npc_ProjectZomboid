@@ -47,6 +47,7 @@ local function attempt(fn, fallback)
 end
 
 local function api()
+    if not KnoxEventLoader then return nil end
     return attempt(function() return KnoxEventLoader.getAPI("npc") end, nil)
 end
 

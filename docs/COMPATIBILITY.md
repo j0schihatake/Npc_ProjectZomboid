@@ -1901,3 +1901,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
   `launch_dev.sh`, пишет `build/ingame-tests.log`, закрывает игру, код 0/1.
 - Прогон 15/15; скрипт запуска не менялся.
 
+## 0.13.11 — api() без Knox
+
+- `api()` проверяет `KnoxEventLoader` до вызова; без Knox `roster` возвращает пусто,
+  а `NpcReload/NpcUpkeep` больше не падают.
+- Java-ядро 0.13.11; тесты проходят.
+
