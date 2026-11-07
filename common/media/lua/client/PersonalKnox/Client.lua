@@ -257,6 +257,10 @@ local function onContext(playerIndex, context, worldObjects, test)
         local function all(mode)
             apiRef:ownCommandAll(mode, player:getX(), player:getY(), player:getZ())
         end
+        menu:addOption("Открыть окно отряда", player, function()
+            local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
+            if ok and panel then panel.toggle(player) end
+        end)
         menu:addOption("Все за мной", player, function() all("FOLLOW") end)
         menu:addOption("Все стоять", player, function() all("HOLD") end)
         menu:addOption("Все охранять", player, function() all("GUARD") end)
