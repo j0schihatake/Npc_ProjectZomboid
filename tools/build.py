@@ -34,5 +34,12 @@ def main():
     jar.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(['jar', '--create', '--date=2020-01-01T00:00:00Z', '--file', str(jar), '-C', str(classes), '.'], check=True)
     print('Built:', jar)
+    try:
+        from approval_store import approve
+        if approve('PersonalKnox', jar, ROOT/'build'/'approval-backups'):
+            print('Approved PersonalKnox JAR in ZombieBuddy store')
+    except Exception as error:
+        print('Approval store update skipped:', error)
+
 
 if __name__ == '__main__': main()
