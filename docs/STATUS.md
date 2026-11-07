@@ -352,3 +352,9 @@ A-Life события, задания и сумки — нужен загруж�
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-40ec7dbde7baa81ea24b49cd3e575dff`.
 - `[own-panel] opened ...`, `[own-panel] update visible=true`; на экране окна всё ещё нет.
 - Значит, проблема в UIManager/отрисовке B42, а не в видимости флага. Игра выключена.
+
+### 0.11.9 — панель без ошибки, но сценарий её закрывает
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-def52b03152ce53257609f58a0a84a7f`.
+- `[own-panel] java=true opened ...`, `update visible=true`; на скриншоте панели нет.
+- Вероятно, dev-сценарий закрывает стартовые окна после OnGameStart. Игра выключена.
