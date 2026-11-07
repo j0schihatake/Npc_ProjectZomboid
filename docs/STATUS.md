@@ -241,3 +241,10 @@ A-Life события, задания и сумки — нужен загруж�
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-62ba8d36b012da787c747b562f571f44`.
 - Лог: `bootstrap STARTED:debug#1;debug#2;`, `active=2 bodies=2`.
 - Java сам решил создать стартовый отряд; игра выключена.
+
+### 0.9.84 — старт и A-Life
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-312aa70328f2e142f288264e1d1ea9dc`.
+- `active=2 bodies=2`, затем dev `debug#3`; инструменты выданы.
+- `alife-init squads=0` — собственная population-группа пока не входит в A-Life squads,
+  это следующий разрыв интеграции; игра выключена.
