@@ -254,3 +254,10 @@ A-Life события, задания и сумки — нужен загруж�
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-c6329a9898ee10f6bf76dceb303109be`.
 - Поздний лог: `[alife] squads=3 events={NEAR_SQUAD=3}` — свои NPC попали в A-Life.
 - Игра выключена.
+
+### 0.9.86 — A-Life задачи
+
+- Штатный запуск: `OK`, мир `PersonalKnox-scenario-02b02948f0d49ee110cf7217e16564f3`.
+- `[alife] squads=3 events={NEAR_SQUAD=3}`; приказы обновляют `NpcState.Task`,
+  Java переводит их в A-Life REGROUP/HOLD/SCAVENGE/RAID/TRAVEL.
+- Игра выключена.
