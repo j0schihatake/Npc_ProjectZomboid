@@ -1,0 +1,41 @@
+VERSION = 1,
+
+mods
+{
+    mod = ZombieBuddy,
+    mod = UnofficialMappersCommunityTilePack,
+    mod = tikitown_tiles,
+    mod = CamdenCountyB42,
+    mod = tikitown,
+    mod = Constown42,
+    mod = RabbitHashKY,
+    mod = RaccoonCityB42,
+    mod = Frogtown,
+    mod = FortBenningB42,
+    mod = muldraughmilitarybaseas24,
+    mod = Cathaya Valley 2.0 B42 version,
+    mod = Viewpoint,
+    mod = PZVoxelStudioViewpoint,
+    mod = WallTextureFixForViewpoint,
+    mod = ProjectViewpointQOLLegacy0.1.6,
+    mod = KnoxEventExpandedNpc,
+    mod = KnoxEventExpandedNpcRU,
+    mod = BetterSortCC,
+    mod = RavenCreekB42,
+    mod = Maplewood,
+    mod = aparosa_ViewpointI18n,
+    mod = PersonalKnox,
+    mod = ViewpointLivingProps,
+    mod = ViewpointForaging,
+    mod = ShelfContents3D,
+    mod = IrisEyot,
+    mod = DinglespurtKY,
+    mod = ViewpointBloodFX,
+    mod = MapSymbolSizeSlider,
+    mod = DGVViewpointEyes,
+    mod = ViewpointInteriors,
+}
+
+maps
+{
+}

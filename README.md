@@ -149,3 +149,9 @@ python3 tools/check_run.py
 Скрипт читает `~/Zomboid/console.txt` и показывает версию ядра, загрузку Lua,
 строки `[capabilities]`, `[care]`, `[upkeep]`, `[probe]` и ошибки PersonalKnox.
 Код возврата 0 — ядро нужной версии загрузилось, Lua загрузился, ошибок нет.
+
+## Профили модов
+
+- `profiles/with-knox/default.txt` — с Knox;
+- `profiles/no-knox/default.txt` — без Knox;
+- `python3 tools/set_profile.py no-knox` устанавливает профиль в игру, не меняя `launch_dev.sh`.
