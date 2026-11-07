@@ -1,5 +1,6 @@
 -- F10: spawn one own NPC to prove the Java body adapter without a Knox squad.
 local OwnNpcDebug = {}
+local OwnNpcPanel = require "PersonalKnox/OwnNpcPanel"
 local lastId = nil
 
 local function spawn()
@@ -20,6 +21,8 @@ function OwnNpcDebug.install()
         if key == Keyboard.KEY_F10 then
             local ok, err = pcall(spawn)
             if not ok then print("[PersonalKnox] Own debug error: " .. tostring(err)) end
+        elseif key == Keyboard.KEY_F7 then
+            OwnNpcPanel.toggle(getSpecificPlayer(0))
         elseif key == Keyboard.KEY_F8 then
             local api = PersonalKnoxAPI.getInstance()
             for i = 0, api:ownCount() - 1 do

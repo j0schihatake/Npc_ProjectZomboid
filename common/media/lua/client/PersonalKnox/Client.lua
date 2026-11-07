@@ -38,6 +38,7 @@ local AmmoWeight = require "PersonalKnox/AmmoWeight"
 local OwnNpc = require "PersonalKnox/OwnNpc"
 local OwnNpcBodies = require "PersonalKnox/OwnNpcBodies"
 local OwnNpcDebug = require "PersonalKnox/OwnNpcDebug"
+local OwnNpcPanel = require "PersonalKnox/OwnNpcPanel"
 
 local function attempt(fn, fallback)
     local ok, result = pcall(fn)
