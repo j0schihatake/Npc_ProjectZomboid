@@ -24,6 +24,10 @@ public final class OwnNpcCombatTest {
         assert OwnNpcCombat.damage(1, 3, 10, 10, false) == 16;
         assert OwnNpcCombat.damage(1, 0, 0, 10, false) == 5;
         assert OwnNpcCombat.damage(5, 5, 10, 10, true) == 30;
+        var away = OwnNpcCombat.retreatPoint(1, 0, 0, 0, 6, 2);
+        assert Math.abs(away.x() - 3) < 1e-9 && Math.abs(away.y()) < 1e-9;
+        var close = OwnNpcCombat.retreatPoint(8, 0, 0, 0, 6, 2);
+        assert close.x() == 8 && close.y() == 0;
         System.out.println("Own-NPC combat tests passed: nearest visible, melee kill, ranged ammo and invalid input.");
     }
 }

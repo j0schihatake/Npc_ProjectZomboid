@@ -200,6 +200,11 @@ public final class PersonalKnoxAPI {
         return personal.knox.npc.own.OwnNpcCombat.engagementRange(remoteRange, scope, weather);
     }
 
+    public String ownRetreatPoint(double x, double y, double ex, double ey, double desired) {
+        var point = personal.knox.npc.own.OwnNpcCombat.retreatPoint(x, y, ex, ey, desired, 2);
+        return String.format(java.util.Locale.ROOT, "x=%.2f,y=%.2f", point.x(), point.y());
+    }
+
     public String ownBaseSet(double x, double y, double z) { return ownLayer.setBase(x, y, z); }
     public String ownBaseSummary() { return ownLayer.baseSummary(); }
     public int ownBaseGuardAll() { return ownLayer.guardBase(); }

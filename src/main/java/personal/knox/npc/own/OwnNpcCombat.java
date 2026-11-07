@@ -21,6 +21,22 @@ public final class OwnNpcCombat {
     private OwnNpcCombat() {}
 
     /** Ranged engagement distance: weapon reach, optics and weather. */
+    public record Point(double x, double y) {}
+
+    /** Step directly away from the enemy, keeping the desired distance. */
+    public static Point retreatPoint(double selfX, double selfY, double enemyX, double enemyY,
+                                     double desired, double step) {
+        if (!Double.isFinite(selfX + selfY + enemyX + enemyY + desired + step)
+                || desired < 0 || step <= 0) throw new IllegalArgumentException("Invalid retreat");
+        double dx = selfX - enemyX;
+        double dy = selfY - enemyY;
+        double distance = Math.hypot(dx, dy);
+        if (distance < 1e-9) return new Point(selfX, selfY);
+        if (distance >= desired) return new Point(selfX, selfY);
+        double move = Math.min(step, desired - distance);
+        return new Point(selfX + dx / distance * move, selfY + dy / distance * move);
+    }
+
     public static double engagementRange(int remoteRange, boolean scope, String weather) {
         double range = Math.max(8, Math.min(40, remoteRange > 0 ? remoteRange : 8));
         if (scope) range *= 1.5;
