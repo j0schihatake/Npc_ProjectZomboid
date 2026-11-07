@@ -401,7 +401,7 @@ public final class OwnNpcBodyAdapter {
         try {
             Object inventory = body.getClass().getMethod("getInventory").invoke(body);
             Class<?> locations = Class.forName("zombie.scripting.objects.ItemBodyLocation");
-            String[][] items = {{"TSHIRT", "Base.Tshirt_WhiteLongSleeve"}, {"PANTS", "Base.Trousers"}, {"SHOES", "Base.Shoes"}};
+            String[][] items = {{"TSHIRT", "Base.Tshirt_WhiteLongSleeve"}, {"PANTS", "Base.Trousers"}, {"SHOES", "Base.Shoes_Black"}};
             for (var pair : items) {
                 Object location = locations.getField(pair[0]).get(null);
                 Object item = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, pair[1]);

@@ -32,6 +32,7 @@ function Tests.run(player)
     check("tools", function() return string.find(api:ownBodyTools(id), "HAMMER", 1, true) ~= nil end)
     check("clothing", function()
         local worn = api:ownBodyWorn(id)
+        print("[PersonalKnox][ingame-test] worn=" .. tostring(worn))
         return string.find(worn, "Tshirt", 1, true) ~= nil
                 and string.find(worn, "Trousers", 1, true) ~= nil
                 and string.find(worn, "Shoes", 1, true) ~= nil
