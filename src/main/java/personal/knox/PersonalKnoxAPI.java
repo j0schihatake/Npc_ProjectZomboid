@@ -204,6 +204,48 @@ public final class PersonalKnoxAPI {
     public String ownBaseSummary() { return ownLayer.baseSummary(); }
     public int ownBaseGuardAll() { return ownLayer.guardBase(); }
 
+    private Object debugZombie;
+
+    public String ownDebugZombie(String id) {
+        Object body = ownBodies.body(id);
+        if (body == null) return "no-body";
+        try {
+            Object world = Class.forName("zombie.iso.IsoWorld").getField("instance").get(null);
+            Object cell = world.getClass().getMethod("getCell").invoke(world);
+            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            Class<?> zombieClass = Class.forName("zombie.characters.IsoZombie");
+            Object zombie = zombieClass.getConstructor(Class.forName("zombie.iso.IsoCell")).newInstance(cell);
+            float x = ((Number) body.getClass().getMethod("getX").invoke(body)).floatValue() + 0.6f;
+            float y = ((Number) body.getClass().getMethod("getY").invoke(body)).floatValue();
+            float z = ((Number) body.getClass().getMethod("getZ").invoke(body)).floatValue();
+            zombieClass.getMethod("setX", float.class).invoke(zombie, x);
+            zombieClass.getMethod("setY", float.class).invoke(zombie, y);
+            zombieClass.getMethod("setZ", float.class).invoke(zombie, z);
+            zombieClass.getMethod("setCurrentSquare", Class.forName("zombie.iso.IsoGridSquare")).invoke(zombie, square);
+            cell.getClass().getMethod("addMovingObject", Class.forName("zombie.iso.IsoMovingObject")).invoke(cell, zombie);
+            @SuppressWarnings("unchecked")
+            var moving = (java.util.Collection<Object>) square.getClass().getMethod("getMovingObjects").invoke(square);
+            if (!moving.contains(zombie)) moving.add(zombie);
+            Object zombieList = cell.getClass().getMethod("getZombieList").invoke(cell);
+            zombieList.getClass().getMethod("add", Object.class).invoke(zombieList, zombie);
+            debugZombie = zombie;
+            zombieClass.getMethod("setHealth", float.class).invoke(zombie, 100f);
+            return "zombie=spawned health=" + zombieHealth();
+        } catch (Throwable error) {
+            System.out.println("[PersonalKnox][own-combat] spawn failed: " + error);
+            return "zombie-failed=" + error.getClass().getSimpleName();
+        }
+    }
+
+    public double ownDebugZombieHealth() { return zombieHealth(); }
+
+    private double zombieHealth() {
+        if (debugZombie == null) return -1;
+        try {
+            return ((Number) debugZombie.getClass().getMethod("getHealth").invoke(debugZombie)).doubleValue();
+        } catch (Throwable error) { return -1; }
+    }
+
     public String ownRemove(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("Invalid own NPC id");
         ownLayer.remove(id);

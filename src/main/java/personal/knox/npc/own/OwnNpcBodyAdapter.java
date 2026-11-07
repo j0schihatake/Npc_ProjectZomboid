@@ -598,8 +598,9 @@ public final class OwnNpcBodyAdapter {
                 double distance = Math.hypot((double) entry[1] - bx, (double) entry[2] - by);
                 if (distance > range) continue;
                 double zz = ((Number) zombie.getClass().getMethod("getZ").invoke(zombie)).doubleValue();
-                boolean clear = true;
+                boolean clear = distance <= 1.5;
                 try {
+                    if (clear) throw new IllegalStateException("close-range line of sight");
                     Object result = Class.forName("zombie.iso.LosUtil")
                             .getMethod("lineClear", Class.forName("zombie.iso.IsoCell"),
                                     int.class, int.class, int.class, int.class, int.class, int.class, boolean.class)
