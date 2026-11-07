@@ -185,6 +185,13 @@ public final class PersonalKnoxAPI {
 
 
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
+    public String ownRemove(String id) {
+        if (id == null || id.isBlank()) throw new IllegalArgumentException("Invalid own NPC id");
+        ownLayer.remove(id);
+        ownBodies.sync(ownLayer);
+        return id;
+    }
+
     public String ownDebugSpawn(double x, double y, double z) {
         var event = ownLayer.debugSpawn(x, y, z);
         ownLayer.order(event.agentId(), personal.knox.npc.own.OwnNpcOrder.FOLLOW, x + 3, y);

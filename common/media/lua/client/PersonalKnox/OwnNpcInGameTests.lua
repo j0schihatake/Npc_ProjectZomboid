@@ -45,6 +45,11 @@ function Tests.run(player)
     check("tick", function() return api:ownTick(0.01, 8) >= 0 end)
     check("target-floor", function() return api:ownTargetZSnapshot() ~= nil and api:ownTargetZSnapshot() ~= "" end)
     check("body-inspect", function() return string.find(api:ownBodyInspect(id), "id=" .. id, 1, true) ~= nil end)
+    check("remove", function()
+        local before = api:ownActive()
+        api:ownRemove(id)
+        return api:ownActive() == before - 1
+    end)
     check("alife-squads", function() return api:alifeSquads() >= 1 end)
     print("[PersonalKnox][ingame-test] summary passed=" .. tostring(passed) .. " failed=" .. tostring(failed))
     return failed == 0
