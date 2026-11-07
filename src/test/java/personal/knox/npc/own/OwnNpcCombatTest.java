@@ -15,6 +15,11 @@ public final class OwnNpcCombatTest {
         catch (IllegalStateException expected) { }
         try { OwnNpcCombat.nearest(null, 0, 0, 1); throw new AssertionError("Null targets accepted"); }
         catch (IllegalArgumentException expected) { }
+        assert OwnNpcCombat.engagementRange(10, false, "clear") == 10;
+        assert OwnNpcCombat.engagementRange(10, true, "clear") == 15;
+        assert OwnNpcCombat.engagementRange(10, false, "rain") == 6.5;
+        assert OwnNpcCombat.engagementRange(10, false, "storm") == 4.5;
+        assert OwnNpcCombat.engagementRange(0, false, null) == 8;
         System.out.println("Own-NPC combat tests passed: nearest visible, melee kill, ranged ammo and invalid input.");
     }
 }

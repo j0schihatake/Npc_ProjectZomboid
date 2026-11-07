@@ -70,6 +70,24 @@ function Tests.run(player)
     check("speak", function() return api:ownSpeakById(id, "Тест связи.") end)
     check("base", function() return string.find(api:ownBaseSet(x, y, z), "base=", 1, true) ~= nil end)
     check("base-guard", function() return api:ownBaseGuardAll() >= 1 end)
+    check("body-model", function()
+        local inspect = api:ownBodyInspect(id)
+        return string.find(inspect, "model=true", 1, true) ~= nil
+                and string.find(inspect, "render=true", 1, true) ~= nil
+    end)
+    check("tools-all", function()
+        local tools = api:ownBodyTools(id)
+        return string.find(tools, "HAMMER", 1, true) ~= nil
+                and string.find(tools, "SCREWDRIVER", 1, true) ~= nil
+                and string.find(tools, "SAW", 1, true) ~= nil
+    end)
+    check("snapshot", function() return api:ownSnapshot() ~= nil and api:ownSnapshot() ~= "" end)
+    check("population-snapshot", function() return api:ownPopulationSnapshot() ~= nil and api:ownPopulationSnapshot() ~= "" end)
+    check("base-summary", function() return string.find(api:ownBaseSummary(), "base=", 1, true) ~= nil end)
+    check("range-clear", function() return api:ownCombatRange(10, false, "clear") == 10 end)
+    check("range-scope", function() return api:ownCombatRange(10, true, "clear") == 15 end)
+    check("range-rain", function() return api:ownCombatRange(10, false, "rain") == 6.5 end)
+    check("range-storm", function() return api:ownCombatRange(10, false, "storm") == 4.5 end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
