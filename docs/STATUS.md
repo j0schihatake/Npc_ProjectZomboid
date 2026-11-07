@@ -394,3 +394,9 @@ A-Life события, задания и сумки — нужен загруж�
 
 - Штатный запуск: `OK`, мир `PersonalKnox-scenario-2d695df55634356231a3e547fae9178c`.
 - `summary passed=14 failed=0`, включая damage и remove; игра выключена.
+
+### 0.13.9 — in-game tests 15/15, обувь
+
+- `worn=Tshirt_WhiteLongSleeve,Shoes_Black,Trousers`.
+- Тест нашёл отсутствие `Base.Shoes`; заменено на `Base.Shoes_Black`.
+- Итог: `summary passed=15 failed=0`; игра выключена.
