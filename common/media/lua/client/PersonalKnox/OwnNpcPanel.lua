@@ -64,6 +64,10 @@ function OwnNpcPanel:close()
     if instance == self then instance = nil end
 end
 
+function OwnNpcPanel.isOpen()
+    return instance ~= nil
+end
+
 function OwnNpcPanel.toggle(player)
     if instance then
         instance:close()

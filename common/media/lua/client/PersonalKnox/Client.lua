@@ -346,12 +346,22 @@ OwnNpcDebug.install()
 TextFix.install()
 Events.OnGameStart.Add(function()
     local player = getSpecificPlayer(0)
-    print("[PersonalKnox][own-panel] enabled=" .. tostring(Settings.openSquad())
-        .. " player=" .. tostring(player ~= nil))
-    if not Settings.openSquad() or not player then return end
-    local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
-    print("[PersonalKnox][own-panel] loaded=" .. tostring(ok) .. " panel=" .. tostring(panel))
-    if ok and panel then panel.toggle(player) end
+    if not player then return end
+    local function openPanel()
+        if not Settings.openSquad() then return end
+        local ok, panel = pcall(require, "PersonalKnox/OwnNpcPanel")
+        if not ok or not panel or panel.isOpen() then return end
+        panel.toggle(player)
+    end
+    openPanel()
+    local due = getTimestampMs() + 5000
+    local handler
+    handler = function()
+        if getTimestampMs() < due then return end
+        Events.OnPlayerUpdate.Remove(handler)
+        openPanel()
+    end
+    Events.OnPlayerUpdate.Add(handler)
 end)
 NpcCare.install({roster=roster,say=say})
 NpcEat.install({roster=roster,say=say})
