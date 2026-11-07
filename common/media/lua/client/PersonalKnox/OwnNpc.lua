@@ -76,13 +76,11 @@ function OwnNpc.install(adapters)
             if not ok then print("[PersonalKnox] Own population restore error: " .. tostring(err)) end
         end
         local count = 0
-        local okTraits, traits = pcall(function() return player:getTraits() end)
-        if okTraits and traits then
-            for _, n in ipairs({1, 2, 3, 4}) do
-                local id = "PersonalKnox:Companions" .. tostring(n)
-                local okHas, has = pcall(function() return traits:contains(id) end)
-                if okHas and has then count = n end
-            end
+        if PersonalKnoxAPI then
+            local okCount, javaCount = pcall(function()
+                return PersonalKnoxAPI.getInstance():ownCompanionTraitCount(player)
+            end)
+            if okCount and type(javaCount) == "number" then count = javaCount end
         end
         if count == 0 then count = Settings.companionCount() end
         if count > 0 and not (data and data.PersonalKnoxOwnNpc) and PersonalKnoxAPI then

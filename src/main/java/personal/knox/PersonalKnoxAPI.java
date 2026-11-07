@@ -140,6 +140,29 @@ public final class PersonalKnoxAPI {
     public String ownBodyInspect(String id) { return ownBodies.inspect(id); }
 
 
+    public int ownCompanionTraitCount(Object player) {
+        if (player == null) return 0;
+        try {
+            Object traits = player.getClass().getMethod("getCharacterTraits").invoke(player);
+            Object map = traits.getClass().getMethod("getTraits").invoke(traits);
+            int count = 0;
+            for (var entry : ((java.util.Map<?, ?>) map).entrySet()) {
+                if (!Boolean.TRUE.equals(entry.getValue())) continue;
+                String name = String.valueOf(entry.getKey().getClass().getMethod("getName").invoke(entry.getKey()));
+                int marker = name.indexOf("Companions");
+                if (marker < 0) continue;
+                String suffix = name.substring(marker + "Companions".length());
+                try {
+                    int value = Integer.parseInt(suffix);
+                    if (value >= 1 && value <= 4) count = Math.max(count, value);
+                } catch (NumberFormatException ignored) { }
+            }
+            return count;
+        } catch (Throwable ignored) {
+            return 0;
+        }
+    }
+
     public int ownCount() { return ownLayer.count(); }
 
     public String ownId(int index) {
