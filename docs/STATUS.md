@@ -422,3 +422,9 @@ A-Life события, задания и сумки — нужен загруж�
 - Сценарий: `knox=unavailable`, `status=OK`.
 - `summary passed=16 failed=0`, `player-clothed` PASS.
 - Игра выключена.
+
+### 0.14.0 — без loadModAfter Knox
+
+- `mod.info` больше не ссылается на Knox.
+- Профиль без Knox: `knox=unavailable`, **16/16**, игрок одет.
+- Игра выключена, тесты отключены.

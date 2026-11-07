@@ -1948,3 +1948,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - Профиль без Knox: `knox=unavailable`, **16/16** in-game, игрок и NPC одеты.
 - Java-ядро 0.13.18; тесты проходят.
 
+## 0.14.0 — без ссылок на Knox в mod.info
+
+- Удалён `loadModAfter` с Knox; мод не требует и не ждёт Knox.
+- Java-ядро 0.14.0; профиль без Knox — 16/16.

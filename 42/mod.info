@@ -1,11 +1,10 @@
 name=Personal Knox — наш отряд
 id=PersonalKnox
-modversion=0.13.18
+modversion=0.14.0
 versionMin=42.21
 versionMax=42.21
 require=\ZombieBuddy
-loadModAfter=\KnoxEventExpandedNpc,\KnoxEventExpandedNpcRU
 javaJarFile=media/java/client/PersonalKnox.jar
 javaPkgName=personal.knox
 ZBVersionMin=2.3.4
-description=Личное Java-дополнение: русские реплики, самообслуживание игрока, приоритеты работы и диагностика. Lua используется для меню, событий и предметов.
+description=Собственный Java-слой NPC, отряд, A-Life, самообслуживание игрока и диагностика. Knox не требуется; Lua используется для меню и событий.
