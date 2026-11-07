@@ -33,6 +33,8 @@ function OwnNpcPanel:createChildren()
             hold:initialise(); self:addChild(hold)
             local guard = ISButton:new(x + 132, y - 2, 68, 20, "Охрана", self, function() a:ownCommand(id, "GUARD", self.player:getX(), self.player:getY(), self.player:getZ()) end)
             guard:initialise(); self:addChild(guard)
+            local loot = ISButton:new(x + 204, y - 2, 52, 20, "Сбор", self, function() a:ownCommand(id, "LOOT", self.player:getX(), self.player:getY(), self.player:getZ()) end)
+            loot:initialise(); self:addChild(loot)
             y = y + 24
         end
     end
