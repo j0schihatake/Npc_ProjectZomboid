@@ -18,12 +18,14 @@ function OwnNpcPanel:createChildren()
     self:addChild(close)
     local a = api()
     if not a then return end
+    self.rowLabels = {}
     local y = 36
     for i = 0, a:ownCount() - 1 do
         local id = a:ownId(i)
         if id and id ~= "" then
             local label = ISLabel:new(10, y, 20, tostring(a:ownSummary(id)), 1, 1, 1, 1, UIFont.Small, false)
             self:addChild(label)
+            self.rowLabels[id] = label
             local x = self.width - 210
             local follow = ISButton:new(x, y - 2, 64, 20, "За мной", self, function() a:ownCommand(id, "FOLLOW", self.player:getX(), self.player:getY(), self.player:getZ()) end)
             follow:initialise(); self:addChild(follow)
@@ -35,6 +37,19 @@ function OwnNpcPanel:createChildren()
         end
     end
     self:setHeight(math.max(80, y + 8))
+end
+
+function OwnNpcPanel:update()
+    ISPanel.update(self)
+    local now = getTimestampMs()
+    if self.lastRefresh and now - self.lastRefresh < 1000 then return end
+    self.lastRefresh = now
+    local a = api()
+    if not a or not self.rowLabels then return end
+    for id, label in pairs(self.rowLabels) do
+        local summary = a:ownSummary(id)
+        if summary and summary ~= "" then label:setName(summary) end
+    end
 end
 
 function OwnNpcPanel:close()
