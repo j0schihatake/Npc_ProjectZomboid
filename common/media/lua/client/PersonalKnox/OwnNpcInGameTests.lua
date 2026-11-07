@@ -1,3 +1,4 @@
+local Settings = require "PersonalKnox/Settings"
 -- In-game obstacle course for the own-NPC layer. Run from Mod Options or F5.
 local Tests = {}
 local passed, failed = 0, 0
@@ -93,6 +94,9 @@ function Tests.run(player)
     check("damage-broken", function() return api:ownCombatDamage(1, 0, 0, 10, false) == 5 end)
     check("damage-ranged", function() return api:ownCombatDamage(5, 5, 10, 10, true) == 30 end)
     check("factions", function() return api:alifeOutposts() >= 1 end)
+    check("upkeep-repair", function() return api:upkeepNeedsRepair(1, 10) end)
+    check("upkeep-ammo", function() return api:upkeepAmmo(0, 30) > 0 end)
+    check("durability-setting", function() return Settings.infiniteDurability() == true end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
