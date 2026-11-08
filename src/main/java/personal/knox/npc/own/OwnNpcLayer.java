@@ -204,6 +204,37 @@ public final class OwnNpcLayer {
         return true;
     }
 
+    public String baseSnapshot() {
+        var out = new StringBuilder();
+        out.append("food=").append(baseFood).append(";water=").append(baseWater)
+                .append(";meds=").append(baseMeds).append(';');
+        for (var entry : professions.entrySet())
+            out.append("prof=").append(entry.getKey()).append(':').append(entry.getValue()).append(';');
+        return out.toString();
+    }
+
+    public void restoreBase(String text) {
+        if (text == null || text.isBlank()) return;
+        for (String row : text.split(";")) {
+            int eq = row.indexOf('=');
+            if (eq <= 0) continue;
+            String key = row.substring(0, eq);
+            String value = row.substring(eq + 1);
+            try {
+                switch (key) {
+                    case "food" -> baseFood = Math.max(0, Integer.parseInt(value));
+                    case "water" -> baseWater = Math.max(0, Integer.parseInt(value));
+                    case "meds" -> baseMeds = Math.max(0, Integer.parseInt(value));
+                    case "prof" -> {
+                        int colon = value.indexOf(':');
+                        if (colon > 0) profession(value.substring(0, colon), value.substring(colon + 1));
+                    }
+                    default -> { }
+                }
+            } catch (NumberFormatException ignored) { }
+        }
+    }
+
     public String baseStock() {
         return "food=" + baseFood + " water=" + baseWater + " meds=" + baseMeds;
     }

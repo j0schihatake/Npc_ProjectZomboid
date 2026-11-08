@@ -2182,3 +2182,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - Если у NPC нет еды/воды в инвентаре, он берёт запас базы.
 - `consumeBaseFood`/`consumeBaseWater`; in-game `base-feed`.
 - Без Knox **77/77**.
+## 0.56.0 — сохранение запаса и профессий базы
+
+- `ownBaseSnapshot`/`ownRestoreBase`: еда, вода, медицина, профессии.
+- Lua пишет в ModData и восстанавливает после создания тел.
+- In-game `base-persist`; без Knox **78/78**.

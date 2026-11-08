@@ -303,6 +303,14 @@ function Tests.run(player)
         local needs = api:ownNeeds(id)
         return string.find(needs, "thirst=0.400", 1, true) ~= nil
     end)
+    check("base-persist", function()
+        api:ownBaseProduce("WATER")
+        api:ownSetProfession(id, "WATER")
+        local snapshot = api:ownBaseSnapshot()
+        api:ownRestoreBase(snapshot)
+        return string.find(snapshot, "water=", 1, true) ~= nil
+            and string.find(snapshot, "prof=" .. id .. ":WATER", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

@@ -10,6 +10,7 @@ local last, lastLog, logged, lastSave = 0, 0, false, 0
 local pendingEquipment = nil
 local lastCorpseClean = 0
 local lastBaseProduce = 0
+local pendingBase = nil
 
 local function saveState()
     if isClient() or not PersonalKnoxAPI then return end
@@ -22,6 +23,7 @@ local function saveState()
     data.PersonalKnoxOwnPopulation=population
     data.PersonalKnoxTargetZ=targetZ
     data.PersonalKnoxEquipment=api:ownEquipmentSnapshot()
+    data.PersonalKnoxBase=api:ownBaseSnapshot()
 end
 
 local function tick()
@@ -67,6 +69,10 @@ local function tick()
             if cleaned and cleaned > 0 then print("[PersonalKnox][base] corpses=" .. tostring(cleaned)) end
         end
     end
+    if pendingBase and api:ownActive() > 0 then
+        pcall(function() api:ownRestoreBase(pendingBase) end)
+        pendingBase = nil
+    end
     if pendingEquipment and api:ownActive() > 0 then
         pcall(function() api:ownRestoreEquipment(pendingEquipment) end)
         pendingEquipment = nil
@@ -110,6 +116,7 @@ function OwnNpc.install(adapters)
         if not player or not PersonalKnoxAPI then return end
         local data = player:getModData() or {}
         pendingEquipment = data.PersonalKnoxEquipment
+        pendingBase = data.PersonalKnoxBase
         local ok, result = pcall(function()
             return PersonalKnoxAPI.getInstance():ownBootstrap(
                 player, Settings.companionCount(),

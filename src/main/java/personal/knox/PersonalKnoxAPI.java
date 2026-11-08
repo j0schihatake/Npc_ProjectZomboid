@@ -207,6 +207,9 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownProfession(String id) { return ownLayer.profession(id); }
+    public String ownBaseSnapshot() { return ownLayer.baseSnapshot(); }
+    public void ownRestoreBase(String text) { ownLayer.restoreBase(text); }
+
     public String ownBaseStock() { return ownLayer.baseStock(); }
 
     public String ownBaseProduce(String profession) { return ownLayer.baseProduce(profession); }
