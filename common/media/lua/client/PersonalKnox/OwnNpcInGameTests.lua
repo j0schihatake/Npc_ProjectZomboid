@@ -252,6 +252,12 @@ function Tests.run(player)
         local second = api:ownAlertPhrase(1)
         return first ~= nil and first ~= "" and second ~= nil and second ~= "" and first ~= second
     end)
+    check("equipment-snapshot", function()
+        api:ownHolster(id)
+        local snapshot = api:ownEquipmentSnapshot()
+        api:ownDraw(id)
+        return snapshot ~= nil and string.find(snapshot, "=H:", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

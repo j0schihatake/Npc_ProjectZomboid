@@ -568,6 +568,23 @@ public final class OwnNpcBodyAdapter {
         return armed;
     }
 
+    public String equipmentSnapshot() {
+        var out = new StringBuilder();
+        for (var entry : bodies.entrySet()) {
+            try {
+                Object item = entry.getValue().getClass().getMethod("getPrimaryHandItem").invoke(entry.getValue());
+                if (item != null) {
+                    out.append(entry.getKey()).append("=P:")
+                            .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
+                } else {
+                    String holster = holstered.get(entry.getKey());
+                    if (holster != null) out.append(entry.getKey()).append("=H:").append(holster).append(';');
+                }
+            } catch (Throwable ignored) { }
+        }
+        return out.toString();
+    }
+
     public String autoWeapon(String id, boolean threat) {
         return threat ? draw(id) : holster(id);
     }

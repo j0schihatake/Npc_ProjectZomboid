@@ -18,6 +18,7 @@ local function saveState()
     data.PersonalKnoxOwnNpc=agents
     data.PersonalKnoxOwnPopulation=population
     data.PersonalKnoxTargetZ=targetZ
+    data.PersonalKnoxEquipment=api:ownEquipmentSnapshot()
 end
 
 local function tick()

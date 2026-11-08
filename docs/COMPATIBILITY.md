@@ -2156,3 +2156,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `OwnNpcAlert`: набор коротких русских фраз.
 - При групповой тревоге один NPC произносит случайную фразу.
 - In-game `alert-phrase`; без Knox **68/68**.
+## 0.47.0 — снимок оружия
+
+- `ownEquipmentSnapshot`: `id=P:type` или `id=H:type`.
+- Состояние пишется в ModData вместе с отрядом.
+- In-game `equipment-snapshot`; без Knox **69/69**.
