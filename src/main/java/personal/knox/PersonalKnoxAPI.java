@@ -195,6 +195,8 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownGiveWeapon(String id, Object player) { return ownBodies.giveWeaponFromPlayer(id, player); }
+    public String ownLastWeapon(String id) { return ownBodies.lastWeapon(id); }
+
     public String ownEquipmentSnapshot() { return ownBodies.equipmentSnapshot(); }
     public void ownRestoreEquipment(String text) { ownBodies.restoreEquipment(text); }
 

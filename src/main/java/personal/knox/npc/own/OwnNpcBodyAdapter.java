@@ -19,6 +19,7 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, double[]> lastAim = new HashMap<>();
     private final Map<String, String> holstered = new HashMap<>();
     private final Map<String, String> pendingEquipment = new HashMap<>();
+    private final Map<String, String> lastWeapon = new HashMap<>();
     private volatile String startingWeapon = "melee";
     private volatile int factionRangedChance = 40;
     private volatile int factionMeleeChance = 40;
@@ -41,6 +42,7 @@ public final class OwnNpcBodyAdapter {
                 seen.add(agent.id());
                 Object body = bodies.get(agent.id());
                 if (body != null) {
+                    rememberWeapon(agent.id(), body);
                     syncHealth(layer, agent.id(), body);
                     attack(agent.id(), body, zombies);
                     autoWeapon(agent.id(), lastAim.containsKey(agent.id()) || groupAlert);
@@ -584,6 +586,15 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String lastWeapon(String id) { return lastWeapon.getOrDefault(id, ""); }
+
+    private void rememberWeapon(String id, Object body) {
+        try {
+            Object item = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
+            if (item != null) lastWeapon.put(id, String.valueOf(item.getClass().getMethod("getFullType").invoke(item)));
+        } catch (Throwable ignored) { }
+    }
+
     private void applyEquipment(Object body, String value) {
         try {
             String marker = value.substring(0, 2);
@@ -802,7 +813,8 @@ public final class OwnNpcBodyAdapter {
             boolean factionUnit = faction != null && !faction.isBlank() && !"own".equalsIgnoreCase(faction);
             var kit = OwnNpcFactionKit.kit(faction, factionRangedChance, factionMeleeChance,
                     java.util.concurrent.ThreadLocalRandom.current().nextInt(100));
-            String weapon = factionUnit ? kit.weapon() : switch (startingWeapon) {
+            String remembered = lastWeapon.get(id);
+            String weapon = remembered != null ? remembered : factionUnit ? kit.weapon() : switch (startingWeapon) {
                 case "firearm" -> "Base.Pistol";
                 case "none" -> "";
                 default -> "Base.BaseballBat";

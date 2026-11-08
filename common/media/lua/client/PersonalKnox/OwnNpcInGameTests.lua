@@ -265,6 +265,11 @@ function Tests.run(player)
         api:ownRestoreEquipment(snapshot)
         return api:ownPrimaryItem(id) == ""
     end)
+    check("equipment-persist", function()
+        api:ownDebugEquip(id, "Base.Pistol", 0)
+        api:ownBodiesSync()
+        return string.find(api:ownLastWeapon(id), "Base.Pistol", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
