@@ -143,6 +143,7 @@ public final class PersonalKnoxAPI {
 
     public String ownDismantleStart(String id) { return ownBodies.startDismantle(id); }
     public String ownDebugObstacle(String id) { return ownBodies.debugFindObstacle(id); }
+    public String ownPosition(String id) { return ownBodies.position(id); }
 
     public String ownDismantleTick(String id, double seconds) { return ownBodies.tickDismantle(id, seconds); }
 

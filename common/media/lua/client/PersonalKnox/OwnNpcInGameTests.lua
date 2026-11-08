@@ -148,6 +148,13 @@ function Tests.run(player)
         api:ownDebugEquip(id, "Base.Pistol", 0)
         return api:ownGiveItems(id, player) >= 1
     end)
+    check("formation", function()
+        if api:ownCount() < 2 then return true end
+        api:ownCommandAll("FOLLOW", x, y, z)
+        local a = api:ownPosition(api:ownId(0))
+        local b = api:ownPosition(api:ownId(1))
+        return a ~= nil and b ~= nil and a ~= b
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)

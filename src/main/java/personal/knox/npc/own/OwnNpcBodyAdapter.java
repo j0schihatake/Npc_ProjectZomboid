@@ -64,7 +64,16 @@ public final class OwnNpcBodyAdapter {
                         if (Math.hypot(agent.x() - loot[0], agent.y() - loot[1]) < 1.8) loot(agent.id(), body, layer);
                     }
                 }
-                move(agent.id(), body, agent.x(), agent.y(), agent.z(), agent.targetX(), agent.targetY(), layer.targetZ(agent.id()));
+                double tx = agent.targetX(), ty = agent.targetY();
+                if (layer.orderOf(agent.id()) == OwnNpcOrder.FOLLOW) {
+                    var group = layer.agents();
+                    int index = 0;
+                    for (int i = 0; i < group.size(); i++) if (group.get(i).id().equals(agent.id())) { index = i; break; }
+                    double angle = group.isEmpty() ? 0 : (Math.PI * 2 * index / group.size());
+                    tx += Math.cos(angle) * 1.4;
+                    ty += Math.sin(angle) * 1.4;
+                }
+                move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, layer.targetZ(agent.id()));
             }
             if (System.currentTimeMillis() - lastMoveLog >= 10_000L) {
                 lastMoveLog = System.currentTimeMillis();
@@ -127,6 +136,16 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable ignored) {
             return "";
         }
+    }
+
+    public String position(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            return String.format(java.util.Locale.ROOT, "x=%.2f y=%.2f",
+                    ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue(),
+                    ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue());
+        } catch (Throwable error) { return ""; }
     }
 
     public String debugFindObstacle(String id) {
