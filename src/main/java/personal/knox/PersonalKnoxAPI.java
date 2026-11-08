@@ -200,6 +200,15 @@ public final class PersonalKnoxAPI {
     public String ownEquipmentSnapshot() { return ownBodies.equipmentSnapshot(); }
     public void ownRestoreEquipment(String text) { ownBodies.restoreEquipment(text); }
 
+    public String ownBaseStaffing(int total, String priority) {
+        var assignments = personal.knox.npc.own.OwnBaseStaffing.plan(total,
+                personal.knox.npc.own.OwnBaseStaffing.parse(priority));
+        var out = new StringBuilder();
+        for (var assignment : assignments) out.append(assignment.profession()).append('=')
+                .append(assignment.count()).append(';');
+        return out.toString();
+    }
+
     public String ownAlertPhrase(int roll) { return personal.knox.npc.own.OwnNpcAlert.phrase(roll); }
 
     public int ownArmedCount() { return ownBodies.armedCount(); }

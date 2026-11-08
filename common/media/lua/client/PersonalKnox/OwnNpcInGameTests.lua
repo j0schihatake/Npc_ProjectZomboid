@@ -270,6 +270,11 @@ function Tests.run(player)
         api:ownBodiesSync()
         return string.find(api:ownLastWeapon(id), "Base.Pistol", 1, true) ~= nil
     end)
+    check("base-staffing", function()
+        local plan = api:ownBaseStaffing(8, "GUARD,FARMER,COOK,WATER")
+        return string.find(plan, "GUARD=2", 1, true) ~= nil
+            and string.find(plan, "FARMER=2", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
