@@ -395,6 +395,13 @@ function Tests.run(player)
         local recipe = api:ownBaseCookRecipe()
         return sleep ~= nil and radio ~= nil and guard ~= nil and recipe ~= nil
     end)
+    check("facilities", function()
+        for i = 1, 4 do api:ownBaseProduce("BUILD") end
+        local built = api:ownBuildFacility("FARM")
+        local produced = api:ownFacilityTick()
+        return built ~= nil and string.find(built, "built FARM", 1, true) ~= nil
+            and produced ~= nil and string.find(produced, "food=", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

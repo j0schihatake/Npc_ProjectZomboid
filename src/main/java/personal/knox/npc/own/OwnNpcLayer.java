@@ -203,6 +203,7 @@ public final class OwnNpcLayer {
     private int vehicleFuel = 0;
     private final personal.knox.npc.own.OwnBaseRules rules = new personal.knox.npc.own.OwnBaseRules();
     private final java.util.ArrayDeque<String> journal = new java.util.ArrayDeque<>();
+    private final java.util.Map<String, Integer> facilities = new java.util.LinkedHashMap<>();
     private personal.knox.npc.own.OwnBaseBlueprint.State blueprint = null;
 
     public boolean consumeBaseFood() {
@@ -234,6 +235,7 @@ public final class OwnNpcLayer {
                 .append(";morale=").append(morale).append(";alarm=").append(alarm)
                 .append(";clean=").append(cleanClothes).append(";vehicleFuel=").append(vehicleFuel)
                 .append(";farm=").append(farmStage).append(';');
+        facilities.forEach((k, v) -> out.append("fac=").append(k).append(':').append(v).append(';'));
         if (blueprint != null) {
             out.append("bp=").append(blueprint.width()).append(',').append(blueprint.height())
                     .append(',').append(blueprint.done()).append(',').append(blueprint.work()).append(';');
@@ -263,6 +265,10 @@ public final class OwnNpcLayer {
                     case "clean" -> cleanClothes = Math.max(0, Integer.parseInt(value));
                     case "vehicleFuel" -> vehicleFuel = Math.max(0, Integer.parseInt(value));
                     case "farm" -> farmStage = Math.max(0, Math.min(4, Integer.parseInt(value)));
+                    case "fac" -> {
+                        int colon = value.indexOf(':');
+                        if (colon > 0) facilities.put(value.substring(0, colon), Math.max(0, Integer.parseInt(value.substring(colon + 1))));
+                    }
                     case "bp" -> {
                         String[] p = value.split(",");
                         if (p.length == 4) blueprint = new personal.knox.npc.own.OwnBaseBlueprint.State(
@@ -397,6 +403,72 @@ public final class OwnNpcLayer {
     public String baseOps() {
         return "morale=" + morale + " alarm=" + alarm + " journal=" + journal.size()
                 + " clean=" + cleanClothes + " vehicleFuel=" + vehicleFuel;
+    }
+
+    public String nap() { morale = Math.min(100, morale + 4); return "morale=" + morale; }
+    public String coffee() {
+        if (baseWater < 1) return "no-water";
+        baseWater--; morale = Math.min(100, morale + 3); return baseStock();
+    }
+    public String read() { morale = Math.min(100, morale + 2); return "morale=" + morale; }
+    public String music() { morale = Math.min(100, morale + 2); return "morale=" + morale; }
+    public String cards() { morale = Math.min(100, morale + 2); return "morale=" + morale; }
+    public String shave() { morale = Math.min(100, morale + 1); return "morale=" + morale; }
+    public String stretch() { morale = Math.min(100, morale + 1); return "morale=" + morale; }
+    public String cleanWeapon() {
+        if (baseMaterials < 1) return "no-materials";
+        baseMaterials--; morale = Math.min(100, morale + 1); return baseStock();
+    }
+    public String inspectArmor() { alarm = Math.max(alarm, 0); return "armor ok alarm=" + alarm; }
+    public String planDay() { record("plan"); return "journal=" + journal.size(); }
+
+    public String buildFacility(String kind) {
+        String name = personal.knox.npc.own.OwnBaseFacilities.normalize(kind);
+        if (name.isEmpty()) return "invalid-facility";
+        int level = facilities.getOrDefault(name, 0);
+        if (level >= personal.knox.npc.own.OwnBaseFacilities.maxLevel(name)) return "max-level";
+        int cost = personal.knox.npc.own.OwnBaseFacilities.cost(name, level);
+        if (baseMaterials < cost) return "need-materials=" + cost;
+        baseMaterials -= cost;
+        facilities.put(name, level + 1);
+        record("build " + name + "=" + (level + 1));
+        return "built " + name + "=" + (level + 1) + " " + baseStock();
+    }
+
+    public String facilityTick() {
+        if (facilities.isEmpty()) return "facilities=none";
+        int food = 0, water = 0, materials = 0, ammo = 0, meds = 0;
+        for (var entry : facilities.entrySet()) {
+            int level = entry.getValue();
+            switch (personal.knox.npc.own.OwnBaseFacilities.output(entry.getKey())) {
+                case "food" -> food += level;
+                case "water" -> water += level;
+                case "materials" -> materials += level;
+                case "ammo" -> ammo += level;
+                case "meds" -> meds += level;
+                default -> { }
+            }
+        }
+        baseFood = Math.min(rules.get("foodCap"), baseFood + food);
+        baseWater = Math.min(rules.get("waterCap"), baseWater + water);
+        baseMaterials = Math.min(rules.get("materialsCap"), baseMaterials + materials);
+        baseAmmo = Math.min(rules.get("ammoCap"), baseAmmo + ammo);
+        baseMeds = Math.min(rules.get("medsCap"), baseMeds + meds);
+        return "produced food=" + food + " water=" + water + " materials=" + materials
+                + " ammo=" + ammo + " meds=" + meds;
+    }
+
+    public String facilities() {
+        if (facilities.isEmpty()) return "facilities=none";
+        var out = new StringBuilder();
+        facilities.forEach((k, v) -> out.append(k).append('=').append(v).append(';'));
+        return out.toString();
+    }
+
+    public String facilityOutput() {
+        var out = new StringBuilder();
+        facilities.forEach((k, v) -> out.append(personal.knox.npc.own.OwnBaseFacilities.output(k)).append('=').append(v).append(';'));
+        return out.toString();
     }
 
     public String sleep() { morale = Math.min(100, morale + 10); record("sleep"); return "morale=" + morale; }

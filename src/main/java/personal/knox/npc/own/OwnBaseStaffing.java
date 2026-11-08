@@ -7,7 +7,9 @@ import java.util.List;
 public final class OwnBaseStaffing {
     public enum Profession {
         FARMER, WATER, FIRE, CORPSE, CLEAN, COOK, LAUNDRY, FISH, HUNT,
-        SCAVENGE, CRAFT, BUILD, GUARD, PATROL, ENFORCER, DRIVER
+        SCAVENGE, CRAFT, BUILD, GUARD, PATROL, ENFORCER, DRIVER,
+        MEDIC, MECHANIC, ELECTRICIAN, METALWORKER, TAILOR, BREWER,
+        HERBALIST, TRAPPER, LOOKOUT, QUARTERMASTER
     }
 
     public record Assignment(Profession profession, int count) {}
@@ -45,6 +47,9 @@ public final class OwnBaseStaffing {
         return List.of(Profession.GUARD, Profession.FARMER, Profession.COOK, Profession.WATER,
                 Profession.BUILD, Profession.SCAVENGE, Profession.CRAFT, Profession.CLEAN,
                 Profession.PATROL, Profession.ENFORCER, Profession.FIRE, Profession.CORPSE,
-                Profession.LAUNDRY, Profession.FISH, Profession.HUNT, Profession.DRIVER);
+                Profession.LAUNDRY, Profession.FISH, Profession.HUNT, Profession.DRIVER,
+                Profession.MEDIC, Profession.MECHANIC, Profession.ELECTRICIAN, Profession.METALWORKER,
+                Profession.TAILOR, Profession.BREWER, Profession.HERBALIST, Profession.TRAPPER,
+                Profession.LOOKOUT, Profession.QUARTERMASTER);
     }
 }

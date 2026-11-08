@@ -264,6 +264,20 @@ public final class PersonalKnoxAPI {
     public String ownBaseGuardDuty() { return ownLayer.guardDuty(); }
     public String ownBaseRepairClothing() { return ownLayer.repairClothing(); }
     public String ownBaseCookRecipe() { return ownLayer.cookRecipe(); }
+    public String ownBuildFacility(String kind) { return ownLayer.buildFacility(kind); }
+    public String ownFacilities() { return ownLayer.facilities(); }
+    public String ownFacilityOutput() { return ownLayer.facilityOutput(); }
+    public String ownFacilityTick() { return ownLayer.facilityTick(); }
+    public String ownBaseNap() { return ownLayer.nap(); }
+    public String ownBaseCoffee() { return ownLayer.coffee(); }
+    public String ownBaseRead() { return ownLayer.read(); }
+    public String ownBaseMusic() { return ownLayer.music(); }
+    public String ownBaseCards() { return ownLayer.cards(); }
+    public String ownBaseShave() { return ownLayer.shave(); }
+    public String ownBaseStretch() { return ownLayer.stretch(); }
+    public String ownBaseCleanWeapon() { return ownLayer.cleanWeapon(); }
+    public String ownBaseInspectArmor() { return ownLayer.inspectArmor(); }
+    public String ownBasePlanDay() { return ownLayer.planDay(); }
 
     public boolean ownHasProfession(String profession) {
         if (profession == null) return false;
