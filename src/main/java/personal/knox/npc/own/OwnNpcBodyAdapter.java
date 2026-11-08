@@ -414,6 +414,32 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String supplyState(String id, OwnNpcLayer layer) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        var agent = layer.agent(id);
+        if (agent == null) return "no-agent";
+        boolean food = false, drink = false;
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
+                String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                if ("Food".equalsIgnoreCase(category)) food = true;
+                if (type.contains("Water") || type.contains("Pop")
+                        || "Drink".equalsIgnoreCase(category) || "Water".equalsIgnoreCase(category)
+                        || "WaterContainer".equalsIgnoreCase(category)) drink = true;
+            }
+        } catch (Throwable ignored) { }
+        if (agent.state().hunger() >= 0.6 && !food) return layer.supplies(id) > 0 ? "food-from-supplies" : "need-food";
+        if (agent.state().thirst() >= 0.6 && !drink) return layer.supplies(id) > 0 ? "water-from-supplies" : "need-water";
+        return "ok";
+    }
+
     public String consumeDrink(String id) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";

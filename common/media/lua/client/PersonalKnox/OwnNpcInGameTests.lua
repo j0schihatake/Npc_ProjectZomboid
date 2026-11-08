@@ -193,6 +193,12 @@ function Tests.run(player)
         local result = api:ownDebugLoot(id)
         return result ~= nil and result ~= "no-container" and api:ownSupplies(id) >= 1
     end)
+    check("supply-shortage", function()
+        api:ownDebugSupplies(id, 0)
+        api:ownDebugSetNeeds(id, 0.9, 0.9)
+        local state = api:ownSupplyState(id)
+        return state == "need-food" or state == "need-water"
+    end)
     check("snapshot-restore", function()
         local before = api:ownSnapshot()
         if before == nil or before == "" then return false end
