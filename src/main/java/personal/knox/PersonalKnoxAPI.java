@@ -185,6 +185,17 @@ public final class PersonalKnoxAPI {
     public void ownSetStartingWeapon(String type) { ownBodies.setStartingWeapon(type); }
     public String ownStartingWeapon() { return ownBodies.startingWeapon(); }
     public String ownAutoEquip(String id) { return ownBodies.autoEquip(id); }
+    public String ownDebugPlayerItem(Object player, String type) {
+        if (player == null || type == null) return "no-player";
+        try {
+            Object inv = player.getClass().getMethod("getInventory").invoke(player);
+            inv.getClass().getMethod("AddItem", String.class).invoke(inv, type);
+            return type;
+        } catch (Throwable error) { return "add-error=" + error.getClass().getSimpleName(); }
+    }
+
+    public String ownGiveWeapon(String id, Object player) { return ownBodies.giveWeaponFromPlayer(id, player); }
+
     public String ownInventory(String id) { return ownBodies.inventorySummary(id); }
     public String ownEat(String id) {
         String result = ownBodies.consumeFood(id);

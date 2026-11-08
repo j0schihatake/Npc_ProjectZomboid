@@ -539,6 +539,33 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable error) { return ""; }
     }
 
+    public String giveWeaponFromPlayer(String id, Object player) {
+        Object body = bodies.get(id);
+        if (body == null || player == null) return "no-body";
+        try {
+            Object from = player.getClass().getMethod("getInventory").invoke(player);
+            Object items = from.getClass().getMethod("getItems").invoke(from);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            Object chosen = null;
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
+                if ("Weapon".equalsIgnoreCase(category)) { chosen = item; break; }
+            }
+            if (chosen == null) return "no-weapon-in-player";
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object added = inventory.getClass().getMethod("AddItem",
+                    Class.forName("zombie.inventory.InventoryItem")).invoke(inventory, chosen);
+            if (added == null) return "inventory-full";
+            body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                    .invoke(body, added);
+            from.getClass().getMethod("Remove", Class.forName("zombie.inventory.InventoryItem"))
+                    .invoke(from, chosen);
+            return String.valueOf(added.getClass().getMethod("getFullType").invoke(added));
+        } catch (Throwable error) { return "give-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String autoEquip(String id) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";

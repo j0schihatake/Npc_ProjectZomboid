@@ -2126,3 +2126,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `OwnBaseDefense`: окна занимают вооружённые, резерв у дверей, безоружные прячутся.
 - In-game `base-defense-plan`: 4 стрелка, 6 безоружных, 2 окна → windows=2 reserve=2 hidden=6.
 - Без Knox **62/62**.
+## 0.40.0 — игрок выдаёт NPC оружие
+
+- `ownGiveWeapon`: берёт оружие из инвентаря игрока, передаёт NPC и берёт в руку.
+- In-game `give-weapon`; без Knox **63/63**.
