@@ -187,6 +187,12 @@ function Tests.run(player)
         api:ownEat(id)
         return api:ownSupplies(id) == 4
     end)
+    check("loot-container", function()
+        api:ownDebugSupplies(id, 0)
+        if api:ownDebugPlaceLoot(id) ~= "placed" then return false end
+        local result = api:ownDebugLoot(id)
+        return result ~= nil and result ~= "no-container" and api:ownSupplies(id) >= 1
+    end)
     check("snapshot-restore", function()
         local before = api:ownSnapshot()
         if before == nil or before == "" then return false end

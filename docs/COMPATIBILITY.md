@@ -2100,3 +2100,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
 
 - In-game `snapshot-restore`: снимок отряда кодируется и восстанавливается.
 - Без Knox: **55/55**.
+## 0.30.0 — сбор из контейнера
+
+- `ownDebugPlaceLoot`/`ownDebugLoot`; реальный контейнер, перенос предметов,
+  рост припасов.
+- In-game `loot-container`: `items=8`, supplies растут.
+- Без Knox: **56/56**.

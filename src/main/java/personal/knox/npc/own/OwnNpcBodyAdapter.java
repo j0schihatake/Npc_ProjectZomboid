@@ -656,6 +656,33 @@ public final class OwnNpcBodyAdapter {
         System.out.println("[PersonalKnox] Own body dress failed");
     }
 
+    public String debugPlaceLoot(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
+            if (square == null) return "no-square";
+            square.getClass().getMethod("AddWorldInventoryItem", String.class, float.class, float.class, float.class)
+                    .invoke(square, "Base.Bread", 0.5f, 0.5f, 0f);
+            return "placed";
+        } catch (Throwable error) { return "place-error=" + error.getClass().getSimpleName(); }
+    }
+
+    public String debugLoot(String id, OwnNpcLayer layer) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object cell = currentCell();
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            double bz = ((Number) body.getClass().getMethod("getZ").invoke(body)).doubleValue();
+            double[] point = findLoot(cell, bx, by, bz, id);
+            if (point == null) return "no-container";
+            loot(id, body, layer);
+            return "looted";
+        } catch (Throwable error) { return "loot-error=" + error.getClass().getSimpleName(); }
+    }
+
     private double[] findLoot(Object cell, double cx, double cy, double cz, String id) {
         try {
             for (int radius = 1; radius <= 8; radius++) {

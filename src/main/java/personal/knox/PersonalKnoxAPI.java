@@ -169,6 +169,8 @@ public final class PersonalKnoxAPI {
 
     public String ownNeeds(String id) { return ownLayer.needs(id); }
     public int ownSupplies(String id) { return ownLayer.supplies(id); }
+    public String ownDebugPlaceLoot(String id) { return ownBodies.debugPlaceLoot(id); }
+    public String ownDebugLoot(String id) { return ownBodies.debugLoot(id, ownLayer); }
     public void ownDebugSupplies(String id, int amount) { ownLayer.debugSetSupplies(id, amount); }
     public void ownDebugSetNeeds(String id, double hunger, double thirst) { ownLayer.debugSetNeeds(id, hunger, thirst); }
     public String ownDebugItem(String id, String type) {
