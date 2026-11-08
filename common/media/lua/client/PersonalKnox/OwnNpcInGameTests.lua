@@ -275,6 +275,11 @@ function Tests.run(player)
         return string.find(plan, "GUARD=2", 1, true) ~= nil
             and string.find(plan, "FARMER=2", 1, true) ~= nil
     end)
+    check("profession", function()
+        local assigned = api:ownSetProfession(id, "FARMER")
+        return assigned == "FARMER" and api:ownProfession(id) == "FARMER"
+            and string.find(api:ownSummary(id), "profession=FARMER", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

@@ -2172,3 +2172,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `OwnBaseStaffing`: 16 профессий, приоритеты, распределение работников.
 - `ownBaseStaffing`; in-game `base-staffing`.
 - Без Knox **72/72**.
+## 0.51.0 — профессия NPC
+
+- `ownSetProfession`/`ownProfession`; профессия видна в сводке NPC.
+- 16 профессий базы; in-game `profession`.
+- Без Knox **73/73**.

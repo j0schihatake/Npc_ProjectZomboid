@@ -96,6 +96,7 @@ public final class PersonalKnoxAPI {
                 + " task=" + agent.state().task()
                 + " health=" + String.format(java.util.Locale.ROOT, "%.0f", agent.state().health())
                 + " supplies=" + agent.supplies()
+                + " profession=" + ownLayer.profession(id)
                 + " pos=" + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", agent.x(), agent.y(), agent.z())
                 + " tools=" + tools;
     }
@@ -199,6 +200,13 @@ public final class PersonalKnoxAPI {
 
     public String ownEquipmentSnapshot() { return ownBodies.equipmentSnapshot(); }
     public void ownRestoreEquipment(String text) { ownBodies.restoreEquipment(text); }
+
+    public String ownSetProfession(String id, String profession) {
+        ownLayer.profession(id, profession);
+        return ownLayer.profession(id);
+    }
+
+    public String ownProfession(String id) { return ownLayer.profession(id); }
 
     public String ownBaseStaffing(int total, String priority) {
         var assignments = personal.knox.npc.own.OwnBaseStaffing.plan(total,

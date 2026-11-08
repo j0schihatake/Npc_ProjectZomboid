@@ -187,6 +187,14 @@ public final class OwnNpcLayer {
     }
 
     private final java.util.Map<String, double[]> groupMissions = new java.util.HashMap<>();
+    private final java.util.Map<String, String> professions = new java.util.HashMap<>();
+
+    public void profession(String id, String value) {
+        if (agent(id) == null || value == null || value.isBlank()) return;
+        professions.put(id, value.trim().toUpperCase(java.util.Locale.ROOT));
+    }
+
+    public String profession(String id) { return professions.getOrDefault(id, "NONE"); }
 
     public void groupMission(String groupId, double x, double y, double z) {
         groupMissions.put(groupId, new double[]{x, y, z});
