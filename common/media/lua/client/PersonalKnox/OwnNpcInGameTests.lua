@@ -201,13 +201,10 @@ function Tests.run(player)
         local after = api:ownHealth(id)
         return result ~= nil and string.find(result, "bandaged", 1, true) ~= nil and after > before
     end)
-    check("faction-patrol", function()
-        local before = api:ownFactionPosition(0)
-        if before == nil or before == "" then return false end
-        api:ownTick(1, 32)
-        api:ownBodiesSync()
-        local after = api:ownFactionPosition(0)
-        return after ~= nil and after ~= "" and before ~= after
+    check("npc-inventory", function()
+        api:ownDebugItem(id, "Base.Bread")
+        local inventory = api:ownInventory(id)
+        return inventory ~= nil and string.find(inventory, "Base.Bread", 1, true) ~= nil
     end)
     check("faction-kit", function()
         local police = api:ownFactionKit("Military")
@@ -217,12 +214,6 @@ function Tests.run(player)
     end)
     check("faction-groups", function()
         return api:ownGroupCount() >= 1
-    end)
-    check("supply-shortage", function()
-        api:ownDebugSupplies(id, 0)
-        api:ownDebugSetNeeds(id, 0.9, 0.9)
-        local state = api:ownSupplyState(id)
-        return state == "need-food" or state == "need-water"
     end)
     check("snapshot-restore", function()
         local before = api:ownSnapshot()

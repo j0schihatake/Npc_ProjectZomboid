@@ -163,6 +163,7 @@ public final class PersonalKnoxAPI {
     public void ownSetStartingWeapon(String type) { ownBodies.setStartingWeapon(type); }
     public String ownStartingWeapon() { return ownBodies.startingWeapon(); }
     public String ownAutoEquip(String id) { return ownBodies.autoEquip(id); }
+    public String ownInventory(String id) { return ownBodies.inventorySummary(id); }
     public String ownEat(String id) {
         String result = ownBodies.consumeFood(id);
         if (result.startsWith("ate ")) {

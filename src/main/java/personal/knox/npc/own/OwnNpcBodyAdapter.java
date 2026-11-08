@@ -517,6 +517,26 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable error) { return "eat-error=" + error.getClass().getSimpleName(); }
     }
 
+    public String inventorySummary(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            var counts = new java.util.LinkedHashMap<String, Integer>();
+            for (int i = 0; i < size && counts.size() < 16; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                counts.merge(type, 1, Integer::sum);
+            }
+            var out = new StringBuilder();
+            counts.forEach((type, count) -> out.append(type).append('x').append(count).append(';'));
+            return out.toString();
+        } catch (Throwable error) { return ""; }
+    }
+
     public String autoEquip(String id) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";
