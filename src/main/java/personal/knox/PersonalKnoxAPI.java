@@ -102,6 +102,9 @@ public final class PersonalKnoxAPI {
 
     public int ownActive() { return ownLayer.count(); }
     public int ownGroupCount() { return ownPopulation.groups().size(); }
+    public void ownGroupMission(String groupId, double x, double y, double z) {
+        ownLayer.groupMission(groupId, x, y, z);
+    }
 
     public String ownDamage(String id, double amount) {
         return ownLayer.damage(id, amount).type().name();
@@ -145,6 +148,14 @@ public final class PersonalKnoxAPI {
     public String ownDismantleStart(String id) { return ownBodies.startDismantle(id); }
     public String ownDebugObstacle(String id) { return ownBodies.debugFindObstacle(id); }
     public String ownPosition(String id) { return ownBodies.position(id); }
+    public String ownFactionPosition(int index) {
+        int seen = 0;
+        for (var agent : ownLayer.agents()) {
+            if (!agent.id().startsWith("own-faction")) continue;
+            if (seen++ == index) return ownBodies.position(agent.id());
+        }
+        return "";
+    }
     public void ownSetStartingWeapon(String type) { ownBodies.setStartingWeapon(type); }
     public String ownStartingWeapon() { return ownBodies.startingWeapon(); }
     public String ownAutoEquip(String id) { return ownBodies.autoEquip(id); }

@@ -66,6 +66,12 @@ public final class OwnNpcBodyAdapter {
                         if (Math.hypot(agent.x() - loot[0], agent.y() - loot[1]) < 1.8) loot(agent.id(), body, layer);
                     }
                 }
+                if (agent.id().startsWith("own-faction") && layer.orderOf(agent.id()) == OwnNpcOrder.GUARD
+                        && Math.hypot(agent.targetX() - agent.x(), agent.targetY() - agent.y()) < 1.2) {
+                    double nx = agent.x() + java.util.concurrent.ThreadLocalRandom.current().nextDouble(-6, 6);
+                    double ny = agent.y() + java.util.concurrent.ThreadLocalRandom.current().nextDouble(-6, 6);
+                    layer.order(agent.id(), OwnNpcOrder.GUARD, nx, ny);
+                }
                 double tx = agent.targetX(), ty = agent.targetY();
                 if (layer.orderOf(agent.id()) == OwnNpcOrder.FOLLOW) {
                     var group = layer.agents();

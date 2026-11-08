@@ -186,6 +186,16 @@ public final class OwnNpcLayer {
         agents.put(id, agent.withState(state.withHealth(Math.min(100, state.health() + amount)).withBleeding(false)));
     }
 
+    private final java.util.Map<String, double[]> groupMissions = new java.util.HashMap<>();
+
+    public void groupMission(String groupId, double x, double y, double z) {
+        groupMissions.put(groupId, new double[]{x, y, z});
+    }
+
+    public double[] groupMission(String groupId) {
+        return groupMissions.get(groupId);
+    }
+
     public int supplies(String id) {
         var agent = agent(id);
         return agent == null ? 0 : agent.supplies();

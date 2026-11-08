@@ -25,8 +25,9 @@ public final class OwnNpcPromotion {
             layer.spawn(new OwnNpcAgent(id, group.factionId(), group.x() + offsetX, group.y() + offsetY, 0,
                     group.x() + offsetX, group.y() + offsetY, 2, state));
             if (group.id().startsWith("own-faction")) {
-                double patrolX = group.x() + offsetX + (i % 2 == 0 ? 5 : -5);
-                double patrolY = group.y() + offsetY + (i % 3 == 0 ? 4 : -4);
+                double[] mission = layer.groupMission(group.id());
+                double patrolX = mission != null ? mission[0] + offsetX : group.x() + offsetX + (i % 2 == 0 ? 5 : -5);
+                double patrolY = mission != null ? mission[1] + offsetY : group.y() + offsetY + (i % 3 == 0 ? 4 : -4);
                 layer.order(id, OwnNpcOrder.GUARD, patrolX, patrolY);
             }
             created++;
