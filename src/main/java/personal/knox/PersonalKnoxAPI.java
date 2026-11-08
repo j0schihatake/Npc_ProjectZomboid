@@ -252,6 +252,18 @@ public final class PersonalKnoxAPI {
     public int ownGeneratorHours(int fuel) { return ownLayer.generatorHours(fuel); }
     public int ownVehicleFuelCost(int km) { return ownLayer.vehicleFuelCost(km); }
     public String ownEquipmentTemplate(String profession) { return ownLayer.equipmentTemplate(profession); }
+    public String ownBaseRule(String key, int value) { return ownLayer.rule(key, value); }
+    public String ownBaseRules() { return ownLayer.rules(); }
+    public String ownBaseSleep() { return ownLayer.sleep(); }
+    public String ownBaseShower() { return ownLayer.shower(); }
+    public String ownBaseFortifyWindow() { return ownLayer.fortifyWindow(); }
+    public String ownBaseWatchtower() { return ownLayer.watchtower(); }
+    public String ownBaseRadio() { return ownLayer.radioBroadcast(); }
+    public String ownBaseTrade() { return ownLayer.trade(); }
+    public String ownBaseTrain() { return ownLayer.train(); }
+    public String ownBaseGuardDuty() { return ownLayer.guardDuty(); }
+    public String ownBaseRepairClothing() { return ownLayer.repairClothing(); }
+    public String ownBaseCookRecipe() { return ownLayer.cookRecipe(); }
 
     public boolean ownHasProfession(String profession) {
         if (profession == null) return false;

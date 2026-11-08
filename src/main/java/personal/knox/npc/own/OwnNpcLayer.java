@@ -201,6 +201,7 @@ public final class OwnNpcLayer {
     private int alarm = 0;
     private int cleanClothes = 0;
     private int vehicleFuel = 0;
+    private final personal.knox.npc.own.OwnBaseRules rules = new personal.knox.npc.own.OwnBaseRules();
     private final java.util.ArrayDeque<String> journal = new java.util.ArrayDeque<>();
     private personal.knox.npc.own.OwnBaseBlueprint.State blueprint = null;
 
@@ -315,6 +316,15 @@ public final class OwnNpcLayer {
         return "guards=" + guards + " plan=" + plan;
     }
 
+    public String rule(String key, int value) {
+        try {
+            int applied = rules.set(key, value);
+            return key + "=" + applied;
+        } catch (IllegalArgumentException error) { return "invalid-rule"; }
+    }
+
+    public String rules() { return rules.snapshot(); }
+
     public String alarm(int level) {
         alarm = Math.max(0, Math.min(3, level));
         record("alarm=" + alarm);
@@ -347,29 +357,30 @@ public final class OwnNpcLayer {
     }
 
     public int fishYield(boolean rod) {
-        int yield = rod ? 3 : 1;
-        baseFood = Math.min(200, baseFood + yield);
+        int yield = rod ? rules.get("fishYield") : 1;
+        baseFood = Math.min(rules.get("foodCap"), baseFood + yield);
         return yield;
     }
 
     public int huntYield(boolean rifle) {
-        int yield = rifle ? 4 : 2;
-        baseFood = Math.min(200, baseFood + yield);
+        int yield = rifle ? rules.get("huntYield") : 2;
+        baseFood = Math.min(rules.get("foodCap"), baseFood + yield);
         return yield;
     }
 
     public int storageCap(String type) {
         if (type == null) return 0;
         return switch (type.toUpperCase(java.util.Locale.ROOT)) {
-            case "FOOD" -> 200; case "WATER" -> 200; case "MEDS" -> 50;
-            case "MATERIALS" -> 100; case "FUEL" -> 60; case "AMMO" -> 120;
+            case "FOOD" -> rules.get("foodCap"); case "WATER" -> rules.get("waterCap");
+            case "MEDS" -> rules.get("medsCap"); case "MATERIALS" -> rules.get("materialsCap");
+            case "FUEL" -> rules.get("fuelCap"); case "AMMO" -> rules.get("ammoCap");
             default -> 0;
         };
     }
 
-    public int generatorHours(int fuel) { return Math.max(0, fuel) * 2; }
+    public int generatorHours(int fuel) { return Math.max(0, fuel) * rules.get("generatorHoursPerFuel"); }
 
-    public int vehicleFuelCost(int km) { return Math.max(0, km) / 5; }
+    public int vehicleFuelCost(int km) { return Math.max(0, km) / Math.max(1, rules.get("vehicleKmPerFuel")); }
 
     public String equipmentTemplate(String profession) {
         String value = profession == null ? "" : profession.toUpperCase(java.util.Locale.ROOT);
@@ -386,6 +397,53 @@ public final class OwnNpcLayer {
     public String baseOps() {
         return "morale=" + morale + " alarm=" + alarm + " journal=" + journal.size()
                 + " clean=" + cleanClothes + " vehicleFuel=" + vehicleFuel;
+    }
+
+    public String sleep() { morale = Math.min(100, morale + 10); record("sleep"); return "morale=" + morale; }
+
+    public String shower() {
+        if (baseWater < 2) return "no-water";
+        baseWater -= 2; morale = Math.min(100, morale + 2); record("shower");
+        return baseStock();
+    }
+
+    public String fortifyWindow() {
+        if (baseMaterials < 2) return "no-materials";
+        baseMaterials -= 2; morale = Math.min(100, morale + 1); record("fortify");
+        return baseStock();
+    }
+
+    public String watchtower() {
+        if (baseMaterials < 5) return "no-materials";
+        baseMaterials -= 5; alarm = Math.max(alarm, 1); record("watchtower");
+        return baseStock();
+    }
+
+    public String radioBroadcast() { record("radio"); return "radio sent alarm=" + alarm; }
+
+    public String trade() {
+        if (baseFood < 2) return "no-food";
+        baseFood -= 2; baseMaterials = Math.min(rules.get("materialsCap"), baseMaterials + 3);
+        record("trade"); return baseStock();
+    }
+
+    public String train() {
+        if (baseAmmo < 2) return "no-ammo";
+        baseAmmo -= 2; morale = Math.min(100, morale + 1); record("train");
+        return baseStock();
+    }
+
+    public String guardDuty() { morale = Math.min(100, morale + 1); record("guard"); return "morale=" + morale; }
+
+    public String repairClothing() {
+        if (cleanClothes <= 0) return "no-clean";
+        cleanClothes--; record("clothing"); return "clean=" + cleanClothes;
+    }
+
+    public String cookRecipe() {
+        if (baseFood < 2) return "no-food";
+        baseFood -= 2; baseMeals += rules.get("cookMeals"); record("recipe");
+        return baseStock();
     }
 
     public String craftAmmo() {
@@ -495,11 +553,13 @@ public final class OwnNpcLayer {
     public String baseProduce(String profession) {
         String value = profession == null ? "" : profession.toUpperCase(java.util.Locale.ROOT);
         switch (value) {
-            case "WATER" -> baseWater = Math.min(200, baseWater + 5);
-            case "FARMER", "HUNT", "FISH" -> baseFood = Math.min(200, baseFood + 3);
+            case "WATER" -> baseWater = Math.min(rules.get("waterCap"), baseWater + rules.get("waterYield"));
+            case "FARMER" -> baseFood = Math.min(rules.get("foodCap"), baseFood + rules.get("farmYield"));
+            case "HUNT" -> baseFood = Math.min(rules.get("foodCap"), baseFood + rules.get("huntYield"));
+            case "FISH" -> baseFood = Math.min(rules.get("foodCap"), baseFood + rules.get("fishYield"));
             case "COOK" -> { return "cook"; }
-            case "BUILD" -> baseMaterials = Math.min(100, baseMaterials + 2);
-            case "CRAFT" -> baseMeds = Math.min(50, baseMeds + 1);
+            case "BUILD" -> baseMaterials = Math.min(rules.get("materialsCap"), baseMaterials + 2);
+            case "CRAFT" -> baseMeds = Math.min(rules.get("medsCap"), baseMeds + 1);
             default -> { return "none"; }
         }
         return baseStock();

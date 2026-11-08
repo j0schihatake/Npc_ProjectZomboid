@@ -383,6 +383,18 @@ function Tests.run(player)
             and api:ownStorageCap("FOOD") == 200
             and string.find(api:ownEquipmentTemplate("GUARD"), "pistol", 1, true) ~= nil
     end)
+    check("base-rules", function()
+        api:ownBaseRule("foodCap", 123)
+        return string.find(api:ownBaseRules(), "foodCap=123", 1, true) ~= nil
+            and api:ownStorageCap("FOOD") == 123
+    end)
+    check("base-actions", function()
+        local sleep = api:ownBaseSleep()
+        local radio = api:ownBaseRadio()
+        local guard = api:ownBaseGuardDuty()
+        local recipe = api:ownBaseCookRecipe()
+        return sleep ~= nil and radio ~= nil and guard ~= nil and recipe ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
