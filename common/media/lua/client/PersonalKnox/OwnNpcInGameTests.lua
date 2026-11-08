@@ -327,6 +327,13 @@ function Tests.run(player)
         local cooked = api:ownBaseCook()
         return cooked ~= nil and string.find(cooked, "meals=", 1, true) ~= nil
     end)
+    check("blueprint", function()
+        api:ownSetProfession(id, "BUILD")
+        local started = api:ownBlueprintStart(4, 4)
+        local state = started
+        for i = 1, 8 do state = api:ownBlueprintTick(4) end
+        return string.find(state, "complete=true", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

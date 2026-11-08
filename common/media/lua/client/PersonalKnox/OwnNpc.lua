@@ -67,6 +67,9 @@ local function tick()
         if api:ownHasProfession("FARMER") then
             print("[PersonalKnox][base] farm " .. tostring(api:ownFarmTick(true)))
         end
+        if api:ownHasProfession("BUILD") then
+            print("[PersonalKnox][base] build " .. tostring(api:ownBlueprintTick(1)))
+        end
     end
     if now - lastCorpseClean >= 30000 then
         lastCorpseClean = now

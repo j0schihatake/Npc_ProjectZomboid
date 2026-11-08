@@ -207,6 +207,10 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownProfession(String id) { return ownLayer.profession(id); }
+    public String ownBlueprintStart(int width, int height) { return ownLayer.blueprintStart(width, height); }
+    public String ownBlueprintTick(int workers) { return ownLayer.blueprintTick(workers); }
+    public String ownBlueprintState() { return ownLayer.blueprintState(); }
+
     public String ownFarmTick(boolean water) { return ownLayer.farmTick(water); }
     public String ownFarmState() { return ownLayer.farmState(); }
 

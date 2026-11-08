@@ -193,6 +193,7 @@ public final class OwnNpcLayer {
     private int baseWater = 0;
     private int baseMeds = 0;
     private int farmStage = 0;
+    private personal.knox.npc.own.OwnBaseBlueprint.State blueprint = null;
 
     public boolean consumeBaseFood() {
         if (baseMeals > 0) { baseMeals--; return true; }
@@ -244,6 +245,24 @@ public final class OwnNpcLayer {
                 }
             } catch (NumberFormatException ignored) { }
         }
+    }
+
+    public String blueprintStart(int width, int height) {
+        blueprint = personal.knox.npc.own.OwnBaseBlueprint.start(width, height);
+        return blueprintState();
+    }
+
+    public String blueprintTick(int workers) {
+        if (blueprint == null) return "no-blueprint";
+        blueprint = personal.knox.npc.own.OwnBaseBlueprint.tick(blueprint, workers);
+        return blueprintState();
+    }
+
+    public String blueprintState() {
+        if (blueprint == null) return "no-blueprint";
+        return "w=" + blueprint.width() + " h=" + blueprint.height()
+                + " done=" + blueprint.done() + " work=" + blueprint.work()
+                + (blueprint.complete() ? " complete=true" : "");
     }
 
     public String farmTick(boolean water) {
