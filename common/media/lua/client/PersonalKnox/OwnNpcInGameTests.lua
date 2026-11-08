@@ -206,6 +206,12 @@ function Tests.run(player)
         local inventory = api:ownInventory(id)
         return inventory ~= nil and string.find(inventory, "Base.Bread", 1, true) ~= nil
     end)
+    check("base-defense-plan", function()
+        local plan = api:ownBaseDefensePlan(4, 6, 2)
+        return string.find(plan, "windows=2", 1, true) ~= nil
+            and string.find(plan, "reserve=2", 1, true) ~= nil
+            and string.find(plan, "hidden=6", 1, true) ~= nil
+    end)
     check("faction-chances", function()
         api:ownSetFactionChances(30, 30)
         local ranged = api:ownFactionKitRoll("Military", 10)
