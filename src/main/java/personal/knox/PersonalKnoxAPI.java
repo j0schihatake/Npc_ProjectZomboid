@@ -252,6 +252,8 @@ public final class PersonalKnoxAPI {
         return count;
     }
 
+    public String ownGiveClothing(String id, Object player) { return ownBodies.giveClothingFromPlayer(id, player); }
+
     public String ownGiveItem(String id, Object player, String type) {
         return ownBodies.giveItemFromPlayer(id, player, type);
     }

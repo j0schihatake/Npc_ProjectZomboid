@@ -2187,3 +2187,10 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `ownBaseSnapshot`/`ownRestoreBase`: еда, вода, медицина, профессии.
 - Lua пишет в ModData и восстанавливает после создания тел.
 - In-game `base-persist`; без Knox **78/78**.
+## 0.57.0 — одежда NPC и исправление ошибок
+
+- `ownGiveClothing`: игрок надевает одежду на NPC; меню «Отдать одежду».
+- Исправлены `Base.Tshirt_White` → `Base.Tshirt_ArmyGreen`,
+  `Base.Bandana` → `Base.Hat_Bandana`.
+- Спавн тела ищет соседнюю загруженную клетку вместо падения.
+- Без Knox **79/79**.

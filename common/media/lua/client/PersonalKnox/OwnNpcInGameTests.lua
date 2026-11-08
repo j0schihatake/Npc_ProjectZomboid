@@ -311,6 +311,11 @@ function Tests.run(player)
         return string.find(snapshot, "water=", 1, true) ~= nil
             and string.find(snapshot, "prof=" .. id .. ":WATER", 1, true) ~= nil
     end)
+    check("give-clothing", function()
+        api:ownDebugPlayerItem(player, "Base.Tshirt_ArmyGreen")
+        local wore = api:ownGiveClothing(id, player)
+        return wore ~= nil and string.find(wore, "wore ", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
@@ -330,7 +335,7 @@ function Tests.run(player)
         local police = api:ownFactionKit("Military")
         local raiders = api:ownFactionKit("Raiders")
         return string.find(police, "Base.Pistol", 1, true) ~= nil
-            and string.find(raiders, "Base.Bandana", 1, true) ~= nil
+            and string.find(raiders, "Base.Hat_Bandana", 1, true) ~= nil
     end)
     check("faction-groups", function()
         return api:ownGroupCount() >= 1

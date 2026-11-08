@@ -675,6 +675,34 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable error) { return "draw-error=" + error.getClass().getSimpleName(); }
     }
 
+    public String giveClothingFromPlayer(String id, Object player) {
+        Object body = bodies.get(id);
+        if (body == null || player == null) return "no-body";
+        try {
+            Object from = player.getClass().getMethod("getInventory").invoke(player);
+            Object items = from.getClass().getMethod("getItems").invoke(from);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                Object location = item.getClass().getMethod("getBodyLocation").invoke(item);
+                if (location == null) location = item.getClass().getMethod("canBeEquipped").invoke(item);
+                if (location == null) continue;
+                Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+                Object added = inventory.getClass().getMethod("AddItem",
+                        Class.forName("zombie.inventory.InventoryItem")).invoke(inventory, item);
+                if (added == null) return "inventory-full";
+                from.getClass().getMethod("Remove", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(from, item);
+                body.getClass().getMethod("setWornItem", Class.forName("zombie.scripting.objects.ItemBodyLocation"),
+                                Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(body, location, added);
+                return "wore " + added.getClass().getMethod("getFullType").invoke(added);
+            }
+            return "no-clothing";
+        } catch (Throwable error) { return "wear-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String giveItemFromPlayer(String id, Object player, String type) {
         Object body = bodies.get(id);
         if (body == null || player == null || type == null) return "no-body";
@@ -785,6 +813,24 @@ public final class OwnNpcBodyAdapter {
     private Object create(Object cell, String id, int x, int y, int z, String faction) throws Exception {
         Class<?> squareClass=Class.forName("zombie.iso.IsoGridSquare");
         Object square=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class).invoke(cell,x,y,z);
+        if (square == null) {
+            // A body can be requested before its exact square reaches the streamed set.
+            search:
+            for (int radius = 1; radius <= 4; radius++) {
+                for (int dx = -radius; dx <= radius; dx++) for (int dy = -radius; dy <= radius; dy++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dy)) != radius) continue;
+                    Object candidate = cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class)
+                            .invoke(cell, x + dx, y + dy, z);
+                    if (candidate != null) {
+                        square = candidate;
+                        x += dx;
+                        y += dy;
+                        System.out.println("[PersonalKnox] Own body spawn square fallback " + dx + "," + dy);
+                        break search;
+                    }
+                }
+            }
+        }
         if(square==null) throw new IllegalStateException("NPC spawn square is not loaded");
         Class<?> playerClass = Class.forName("zombie.characters.IsoPlayer");
         Class<?> factory = Class.forName("zombie.characters.SurvivorFactory");

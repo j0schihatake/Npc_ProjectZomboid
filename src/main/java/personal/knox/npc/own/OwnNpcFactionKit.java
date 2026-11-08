@@ -13,7 +13,7 @@ public final class OwnNpcFactionKit {
     public static Kit kit(String faction, int rangedChance, int meleeChance, int roll) {
         String value = faction == null ? "" : faction.toLowerCase(java.util.Locale.ROOT);
         String accessory = value.contains("military") ? "Base.Hat_Army"
-                : value.contains("raider") ? "Base.Bandana"
+                : value.contains("raider") ? "Base.Hat_Bandana"
                 : value.contains("trader") ? "Base.Bag_Schoolbag"
                 : "Base.Hat_BaseballCap";
         int ranged = Math.max(0, Math.min(100, rangedChance));
