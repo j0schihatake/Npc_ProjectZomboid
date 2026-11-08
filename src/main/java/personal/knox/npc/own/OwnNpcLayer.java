@@ -192,6 +192,18 @@ public final class OwnNpcLayer {
     private int baseWater = 0;
     private int baseMeds = 0;
 
+    public boolean consumeBaseFood() {
+        if (baseFood <= 0) return false;
+        baseFood--;
+        return true;
+    }
+
+    public boolean consumeBaseWater() {
+        if (baseWater <= 0) return false;
+        baseWater--;
+        return true;
+    }
+
     public String baseStock() {
         return "food=" + baseFood + " water=" + baseWater + " meds=" + baseMeds;
     }

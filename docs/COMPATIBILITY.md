@@ -2177,3 +2177,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `ownSetProfession`/`ownProfession`; профессия видна в сводке NPC.
 - 16 профессий базы; in-game `profession`.
 - Без Knox **73/73**.
+## 0.55.0 — кормление из запаса базы
+
+- Если у NPC нет еды/воды в инвентаре, он берёт запас базы.
+- `consumeBaseFood`/`consumeBaseWater`; in-game `base-feed`.
+- Без Knox **77/77**.

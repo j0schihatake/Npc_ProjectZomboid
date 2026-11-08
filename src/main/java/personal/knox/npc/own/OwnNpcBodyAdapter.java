@@ -1182,6 +1182,9 @@ public final class OwnNpcBodyAdapter {
                 layer.relieve(id, 0.5, 0);
                 layer.consumeSupply(id, 1);
                 System.out.println("[PersonalKnox][own-eat] auto " + id + " " + food);
+            } else if (layer.consumeBaseFood()) {
+                layer.relieve(id, 0.5, 0);
+                System.out.println("[PersonalKnox][own-eat] base " + id);
             }
         }
         if (agent.state().thirst() >= 0.6) {
@@ -1190,6 +1193,9 @@ public final class OwnNpcBodyAdapter {
                 layer.relieve(id, 0, 0.5);
                 layer.consumeSupply(id, 1);
                 System.out.println("[PersonalKnox][own-drink] auto " + id + " " + drink);
+            } else if (layer.consumeBaseWater()) {
+                layer.relieve(id, 0, 0.5);
+                System.out.println("[PersonalKnox][own-drink] base " + id);
             }
         }
     }

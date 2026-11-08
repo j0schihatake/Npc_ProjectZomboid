@@ -295,6 +295,14 @@ function Tests.run(player)
         local stock = api:ownBaseProduce("WATER")
         return stock ~= nil and string.find(stock, "water=5", 1, true) ~= nil
     end)
+    check("base-feed", function()
+        api:ownBaseProduce("WATER")
+        api:ownSetProfession(id, "WATER")
+        api:ownDebugSetNeeds(id, 0.2, 0.9)
+        api:ownBodiesSync()
+        local needs = api:ownNeeds(id)
+        return string.find(needs, "thirst=0.400", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
