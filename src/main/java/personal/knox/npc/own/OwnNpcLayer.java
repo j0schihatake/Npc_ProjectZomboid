@@ -191,6 +191,7 @@ public final class OwnNpcLayer {
     private int baseFood = 0;
     private int baseWater = 0;
     private int baseMeds = 0;
+    private int farmStage = 0;
 
     public boolean consumeBaseFood() {
         if (baseFood <= 0) return false;
@@ -234,6 +235,18 @@ public final class OwnNpcLayer {
             } catch (NumberFormatException ignored) { }
         }
     }
+
+    public String farmTick(boolean water) {
+        farmStage = personal.knox.npc.own.OwnBaseFarm.tick(farmStage, water);
+        if (farmStage >= personal.knox.npc.own.OwnBaseFarm.READY) {
+            baseFood += 5;
+            farmStage = personal.knox.npc.own.OwnBaseFarm.EMPTY;
+            return "harvest=5 " + baseStock();
+        }
+        return "stage=" + farmStage;
+    }
+
+    public String farmState() { return "stage=" + farmStage + " " + baseStock(); }
 
     public String baseStock() {
         return "food=" + baseFood + " water=" + baseWater + " meds=" + baseMeds;

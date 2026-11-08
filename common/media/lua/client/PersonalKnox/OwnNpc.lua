@@ -61,6 +61,9 @@ local function tick()
                 print("[PersonalKnox][base] " .. profession .. " " .. tostring(stock))
             end
         end
+        if api:ownHasProfession("FARMER") then
+            print("[PersonalKnox][base] farm " .. tostring(api:ownFarmTick(true)))
+        end
     end
     if now - lastCorpseClean >= 30000 then
         lastCorpseClean = now

@@ -207,6 +207,9 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownProfession(String id) { return ownLayer.profession(id); }
+    public String ownFarmTick(boolean water) { return ownLayer.farmTick(water); }
+    public String ownFarmState() { return ownLayer.farmState(); }
+
     public String ownBaseSnapshot() { return ownLayer.baseSnapshot(); }
     public void ownRestoreBase(String text) { ownLayer.restoreBase(text); }
 
