@@ -41,6 +41,7 @@ public final class OwnNpcBodyAdapter {
                 if (body != null) {
                     syncHealth(layer, agent.id(), body);
                     attack(agent.id(), body, zombies);
+                    autoWeapon(agent.id(), lastAim.containsKey(agent.id()));
                     retreat(layer, agent.id(), body, agent);
                     autoConsume(layer, agent.id(), body, agent);
                 }
@@ -538,6 +539,10 @@ public final class OwnNpcBodyAdapter {
             counts.forEach((type, count) -> out.append(type).append('x').append(count).append(';'));
             return out.toString();
         } catch (Throwable error) { return ""; }
+    }
+
+    public String autoWeapon(String id, boolean threat) {
+        return threat ? draw(id) : holster(id);
     }
 
     public String holster(String id) {

@@ -229,6 +229,15 @@ function Tests.run(player)
             and empty == "" and string.find(drawn, "drawn ", 1, true) ~= nil
             and hand ~= ""
     end)
+    check("auto-weapon", function()
+        api:ownHolster(id)
+        local drawn = api:ownAutoWeapon(id, true)
+        local armed = api:ownPrimaryItem(id)
+        local holstered = api:ownAutoWeapon(id, false)
+        local empty = api:ownPrimaryItem(id)
+        return string.find(drawn, "drawn ", 1, true) ~= nil and armed ~= ""
+            and string.find(holstered, "holstered ", 1, true) ~= nil and empty == ""
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
