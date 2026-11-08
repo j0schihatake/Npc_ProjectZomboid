@@ -18,6 +18,8 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, Object> lootObjects = new HashMap<>();
     private final Map<String, double[]> lastAim = new HashMap<>();
     private volatile String startingWeapon = "melee";
+    private volatile int factionRangedChance = 40;
+    private volatile int factionMeleeChance = 40;
 
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
@@ -565,6 +567,18 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable error) { return "equip-error=" + error.getClass().getSimpleName(); }
     }
 
+    public void setFactionChances(int ranged, int melee) {
+        factionRangedChance = Math.max(0, Math.min(100, ranged));
+        factionMeleeChance = Math.max(0, Math.min(100 - factionRangedChance, melee));
+    }
+
+    public String factionChances() { return factionRangedChance + "/" + factionMeleeChance; }
+
+    public String factionKitRoll(String faction, int roll) {
+        var kit = OwnNpcFactionKit.kit(faction, factionRangedChance, factionMeleeChance, roll);
+        return "weapon=" + kit.weapon() + " accessory=" + kit.accessory();
+    }
+
     public String startingWeapon() { return startingWeapon; }
 
     public void setStartingWeapon(String type) {
@@ -605,7 +619,8 @@ public final class OwnNpcBodyAdapter {
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Screwdriver");
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Saw");
             boolean factionUnit = faction != null && !faction.isBlank() && !"own".equalsIgnoreCase(faction);
-            var kit = OwnNpcFactionKit.kit(faction);
+            var kit = OwnNpcFactionKit.kit(faction, factionRangedChance, factionMeleeChance,
+                    java.util.concurrent.ThreadLocalRandom.current().nextInt(100));
             String weapon = factionUnit ? kit.weapon() : switch (startingWeapon) {
                 case "firearm" -> "Base.Pistol";
                 case "none" -> "";

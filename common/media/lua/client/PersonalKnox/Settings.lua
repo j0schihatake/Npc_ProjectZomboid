@@ -86,6 +86,14 @@ if ok and PZAPI and PZAPI.ModOptions then
                 {"melee", "firearm", "none"}, getText("UI_PersonalKnox_NpcWeaponHint"))
         weapon:setValue(1)
     end
+    if page and not page:getOption("factionRanged") then
+        page:addSlider("factionRanged", getText("UI_PersonalKnox_FactionRanged"), 0, 100, 5, 40,
+            getText("UI_PersonalKnox_FactionRangedHint"))
+    end
+    if page and not page:getOption("factionMelee") then
+        page:addSlider("factionMelee", getText("UI_PersonalKnox_FactionMelee"), 0, 100, 5, 40,
+            getText("UI_PersonalKnox_FactionMeleeHint"))
+    end
     if page and not page:getOption("companionCount") then
         local combo = page:addComboBox("companionCount", getText("UI_PersonalKnox_CompanionCount"),
             getText("UI_PersonalKnox_CompanionCountHint"))
@@ -251,6 +259,16 @@ function Settings.npcWeapon()
         return values[choice] or "melee"
     end
     return "melee"
+end
+
+function Settings.factionRanged()
+    local option = page and page:getOption("factionRanged")
+    return option and option:getValue() or 40
+end
+
+function Settings.factionMelee()
+    local option = page and page:getOption("factionMelee")
+    return option and option:getValue() or 40
 end
 
 function Settings.companionCount()

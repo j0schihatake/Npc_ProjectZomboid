@@ -103,8 +103,24 @@ public final class PersonalKnoxAPI {
     public int ownActive() { return ownLayer.count(); }
     public int ownGroupCount() { return ownPopulation.groups().size(); }
     public String ownFactionKit(String faction) {
-        var kit = personal.knox.npc.own.OwnNpcFactionKit.kit(faction);
+        var kit = personal.knox.npc.own.OwnNpcFactionKit.kit(faction,
+                factionRanged, factionMelee, 0);
         return "weapon=" + kit.weapon() + " accessory=" + kit.accessory();
+    }
+
+    private volatile int factionRanged = 40;
+    private volatile int factionMelee = 40;
+
+    public void ownSetFactionChances(int ranged, int melee) {
+        factionRanged = Math.max(0, Math.min(100, ranged));
+        factionMelee = Math.max(0, Math.min(100 - factionRanged, melee));
+        ownBodies.setFactionChances(factionRanged, factionMelee);
+    }
+
+    public String ownFactionChances() { return factionRanged + "/" + factionMelee; }
+
+    public String ownFactionKitRoll(String faction, int roll) {
+        return ownBodies.factionKitRoll(faction, roll);
     }
     public void ownGroupMission(String groupId, double x, double y, double z) {
         ownLayer.groupMission(groupId, x, y, z);

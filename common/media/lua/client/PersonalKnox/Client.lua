@@ -389,6 +389,7 @@ local function applyWeaponSetting()
     local ok, api = pcall(function() return PersonalKnoxAPI.getInstance() end)
     if ok and api then
         pcall(function() api:ownSetStartingWeapon(Settings.npcWeapon()) end)
+        pcall(function() api:ownSetFactionChances(Settings.factionRanged(), Settings.factionMelee()) end)
     end
 end
 Events.OnGameStart.Add(applyWeaponSetting)

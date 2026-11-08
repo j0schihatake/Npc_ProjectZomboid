@@ -1,15 +1,24 @@
 package personal.knox.npc.own;
 
-/** Small starting kit per faction; equipment progression will extend this. */
+/** Faction starting kits with configurable ranged/melee chances. */
 public final class OwnNpcFactionKit {
     public record Kit(String weapon, String accessory) {}
     private OwnNpcFactionKit() {}
 
     public static Kit kit(String faction) {
+        int roll = java.util.concurrent.ThreadLocalRandom.current().nextInt(100);
+        return kit(faction, 40, 40, roll);
+    }
+
+    public static Kit kit(String faction, int rangedChance, int meleeChance, int roll) {
         String value = faction == null ? "" : faction.toLowerCase(java.util.Locale.ROOT);
-        if (value.contains("military")) return new Kit("Base.Pistol", "Base.Hat_Army");
-        if (value.contains("raider")) return new Kit("Base.BaseballBat", "Base.Bandana");
-        if (value.contains("trader")) return new Kit("Base.Hammer", "Base.Bag_Schoolbag");
-        return new Kit("Base.BaseballBat", "Base.Hat_BaseballCap");
+        String accessory = value.contains("military") ? "Base.Hat_Army"
+                : value.contains("raider") ? "Base.Bandana"
+                : value.contains("trader") ? "Base.Bag_Schoolbag"
+                : "Base.Hat_BaseballCap";
+        int ranged = Math.max(0, Math.min(100, rangedChance));
+        int melee = Math.max(0, Math.min(100 - ranged, meleeChance));
+        String weapon = roll < ranged ? "Base.Pistol" : roll < ranged + melee ? "Base.BaseballBat" : "Base.Hammer";
+        return new Kit(weapon, accessory);
     }
 }

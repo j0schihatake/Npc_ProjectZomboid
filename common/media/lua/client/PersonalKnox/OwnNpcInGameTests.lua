@@ -206,6 +206,15 @@ function Tests.run(player)
         local inventory = api:ownInventory(id)
         return inventory ~= nil and string.find(inventory, "Base.Bread", 1, true) ~= nil
     end)
+    check("faction-chances", function()
+        api:ownSetFactionChances(30, 30)
+        local ranged = api:ownFactionKitRoll("Military", 10)
+        local melee = api:ownFactionKitRoll("Military", 50)
+        local none = api:ownFactionKitRoll("Military", 90)
+        return string.find(ranged, "Base.Pistol", 1, true) ~= nil
+            and string.find(melee, "Base.BaseballBat", 1, true) ~= nil
+            and string.find(none, "Base.Hammer", 1, true) ~= nil
+    end)
     check("faction-kit", function()
         local police = api:ownFactionKit("Military")
         local raiders = api:ownFactionKit("Raiders")
