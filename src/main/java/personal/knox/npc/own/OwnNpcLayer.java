@@ -189,14 +189,23 @@ public final class OwnNpcLayer {
     private final java.util.Map<String, double[]> groupMissions = new java.util.HashMap<>();
     private final java.util.Map<String, String> professions = new java.util.HashMap<>();
     private int baseFood = 0;
+    private int baseMeals = 0;
     private int baseWater = 0;
     private int baseMeds = 0;
     private int farmStage = 0;
 
     public boolean consumeBaseFood() {
+        if (baseMeals > 0) { baseMeals--; return true; }
         if (baseFood <= 0) return false;
         baseFood--;
         return true;
+    }
+
+    public String cook() {
+        if (baseFood <= 0) return "no-food " + baseStock();
+        baseFood--;
+        baseMeals += 2;
+        return baseStock();
     }
 
     public boolean consumeBaseWater() {
@@ -207,8 +216,8 @@ public final class OwnNpcLayer {
 
     public String baseSnapshot() {
         var out = new StringBuilder();
-        out.append("food=").append(baseFood).append(";water=").append(baseWater)
-                .append(";meds=").append(baseMeds).append(';');
+        out.append("food=").append(baseFood).append(";meals=").append(baseMeals)
+                .append(";water=").append(baseWater).append(";meds=").append(baseMeds).append(';');
         for (var entry : professions.entrySet())
             out.append("prof=").append(entry.getKey()).append(':').append(entry.getValue()).append(';');
         return out.toString();
@@ -224,6 +233,7 @@ public final class OwnNpcLayer {
             try {
                 switch (key) {
                     case "food" -> baseFood = Math.max(0, Integer.parseInt(value));
+                    case "meals" -> baseMeals = Math.max(0, Integer.parseInt(value));
                     case "water" -> baseWater = Math.max(0, Integer.parseInt(value));
                     case "meds" -> baseMeds = Math.max(0, Integer.parseInt(value));
                     case "prof" -> {
@@ -249,7 +259,7 @@ public final class OwnNpcLayer {
     public String farmState() { return "stage=" + farmStage + " " + baseStock(); }
 
     public String baseStock() {
-        return "food=" + baseFood + " water=" + baseWater + " meds=" + baseMeds;
+        return "food=" + baseFood + " meals=" + baseMeals + " water=" + baseWater + " meds=" + baseMeds;
     }
 
     public String baseProduce(String profession) {
@@ -257,7 +267,7 @@ public final class OwnNpcLayer {
         switch (value) {
             case "WATER" -> baseWater += 5;
             case "FARMER", "HUNT", "FISH" -> baseFood += 3;
-            case "COOK" -> baseFood += 1;
+            case "COOK" -> { return "cook"; }
             case "CRAFT", "BUILD" -> baseMeds += 1;
             default -> { return "none"; }
         }

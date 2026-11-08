@@ -322,6 +322,11 @@ function Tests.run(player)
         for i = 1, 4 do last = api:ownFarmTick(true) end
         return string.find(last, "harvest=5", 1, true) ~= nil
     end)
+    check("base-cook", function()
+        api:ownBaseProduce("FARMER")
+        local cooked = api:ownBaseCook()
+        return cooked ~= nil and string.find(cooked, "meals=", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

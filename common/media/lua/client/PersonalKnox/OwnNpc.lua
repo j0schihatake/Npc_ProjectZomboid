@@ -55,7 +55,10 @@ local function tick()
     local bodies = api:ownBodiesSync()
     if now - lastBaseProduce >= 60000 then
         lastBaseProduce = now
-        for _, profession in ipairs({"WATER", "FARMER", "COOK"}) do
+        if api:ownHasProfession("COOK") then
+            print("[PersonalKnox][base] cook " .. tostring(api:ownBaseCook()))
+        end
+        for _, profession in ipairs({"WATER", "FARMER"}) do
             if api:ownHasProfession(profession) then
                 local stock = api:ownBaseProduce(profession)
                 print("[PersonalKnox][base] " .. profession .. " " .. tostring(stock))
