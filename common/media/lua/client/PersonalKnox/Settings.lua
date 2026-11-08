@@ -248,7 +248,7 @@ function Settings.npcWeapon()
     if type(choice) == "string" then return choice end
     if type(choice) == "number" then
         local values = {"melee", "firearm", "none"}
-        return values[choice + 1] or "melee"
+        return values[choice] or "melee"
     end
     return "melee"
 end
