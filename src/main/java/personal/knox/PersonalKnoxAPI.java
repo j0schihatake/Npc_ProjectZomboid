@@ -195,6 +195,14 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownGiveWeapon(String id, Object player) { return ownBodies.giveWeaponFromPlayer(id, player); }
+    public int ownArmedCount() { return ownBodies.armedCount(); }
+
+    public int ownHolsterAll() {
+        int count = 0;
+        for (var agent : ownLayer.agents()) if (ownBodies.holster(agent.id()).startsWith("holstered ")) count++;
+        return count;
+    }
+
     public String ownAutoWeapon(String id, boolean threat) { return ownBodies.autoWeapon(id, threat); }
 
     public String ownHolster(String id) { return ownBodies.holster(id); }

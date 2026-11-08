@@ -21,6 +21,7 @@ public final class OwnNpcBodyAdapter {
     private volatile String startingWeapon = "melee";
     private volatile int factionRangedChance = 40;
     private volatile int factionMeleeChance = 40;
+    private volatile boolean groupAlert = false;
 
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
@@ -86,6 +87,15 @@ public final class OwnNpcBodyAdapter {
                     ty += Math.sin(angle) * 1.4;
                 }
                 move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, layer.targetZ(agent.id()));
+            }
+            boolean anyThreat = !lastAim.isEmpty();
+            if (anyThreat && !groupAlert) {
+                groupAlert = true;
+                int drawn = 0;
+                for (var agent : layer.agents()) if (draw(agent.id()).startsWith("drawn ")) drawn++;
+                System.out.println("[PersonalKnox][own-alert] group weapon drawn=" + drawn);
+            } else if (!anyThreat) {
+                groupAlert = false;
             }
             if (System.currentTimeMillis() - lastMoveLog >= 10_000L) {
                 lastMoveLog = System.currentTimeMillis();
@@ -539,6 +549,17 @@ public final class OwnNpcBodyAdapter {
             counts.forEach((type, count) -> out.append(type).append('x').append(count).append(';'));
             return out.toString();
         } catch (Throwable error) { return ""; }
+    }
+
+    public int armedCount() {
+        int armed = 0;
+        for (var id : bodies.keySet()) {
+            try {
+                Object item = bodies.get(id).getClass().getMethod("getPrimaryHandItem").invoke(bodies.get(id));
+                if (item != null) armed++;
+            } catch (Throwable ignored) { }
+        }
+        return armed;
     }
 
     public String autoWeapon(String id, boolean threat) {

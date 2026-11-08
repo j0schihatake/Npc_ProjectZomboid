@@ -238,6 +238,15 @@ function Tests.run(player)
         return string.find(drawn, "drawn ", 1, true) ~= nil and armed ~= ""
             and string.find(holstered, "holstered ", 1, true) ~= nil and empty == ""
     end)
+    check("group-alert", function()
+        api:ownHolsterAll()
+        local spawned = api:ownDebugZombie(id)
+        if string.find(spawned, "health=", 1, true) == nil then return false end
+        api:ownBodiesSync()
+        local armed = api:ownArmedCount()
+        api:ownDebugZombieClear()
+        return armed >= 2
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

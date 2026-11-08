@@ -2146,3 +2146,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - NPC достаёт оружие при угрозе и убирает, когда врагов нет.
 - `ownAutoWeapon`; проверка `auto-weapon`.
 - Без Knox **66/66**.
+## 0.44.0 — групповая тревога
+
+- При угрозе одному NPC вся группа достаёт оружие (`own-alert`).
+- `ownArmedCount`, `ownHolsterAll`.
+- In-game `group-alert`; без Knox **67/67**.
