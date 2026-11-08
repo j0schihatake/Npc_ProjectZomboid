@@ -411,6 +411,9 @@ function Tests.run(player)
         return status ~= nil and string.find(status, "alarm=2", 1, true) ~= nil
             and string.find(status, "wounded=0", 1, true) ~= nil
     end)
+    check("base-rule-count", function()
+        return api:ownBaseRuleCount() == 20 and api:ownFacilityCost("FARM") > 0
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

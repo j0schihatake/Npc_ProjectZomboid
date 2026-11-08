@@ -254,6 +254,7 @@ public final class PersonalKnoxAPI {
     public String ownEquipmentTemplate(String profession) { return ownLayer.equipmentTemplate(profession); }
     public String ownBaseRule(String key, int value) { return ownLayer.rule(key, value); }
     public String ownBaseRules() { return ownLayer.rules(); }
+    public int ownBaseRuleCount() { return ownLayer.ruleCount(); }
     public String ownBaseSleep() { return ownLayer.sleep(); }
     public String ownBaseShower() { return ownLayer.shower(); }
     public String ownBaseFortifyWindow() { return ownLayer.fortifyWindow(); }

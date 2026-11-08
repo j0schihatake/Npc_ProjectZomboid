@@ -302,6 +302,12 @@ local function onContext(playerIndex, context, worldObjects, test)
         menu:addOption("Производство", player, function()
             message(player, apiRef:ownFacilityTick())
         end)
+        for _, spec in ipairs({{"GENERATOR","Генератор"},{"WATCHTOWER","Вышка"},{"WORKSHOP","Мастерская"},{"LAUNDRY","Прачечная"},{"ARMORY","Арсенал"},{"GARAGE","Гараж"},{"RADIO","Радио"},{"TRAINING","Тренировка"},{"DORM","Спальня"},{"STORAGE","Склад"}}) do
+            local kind, label = spec[1], spec[2]
+            menu:addOption("Построить: " .. label, player, function()
+                message(player, apiRef:ownBuildFacility(kind))
+            end)
+        end
         menu:addOption("Оружие всем", player, function()
             message(player, "Достали оружие: " .. tostring(apiRef:ownDrawAll()))
         end)

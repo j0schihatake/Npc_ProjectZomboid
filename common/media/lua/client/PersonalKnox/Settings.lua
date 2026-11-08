@@ -308,4 +308,72 @@ function Settings.helpFrequency()
     local choice = option:getValue()
     return type(choice) == "number" and choice or 3
 end
+
+-- Base economy sliders (values applied to the Java rules at game start).
+local baseRuleSpecs = {
+    {"foodCap", "Лимит еды", 10, 1000, 10, 200},
+    {"waterCap", "Лимит воды", 10, 1000, 10, 200},
+    {"medsCap", "Лимит медицины", 5, 200, 5, 50},
+    {"materialsCap", "Лимит материалов", 10, 500, 10, 100},
+    {"fuelCap", "Лимит топлива", 5, 300, 5, 60},
+    {"ammoCap", "Лимит патронов", 10, 500, 10, 120},
+    {"farmYield", "Урожай фермы", 1, 20, 1, 5},
+    {"cookMeals", "Блюд из еды", 1, 10, 1, 2},
+    {"waterYield", "Вода за цикл", 1, 20, 1, 5},
+    {"fishYield", "Улов рыбы", 1, 10, 1, 2},
+    {"huntYield", "Добыча охоты", 1, 10, 1, 3},
+    {"scavengeFood", "Еда из вылазки", 0, 20, 1, 2},
+    {"scavengeMeds", "Медицина из вылазки", 0, 10, 1, 1},
+    {"moraleGain", "Прирост морали", 1, 20, 1, 1},
+    {"moraleLoss", "Потеря морали", 1, 20, 1, 2},
+    {"healAmount", "Лечение из запаса", 10, 100, 5, 50},
+    {"buildRate", "Скорость стройки", 1, 20, 1, 4},
+    {"generatorHoursPerFuel", "Часов на топливо", 1, 24, 1, 2},
+    {"vehicleKmPerFuel", "Км на топливо", 1, 50, 1, 5},
+    {"dailyWater", "Вода на жителя", 0, 5, 1, 1},
+}
+if page then
+    for _, spec in ipairs(baseRuleSpecs) do
+        local key, label, min, max, step, default = spec[1], spec[2], spec[3], spec[4], spec[5], spec[6]
+        if not page:getOption(key) then
+            page:addSlider(key, label, min, max, step, default, "Правило экономики базы")
+        end
+    end
+end
+
+local intervalSpecs = {
+    {"baseProduceMinutes", "Производство, мин", 1, 30, 1, 1},
+    {"baseDailyMinutes", "Сутки базы, мин", 1, 60, 1, 5},
+    {"baseCorpseSeconds", "Уборка трупов, сек", 5, 300, 5, 30},
+    {"baseFarmMinutes", "Ферма, мин", 1, 30, 1, 1},
+    {"baseFacilityMinutes", "Объекты, мин", 1, 30, 1, 1},
+    {"baseScavengeMinutes", "Вылазки, мин", 1, 120, 1, 10},
+    {"alarmDecaySeconds", "Спад тревоги, сек", 5, 300, 5, 60},
+    {"journalMax", "Журнал, записей", 8, 128, 8, 32},
+    {"guardPatrolRadius", "Патруль, клеток", 2, 40, 2, 12},
+    {"medicThreshold", "Порог медика, %", 10, 90, 5, 60},
+}
+if page then
+    for _, spec in ipairs(intervalSpecs) do
+        local key, label, min, max, step, default = spec[1], spec[2], spec[3], spec[4], spec[5], spec[6]
+        if not page:getOption(key) then
+            page:addSlider(key, label, min, max, step, default, "Интервал базы")
+        end
+    end
+end
+
+function Settings.interval(key, fallback)
+    local option = page and page:getOption(key)
+    if not option then return fallback end
+    local value = option:getValue()
+    return type(value) == "number" and value or fallback
+end
+
+function Settings.baseRule(key)
+    local option = page and page:getOption(key)
+    if not option then return nil end
+    local value = option:getValue()
+    return type(value) == "number" and value or nil
+end
+
 return Settings

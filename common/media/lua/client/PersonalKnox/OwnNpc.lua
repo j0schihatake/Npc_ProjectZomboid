@@ -11,6 +11,7 @@ local pendingEquipment = nil
 local lastCorpseClean = 0
 local lastBaseProduce = 0
 local lastBaseDaily = 0
+local lastRules = 0
 local pendingBase = nil
 
 local function saveState()
@@ -54,11 +55,18 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
-    if now - lastBaseDaily >= 300000 then
+    if now - lastRules >= 5000 then
+        lastRules = now
+        for _, key in ipairs({"foodCap","waterCap","medsCap","materialsCap","fuelCap","ammoCap","farmYield","cookMeals","waterYield","fishYield","huntYield","scavengeFood","scavengeMeds","moraleGain","moraleLoss","healAmount","buildRate","generatorHoursPerFuel","vehicleKmPerFuel","dailyWater"}) do
+            local value = Settings.baseRule(key)
+            if value then api:ownBaseRule(key, value) end
+        end
+    end
+    if now - lastBaseDaily >= Settings.interval("baseDailyMinutes", 5) * 60000 then
         lastBaseDaily = now
         print("[PersonalKnox][base] daily " .. tostring(api:ownBaseDaily(api:ownActive())))
     end
-    if now - lastBaseProduce >= 60000 then
+    if now - lastBaseProduce >= Settings.interval("baseProduceMinutes", 1) * 60000 then
         lastBaseProduce = now
         if api:ownHasProfession("COOK") then
             print("[PersonalKnox][base] cook " .. tostring(api:ownBaseCook()))
@@ -88,7 +96,7 @@ local function tick()
             print("[PersonalKnox][base] laundry " .. tostring(api:ownBaseLaundry()))
         end
     end
-    if now - lastCorpseClean >= 30000 then
+    if now - lastCorpseClean >= Settings.interval("baseCorpseSeconds", 30) * 1000 then
         lastCorpseClean = now
         if api:ownHasProfession("CORPSE") then
             local cleaned = api:ownCleanCorpses(15)
@@ -152,6 +160,11 @@ function OwnNpc.install(adapters)
                 Settings.matchPlayerClothes())
         end)
         if ok then
+            local api = PersonalKnoxAPI.getInstance()
+            for _, key in ipairs({"foodCap","waterCap","medsCap","materialsCap","fuelCap","ammoCap","farmYield","cookMeals","waterYield","fishYield","huntYield","scavengeFood","scavengeMeds","moraleGain","moraleLoss","healAmount","buildRate","generatorHoursPerFuel","vehicleKmPerFuel","dailyWater"}) do
+                local value = Settings.baseRule(key)
+                if value then api:ownBaseRule(key, value) end
+            end
             print("[PersonalKnox][own-npc] bootstrap " .. tostring(result))
         else
             print("[PersonalKnox] Own-NPC bootstrap error: " .. tostring(result))
