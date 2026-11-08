@@ -414,6 +414,26 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String consumeBandage(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                if (!type.contains("Bandage")) continue;
+                inventory.getClass().getMethod("Remove", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(inventory, item);
+                return "bandaged " + type;
+            }
+            return "no-bandage";
+        } catch (Throwable error) { return "bandage-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String supplyState(String id, OwnNpcLayer layer) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";

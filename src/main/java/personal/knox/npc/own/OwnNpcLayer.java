@@ -179,6 +179,13 @@ public final class OwnNpcLayer {
                 Math.max(0, Math.min(1, hunger)), Math.max(0, Math.min(1, thirst)), state.fatigue())));
     }
 
+    public void heal(String id, double amount) {
+        var agent = agent(id);
+        if (agent == null) return;
+        var state = agent.state();
+        agents.put(id, agent.withState(state.withHealth(Math.min(100, state.health() + amount)).withBleeding(false)));
+    }
+
     public int supplies(String id) {
         var agent = agent(id);
         return agent == null ? 0 : agent.supplies();

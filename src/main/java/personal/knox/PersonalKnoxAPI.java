@@ -168,8 +168,18 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownNeeds(String id) { return ownLayer.needs(id); }
+    public double ownHealth(String id) {
+        var agent = ownLayer.agent(id);
+        return agent == null ? 0 : agent.state().health();
+    }
     public int ownSupplies(String id) { return ownLayer.supplies(id); }
     public String ownSupplyState(String id) { return ownBodies.supplyState(id, ownLayer); }
+    public String ownBandage(String id) {
+        String result = ownBodies.consumeBandage(id);
+        if (result.startsWith("bandaged ")) ownLayer.heal(id, 15);
+        System.out.println("[PersonalKnox][own-bandage] " + id + " " + result + " " + ownLayer.needs(id));
+        return result;
+    }
 
     public String ownDebugPlaceLoot(String id) { return ownBodies.debugPlaceLoot(id); }
     public String ownDebugLoot(String id) { return ownBodies.debugLoot(id, ownLayer); }

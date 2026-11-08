@@ -2106,3 +2106,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
   рост припасов.
 - In-game `loot-container`: `items=8`, supplies растут.
 - Без Knox: **56/56**.
+## 0.32.0 — лечение NPC бинтом
+
+- `ownBandage`: расходует бинт, лечит на 15, снимает кровотечение.
+- In-game `bandage`; без Knox **58/58**.
