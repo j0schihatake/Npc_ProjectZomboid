@@ -28,6 +28,16 @@ public final class OwnBaseRules {
         values.put("generatorHoursPerFuel", 2);
         values.put("vehicleKmPerFuel", 5);
         values.put("dailyWater", 1);
+        values.put("alarmDuration", 60);
+        values.put("woundedThreshold", 35);
+        values.put("medicThreshold", 60);
+        values.put("patrolRadius", 12);
+        values.put("journalMax", 32);
+        values.put("facilityInterval", 60);
+        values.put("healCooldown", 30);
+        values.put("cookWater", 1);
+        values.put("farmWater", 2);
+        values.put("scavengeCost", 1);
     }
 
     public int get(String key) {

@@ -412,7 +412,7 @@ function Tests.run(player)
             and string.find(status, "wounded=0", 1, true) ~= nil
     end)
     check("base-rule-count", function()
-        return api:ownBaseRuleCount() == 20 and api:ownFacilityCost("FARM") > 0
+        return api:ownBaseRuleCount() == 30 and api:ownFacilityCost("FARM") > 0
     end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)

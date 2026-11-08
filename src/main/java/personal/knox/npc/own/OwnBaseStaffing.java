@@ -9,7 +9,10 @@ public final class OwnBaseStaffing {
         FARMER, WATER, FIRE, CORPSE, CLEAN, COOK, LAUNDRY, FISH, HUNT,
         SCAVENGE, CRAFT, BUILD, GUARD, PATROL, ENFORCER, DRIVER,
         MEDIC, MECHANIC, ELECTRICIAN, METALWORKER, TAILOR, BREWER,
-        HERBALIST, TRAPPER, LOOKOUT, QUARTERMASTER
+        HERBALIST, TRAPPER, LOOKOUT, QUARTERMASTER,
+        DOCTOR, NURSE, ENGINEER, ARCHITECT, FARMHAND, RANCHER, BUTCHER,
+        BAKER, SMITH, POTTER, SCRIBE, TEACHER, PRIEST, TRADER, COURIER,
+        WATCHMAN, SAPPER
     }
 
     public record Assignment(Profession profession, int count) {}
@@ -50,6 +53,11 @@ public final class OwnBaseStaffing {
                 Profession.LAUNDRY, Profession.FISH, Profession.HUNT, Profession.DRIVER,
                 Profession.MEDIC, Profession.MECHANIC, Profession.ELECTRICIAN, Profession.METALWORKER,
                 Profession.TAILOR, Profession.BREWER, Profession.HERBALIST, Profession.TRAPPER,
-                Profession.LOOKOUT, Profession.QUARTERMASTER);
+                Profession.LOOKOUT, Profession.QUARTERMASTER,
+                Profession.DOCTOR, Profession.NURSE, Profession.ENGINEER, Profession.ARCHITECT,
+                Profession.FARMHAND, Profession.RANCHER, Profession.BUTCHER, Profession.BAKER,
+                Profession.SMITH, Profession.POTTER, Profession.SCRIBE, Profession.TEACHER,
+                Profession.PRIEST, Profession.TRADER, Profession.COURIER, Profession.WATCHMAN,
+                Profession.SAPPER);
     }
 }

@@ -9,7 +9,9 @@ public final class OwnBaseFacilities {
             "FARM", "WATER", "KITCHEN", "WORKSHOP", "INFIRMARY",
             "LAUNDRY", "GENERATOR", "WATCHTOWER", "WALL", "GATE",
             "STORAGE", "GARAGE", "RADIO", "TRAINING", "ARMORY",
-            "DORM", "LATRINE", "SHOWER", "FISH_DOCK", "HUNT_BLIND");
+            "DORM", "LATRINE", "SHOWER", "FISH_DOCK", "HUNT_BLIND",
+            "MORGUE", "KILN", "WELL", "SMOKEHOUSE", "BUTCHER",
+            "BAKERY", "BREWERY", "TAILOR_SHOP", "WORKBENCH", "WATER_TOWER");
 
     private OwnBaseFacilities() {}
 
@@ -39,6 +41,12 @@ public final class OwnBaseFacilities {
             case "FISH_DOCK" -> "food";
             case "HUNT_BLIND" -> "food";
             case "ARMORY" -> "ammo";
+            case "WELL", "WATER_TOWER" -> "water";
+            case "SMOKEHOUSE", "BUTCHER", "BAKERY" -> "food";
+            case "BREWERY" -> "meals";
+            case "KILN", "WORKBENCH" -> "materials";
+            case "TAILOR_SHOP" -> "clean";
+            case "MORGUE" -> "meds";
             default -> "support";
         };
     }
