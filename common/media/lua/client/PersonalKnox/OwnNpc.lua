@@ -8,6 +8,7 @@ local deps
 local INTERVAL_MS, LOG_MS = 2000, 60000
 local last, lastLog, logged, lastSave = 0, 0, false, 0
 local pendingEquipment = nil
+local lastCorpseClean = 0
 
 local function saveState()
     if isClient() or not PersonalKnoxAPI then return end
@@ -49,6 +50,13 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
+    if now - lastCorpseClean >= 30000 then
+        lastCorpseClean = now
+        if api:ownHasProfession("CORPSE") then
+            local cleaned = api:ownCleanCorpses(15)
+            if cleaned and cleaned > 0 then print("[PersonalKnox][base] corpses=" .. tostring(cleaned)) end
+        end
+    end
     if pendingEquipment and api:ownActive() > 0 then
         pcall(function() api:ownRestoreEquipment(pendingEquipment) end)
         pendingEquipment = nil

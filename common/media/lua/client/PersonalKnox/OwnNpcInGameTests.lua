@@ -286,6 +286,10 @@ function Tests.run(player)
         api:ownDebugZombieClear()
         return cleaned ~= nil and cleaned >= 0
     end)
+    check("profession-action", function()
+        api:ownSetProfession(id, "CORPSE")
+        return api:ownHasProfession("CORPSE") == true
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

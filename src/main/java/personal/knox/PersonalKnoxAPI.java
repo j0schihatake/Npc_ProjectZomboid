@@ -207,6 +207,12 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownProfession(String id) { return ownLayer.profession(id); }
+    public boolean ownHasProfession(String profession) {
+        if (profession == null) return false;
+        for (var agent : ownLayer.agents())
+            if (profession.equalsIgnoreCase(ownLayer.profession(agent.id()))) return true;
+        return false;
+    }
 
     public String ownBaseStaffing(int total, String priority) {
         var assignments = personal.knox.npc.own.OwnBaseStaffing.plan(total,
