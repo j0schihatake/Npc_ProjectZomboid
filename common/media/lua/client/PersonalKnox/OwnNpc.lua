@@ -10,6 +10,7 @@ local last, lastLog, logged, lastSave = 0, 0, false, 0
 local pendingEquipment = nil
 local lastCorpseClean = 0
 local lastBaseProduce = 0
+local lastBaseDaily = 0
 local pendingBase = nil
 
 local function saveState()
@@ -53,6 +54,10 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
+    if now - lastBaseDaily >= 300000 then
+        lastBaseDaily = now
+        print("[PersonalKnox][base] daily " .. tostring(api:ownBaseDaily(api:ownActive())))
+    end
     if now - lastBaseProduce >= 60000 then
         lastBaseProduce = now
         if api:ownHasProfession("COOK") then

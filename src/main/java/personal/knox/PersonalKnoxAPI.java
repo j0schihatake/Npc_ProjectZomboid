@@ -221,6 +221,7 @@ public final class PersonalKnoxAPI {
 
     public String ownBaseProduce(String profession) { return ownLayer.baseProduce(profession); }
     public String ownBaseCook() { return ownLayer.cook(); }
+    public String ownBaseDaily(int residents) { return ownLayer.baseDaily(residents); }
 
     public boolean ownHasProfession(String profession) {
         if (profession == null) return false;

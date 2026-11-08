@@ -218,7 +218,12 @@ public final class OwnNpcLayer {
     public String baseSnapshot() {
         var out = new StringBuilder();
         out.append("food=").append(baseFood).append(";meals=").append(baseMeals)
-                .append(";water=").append(baseWater).append(";meds=").append(baseMeds).append(';');
+                .append(";water=").append(baseWater).append(";meds=").append(baseMeds)
+                .append(";farm=").append(farmStage).append(';');
+        if (blueprint != null) {
+            out.append("bp=").append(blueprint.width()).append(',').append(blueprint.height())
+                    .append(',').append(blueprint.done()).append(',').append(blueprint.work()).append(';');
+        }
         for (var entry : professions.entrySet())
             out.append("prof=").append(entry.getKey()).append(':').append(entry.getValue()).append(';');
         return out.toString();
@@ -235,6 +240,13 @@ public final class OwnNpcLayer {
                 switch (key) {
                     case "food" -> baseFood = Math.max(0, Integer.parseInt(value));
                     case "meals" -> baseMeals = Math.max(0, Integer.parseInt(value));
+                    case "farm" -> farmStage = Math.max(0, Math.min(4, Integer.parseInt(value)));
+                    case "bp" -> {
+                        String[] p = value.split(",");
+                        if (p.length == 4) blueprint = new personal.knox.npc.own.OwnBaseBlueprint.State(
+                                Integer.parseInt(p[0]), Integer.parseInt(p[1]),
+                                Integer.parseInt(p[2]), Integer.parseInt(p[3]));
+                    }
                     case "water" -> baseWater = Math.max(0, Integer.parseInt(value));
                     case "meds" -> baseMeds = Math.max(0, Integer.parseInt(value));
                     case "prof" -> {
@@ -263,6 +275,17 @@ public final class OwnNpcLayer {
         return "w=" + blueprint.width() + " h=" + blueprint.height()
                 + " done=" + blueprint.done() + " work=" + blueprint.work()
                 + (blueprint.complete() ? " complete=true" : "");
+    }
+
+    public String baseDaily(int residents) {
+        int people = Math.max(0, Math.min(64, residents));
+        int mealsUsed = 0, waterUsed = 0;
+        for (int i = 0; i < people; i++) {
+            if (baseMeals > 0) { baseMeals--; mealsUsed++; }
+            else if (baseFood > 0) { baseFood--; mealsUsed++; }
+            if (baseWater > 0) { baseWater--; waterUsed++; }
+        }
+        return "people=" + people + " meals=" + mealsUsed + " water=" + waterUsed + " " + baseStock();
     }
 
     public String farmTick(boolean water) {

@@ -334,6 +334,21 @@ function Tests.run(player)
         for i = 1, 8 do state = api:ownBlueprintTick(4) end
         return string.find(state, "complete=true", 1, true) ~= nil
     end)
+    check("base-daily", function()
+        api:ownBaseProduce("WATER")
+        api:ownBaseProduce("FARMER")
+        local before = api:ownBaseStock()
+        local after = api:ownBaseDaily(1)
+        return before ~= after and string.find(after, "people=1", 1, true) ~= nil
+    end)
+    check("base-work-persist", function()
+        api:ownFarmTick(true)
+        api:ownBlueprintStart(4, 4)
+        local snapshot = api:ownBaseSnapshot()
+        api:ownRestoreBase(snapshot)
+        return string.find(snapshot, "farm=", 1, true) ~= nil
+            and string.find(snapshot, "bp=", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
