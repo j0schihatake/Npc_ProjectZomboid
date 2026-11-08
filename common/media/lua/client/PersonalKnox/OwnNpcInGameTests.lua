@@ -173,6 +173,13 @@ function Tests.run(player)
         return consumed ~= nil and string.find(consumed, "Base.Bread", 1, true) ~= nil
             and string.find(needs, "hunger=0.400", 1, true) ~= nil
     end)
+    check("supply-use", function()
+        api:ownDebugSupplies(id, 5)
+        api:ownDebugItem(id, "Base.Bread")
+        api:ownDebugSetNeeds(id, 0.9, 0.9)
+        api:ownEat(id)
+        return api:ownSupplies(id) == 4
+    end)
     check("formation", function()
         if api:ownCount() < 2 then return true end
         api:ownCommandAll("FOLLOW", x, y, z)

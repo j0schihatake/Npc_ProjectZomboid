@@ -2090,3 +2090,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `ownNeeds`/`ownDebugSetNeeds` для проверки.
 - In-game `npc-eat` на `Base.Bread`: `hunger=0.900 → 0.400`.
 - Без Knox: **51/51**.
+## 0.27.0 — расход припасов
+
+- `ownEat`/`ownDrink` уменьшают `supplies` на 1.
+- `ownSupplies`, `ownDebugSupplies`.
+- In-game `supply-use`: 5 → 4 после еды.
+- Без Knox: **53/53**.

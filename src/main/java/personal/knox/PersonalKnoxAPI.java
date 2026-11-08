@@ -149,19 +149,27 @@ public final class PersonalKnoxAPI {
     public String ownAutoEquip(String id) { return ownBodies.autoEquip(id); }
     public String ownEat(String id) {
         String result = ownBodies.consumeFood(id);
-        if (result.startsWith("ate ")) ownLayer.relieve(id, 0.5, 0);
+        if (result.startsWith("ate ")) {
+            ownLayer.relieve(id, 0.5, 0);
+            ownLayer.consumeSupply(id, 1);
+        }
         System.out.println("[PersonalKnox][own-eat] " + id + " " + result + " needs=" + ownLayer.needs(id));
         return result;
     }
 
     public String ownDrink(String id) {
         String result = ownBodies.consumeDrink(id);
-        if (result.startsWith("drank ")) ownLayer.relieve(id, 0, 0.5);
+        if (result.startsWith("drank ")) {
+            ownLayer.relieve(id, 0, 0.5);
+            ownLayer.consumeSupply(id, 1);
+        }
         System.out.println("[PersonalKnox][own-drink] " + id + " " + result + " needs=" + ownLayer.needs(id));
         return result;
     }
 
     public String ownNeeds(String id) { return ownLayer.needs(id); }
+    public int ownSupplies(String id) { return ownLayer.supplies(id); }
+    public void ownDebugSupplies(String id, int amount) { ownLayer.debugSetSupplies(id, amount); }
     public void ownDebugSetNeeds(String id, double hunger, double thirst) { ownLayer.debugSetNeeds(id, hunger, thirst); }
     public String ownDebugItem(String id, String type) {
         Object body = ownBodies.body(id);

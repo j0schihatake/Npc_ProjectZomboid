@@ -179,6 +179,24 @@ public final class OwnNpcLayer {
                 Math.max(0, Math.min(1, hunger)), Math.max(0, Math.min(1, thirst)), state.fatigue())));
     }
 
+    public int supplies(String id) {
+        var agent = agent(id);
+        return agent == null ? 0 : agent.supplies();
+    }
+
+    public void consumeSupply(String id, int amount) {
+        if (amount <= 0) return;
+        var agent = agent(id);
+        if (agent == null) return;
+        agents.put(id, agent.withSupplies(Math.max(0, agent.supplies() - amount)));
+    }
+
+    public void debugSetSupplies(String id, int amount) {
+        var agent = agent(id);
+        if (agent == null) return;
+        agents.put(id, agent.withSupplies(Math.max(0, amount)));
+    }
+
     public OwnNpcEvent addSupplies(String id, int amount) {
         if (amount < 0) throw new IllegalArgumentException("Invalid supplies");
         var agent = agents.get(id);
