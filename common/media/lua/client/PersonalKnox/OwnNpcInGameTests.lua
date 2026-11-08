@@ -402,6 +402,15 @@ function Tests.run(player)
         return built ~= nil and string.find(built, "built FARM", 1, true) ~= nil
             and produced ~= nil and string.find(produced, "food=", 1, true) ~= nil
     end)
+    check("base-control", function()
+        api:ownBaseAlarm(3)
+        api:ownAlarmTick()
+        api:ownAddWounded(3)
+        api:ownRotateWounded()
+        local status = api:ownBaseStatus()
+        return status ~= nil and string.find(status, "alarm=2", 1, true) ~= nil
+            and string.find(status, "wounded=0", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

@@ -268,6 +268,21 @@ public final class PersonalKnoxAPI {
     public String ownFacilities() { return ownLayer.facilities(); }
     public String ownFacilityOutput() { return ownLayer.facilityOutput(); }
     public String ownFacilityTick() { return ownLayer.facilityTick(); }
+    public String ownAlarmTick() { return ownLayer.alarmTick(); }
+    public String ownAddWounded(int count) { return ownLayer.addWounded(count); }
+    public String ownRotateWounded() { return ownLayer.rotateWounded(); }
+    public String ownAssignMedic(boolean value) { return ownLayer.assignMedic(value); }
+    public String ownGuardShift(int shift) { return ownLayer.guardShift(shift); }
+    public String ownClearJournal() { return ownLayer.clearJournal(); }
+    public String ownDemolishFacility(String kind) { return ownLayer.demolishFacility(kind); }
+    public int ownFacilityCount() { return ownLayer.facilityCount(); }
+    public String ownBaseStatus() { return ownLayer.baseStatus(); }
+    public int ownFacilityCost(String kind) { return ownLayer.facilityCost(kind); }
+    public String ownFacilityUpgrade(String kind) { return ownLayer.facilityUpgrade(kind); }
+    public String ownFacilityList() { return ownLayer.facilityList(); }
+    public String ownBaseReport() { return ownLayer.baseReport(); }
+    public String ownBaseHelp() { return ownLayer.baseHelp(); }
+    public String ownResetBase() { return ownLayer.resetBase(); }
     public String ownBaseNap() { return ownLayer.nap(); }
     public String ownBaseCoffee() { return ownLayer.coffee(); }
     public String ownBaseRead() { return ownLayer.read(); }

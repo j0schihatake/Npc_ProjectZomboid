@@ -204,6 +204,9 @@ public final class OwnNpcLayer {
     private final personal.knox.npc.own.OwnBaseRules rules = new personal.knox.npc.own.OwnBaseRules();
     private final java.util.ArrayDeque<String> journal = new java.util.ArrayDeque<>();
     private final java.util.Map<String, Integer> facilities = new java.util.LinkedHashMap<>();
+    private int wounded = 0;
+    private boolean medicAssigned = false;
+    private int guardShift = 1;
     private personal.knox.npc.own.OwnBaseBlueprint.State blueprint = null;
 
     public boolean consumeBaseFood() {
@@ -456,6 +459,36 @@ public final class OwnNpcLayer {
         baseMeds = Math.min(rules.get("medsCap"), baseMeds + meds);
         return "produced food=" + food + " water=" + water + " materials=" + materials
                 + " ammo=" + ammo + " meds=" + meds;
+    }
+
+    public int facilityCost(String kind) { return personal.knox.npc.own.OwnBaseFacilities.cost(kind, facilities.getOrDefault(personal.knox.npc.own.OwnBaseFacilities.normalize(kind), 0)); }
+    public String facilityUpgrade(String kind) { return buildFacility(kind); }
+    public String facilityList() { return facilities(); }
+    public String baseReport() { return baseStatus() + " facilities=" + facilityOutput(); }
+    public String baseHelp() { return "FARM WATER KITCHEN WORKSHOP INFIRMARY LAUNDRY GENERATOR WATCHTOWER WALL GATE"; }
+
+    public String alarmTick() {
+        if (alarm > 0) alarm--;
+        return "alarm=" + alarm;
+    }
+    public String addWounded(int count) { wounded = Math.max(0, Math.min(64, wounded + count)); return "wounded=" + wounded; }
+    public String rotateWounded() { int rotated = Math.min(wounded, 4); wounded -= rotated; return "rotated=" + rotated + " wounded=" + wounded; }
+    public String assignMedic(boolean value) { medicAssigned = value; return "medic=" + medicAssigned; }
+    public String guardShift(int shift) { guardShift = Math.max(1, Math.min(3, shift)); return "shift=" + guardShift; }
+    public String clearJournal() { journal.clear(); return "journal=0"; }
+    public String demolishFacility(String kind) {
+        String name = personal.knox.npc.own.OwnBaseFacilities.normalize(kind);
+        if (name.isEmpty() || !facilities.containsKey(name)) return "not-built";
+        facilities.remove(name); return "removed " + name;
+    }
+    public int facilityCount() { return facilities.size(); }
+    public String baseStatus() {
+        return "morale=" + morale + " alarm=" + alarm + " wounded=" + wounded + " facilities=" + facilities.size()
+                + " medic=" + medicAssigned + " shift=" + guardShift + " " + baseStock();
+    }
+    public String resetBase() {
+        morale = 50; alarm = 0; wounded = 0; medicAssigned = false; guardShift = 1; journal.clear();
+        facilities.clear(); return baseStatus();
     }
 
     public String facilities() {
