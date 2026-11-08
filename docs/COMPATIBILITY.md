@@ -2151,3 +2151,8 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - При угрозе одному NPC вся группа достаёт оружие (`own-alert`).
 - `ownArmedCount`, `ownHolsterAll`.
 - In-game `group-alert`; без Knox **67/67**.
+## 0.45.0 — фраза групповой тревоги
+
+- `OwnNpcAlert`: набор коротких русских фраз.
+- При групповой тревоге один NPC произносит случайную фразу.
+- In-game `alert-phrase`; без Knox **68/68**.

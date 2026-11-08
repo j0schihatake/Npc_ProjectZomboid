@@ -92,8 +92,14 @@ public final class OwnNpcBodyAdapter {
             if (anyThreat && !groupAlert) {
                 groupAlert = true;
                 int drawn = 0;
-                for (var agent : layer.agents()) if (draw(agent.id()).startsWith("drawn ")) drawn++;
-                System.out.println("[PersonalKnox][own-alert] group weapon drawn=" + drawn);
+                String speaker = null;
+                for (var agent : layer.agents()) {
+                    if (draw(agent.id()).startsWith("drawn ")) drawn++;
+                    if (speaker == null) speaker = agent.id();
+                }
+                String phrase = OwnNpcAlert.phrase(java.util.concurrent.ThreadLocalRandom.current().nextInt());
+                if (speaker != null) speak(speaker, phrase);
+                System.out.println("[PersonalKnox][own-alert] group weapon drawn=" + drawn + " phrase=" + phrase);
             } else if (!anyThreat) {
                 groupAlert = false;
             }
@@ -1087,6 +1093,16 @@ public final class OwnNpcBodyAdapter {
             }
         } catch (Throwable ignored) { }
         return 0;
+    }
+
+    private void speak(String id, String text) {
+        Object body = bodies.get(id);
+        if (body == null) return;
+        String value = personal.knox.TextCodec.forChat(text);
+        try {
+            body.getClass().getMethod("addLineChatElement", String.class, float.class, float.class, float.class)
+                    .invoke(body, value, 1f, 1f, 1f);
+        } catch (Throwable ignored) { }
     }
 
     private void autoConsume(OwnNpcLayer layer, String id, Object body, OwnNpcAgent agent) {
