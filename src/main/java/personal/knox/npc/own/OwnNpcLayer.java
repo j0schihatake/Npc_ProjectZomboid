@@ -277,6 +277,35 @@ public final class OwnNpcLayer {
                 + (blueprint.complete() ? " complete=true" : "");
     }
 
+    public String healWounded() {
+        if (baseMeds <= 0) return "no-meds";
+        baseMeds--;
+        return "healed " + baseStock();
+    }
+
+    public String takeStock(int food, int water, int meds) {
+        int f = Math.max(0, Math.min(food, baseMeals + baseFood));
+        int w = Math.max(0, Math.min(water, baseWater));
+        int m = Math.max(0, Math.min(meds, baseMeds));
+        int meals = Math.min(f, baseMeals);
+        baseMeals -= meals;
+        baseFood = Math.max(0, baseFood - (f - meals));
+        baseWater -= w;
+        baseMeds -= m;
+        return "took food=" + f + " water=" + w + " meds=" + m;
+    }
+
+    public String scavenge(int roll) {
+        if (baseFood <= 0 || baseWater <= 0) return "no-supplies";
+        baseFood--;
+        baseWater--;
+        int value = Math.floorMod(roll, 3);
+        if (value == 0) { baseFood += 2; return "found food=" + baseStock(); }
+        if (value == 1) { baseMeds += 1; return "found meds=" + baseStock(); }
+        baseFood += 1;
+        return "found food=" + baseStock();
+    }
+
     public String baseDaily(int residents) {
         int people = Math.max(0, Math.min(64, residents));
         int mealsUsed = 0, waterUsed = 0;
@@ -307,10 +336,10 @@ public final class OwnNpcLayer {
     public String baseProduce(String profession) {
         String value = profession == null ? "" : profession.toUpperCase(java.util.Locale.ROOT);
         switch (value) {
-            case "WATER" -> baseWater += 5;
-            case "FARMER", "HUNT", "FISH" -> baseFood += 3;
+            case "WATER" -> baseWater = Math.min(200, baseWater + 5);
+            case "FARMER", "HUNT", "FISH" -> baseFood = Math.min(200, baseFood + 3);
             case "COOK" -> { return "cook"; }
-            case "CRAFT", "BUILD" -> baseMeds += 1;
+            case "CRAFT", "BUILD" -> baseMeds = Math.min(50, baseMeds + 1);
             default -> { return "none"; }
         }
         return baseStock();

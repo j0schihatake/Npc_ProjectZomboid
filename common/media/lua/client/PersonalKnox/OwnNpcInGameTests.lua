@@ -349,6 +349,14 @@ function Tests.run(player)
         return string.find(snapshot, "farm=", 1, true) ~= nil
             and string.find(snapshot, "bp=", 1, true) ~= nil
     end)
+    check("base-economy", function()
+        api:ownBaseProduce("WATER")
+        api:ownBaseProduce("FARMER")
+        local heal = api:ownBaseHeal()
+        local took = api:ownBaseTake(1, 1, 0)
+        local scav = api:ownBaseScavenge(1)
+        return heal ~= nil and took ~= nil and scav ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

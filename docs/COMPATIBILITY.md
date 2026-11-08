@@ -2199,3 +2199,9 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `OwnBaseFarm`: пусто → вспахано → посажено → растёт → готово.
 - `ownFarmTick` собирает 5 еды; Lua тикает при профессии FARMER.
 - In-game `farm-cycle`; без Knox **80/80**.
+## 0.62.0 — экономика базы
+
+- `ownBaseHeal`: лечение из медицины.
+- `ownBaseTake`: выдача запаса игроку.
+- `ownBaseScavenge`: вылазка за едой/медициной.
+- Лимиты запаса; in-game `base-economy`; без Knox **85/85**.
