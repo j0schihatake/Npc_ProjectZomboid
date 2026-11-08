@@ -413,6 +413,27 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String consumeFood(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
+                if (!"Food".equalsIgnoreCase(category)) continue;
+                String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                inventory.getClass().getMethod("Remove", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(inventory, item);
+                return "ate " + type;
+            }
+            return "no-food";
+        } catch (Throwable error) { return "eat-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String autoEquip(String id) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";

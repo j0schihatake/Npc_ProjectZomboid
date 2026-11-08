@@ -157,6 +157,14 @@ function Tests.run(player)
         local equipped = api:ownAutoEquip(id)
         return equipped ~= nil and equipped ~= "" and equipped ~= "no-weapon"
     end)
+    check("npc-eat", function()
+        api:ownDebugItem(id, "Base.Bread")
+        api:ownDebugSetNeeds(id, 0.9, 0.9)
+        local consumed = api:ownEat(id)
+        local needs = api:ownNeeds(id)
+        return consumed ~= nil and string.find(consumed, "Base.Bread", 1, true) ~= nil
+            and string.find(needs, "hunger=0.400", 1, true) ~= nil
+    end)
     check("formation", function()
         if api:ownCount() < 2 then return true end
         api:ownCommandAll("FOLLOW", x, y, z)

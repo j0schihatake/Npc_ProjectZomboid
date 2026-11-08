@@ -147,6 +147,24 @@ public final class PersonalKnoxAPI {
     public void ownSetStartingWeapon(String type) { ownBodies.setStartingWeapon(type); }
     public String ownStartingWeapon() { return ownBodies.startingWeapon(); }
     public String ownAutoEquip(String id) { return ownBodies.autoEquip(id); }
+    public String ownEat(String id) {
+        String result = ownBodies.consumeFood(id);
+        if (result.startsWith("ate ")) ownLayer.relieve(id, 0.5, 0);
+        System.out.println("[PersonalKnox][own-eat] " + id + " " + result + " needs=" + ownLayer.needs(id));
+        return result;
+    }
+
+    public String ownNeeds(String id) { return ownLayer.needs(id); }
+    public void ownDebugSetNeeds(String id, double hunger, double thirst) { ownLayer.debugSetNeeds(id, hunger, thirst); }
+    public String ownDebugItem(String id, String type) {
+        Object body = ownBodies.body(id);
+        if (body == null) return "no-body";
+        try {
+            Object inv = body.getClass().getMethod("getInventory").invoke(body);
+            inv.getClass().getMethod("AddItem", String.class).invoke(inv, type);
+            return type;
+        } catch (Throwable error) { return "add-error=" + error.getClass().getSimpleName(); }
+    }
 
     public String ownPrimaryItem(String id) {
         Object body = ownBodies.body(id);

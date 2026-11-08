@@ -156,6 +156,29 @@ public final class OwnNpcLayer {
         return count;
     }
 
+    public String needs(String id) {
+        var agent = agent(id);
+        if (agent == null) return "";
+        return String.format(java.util.Locale.ROOT, "hunger=%.3f thirst=%.3f fatigue=%.3f",
+                agent.state().hunger(), agent.state().thirst(), agent.state().fatigue());
+    }
+
+    public void relieve(String id, double hunger, double thirst) {
+        var agent = agent(id);
+        if (agent == null) return;
+        var state = agent.state();
+        agents.put(id, agent.withState(state.withNeeds(
+                Math.max(0, state.hunger() - hunger), Math.max(0, state.thirst() - thirst), state.fatigue())));
+    }
+
+    public void debugSetNeeds(String id, double hunger, double thirst) {
+        var agent = agent(id);
+        if (agent == null) return;
+        var state = agent.state();
+        agents.put(id, agent.withState(state.withNeeds(
+                Math.max(0, Math.min(1, hunger)), Math.max(0, Math.min(1, thirst)), state.fatigue())));
+    }
+
     public OwnNpcEvent addSupplies(String id, int amount) {
         if (amount < 0) throw new IllegalArgumentException("Invalid supplies");
         var agent = agents.get(id);
