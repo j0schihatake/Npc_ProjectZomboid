@@ -539,6 +539,35 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable error) { return ""; }
     }
 
+    public String giveItemFromPlayer(String id, Object player, String type) {
+        Object body = bodies.get(id);
+        if (body == null || player == null || type == null) return "no-body";
+        try {
+            Object from = player.getClass().getMethod("getInventory").invoke(player);
+            Object items = from.getClass().getMethod("getItems").invoke(from);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String full = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                if (!type.equalsIgnoreCase(full)) continue;
+                Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+                Object added = inventory.getClass().getMethod("AddItem",
+                        Class.forName("zombie.inventory.InventoryItem")).invoke(inventory, item);
+                if (added == null) return "inventory-full";
+                from.getClass().getMethod("Remove", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(from, item);
+                String category = String.valueOf(added.getClass().getMethod("getCategory").invoke(added));
+                if ("Weapon".equalsIgnoreCase(category)) {
+                    body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                            .invoke(body, added);
+                }
+                return "gave " + full;
+            }
+            return "no-item";
+        } catch (Throwable error) { return "give-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String giveWeaponFromPlayer(String id, Object player) {
         Object body = bodies.get(id);
         if (body == null || player == null) return "no-body";
