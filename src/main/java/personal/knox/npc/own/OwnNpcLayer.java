@@ -197,6 +197,11 @@ public final class OwnNpcLayer {
     private int baseFuel = 0;
     private int baseAmmo = 0;
     private int baseLaundry = 0;
+    private int morale = 50;
+    private int alarm = 0;
+    private int cleanClothes = 0;
+    private int vehicleFuel = 0;
+    private final java.util.ArrayDeque<String> journal = new java.util.ArrayDeque<>();
     private personal.knox.npc.own.OwnBaseBlueprint.State blueprint = null;
 
     public boolean consumeBaseFood() {
@@ -225,6 +230,8 @@ public final class OwnNpcLayer {
                 .append(";water=").append(baseWater).append(";meds=").append(baseMeds)
                 .append(";materials=").append(baseMaterials).append(";fuel=").append(baseFuel)
                 .append(";ammo=").append(baseAmmo).append(";laundry=").append(baseLaundry)
+                .append(";morale=").append(morale).append(";alarm=").append(alarm)
+                .append(";clean=").append(cleanClothes).append(";vehicleFuel=").append(vehicleFuel)
                 .append(";farm=").append(farmStage).append(';');
         if (blueprint != null) {
             out.append("bp=").append(blueprint.width()).append(',').append(blueprint.height())
@@ -250,6 +257,10 @@ public final class OwnNpcLayer {
                     case "fuel" -> baseFuel = Math.max(0, Integer.parseInt(value));
                     case "ammo" -> baseAmmo = Math.max(0, Integer.parseInt(value));
                     case "laundry" -> baseLaundry = Math.max(0, Integer.parseInt(value));
+                    case "morale" -> morale = Math.max(0, Math.min(100, Integer.parseInt(value)));
+                    case "alarm" -> alarm = Math.max(0, Math.min(3, Integer.parseInt(value)));
+                    case "clean" -> cleanClothes = Math.max(0, Integer.parseInt(value));
+                    case "vehicleFuel" -> vehicleFuel = Math.max(0, Integer.parseInt(value));
                     case "farm" -> farmStage = Math.max(0, Math.min(4, Integer.parseInt(value)));
                     case "bp" -> {
                         String[] p = value.split(",");
@@ -304,6 +315,79 @@ public final class OwnNpcLayer {
         return "guards=" + guards + " plan=" + plan;
     }
 
+    public String alarm(int level) {
+        alarm = Math.max(0, Math.min(3, level));
+        record("alarm=" + alarm);
+        return "alarm=" + alarm;
+    }
+
+    public void record(String event) {
+        if (event == null || event.isBlank()) return;
+        journal.addLast(event.length() > 80 ? event.substring(0, 80) : event);
+        while (journal.size() > 32) journal.removeFirst();
+    }
+
+    public String journalText() { return String.join("|", journal); }
+
+    public static int[] guardShifts(int guards, int shifts) {
+        int g = Math.max(0, guards), s = Math.max(1, Math.min(4, shifts));
+        int[] out = new int[s];
+        for (int i = 0; i < g; i++) out[i % s]++;
+        return out;
+    }
+
+    public int constructionMaterials(int width, int height) {
+        return Math.max(1, Math.min(32, width)) * Math.max(1, Math.min(32, height)) * 2;
+    }
+
+    public int purifyWater(int raw) {
+        int clean = Math.max(0, raw) / 2;
+        baseWater = Math.min(200, baseWater + clean);
+        return clean;
+    }
+
+    public int fishYield(boolean rod) {
+        int yield = rod ? 3 : 1;
+        baseFood = Math.min(200, baseFood + yield);
+        return yield;
+    }
+
+    public int huntYield(boolean rifle) {
+        int yield = rifle ? 4 : 2;
+        baseFood = Math.min(200, baseFood + yield);
+        return yield;
+    }
+
+    public int storageCap(String type) {
+        if (type == null) return 0;
+        return switch (type.toUpperCase(java.util.Locale.ROOT)) {
+            case "FOOD" -> 200; case "WATER" -> 200; case "MEDS" -> 50;
+            case "MATERIALS" -> 100; case "FUEL" -> 60; case "AMMO" -> 120;
+            default -> 0;
+        };
+    }
+
+    public int generatorHours(int fuel) { return Math.max(0, fuel) * 2; }
+
+    public int vehicleFuelCost(int km) { return Math.max(0, km) / 5; }
+
+    public String equipmentTemplate(String profession) {
+        String value = profession == null ? "" : profession.toUpperCase(java.util.Locale.ROOT);
+        return switch (value) {
+            case "GUARD", "ENFORCER" -> "pistol,vest,helmet";
+            case "HUNTER" -> "rifle,knife,backpack";
+            case "FISHER" -> "rod,knife,bag";
+            case "BUILDER" -> "hammer,saw,nails";
+            case "MEDIC" -> "bandage,pills,bag";
+            default -> "bat,tools,bag";
+        };
+    }
+
+    public String baseOps() {
+        return "morale=" + morale + " alarm=" + alarm + " journal=" + journal.size()
+                + " clean=" + cleanClothes + " vehicleFuel=" + vehicleFuel;
+    }
+
     public String craftAmmo() {
         if (baseMaterials < 2) return "no-materials";
         baseMaterials -= 2;
@@ -336,6 +420,7 @@ public final class OwnNpcLayer {
         if (baseWater < 1) return "no-water";
         baseWater--;
         baseLaundry++;
+        cleanClothes++;
         return baseStock();
     }
 
@@ -382,7 +467,11 @@ public final class OwnNpcLayer {
             else if (baseFood > 0) { baseFood--; mealsUsed++; }
             if (baseWater > 0) { baseWater--; waterUsed++; }
         }
-        return "people=" + people + " meals=" + mealsUsed + " water=" + waterUsed + " " + baseStock();
+        if (people > 0 && (mealsUsed < people || waterUsed < people)) morale = Math.max(0, morale - 2);
+        else if (people > 0) morale = Math.min(100, morale + 1);
+        record("daily people=" + people);
+        return "people=" + people + " meals=" + mealsUsed + " water=" + waterUsed
+                + " morale=" + morale + " " + baseStock();
     }
 
     public String farmTick(boolean water) {

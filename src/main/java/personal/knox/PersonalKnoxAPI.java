@@ -240,6 +240,18 @@ public final class PersonalKnoxAPI {
     public String ownBaseHunt() { return ownLayer.hunt(); }
     public String ownBaseLaundry() { return ownLayer.laundry(); }
     public String ownBaseRepair() { return ownLayer.repair(); }
+    public String ownBaseAlarm(int level) { return ownLayer.alarm(level); }
+    public String ownBaseJournal() { return ownLayer.journalText(); }
+    public String ownBaseOps() { return ownLayer.baseOps(); }
+    public int[] ownGuardShifts(int guards, int shifts) { return personal.knox.npc.own.OwnNpcLayer.guardShifts(guards, shifts); }
+    public int ownConstructionMaterials(int w, int h) { return ownLayer.constructionMaterials(w, h); }
+    public int ownPurifyWater(int raw) { return ownLayer.purifyWater(raw); }
+    public int ownFishYield(boolean rod) { return ownLayer.fishYield(rod); }
+    public int ownHuntYield(boolean rifle) { return ownLayer.huntYield(rifle); }
+    public int ownStorageCap(String type) { return ownLayer.storageCap(type); }
+    public int ownGeneratorHours(int fuel) { return ownLayer.generatorHours(fuel); }
+    public int ownVehicleFuelCost(int km) { return ownLayer.vehicleFuelCost(km); }
+    public String ownEquipmentTemplate(String profession) { return ownLayer.equipmentTemplate(profession); }
 
     public boolean ownHasProfession(String profession) {
         if (profession == null) return false;
