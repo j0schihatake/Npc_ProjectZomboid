@@ -152,6 +152,11 @@ function Tests.run(player)
         local mode = api:ownStartingWeapon()
         return mode == "melee" or mode == "firearm" or mode == "none"
     end)
+    check("auto-equip", function()
+        api:ownDebugEquip(id, "Base.BaseballBat", 0)
+        local equipped = api:ownAutoEquip(id)
+        return equipped ~= nil and equipped ~= "" and equipped ~= "no-weapon"
+    end)
     check("formation", function()
         if api:ownCount() < 2 then return true end
         api:ownCommandAll("FOLLOW", x, y, z)

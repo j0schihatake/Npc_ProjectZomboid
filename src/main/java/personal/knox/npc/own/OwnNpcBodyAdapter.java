@@ -413,6 +413,34 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String autoEquip(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            Object best = null;
+            int bestScore = -1;
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
+                if (!"Weapon".equalsIgnoreCase(category)) continue;
+                int condition = ((Number) item.getClass().getMethod("getCondition").invoke(item)).intValue();
+                int ammo = 0;
+                try { ammo = ((Number) item.getClass().getMethod("getCurrentAmmoCount").invoke(item)).intValue(); }
+                catch (Throwable ignored) { }
+                int score = condition + ammo * 10;
+                if (score > bestScore) { bestScore = score; best = item; }
+            }
+            if (best == null) return "no-weapon";
+            body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                    .invoke(body, best);
+            return String.valueOf(best.getClass().getMethod("getFullType").invoke(best));
+        } catch (Throwable error) { return "equip-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String startingWeapon() { return startingWeapon; }
 
     public void setStartingWeapon(String type) {

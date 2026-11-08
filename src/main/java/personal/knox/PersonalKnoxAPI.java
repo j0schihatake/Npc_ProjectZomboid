@@ -146,6 +146,8 @@ public final class PersonalKnoxAPI {
     public String ownPosition(String id) { return ownBodies.position(id); }
     public void ownSetStartingWeapon(String type) { ownBodies.setStartingWeapon(type); }
     public String ownStartingWeapon() { return ownBodies.startingWeapon(); }
+    public String ownAutoEquip(String id) { return ownBodies.autoEquip(id); }
+
     public String ownPrimaryItem(String id) {
         Object body = ownBodies.body(id);
         if (body == null) return "";
