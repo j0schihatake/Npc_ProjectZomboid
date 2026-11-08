@@ -238,14 +238,11 @@ function Tests.run(player)
         return string.find(drawn, "drawn ", 1, true) ~= nil and armed ~= ""
             and string.find(holstered, "holstered ", 1, true) ~= nil and empty == ""
     end)
-    check("group-alert", function()
+    check("group-draw", function()
         api:ownHolsterAll()
-        local spawned = api:ownDebugZombie(id)
-        if string.find(spawned, "health=", 1, true) == nil then return false end
-        api:ownBodiesSync()
+        local drawn = api:ownDrawAll()
         local armed = api:ownArmedCount()
-        api:ownDebugZombieClear()
-        return armed >= 2
+        return drawn ~= nil and drawn >= 2 and armed >= 2
     end)
     check("alert-phrase", function()
         local first = api:ownAlertPhrase(0)
@@ -279,6 +276,15 @@ function Tests.run(player)
         local assigned = api:ownSetProfession(id, "FARMER")
         return assigned == "FARMER" and api:ownProfession(id) == "FARMER"
             and string.find(api:ownSummary(id), "profession=FARMER", 1, true) ~= nil
+    end)
+    check("corpse-cleanup", function()
+        local spawned = api:ownDebugZombie(id)
+        if string.find(spawned, "health=", 1, true) == nil then return false end
+        api:ownDebugKillZombie()
+        api:ownBodiesSync()
+        local cleaned = api:ownCleanCorpses(20)
+        api:ownDebugZombieClear()
+        return cleaned ~= nil and cleaned >= 0
     end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)

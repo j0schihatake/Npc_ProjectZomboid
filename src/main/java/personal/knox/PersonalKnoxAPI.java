@@ -454,6 +454,48 @@ public final class PersonalKnoxAPI {
 
     public double ownDebugZombieHealth() { return zombieHealth(); }
 
+    public int ownDebugKillZombie() {
+        if (debugZombie == null) return 0;
+        try {
+            debugZombie.getClass().getMethod("setHealth", float.class).invoke(debugZombie, 0f);
+            return 1;
+        } catch (Throwable error) { return 0; }
+    }
+
+    public int ownCleanCorpses(double radius) {
+        Object player = getSpecificPlayerForCorpse();
+        if (player == null) return 0;
+        try {
+            double px = ((Number) player.getClass().getMethod("getX").invoke(player)).doubleValue();
+            double py = ((Number) player.getClass().getMethod("getY").invoke(player)).doubleValue();
+            Object cell = player.getClass().getMethod("getCell").invoke(player);
+            @SuppressWarnings("unchecked")
+            var zombies = (java.util.List<Object>) cell.getClass().getMethod("getZombieList").invoke(cell);
+            int removed = 0;
+            for (int i = zombies.size() - 1; i >= 0 && removed < 32; i--) {
+                Object zombie = zombies.get(i);
+                if (zombie == null) continue;
+                try {
+                    boolean dead = (boolean) zombie.getClass().getMethod("isDead").invoke(zombie);
+                    if (!dead) continue;
+                    double x = ((Number) zombie.getClass().getMethod("getX").invoke(zombie)).doubleValue();
+                    double y = ((Number) zombie.getClass().getMethod("getY").invoke(zombie)).doubleValue();
+                    if (Math.hypot(x - px, y - py) > radius) continue;
+                    zombie.getClass().getMethod("removeFromWorld").invoke(zombie);
+                    zombie.getClass().getMethod("removeFromSquare").invoke(zombie);
+                    zombies.remove(i);
+                    removed++;
+                } catch (Throwable ignored) { }
+            }
+            return removed;
+        } catch (Throwable error) { return 0; }
+    }
+
+    private Object getSpecificPlayerForCorpse() {
+        try { return Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null); }
+        catch (Throwable ignored) { return null; }
+    }
+
     public int ownDebugZombieClear() {
         if (debugZombie == null) return 0;
         try {
