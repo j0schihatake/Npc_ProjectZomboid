@@ -209,6 +209,12 @@ function Tests.run(player)
         local after = api:ownFactionPosition(0)
         return after ~= nil and after ~= "" and before ~= after
     end)
+    check("faction-kit", function()
+        local police = api:ownFactionKit("Military")
+        local raiders = api:ownFactionKit("Raiders")
+        return string.find(police, "Base.Pistol", 1, true) ~= nil
+            and string.find(raiders, "Base.Bandana", 1, true) ~= nil
+    end)
     check("faction-groups", function()
         return api:ownGroupCount() >= 1
     end)

@@ -55,7 +55,7 @@ public final class OwnNpcBodyAdapter {
                     continue;
                 }
                 if (body == null) {
-                    body = create(cell, agent.id(), (int) agent.x(), (int) agent.y(), (int) agent.z());
+                    body = create(cell, agent.id(), (int) agent.x(), (int) agent.y(), (int) agent.z(), agent.factionId());
                     if (body == null) continue;
                     bodies.put(agent.id(), body);
                 }
@@ -556,7 +556,7 @@ public final class OwnNpcBodyAdapter {
         };
     }
 
-    private Object create(Object cell, String id, int x, int y, int z) throws Exception {
+    private Object create(Object cell, String id, int x, int y, int z, String faction) throws Exception {
         Class<?> squareClass=Class.forName("zombie.iso.IsoGridSquare");
         Object square=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class).invoke(cell,x,y,z);
         if(square==null) throw new IllegalStateException("NPC spawn square is not loaded");
@@ -584,11 +584,17 @@ public final class OwnNpcBodyAdapter {
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Hammer");
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Screwdriver");
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Saw");
-            String weapon = switch (startingWeapon) {
+            boolean factionUnit = faction != null && !faction.isBlank() && !"own".equalsIgnoreCase(faction);
+            var kit = OwnNpcFactionKit.kit(faction);
+            String weapon = factionUnit ? kit.weapon() : switch (startingWeapon) {
                 case "firearm" -> "Base.Pistol";
                 case "none" -> "";
                 default -> "Base.BaseballBat";
             };
+            if (factionUnit) {
+                try { inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, kit.accessory()); }
+                catch (Throwable ignored) { }
+            }
             if (!weapon.isEmpty()) {
                 Object item = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, weapon);
                 body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))

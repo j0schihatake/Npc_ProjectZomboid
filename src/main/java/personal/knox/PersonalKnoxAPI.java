@@ -102,6 +102,10 @@ public final class PersonalKnoxAPI {
 
     public int ownActive() { return ownLayer.count(); }
     public int ownGroupCount() { return ownPopulation.groups().size(); }
+    public String ownFactionKit(String faction) {
+        var kit = personal.knox.npc.own.OwnNpcFactionKit.kit(faction);
+        return "weapon=" + kit.weapon() + " accessory=" + kit.accessory();
+    }
     public void ownGroupMission(String groupId, double x, double y, double z) {
         ownLayer.groupMission(groupId, x, y, z);
     }
