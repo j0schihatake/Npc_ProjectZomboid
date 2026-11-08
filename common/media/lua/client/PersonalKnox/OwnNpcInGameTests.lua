@@ -290,6 +290,11 @@ function Tests.run(player)
         api:ownSetProfession(id, "CORPSE")
         return api:ownHasProfession("CORPSE") == true
     end)
+    check("base-produce", function()
+        api:ownSetProfession(id, "WATER")
+        local stock = api:ownBaseProduce("WATER")
+        return stock ~= nil and string.find(stock, "water=5", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

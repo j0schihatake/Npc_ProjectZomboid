@@ -9,6 +9,7 @@ local INTERVAL_MS, LOG_MS = 2000, 60000
 local last, lastLog, logged, lastSave = 0, 0, false, 0
 local pendingEquipment = nil
 local lastCorpseClean = 0
+local lastBaseProduce = 0
 
 local function saveState()
     if isClient() or not PersonalKnoxAPI then return end
@@ -50,6 +51,15 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
+    if now - lastBaseProduce >= 60000 then
+        lastBaseProduce = now
+        for _, profession in ipairs({"WATER", "FARMER", "COOK"}) do
+            if api:ownHasProfession(profession) then
+                local stock = api:ownBaseProduce(profession)
+                print("[PersonalKnox][base] " .. profession .. " " .. tostring(stock))
+            end
+        end
+    end
     if now - lastCorpseClean >= 30000 then
         lastCorpseClean = now
         if api:ownHasProfession("CORPSE") then

@@ -188,6 +188,25 @@ public final class OwnNpcLayer {
 
     private final java.util.Map<String, double[]> groupMissions = new java.util.HashMap<>();
     private final java.util.Map<String, String> professions = new java.util.HashMap<>();
+    private int baseFood = 0;
+    private int baseWater = 0;
+    private int baseMeds = 0;
+
+    public String baseStock() {
+        return "food=" + baseFood + " water=" + baseWater + " meds=" + baseMeds;
+    }
+
+    public String baseProduce(String profession) {
+        String value = profession == null ? "" : profession.toUpperCase(java.util.Locale.ROOT);
+        switch (value) {
+            case "WATER" -> baseWater += 5;
+            case "FARMER", "HUNT", "FISH" -> baseFood += 3;
+            case "COOK" -> baseFood += 1;
+            case "CRAFT", "BUILD" -> baseMeds += 1;
+            default -> { return "none"; }
+        }
+        return baseStock();
+    }
 
     public void profession(String id, String value) {
         if (agent(id) == null || value == null || value.isBlank()) return;

@@ -207,6 +207,10 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownProfession(String id) { return ownLayer.profession(id); }
+    public String ownBaseStock() { return ownLayer.baseStock(); }
+
+    public String ownBaseProduce(String profession) { return ownLayer.baseProduce(profession); }
+
     public boolean ownHasProfession(String profession) {
         if (profession == null) return false;
         for (var agent : ownLayer.agents())
