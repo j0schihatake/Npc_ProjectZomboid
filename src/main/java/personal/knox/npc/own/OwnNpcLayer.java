@@ -193,6 +193,10 @@ public final class OwnNpcLayer {
     private int baseWater = 0;
     private int baseMeds = 0;
     private int farmStage = 0;
+    private int baseMaterials = 0;
+    private int baseFuel = 0;
+    private int baseAmmo = 0;
+    private int baseLaundry = 0;
     private personal.knox.npc.own.OwnBaseBlueprint.State blueprint = null;
 
     public boolean consumeBaseFood() {
@@ -219,6 +223,8 @@ public final class OwnNpcLayer {
         var out = new StringBuilder();
         out.append("food=").append(baseFood).append(";meals=").append(baseMeals)
                 .append(";water=").append(baseWater).append(";meds=").append(baseMeds)
+                .append(";materials=").append(baseMaterials).append(";fuel=").append(baseFuel)
+                .append(";ammo=").append(baseAmmo).append(";laundry=").append(baseLaundry)
                 .append(";farm=").append(farmStage).append(';');
         if (blueprint != null) {
             out.append("bp=").append(blueprint.width()).append(',').append(blueprint.height())
@@ -240,6 +246,10 @@ public final class OwnNpcLayer {
                 switch (key) {
                     case "food" -> baseFood = Math.max(0, Integer.parseInt(value));
                     case "meals" -> baseMeals = Math.max(0, Integer.parseInt(value));
+                    case "materials" -> baseMaterials = Math.max(0, Integer.parseInt(value));
+                    case "fuel" -> baseFuel = Math.max(0, Integer.parseInt(value));
+                    case "ammo" -> baseAmmo = Math.max(0, Integer.parseInt(value));
+                    case "laundry" -> baseLaundry = Math.max(0, Integer.parseInt(value));
                     case "farm" -> farmStage = Math.max(0, Math.min(4, Integer.parseInt(value)));
                     case "bp" -> {
                         String[] p = value.split(",");
@@ -275,6 +285,64 @@ public final class OwnNpcLayer {
         return "w=" + blueprint.width() + " h=" + blueprint.height()
                 + " done=" + blueprint.done() + " work=" + blueprint.work()
                 + (blueprint.complete() ? " complete=true" : "");
+    }
+
+    public int guardCount() {
+        int guards = 0;
+        for (var agent : agents())
+            if (isGuard(profession(agent.id()))) guards++;
+        return guards;
+    }
+
+    private boolean isGuard(String value) {
+        return "GUARD".equals(value) || "PATROL".equals(value) || "ENFORCER".equals(value);
+    }
+
+    public String baseDefense() {
+        int guards = guardCount();
+        var plan = personal.knox.npc.own.OwnBaseDefense.plan(guards, 0, 1);
+        return "guards=" + guards + " plan=" + plan;
+    }
+
+    public String craftAmmo() {
+        if (baseMaterials < 2) return "no-materials";
+        baseMaterials -= 2;
+        baseAmmo = Math.min(120, baseAmmo + 5);
+        return baseStock();
+    }
+
+    public String boilWater() {
+        if (baseFuel < 1) return "no-fuel";
+        baseFuel--;
+        baseWater = Math.min(200, baseWater + 2);
+        return baseStock();
+    }
+
+    public String fish() {
+        if (baseWater < 1) return "no-water";
+        baseWater--;
+        baseFood = Math.min(200, baseFood + 2);
+        return baseStock();
+    }
+
+    public String hunt() {
+        if (baseAmmo < 1) return "no-ammo";
+        baseAmmo--;
+        baseFood = Math.min(200, baseFood + 3);
+        return baseStock();
+    }
+
+    public String laundry() {
+        if (baseWater < 1) return "no-water";
+        baseWater--;
+        baseLaundry++;
+        return baseStock();
+    }
+
+    public String repair() {
+        if (baseMaterials < 1) return "no-materials";
+        baseMaterials--;
+        return baseStock();
     }
 
     public String healWounded() {
@@ -330,7 +398,9 @@ public final class OwnNpcLayer {
     public String farmState() { return "stage=" + farmStage + " " + baseStock(); }
 
     public String baseStock() {
-        return "food=" + baseFood + " meals=" + baseMeals + " water=" + baseWater + " meds=" + baseMeds;
+        return "food=" + baseFood + " meals=" + baseMeals + " water=" + baseWater + " meds=" + baseMeds
+                + " materials=" + baseMaterials + " fuel=" + baseFuel + " ammo=" + baseAmmo
+                + " laundry=" + baseLaundry;
     }
 
     public String baseProduce(String profession) {
@@ -339,7 +409,8 @@ public final class OwnNpcLayer {
             case "WATER" -> baseWater = Math.min(200, baseWater + 5);
             case "FARMER", "HUNT", "FISH" -> baseFood = Math.min(200, baseFood + 3);
             case "COOK" -> { return "cook"; }
-            case "CRAFT", "BUILD" -> baseMeds = Math.min(50, baseMeds + 1);
+            case "BUILD" -> baseMaterials = Math.min(100, baseMaterials + 2);
+            case "CRAFT" -> baseMeds = Math.min(50, baseMeds + 1);
             default -> { return "none"; }
         }
         return baseStock();

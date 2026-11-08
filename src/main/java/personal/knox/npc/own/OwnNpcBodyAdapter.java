@@ -994,11 +994,22 @@ public final class OwnNpcBodyAdapter {
         Object body = bodies.get(id);
         if (body == null) return "no-body";
         try {
-            Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
-            if (square == null) return "no-square";
-            square.getClass().getMethod("AddWorldInventoryItem", String.class, float.class, float.class, float.class)
-                    .invoke(square, "Base.Bread", 0.5f, 0.5f, 0f);
-            return "placed";
+            Object cell = currentCell();
+            int bx = ((Number) body.getClass().getMethod("getX").invoke(body)).intValue();
+            int by = ((Number) body.getClass().getMethod("getY").invoke(body)).intValue();
+            int bz = ((Number) body.getClass().getMethod("getZ").invoke(body)).intValue();
+            Throwable last = null;
+            for (int dx = 0; dx <= 2; dx++) for (int dy = 0; dy <= 2; dy++) {
+                Object square = cell.getClass().getMethod("getGridSquare", int.class, int.class, int.class)
+                        .invoke(cell, bx + dx, by + dy, bz);
+                if (square == null) continue;
+                try {
+                    square.getClass().getMethod("AddWorldInventoryItem", String.class, float.class, float.class, float.class)
+                            .invoke(square, "Base.Bread", 0.5f, 0.5f, 0f);
+                    return "placed";
+                } catch (Throwable error) { last = error; }
+            }
+            return "place-error=" + (last == null ? "no-square" : last.getClass().getSimpleName());
         } catch (Throwable error) { return "place-error=" + error.getClass().getSimpleName(); }
     }
 

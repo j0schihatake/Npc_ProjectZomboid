@@ -75,6 +75,18 @@ local function tick()
         if api:ownHasProfession("BUILD") then
             print("[PersonalKnox][base] build " .. tostring(api:ownBlueprintTick(1)))
         end
+        if api:ownHasProfession("CRAFT") then
+            print("[PersonalKnox][base] ammo " .. tostring(api:ownBaseCraftAmmo()))
+        end
+        if api:ownHasProfession("FISH") then
+            print("[PersonalKnox][base] fish " .. tostring(api:ownBaseFish()))
+        end
+        if api:ownHasProfession("HUNT") then
+            print("[PersonalKnox][base] hunt " .. tostring(api:ownBaseHunt()))
+        end
+        if api:ownHasProfession("LAUNDRY") then
+            print("[PersonalKnox][base] laundry " .. tostring(api:ownBaseLaundry()))
+        end
     end
     if now - lastCorpseClean >= 30000 then
         lastCorpseClean = now

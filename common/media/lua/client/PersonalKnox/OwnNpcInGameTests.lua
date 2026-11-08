@@ -357,6 +357,25 @@ function Tests.run(player)
         local scav = api:ownBaseScavenge(1)
         return heal ~= nil and took ~= nil and scav ~= nil
     end)
+    check("base-guard", function()
+        api:ownSetProfession(id, "GUARD")
+        local defense = api:ownBaseDefense()
+        return string.find(defense, "guards=1", 1, true) ~= nil
+    end)
+    check("base-medic", function()
+        api:ownBaseProduce("BUILD")
+        local healed = api:ownHealFromBase(id)
+        return healed ~= nil and (string.find(healed, "healed", 1, true) ~= nil
+            or string.find(healed, "no-meds", 1, true) ~= nil)
+    end)
+    check("base-logistics", function()
+        api:ownBaseProduce("BUILD")
+        local ammo = api:ownBaseCraftAmmo()
+        local fish = api:ownBaseFish()
+        local laundry = api:ownBaseLaundry()
+        local repair = api:ownBaseRepair()
+        return ammo ~= nil and fish ~= nil and laundry ~= nil and repair ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
