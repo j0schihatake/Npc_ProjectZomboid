@@ -195,6 +195,16 @@ public final class PersonalKnoxAPI {
     }
 
     public String ownGiveWeapon(String id, Object player) { return ownBodies.giveWeaponFromPlayer(id, player); }
+    public String ownHolster(String id) { return ownBodies.holster(id); }
+    public String ownDraw(String id) { return ownBodies.draw(id); }
+    public int ownDrawAll() {
+        int count = 0;
+        for (var agent : ownLayer.agents()) {
+            if (ownBodies.draw(agent.id()).startsWith("drawn ")) count++;
+        }
+        return count;
+    }
+
     public String ownGiveItem(String id, Object player, String type) {
         return ownBodies.giveItemFromPlayer(id, player, type);
     }

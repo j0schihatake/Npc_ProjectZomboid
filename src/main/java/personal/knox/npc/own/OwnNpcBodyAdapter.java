@@ -17,6 +17,7 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, PathState> pathCache = new HashMap<>();
     private final Map<String, Object> lootObjects = new HashMap<>();
     private final Map<String, double[]> lastAim = new HashMap<>();
+    private final Map<String, String> holstered = new HashMap<>();
     private volatile String startingWeapon = "melee";
     private volatile int factionRangedChance = 40;
     private volatile int factionMeleeChance = 40;
@@ -537,6 +538,42 @@ public final class OwnNpcBodyAdapter {
             counts.forEach((type, count) -> out.append(type).append('x').append(count).append(';'));
             return out.toString();
         } catch (Throwable error) { return ""; }
+    }
+
+    public String holster(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object item = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
+            if (item == null) return "no-weapon";
+            String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+            holstered.put(id, type);
+            body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                    .invoke(body, new Object[]{null});
+            return "holstered " + type;
+        } catch (Throwable error) { return "holster-error=" + error.getClass().getSimpleName(); }
+    }
+
+    public String draw(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        String type = holstered.get(id);
+        if (type == null) return "no-holstered";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                if (!type.equals(String.valueOf(item.getClass().getMethod("getFullType").invoke(item)))) continue;
+                body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(body, item);
+                holstered.remove(id);
+                return "drawn " + type;
+            }
+            return "no-item-in-inventory";
+        } catch (Throwable error) { return "draw-error=" + error.getClass().getSimpleName(); }
     }
 
     public String giveItemFromPlayer(String id, Object player, String type) {

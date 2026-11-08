@@ -220,6 +220,15 @@ function Tests.run(player)
         return gave ~= nil and string.find(gave, "Base.Bread", 1, true) ~= nil
             and string.find(inventory, "Base.Bread", 1, true) ~= nil
     end)
+    check("weapon-slot", function()
+        local holstered = api:ownHolster(id)
+        local empty = api:ownPrimaryItem(id)
+        local drawn = api:ownDraw(id)
+        local hand = api:ownPrimaryItem(id)
+        return string.find(holstered, "holstered ", 1, true) ~= nil
+            and empty == "" and string.find(drawn, "drawn ", 1, true) ~= nil
+            and hand ~= ""
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
