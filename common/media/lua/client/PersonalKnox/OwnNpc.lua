@@ -7,6 +7,7 @@ local Util = require "PersonalKnox/Util"
 local deps
 local INTERVAL_MS, LOG_MS = 2000, 60000
 local last, lastLog, logged, lastSave = 0, 0, false, 0
+local pendingEquipment = nil
 
 local function saveState()
     if isClient() or not PersonalKnoxAPI then return end
@@ -48,6 +49,10 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
+    if pendingEquipment and api:ownActive() > 0 then
+        pcall(function() api:ownRestoreEquipment(pendingEquipment) end)
+        pendingEquipment = nil
+    end
     if now - lastSave >= 60000 then
         lastSave = now
         saveState()
@@ -86,6 +91,7 @@ function OwnNpc.install(adapters)
         local player = getSpecificPlayer(0)
         if not player or not PersonalKnoxAPI then return end
         local data = player:getModData() or {}
+        pendingEquipment = data.PersonalKnoxEquipment
         local ok, result = pcall(function()
             return PersonalKnoxAPI.getInstance():ownBootstrap(
                 player, Settings.companionCount(),

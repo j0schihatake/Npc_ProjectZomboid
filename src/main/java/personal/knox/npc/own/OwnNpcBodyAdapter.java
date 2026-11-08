@@ -18,6 +18,7 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, Object> lootObjects = new HashMap<>();
     private final Map<String, double[]> lastAim = new HashMap<>();
     private final Map<String, String> holstered = new HashMap<>();
+    private final Map<String, String> pendingEquipment = new HashMap<>();
     private volatile String startingWeapon = "melee";
     private volatile int factionRangedChance = 40;
     private volatile int factionMeleeChance = 40;
@@ -42,7 +43,7 @@ public final class OwnNpcBodyAdapter {
                 if (body != null) {
                     syncHealth(layer, agent.id(), body);
                     attack(agent.id(), body, zombies);
-                    autoWeapon(agent.id(), lastAim.containsKey(agent.id()));
+                    autoWeapon(agent.id(), lastAim.containsKey(agent.id()) || groupAlert);
                     retreat(layer, agent.id(), body, agent);
                     autoConsume(layer, agent.id(), body, agent);
                 }
@@ -568,6 +569,44 @@ public final class OwnNpcBodyAdapter {
         return armed;
     }
 
+    public void restoreEquipment(String text) {
+        if (text == null || text.isBlank()) return;
+        for (String row : text.split(";")) {
+            int eq = row.indexOf('=');
+            if (eq <= 0 || eq + 3 > row.length()) continue;
+            String id = row.substring(0, eq);
+            String marker = row.substring(eq + 1, eq + 3);
+            String type = row.substring(eq + 3);
+            if (!"P:".equals(marker) && !"H:".equals(marker)) continue;
+            pendingEquipment.put(id, marker + type);
+            Object body = bodies.get(id);
+            if (body != null) applyEquipment(body, marker + type);
+        }
+    }
+
+    private void applyEquipment(Object body, String value) {
+        try {
+            String marker = value.substring(0, 2);
+            String type = value.substring(2);
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                if (!type.equals(String.valueOf(item.getClass().getMethod("getFullType").invoke(item)))) continue;
+                if ("P:".equals(marker)) {
+                    body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                            .invoke(body, item);
+                } else {
+                    body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                            .invoke(body, new Object[]{null});
+                }
+                return;
+            }
+        } catch (Throwable ignored) { }
+    }
+
     public String equipmentSnapshot() {
         var out = new StringBuilder();
         for (var entry : bodies.entrySet()) {
@@ -803,6 +842,8 @@ public final class OwnNpcBodyAdapter {
             call(body,"removeFromWorld");call(body,"removeFromSquare");
             throw failure;
         }
+        String pending = pendingEquipment.remove(id);
+        if (pending != null) applyEquipment(body, pending);
         System.out.println("[PersonalKnox] Own body " + id + " at "
                 + String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f", (double) x, (double) y, (double) z));
         return body;

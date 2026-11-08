@@ -258,6 +258,13 @@ function Tests.run(player)
         api:ownDraw(id)
         return snapshot ~= nil and string.find(snapshot, "=H:", 1, true) ~= nil
     end)
+    check("equipment-restore", function()
+        api:ownHolster(id)
+        local snapshot = api:ownEquipmentSnapshot()
+        api:ownDraw(id)
+        api:ownRestoreEquipment(snapshot)
+        return api:ownPrimaryItem(id) == ""
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

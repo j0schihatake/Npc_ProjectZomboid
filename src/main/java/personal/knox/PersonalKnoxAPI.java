@@ -196,6 +196,7 @@ public final class PersonalKnoxAPI {
 
     public String ownGiveWeapon(String id, Object player) { return ownBodies.giveWeaponFromPlayer(id, player); }
     public String ownEquipmentSnapshot() { return ownBodies.equipmentSnapshot(); }
+    public void ownRestoreEquipment(String text) { ownBodies.restoreEquipment(text); }
 
     public String ownAlertPhrase(int roll) { return personal.knox.npc.own.OwnNpcAlert.phrase(roll); }
 
