@@ -2096,3 +2096,7 @@ Reactions/Supplies эта метка не учитывается: такие п�
 - `ownSupplies`, `ownDebugSupplies`.
 - In-game `supply-use`: 5 → 4 после еды.
 - Без Knox: **53/53**.
+## 0.29.0 — сохранение/восстановление отряда
+
+- In-game `snapshot-restore`: снимок отряда кодируется и восстанавливается.
+- Без Knox: **55/55**.

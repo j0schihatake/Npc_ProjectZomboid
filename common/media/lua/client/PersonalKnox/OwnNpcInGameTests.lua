@@ -187,6 +187,12 @@ function Tests.run(player)
         api:ownEat(id)
         return api:ownSupplies(id) == 4
     end)
+    check("snapshot-restore", function()
+        local before = api:ownSnapshot()
+        if before == nil or before == "" then return false end
+        local restored = api:ownRestore(before)
+        return restored ~= nil and restored >= 1
+    end)
     check("formation", function()
         if api:ownCount() < 2 then return true end
         api:ownCommandAll("FOLLOW", x, y, z)
