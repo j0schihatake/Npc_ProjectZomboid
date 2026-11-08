@@ -157,6 +157,14 @@ function Tests.run(player)
         local equipped = api:ownAutoEquip(id)
         return equipped ~= nil and equipped ~= "" and equipped ~= "no-weapon"
     end)
+    check("npc-drink", function()
+        api:ownDebugItem(id, "Base.TestWaterMug")
+        api:ownDebugSetNeeds(id, 0.9, 0.9)
+        local consumed = api:ownDrink(id)
+        local needs = api:ownNeeds(id)
+        return consumed ~= nil and string.find(consumed, "Base.TestWaterMug", 1, true) ~= nil
+            and string.find(needs, "thirst=0.400", 1, true) ~= nil
+    end)
     check("npc-eat", function()
         api:ownDebugItem(id, "Base.Bread")
         api:ownDebugSetNeeds(id, 0.9, 0.9)

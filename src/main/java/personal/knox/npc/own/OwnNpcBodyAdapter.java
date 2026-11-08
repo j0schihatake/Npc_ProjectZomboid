@@ -413,6 +413,36 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String consumeDrink(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            for (int i = 0; i < size; i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
+                String type = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                boolean drink = type.contains("Water") || type.contains("Pop")
+                        || "Drink".equalsIgnoreCase(category) || "Water".equalsIgnoreCase(category)
+                        || "Drinkable".equalsIgnoreCase(category) || "WaterContainer".equalsIgnoreCase(category);
+                if (!drink) {
+                    try {
+                        double thirst = ((Number) item.getClass().getMethod("getThirstChange").invoke(item)).doubleValue();
+                        drink = thirst < 0;
+                    } catch (Throwable ignored) { }
+                }
+                if (!drink) continue;
+                inventory.getClass().getMethod("Remove", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(inventory, item);
+                return "drank " + type;
+            }
+            return "no-drink";
+        } catch (Throwable error) { return "drink-error=" + error.getClass().getSimpleName(); }
+    }
+
     public String consumeFood(String id) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";

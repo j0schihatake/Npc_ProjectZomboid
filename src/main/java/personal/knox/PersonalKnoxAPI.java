@@ -154,6 +154,13 @@ public final class PersonalKnoxAPI {
         return result;
     }
 
+    public String ownDrink(String id) {
+        String result = ownBodies.consumeDrink(id);
+        if (result.startsWith("drank ")) ownLayer.relieve(id, 0, 0.5);
+        System.out.println("[PersonalKnox][own-drink] " + id + " " + result + " needs=" + ownLayer.needs(id));
+        return result;
+    }
+
     public String ownNeeds(String id) { return ownLayer.needs(id); }
     public void ownDebugSetNeeds(String id, double hunger, double thirst) { ownLayer.debugSetNeeds(id, hunger, thirst); }
     public String ownDebugItem(String id, String type) {
