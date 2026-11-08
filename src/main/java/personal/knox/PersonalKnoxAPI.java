@@ -144,6 +144,16 @@ public final class PersonalKnoxAPI {
     public String ownDismantleStart(String id) { return ownBodies.startDismantle(id); }
     public String ownDebugObstacle(String id) { return ownBodies.debugFindObstacle(id); }
     public String ownPosition(String id) { return ownBodies.position(id); }
+    public void ownSetStartingWeapon(String type) { ownBodies.setStartingWeapon(type); }
+    public String ownStartingWeapon() { return ownBodies.startingWeapon(); }
+    public String ownPrimaryItem(String id) {
+        Object body = ownBodies.body(id);
+        if (body == null) return "";
+        try {
+            Object item = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
+            return item == null ? "" : String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+        } catch (Throwable error) { return ""; }
+    }
 
     public String ownDismantleTick(String id, double seconds) { return ownBodies.tickDismantle(id, seconds); }
 

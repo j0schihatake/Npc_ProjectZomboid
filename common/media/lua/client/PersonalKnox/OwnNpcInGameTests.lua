@@ -148,6 +148,10 @@ function Tests.run(player)
         api:ownDebugEquip(id, "Base.Pistol", 0)
         return api:ownGiveItems(id, player) >= 1
     end)
+    check("starting-weapon", function()
+        local mode = api:ownStartingWeapon()
+        return mode == "melee" or mode == "firearm" or mode == "none"
+    end)
     check("formation", function()
         if api:ownCount() < 2 then return true end
         api:ownCommandAll("FOLLOW", x, y, z)

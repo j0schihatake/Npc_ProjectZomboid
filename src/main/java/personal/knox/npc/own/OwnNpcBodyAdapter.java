@@ -17,6 +17,7 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, PathState> pathCache = new HashMap<>();
     private final Map<String, Object> lootObjects = new HashMap<>();
     private final Map<String, double[]> lastAim = new HashMap<>();
+    private volatile String startingWeapon = "melee";
 
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
@@ -412,6 +413,17 @@ public final class OwnNpcBodyAdapter {
         }
     }
 
+    public String startingWeapon() { return startingWeapon; }
+
+    public void setStartingWeapon(String type) {
+        String value = type == null ? "" : type.toLowerCase(java.util.Locale.ROOT);
+        startingWeapon = switch (value) {
+            case "firearm", "gun", "pistol" -> "firearm";
+            case "none", "unarmed" -> "none";
+            default -> "melee";
+        };
+    }
+
     private Object create(Object cell, String id, int x, int y, int z) throws Exception {
         Class<?> squareClass=Class.forName("zombie.iso.IsoGridSquare");
         Object square=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class).invoke(cell,x,y,z);
@@ -440,6 +452,21 @@ public final class OwnNpcBodyAdapter {
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Hammer");
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Screwdriver");
             inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, "Base.Saw");
+            String weapon = switch (startingWeapon) {
+                case "firearm" -> "Base.Pistol";
+                case "none" -> "";
+                default -> "Base.BaseballBat";
+            };
+            if (!weapon.isEmpty()) {
+                Object item = inventory.getClass().getMethod("AddItem", String.class).invoke(inventory, weapon);
+                body.getClass().getMethod("setPrimaryHandItem", Class.forName("zombie.inventory.InventoryItem"))
+                        .invoke(body, item);
+                if ("firearm".equals(startingWeapon)) {
+                    try { item.getClass().getMethod("setCurrentAmmoCount", int.class).invoke(item, 12); }
+                    catch (Throwable ignored) { }
+                }
+                System.out.println("[PersonalKnox] Own body starting weapon " + weapon);
+            }
             System.out.println("[PersonalKnox] Own body starting tools added");
         } catch (Throwable ignored) { }
         if (!matchPlayerClothes || !dressLikePlayer(body)) {

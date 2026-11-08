@@ -88,6 +88,8 @@
   "UI_PersonalKnox_AmmoWeightZero": "0%% (нет веса)",
   "UI_PersonalKnox_AmmoWeightHalf": "50%% (половина)",
   "UI_PersonalKnox_AmmoWeightFull": "100%% (оригинал)",
+  "UI_PersonalKnox_NpcWeapon": "Стартовое оружие NPC",
+  "UI_PersonalKnox_NpcWeaponHint": "melee — бита, firearm — пистолет с патронами, none — без оружия.",
   "UI_PersonalKnox_CompanionCount": "Спутники при старте",
   "UI_PersonalKnox_CompanionCountHint": "Сколько своих NPC создать при входе в игру (до 4).",
   "UI_PersonalKnox_CompanionNone": "Ни одного",

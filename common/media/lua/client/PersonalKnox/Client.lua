@@ -379,6 +379,14 @@ AmmoWeight.install({roster=roster})
 OwnNpc.install({roster=roster})
 local OwnFactions = require "PersonalKnox/OwnFactions"
 OwnFactions.install()
+local function applyWeaponSetting()
+    local ok, api = pcall(function() return PersonalKnoxAPI.getInstance() end)
+    if ok and api then
+        pcall(function() api:ownSetStartingWeapon(Settings.npcWeapon()) end)
+    end
+end
+Events.OnGameStart.Add(applyWeaponSetting)
+
 OwnNpcDebug.install()
 TextFix.install()
 Events.OnGameStart.Add(function()

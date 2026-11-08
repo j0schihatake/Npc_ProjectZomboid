@@ -81,6 +81,11 @@ if ok and PZAPI and PZAPI.ModOptions then
         page:addSlider("outpostSupplies", getText("UI_PersonalKnox_OutpostSupplies"), 0, 10, 1, 1,
             getText("UI_PersonalKnox_OutpostSuppliesHint"))
     end
+    if page and not page:getOption("npcWeapon") then
+        local weapon = page:addComboBox("npcWeapon", getText("UI_PersonalKnox_NpcWeapon"),
+                {"melee", "firearm", "none"}, getText("UI_PersonalKnox_NpcWeaponHint"))
+        weapon:setValue(1)
+    end
     if page and not page:getOption("companionCount") then
         local combo = page:addComboBox("companionCount", getText("UI_PersonalKnox_CompanionCount"),
             getText("UI_PersonalKnox_CompanionCountHint"))
@@ -234,6 +239,18 @@ function Settings.factionCount()
     if not option then return 3 end
     local value = option:getValue()
     return type(value) == "number" and value or 3
+end
+
+function Settings.npcWeapon()
+    local option = page and page:getOption("npcWeapon")
+    if not option then return "melee" end
+    local choice = option:getValue()
+    if type(choice) == "string" then return choice end
+    if type(choice) == "number" then
+        local values = {"melee", "firearm", "none"}
+        return values[choice + 1] or "melee"
+    end
+    return "melee"
 end
 
 function Settings.companionCount()
