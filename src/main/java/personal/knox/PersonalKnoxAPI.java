@@ -101,6 +101,7 @@ public final class PersonalKnoxAPI {
     }
 
     public int ownActive() { return ownLayer.count(); }
+    public int ownGroupCount() { return ownPopulation.groups().size(); }
 
     public String ownDamage(String id, double amount) {
         return ownLayer.damage(id, amount).type().name();

@@ -201,6 +201,9 @@ function Tests.run(player)
         local after = api:ownHealth(id)
         return result ~= nil and string.find(result, "bandaged", 1, true) ~= nil and after > before
     end)
+    check("faction-groups", function()
+        return api:ownGroupCount() >= 1
+    end)
     check("supply-shortage", function()
         api:ownDebugSupplies(id, 0)
         api:ownDebugSetNeeds(id, 0.9, 0.9)

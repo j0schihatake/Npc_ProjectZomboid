@@ -29,6 +29,7 @@ function OwnFactions.install()
                 if id and faction then
                     api:alifeSquad(id, faction, tonumber(savedMembers) or members, 100, tonumber(savedSupplies) or supplies,
                         "PATROL", tonumber(x), tonumber(y), tonumber(z), tonumber(x), tonumber(y))
+                    api:ownGroup(id, faction, tonumber(savedMembers) or members, tonumber(x), tonumber(y))
                     api:alifeOutpost("outpost-" .. id, faction, tonumber(x), tonumber(y), tonumber(z),
                         tonumber(savedGarrison) or garrison, tonumber(savedOutpostSupplies) or outpostSupplies, false)
                     restored = restored + 1
@@ -45,6 +46,7 @@ function OwnFactions.install()
             local faction = NAMES[((i - 1) % #NAMES) + 1]
             local id = "own-faction-" .. i
             api:alifeSquad(id, faction, members, 100, supplies, "PATROL", x, y, pz, x, y)
+            api:ownGroup(id, faction, members, x, y)
             api:alifeOutpost("own-outpost-" .. i, faction, x, y, pz, garrison, outpostSupplies, false)
             table.insert(rows, table.concat({id, faction, tostring(x), tostring(y), tostring(pz),
                 tostring(members), tostring(supplies), tostring(garrison), tostring(outpostSupplies)}, "|"))
