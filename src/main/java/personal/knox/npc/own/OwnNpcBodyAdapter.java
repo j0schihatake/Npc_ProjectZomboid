@@ -24,6 +24,7 @@ public final class OwnNpcBodyAdapter {
     private volatile int factionRangedChance = 40;
     private volatile int factionMeleeChance = 40;
     private volatile boolean groupAlert = false;
+    private final Map<String, Long> lastCare = new java.util.concurrent.ConcurrentHashMap<>();
 
     private long lastMoveLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
@@ -38,12 +39,17 @@ public final class OwnNpcBodyAdapter {
             if (cell == null) return 0;
             var seen = new HashSet<String>();
             var zombies = zombieSnapshot(cell);
+            if (layer.alarm() > 0) {
+                groupAlert = true;
+                try { layer.guardBase(); } catch (Throwable ignored) { }
+            }
             for (var agent : layer.agents()) {
                 seen.add(agent.id());
                 Object body = bodies.get(agent.id());
                 if (body != null) {
                     rememberWeapon(agent.id(), body);
                     syncHealth(layer, agent.id(), body);
+                    autoCare(agent.id(), body, layer);
                     attack(agent.id(), body, zombies);
                     autoWeapon(agent.id(), lastAim.containsKey(agent.id()) || groupAlert);
                     retreat(layer, agent.id(), body, agent);
@@ -587,6 +593,22 @@ public final class OwnNpcBodyAdapter {
     }
 
     public String lastWeapon(String id) { return lastWeapon.getOrDefault(id, ""); }
+
+    private void autoCare(String id, Object body, OwnNpcLayer layer) {
+        long now = System.currentTimeMillis();
+        if (now - lastCare.getOrDefault(id, 0L) < 30000L) return;
+        try {
+            float health = ((Number) body.getClass().getMethod("getHealth").invoke(body)).floatValue();
+            if (health < 0.35f) layer.addWounded(1);
+            if (health < 0.6f) {
+                String healed = layer.healWounded();
+                if (healed.startsWith("healed")) {
+                    layer.heal(id, 0.5);
+                    lastCare.put(id, now);
+                }
+            }
+        } catch (Throwable ignored) { }
+    }
 
     private void rememberWeapon(String id, Object body) {
         try {

@@ -414,6 +414,37 @@ function Tests.run(player)
     check("base-rule-count", function()
         return api:ownBaseRuleCount() == 30 and api:ownFacilityCost("FARM") > 0
     end)
+    check("alife-core", function()
+        local demo = api:ownAlifeCoreDemo()
+        return demo ~= nil and string.find(demo, "winner=", 1, true) ~= nil
+            and string.find(demo, "roster=12", 1, true) ~= nil
+    end)
+    check("alife-operation", function()
+        local result = api:ownAlifeOperation(7)
+        return result ~= nil and string.find(result, "winner=", 1, true) ~= nil
+            and string.find(result, "encounters=1", 1, true) ~= nil
+    end)
+    check("alife-patrol", function()
+        local result = api:ownAlifePatrol()
+        return result ~= nil and string.find(result, "route=", 1, true) ~= nil
+            and string.find(result, "situation=", 1, true) ~= nil
+    end)
+    check("alife-runtime", function()
+        api:alifeSilence("outpost1", 1, 2)
+        local result = api:alifeOperation(8, 6, 10, 7, 2, "marauders", "outpost1")
+        return result ~= nil and string.find(result, "winner=", 1, true) ~= nil
+            and api:alifeSilent("outpost1", 2) == true
+    end)
+    check("alife-policy", function()
+        local result = api:ownAlifePolicy()
+        return result ~= nil and string.find(result, "encounter=", 1, true) ~= nil
+            and string.find(result, "editor=true", 1, true) ~= nil
+    end)
+    check("alife-campaign", function()
+        local report = api:ownAlifeCampaign(3, 5)
+        return report ~= nil and string.find(report, "day=3", 1, true) ~= nil
+            and string.find(report, "situation=", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

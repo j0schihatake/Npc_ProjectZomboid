@@ -335,6 +335,8 @@ public final class OwnNpcLayer {
     public String rules() { return rules.snapshot(); }
     public int ruleCount() { return 30; }
 
+    public int alarm() { return alarm; }
+
     public String alarm(int level) {
         alarm = Math.max(0, Math.min(3, level));
         record("alarm=" + alarm);

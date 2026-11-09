@@ -282,6 +282,50 @@ public final class PersonalKnoxAPI {
     public String ownFacilityUpgrade(String kind) { return ownLayer.facilityUpgrade(kind); }
     public String ownFacilityList() { return ownLayer.facilityList(); }
     public String ownBaseReport() { return ownLayer.baseReport(); }
+    public String ownAlifeCampaign(int day, int seed) { return alife.campaignDay(day, seed, 8, 6, 10, "outpost1"); }
+
+    public String ownAlifePolicy() {
+        var encounter = personal.knox.alife.AlifeEncounterPolicy.decide(60, 30, true, 50);
+        var regroup = personal.knox.alife.AlifeRegroup.plan(8, 3, 25, 0, 0);
+        var reinforcement = personal.knox.alife.AlifeReinforcement.plan(120, true, false);
+        var editor = new personal.knox.alife.AlifeSquadEditor("s1", "jacket", "rifle", "aggressive", "neutral");
+        return "encounter=" + encounter + " retreat=" + regroup.retreat()
+                + " ready=" + regroup.ready() + " reinforce=" + reinforcement.kind()
+                + " editor=" + (personal.knox.alife.AlifeSquadEditor.parse(editor.export()) != null);
+    }
+
+    public String ownAlifePatrol() {
+        return personal.knox.alife.AlifePatrolPlanner.summary(0, 0, 12) + " "
+                + personal.knox.alife.AlifeSituation.summary(3);
+    }
+
+    public String ownAlifeOperation(int roll) {
+        var log = new personal.knox.alife.AlifeEncounterLog(16);
+        var radio = new personal.knox.alife.AlifeRadioSilence();
+        radio.silence("outpost1", 1, 2);
+        var result = personal.knox.alife.AlifeOperation.run(8, 6, 10, 8, roll, 2,
+                "marauders", log, radio, "outpost1");
+        return "winner=" + result.winner() + " loss=" + result.attackerLoss()
+                + " wounded=" + result.wounded() + " retreat=" + result.retreat()
+                + " " + result.radio() + " " + log.summary();
+    }
+
+    public String ownAlifeCoreDemo() {
+        var squad = new personal.knox.alife.Squad("s1", "patrol", 8, 90, 4,
+                personal.knox.alife.Squad.Task.PATROL, 0, 0, 0, 10, 10);
+        var state = personal.knox.alife.AlifeSquadState.from(squad, "leader").route(5, 5).withMorale(80);
+        var battle = personal.knox.alife.AlifeBattle.resolve(8, 6, 10, 8, 7);
+        var log = new personal.knox.alife.AlifeEncounterLog(16);
+        log.add(1, "marauders", 4, 4, "seen");
+        var radio = new personal.knox.alife.AlifeRadioSilence();
+        radio.silence("outpost1", 1, 2);
+        return "leader=" + state.leader() + " route=" + state.route().size()
+                + " winner=" + battle.winner() + " loss=" + battle.attackerLoss()
+                + " encounters=" + log.size() + " roster=" + personal.knox.alife.AlifeFactionRoster.count()
+                + " " + personal.knox.alife.AlifeLod.summary(4, 120, 10, 2)
+                + " silent=" + radio.silent("outpost1", 2);
+    }
+
     public String ownBaseHelp() { return ownLayer.baseHelp(); }
     public String ownResetBase() { return ownLayer.resetBase(); }
     public String ownBaseNap() { return ownLayer.nap(); }
@@ -763,6 +807,11 @@ public final class PersonalKnoxAPI {
     }
 
     public int alifeOutposts() { return alife.outpostCount(); }
+    public String alifeSilence(String id, int day, int days) { return alife.silence(id, day, days); }
+    public boolean alifeSilent(String id, int day) { return alife.silent(id, day); }
+    public String alifeOperation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
+        return alife.operation(attackers, defenders, power, power, roll, day, faction, outpost);
+    }
 
     public void alifeEconomy(int food, int water, int meds, int ammo) {
         alife.economy(food, water, meds, ammo);

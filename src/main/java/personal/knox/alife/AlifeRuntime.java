@@ -9,6 +9,8 @@ public final class AlifeRuntime {
     private String lastSummary = "";
     private String lastEvents = "";
     private boolean economyAdded;
+    private final AlifeEncounterLog encounters = new AlifeEncounterLog(64);
+    private final AlifeRadioSilence radios = new AlifeRadioSilence();
 
     public void submit(String squadId, String factionId, int members, double health, int supplies,
                        String task, double x, double y, double z, double targetX, double targetY) {
@@ -57,6 +59,24 @@ public final class AlifeRuntime {
     }
 
     public int outpostCount() { return world.outpostCount(); }
+
+    public String campaignDay(int day, int seed, int attackers, int defenders, int power, String outpostId) {
+        var report = AlifeCampaign.step(day, seed, attackers, defenders, power, encounters, radios, outpostId);
+        return "day=" + report.day() + " situation=" + report.situation()
+                + " winner=" + report.winner() + " loss=" + report.attackerLoss()
+                + " retreat=" + report.retreat() + " " + report.radio();
+    }
+
+    public String silence(String outpostId, int day, int days) { return radios.silence(outpostId, day, days); }
+    public boolean silent(String outpostId, int day) { return radios.silent(outpostId, day); }
+
+    public String operation(int attackers, int defenders, int attackPower, int defensePower,
+                            int roll, int day, String factionId, String outpostId) {
+        var result = AlifeOperation.run(attackers, defenders, attackPower, defensePower, roll, day,
+                factionId, encounters, radios, outpostId);
+        return "winner=" + result.winner() + " loss=" + result.attackerLoss()
+                + " wounded=" + result.wounded() + " " + result.radio() + " " + encounters.summary();
+    }
 
     public String lastSummary() { return lastSummary; }
     public String lastEvents() { return lastEvents; }
