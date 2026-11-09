@@ -839,6 +839,8 @@ public final class PersonalKnoxAPI {
                             personal.knox.npc.NpcState.Role.GUARD, personal.knox.npc.NpcState.Task.GUARD);
                     ownLayer.spawn(new personal.knox.npc.own.OwnNpcAgent(id, squad.factionId(),
                             squad.x(), squad.y(), pz, squad.targetX(), squad.targetY(), squad.supplies(), state));
+                } else {
+                    ownLayer.order(id, personal.knox.npc.own.OwnNpcOrder.GUARD, squad.targetX(), squad.targetY());
                 }
                 count++;
             }
@@ -849,6 +851,11 @@ public final class PersonalKnoxAPI {
     }
 
     public String alifeRadioCall(String faction, int day, int standing) { return alife.radioCall(faction, day, standing); }
+    public String alifeSetting(String key, int value) { return alife.setting(key, value); }
+    public String alifeSettings() { return alife.settings(); }
+    public String alifeDirector(int seed, int day) { return alife.director(seed, day); }
+    public boolean alifeDirectorReady(int day) { return alife.directorReady(day); }
+    public void alifeDirectorDay(int day) { alife.directorDay(day); }
     public String alifeAftermath() { return alife.aftermath(); }
     public int alifeStateCount() { return alife.stateCount(); }
     public int alifeEncounterCount() { return alife.encounterCount(); }

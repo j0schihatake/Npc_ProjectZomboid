@@ -30,6 +30,8 @@ public final class AlifeWorld {
     private final AlifeEncounterLog encounters = new AlifeEncounterLog(64);
     private final AlifeRadioSilence radioSilence = new AlifeRadioSilence();
     private final AlifeRadioChannel radioChannel = new AlifeRadioChannel();
+    private final AlifeSettings settings = new AlifeSettings();
+    private int lastDirectorDay = -1;
     private AlifeAftermath lastAftermath = new AlifeAftermath(0, 0, 0, 0, 0, 0);
     private long now;
 
@@ -179,6 +181,14 @@ public final class AlifeWorld {
         return "winner=" + result.winner() + " loss=" + result.attackerLoss()
                 + " wounded=" + result.wounded() + " " + result.radio();
     }
+
+    public AlifeSettings settings() { return settings; }
+    public String directorChoice(int seed, int day) {
+        var choice = AlifeDirector.choose(seed, day);
+        return "day=" + choice.day() + " situation=" + choice.kind() + " raid=" + choice.raid();
+    }
+    public boolean directorReady(int day) { return AlifeDirector.ready(lastDirectorDay, day, settings.get("eventFrequency")); }
+    public void directorDay(int day) { lastDirectorDay = day; }
 
     public String radioCall(String factionId, int day, int standing) {
         return radioChannel.call(factionId, day, standing);

@@ -87,6 +87,11 @@ public final class AlifeRuntime {
         return world.operation(attackers, defenders, power, roll, day, faction, outpost);
     }
     public String radioCall(String faction, int day, int standing) { return world.radioCall(faction, day, standing); }
+    public String setting(String key, int value) { return key + "=" + world.settings().set(key, value); }
+    public String settings() { return world.settings().snapshot(); }
+    public String director(int seed, int day) { return world.directorChoice(seed, day); }
+    public boolean directorReady(int day) { return world.directorReady(day); }
+    public void directorDay(int day) { world.directorDay(day); }
     public String aftermath() { return world.aftermath(); }
 
     public String lastSummary() { return lastSummary; }

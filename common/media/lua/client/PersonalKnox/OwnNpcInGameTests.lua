@@ -468,6 +468,16 @@ function Tests.run(player)
         return aftermath ~= nil and string.find(aftermath, "bodies=", 1, true) ~= nil
             and radio ~= nil and string.find(radio, "answer", 1, true) ~= nil
     end)
+    check("alife-settings", function()
+        local set = api:alifeSetting("eventFrequency", 30)
+        local all = api:alifeSettings()
+        return set ~= nil and string.find(set, "eventFrequency=30", 1, true) ~= nil
+            and string.find(all, "factionCount=12", 1, true) ~= nil
+    end)
+    check("alife-director", function()
+        local choice = api:alifeDirector(4, 10)
+        return choice ~= nil and string.find(choice, "situation=", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
