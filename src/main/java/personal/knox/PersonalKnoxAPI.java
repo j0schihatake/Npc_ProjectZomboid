@@ -808,6 +808,13 @@ public final class PersonalKnoxAPI {
 
     public int alifeOutposts() { return alife.outpostCount(); }
     public String alifeSilence(String id, int day, int days) { return alife.silence(id, day, days); }
+    public int alifeStateCount() { return alife.stateCount(); }
+    public int alifeEncounterCount() { return alife.encounterCount(); }
+    public String alifeWorldSilence(String id, int day, int days) { return alife.silenceOutpost(id, day, days); }
+    public boolean alifeWorldSilent(String id, int day) { return alife.outpostSilent(id, day); }
+    public String alifeWorldOperation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
+        return alife.operation(attackers, defenders, power, roll, day, faction, outpost);
+    }
     public boolean alifeSilent(String id, int day) { return alife.silent(id, day); }
     public String alifeOperation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
         return alife.operation(attackers, defenders, power, power, roll, day, faction, outpost);

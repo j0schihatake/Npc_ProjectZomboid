@@ -26,6 +26,9 @@ public final class AlifeWorld {
     private long lastNodeIncome = Long.MIN_VALUE / 2;
     private long respawnDelayMillis = 600_000;
     private final Relations relations = new Relations();
+    private final Map<String, AlifeSquadState> squadStates = new LinkedHashMap<>();
+    private final AlifeEncounterLog encounters = new AlifeEncounterLog(64);
+    private final AlifeRadioSilence radioSilence = new AlifeRadioSilence();
     private long now;
 
     public AlifeWorld(long seed) { random = new Random(seed); }
@@ -151,6 +154,7 @@ public final class AlifeWorld {
         if (squad == null) throw new IllegalArgumentException("Missing squad");
         if (squads.containsKey(squad.id())) throw new IllegalArgumentException("Duplicate squad");
         squads.put(squad.id(), squad);
+        squadStates.putIfAbsent(squad.id(), AlifeSquadState.from(squad, ""));
     }
 
     public void updateSquad(Squad squad) {
@@ -160,6 +164,18 @@ public final class AlifeWorld {
     }
 
     public Squad removeSquad(String id) { return squads.remove(id); }
+
+    public AlifeSquadState squadState(String id) { return squadStates.get(id); }
+    public int stateCount() { return squadStates.size(); }
+    public AlifeEncounterLog encounters() { return encounters; }
+    public String silenceOutpost(String id, int day, int days) { return radioSilence.silence(id, day, days); }
+    public boolean outpostSilent(String id, int day) { return radioSilence.silent(id, day); }
+    public String operation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
+        var result = AlifeOperation.run(attackers, defenders, power, power, roll, day, faction,
+                encounters, radioSilence, outpost);
+        return "winner=" + result.winner() + " loss=" + result.attackerLoss()
+                + " wounded=" + result.wounded() + " " + result.radio();
+    }
 
     public List<AlifeEvent> tick(long time, double px, double py, double pz, int budget) {
         if (time < 0 || budget < 0) throw new IllegalArgumentException("Invalid tick");
@@ -199,6 +215,7 @@ public final class AlifeWorld {
             } else if (squad.task() == Squad.Task.PATROL && random.nextInt(100) < 10) {
                 events.add(new AlifeEvent(AlifeEvent.Type.FAR_ENCOUNTER, squad.id(), squad.factionId(),
                         nx, ny, squad.z(), "patrol"));
+                encounters.add((int) (time / 60_000L), squad.factionId(), nx, ny, "patrol");
             }
         }
         for (var entry : new ArrayList<>(outposts.entrySet())) {
@@ -210,6 +227,7 @@ public final class AlifeWorld {
             if (!radio) {
                 events.add(new AlifeEvent(AlifeEvent.Type.OUTPOST_SILENT, outpost.id(), outpost.factionId(),
                         outpost.x(), outpost.y(), outpost.z(), "radio_off"));
+                radioSilence.silence(outpost.id(), (int) (time / 60_000L), 1);
             }
         }
         if (time - lastNodeIncome >= 60_000L) {

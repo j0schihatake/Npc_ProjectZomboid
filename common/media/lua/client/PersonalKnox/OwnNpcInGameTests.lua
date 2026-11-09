@@ -445,6 +445,13 @@ function Tests.run(player)
         return report ~= nil and string.find(report, "day=3", 1, true) ~= nil
             and string.find(report, "situation=", 1, true) ~= nil
     end)
+    check("alife-world", function()
+        api:alifeWorldSilence("outpost1", 1, 2)
+        local result = api:alifeWorldOperation(8, 6, 10, 7, 2, "marauders", "outpost1")
+        return result ~= nil and string.find(result, "winner=", 1, true) ~= nil
+            and api:alifeWorldSilent("outpost1", 2) == true
+            and api:alifeEncounterCount() >= 1
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

@@ -78,6 +78,14 @@ public final class AlifeRuntime {
                 + " wounded=" + result.wounded() + " " + result.radio() + " " + encounters.summary();
     }
 
+    public String silenceOutpost(String id, int day, int days) { return world.silenceOutpost(id, day, days); }
+    public boolean outpostSilent(String id, int day) { return world.outpostSilent(id, day); }
+    public int stateCount() { return world.stateCount(); }
+    public int encounterCount() { return world.encounters().size(); }
+    public String operation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
+        return world.operation(attackers, defenders, power, roll, day, faction, outpost);
+    }
+
     public String lastSummary() { return lastSummary; }
     public String lastEvents() { return lastEvents; }
     public int squadCount() { return world.squadCount(); }
