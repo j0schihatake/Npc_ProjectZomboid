@@ -282,6 +282,19 @@ public final class PersonalKnoxAPI {
     public String ownFacilityUpgrade(String kind) { return ownLayer.facilityUpgrade(kind); }
     public String ownFacilityList() { return ownLayer.facilityList(); }
     public String ownBaseReport() { return ownLayer.baseReport(); }
+    public String ownAlifeAdvanced() {
+        var template = personal.knox.alife.AlifeFactionRoster.find("patrol");
+        var identity = personal.knox.alife.AlifeFactionIdentity.of("f1", template, 10);
+        var tactics = personal.knox.alife.AlifeTactics.plan(8, 1, 60, 6, true);
+        var radio = new personal.knox.alife.AlifeRadioChannel();
+        radio.call("patrol", 3, 10);
+        var aftermath = personal.knox.alife.AlifeAftermath.from(personal.knox.alife.AlifeBattle.resolve(8, 6, 10, 8, 7), 3);
+        return "identity=" + identity.templateId() + " greeting=" + identity.greeting()
+                + " tactics=" + tactics.stance() + " radio=" + radio.reinforcement(3, 10,
+                personal.knox.alife.AlifeReinforcement.Kind.WALK)
+                + " bodies=" + aftermath.bodies() + " loot=" + aftermath.food();
+    }
+
     public String ownAlifeCampaign(int day, int seed) { return alife.campaignDay(day, seed, 8, 6, 10, "outpost1"); }
 
     public String ownAlifePolicy() {
@@ -835,6 +848,8 @@ public final class PersonalKnoxAPI {
         } catch (Throwable error) { return 0; }
     }
 
+    public String alifeRadioCall(String faction, int day, int standing) { return alife.radioCall(faction, day, standing); }
+    public String alifeAftermath() { return alife.aftermath(); }
     public int alifeStateCount() { return alife.stateCount(); }
     public int alifeEncounterCount() { return alife.encounterCount(); }
     public String alifeWorldSilence(String id, int day, int days) { return alife.silenceOutpost(id, day, days); }

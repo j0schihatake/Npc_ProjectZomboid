@@ -29,6 +29,8 @@ public final class AlifeWorld {
     private final Map<String, AlifeSquadState> squadStates = new LinkedHashMap<>();
     private final AlifeEncounterLog encounters = new AlifeEncounterLog(64);
     private final AlifeRadioSilence radioSilence = new AlifeRadioSilence();
+    private final AlifeRadioChannel radioChannel = new AlifeRadioChannel();
+    private AlifeAftermath lastAftermath = new AlifeAftermath(0, 0, 0, 0, 0, 0);
     private long now;
 
     public AlifeWorld(long seed) { random = new Random(seed); }
@@ -173,8 +175,19 @@ public final class AlifeWorld {
     public String operation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
         var result = AlifeOperation.run(attackers, defenders, power, power, roll, day, faction,
                 encounters, radioSilence, outpost);
+        lastAftermath = AlifeAftermath.from(result, day);
         return "winner=" + result.winner() + " loss=" + result.attackerLoss()
                 + " wounded=" + result.wounded() + " " + result.radio();
+    }
+
+    public String radioCall(String factionId, int day, int standing) {
+        return radioChannel.call(factionId, day, standing);
+    }
+
+    public String aftermath() {
+        return "bodies=" + lastAftermath.bodies() + " food=" + lastAftermath.food()
+                + " meds=" + lastAftermath.meds() + " ammo=" + lastAftermath.ammo()
+                + " zombies=" + lastAftermath.zombiesAttracted();
     }
 
     public List<AlifeEvent> tick(long time, double px, double py, double pz, int budget) {

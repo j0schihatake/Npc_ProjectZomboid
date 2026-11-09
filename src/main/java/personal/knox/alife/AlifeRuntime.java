@@ -86,6 +86,8 @@ public final class AlifeRuntime {
     public String operation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {
         return world.operation(attackers, defenders, power, roll, day, faction, outpost);
     }
+    public String radioCall(String faction, int day, int standing) { return world.radioCall(faction, day, standing); }
+    public String aftermath() { return world.aftermath(); }
 
     public String lastSummary() { return lastSummary; }
     public String lastEvents() { return lastEvents; }

@@ -456,6 +456,18 @@ function Tests.run(player)
         local count = api:ownAlifeMaterialize(player, 4)
         return count ~= nil and count >= 0
     end)
+    check("alife-advanced", function()
+        local result = api:ownAlifeAdvanced()
+        return result ~= nil and string.find(result, "identity=", 1, true) ~= nil
+            and string.find(result, "bodies=", 1, true) ~= nil
+    end)
+    check("alife-aftermath", function()
+        api:alifeWorldOperation(8, 6, 10, 7, 2, "marauders", "outpost1")
+        local aftermath = api:alifeAftermath()
+        local radio = api:alifeRadioCall("patrol", 2, 10)
+        return aftermath ~= nil and string.find(aftermath, "bodies=", 1, true) ~= nil
+            and radio ~= nil and string.find(radio, "answer", 1, true) ~= nil
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil
