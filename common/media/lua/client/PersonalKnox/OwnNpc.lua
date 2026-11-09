@@ -13,6 +13,7 @@ local lastBaseProduce = 0
 local lastBaseDaily = 0
 local lastRules = 0
 local lastAlife = 0
+local lastAlifeSettings = 0
 local pendingBase = nil
 
 local function saveState()
@@ -56,6 +57,13 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
+    if now - lastAlifeSettings >= 10000 then
+        lastAlifeSettings = now
+        for _, key in ipairs({"factionCount","patrolCount","eventFrequency","raidFrequency","ambushChance","checkpointChance","sniperChance","punitiveChance","baseRaidChance","nearRadius","farRadius","budgetMs","maxSquads","memoryDays","warningChance","leaveChance","regroupMorale","woundedPercent","radioRange","diagnostics"}) do
+            local value = Settings.alifeSetting(key)
+            if value then api:alifeSetting(key, value) end
+        end
+    end
     if now - lastAlife >= 10000 then
         lastAlife = now
         local ok, count = pcall(function() return api:ownAlifeMaterialize(player, 4) end)

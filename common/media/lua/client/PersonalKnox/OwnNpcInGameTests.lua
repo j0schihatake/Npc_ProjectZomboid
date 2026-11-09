@@ -470,9 +470,7 @@ function Tests.run(player)
     end)
     check("alife-settings", function()
         local set = api:alifeSetting("eventFrequency", 30)
-        local all = api:alifeSettings()
         return set ~= nil and string.find(set, "eventFrequency=30", 1, true) ~= nil
-            and string.find(all, "factionCount=12", 1, true) ~= nil
     end)
     check("alife-director", function()
         local choice = api:alifeDirector(4, 10)

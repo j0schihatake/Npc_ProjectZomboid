@@ -341,6 +341,43 @@ if page then
     end
 end
 
+local alifeSpecs = {
+    {"factionCount", "A-Life: фракций", 1, 24, 1, 12},
+    {"patrolCount", "A-Life: патрулей", 0, 24, 1, 4},
+    {"eventFrequency", "A-Life: событие, мин", 1, 240, 5, 60},
+    {"raidFrequency", "A-Life: рейд, мин", 1, 240, 5, 90},
+    {"ambushChance", "A-Life: засада, шанс", 0, 100, 5, 20},
+    {"checkpointChance", "A-Life: КПП, шанс", 0, 100, 5, 15},
+    {"sniperChance", "A-Life: снайпер, шанс", 0, 100, 5, 5},
+    {"punitiveChance", "A-Life: каратели, шанс", 0, 100, 5, 10},
+    {"baseRaidChance", "A-Life: рейд на базу, шанс", 0, 100, 5, 15},
+    {"nearRadius", "A-Life: ближний радиус", 20, 200, 10, 80},
+    {"farRadius", "A-Life: дальний радиус", 100, 1000, 50, 300},
+    {"budgetMs", "A-Life: бюджет, мс", 1, 50, 1, 5},
+    {"maxSquads", "A-Life: максимум отрядов", 1, 200, 1, 64},
+    {"memoryDays", "A-Life: память, дней", 1, 30, 1, 7},
+    {"warningChance", "A-Life: предупреждение, шанс", 0, 100, 5, 35},
+    {"leaveChance", "A-Life: уход, шанс", 0, 100, 5, 20},
+    {"regroupMorale", "A-Life: порог сбора", 0, 100, 5, 30},
+    {"woundedPercent", "A-Life: порог раненых", 0, 100, 5, 35},
+    {"radioRange", "A-Life: радиус радио", 10, 500, 10, 120},
+    {"diagnostics", "A-Life: диагностика", 0, 1, 1, 0},
+}
+if page then
+    for _, spec in ipairs(alifeSpecs) do
+        local key, label, min, max, step, default = spec[1], spec[2], spec[3], spec[4], spec[5], spec[6]
+        if not page:getOption(key) then
+            page:addSlider(key, label, min, max, step, default, "Правило A-Life")
+        end
+    end
+end
+function Settings.alifeSetting(key)
+    local option = page and page:getOption(key)
+    if not option then return nil end
+    local value = option:getValue()
+    return type(value) == "number" and value or nil
+end
+
 local intervalSpecs = {
     {"baseProduceMinutes", "Производство, мин", 1, 30, 1, 1},
     {"baseDailyMinutes", "Сутки базы, мин", 1, 60, 1, 5},

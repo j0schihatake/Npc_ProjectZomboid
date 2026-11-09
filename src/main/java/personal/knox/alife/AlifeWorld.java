@@ -267,6 +267,23 @@ public final class AlifeWorld {
                 state.tryRefresh(time);
             }
         }
+        int day = (int) (time / 60_000L);
+        if (lastDirectorDay < 0) lastDirectorDay = day;
+        if (lastDirectorDay >= 0 && AlifeDirector.ready(lastDirectorDay, day, settings.get("eventFrequency"))) {
+            lastDirectorDay = day;
+            var choice = AlifeDirector.choose((int) (time / 60_000L), day);
+            var type = switch (choice.kind()) {
+                case PATROL -> AlifeEvent.Type.SITUATION_PATROL;
+                case HIGHWAY_AMBUSH -> AlifeEvent.Type.SITUATION_AMBUSH;
+                case CHECKPOINT -> AlifeEvent.Type.SITUATION_CHECKPOINT;
+                case BROKEN_CAR -> AlifeEvent.Type.SITUATION_BROKEN_CAR;
+                case OCCUPIED_HOUSE -> AlifeEvent.Type.SITUATION_OCCUPIED_HOUSE;
+                case SNIPER -> AlifeEvent.Type.SITUATION_SNIPER;
+                case PUNITIVE_RAID -> AlifeEvent.Type.SITUATION_PUNITIVE;
+                case BASE_RAID -> AlifeEvent.Type.SITUATION_BASE_RAID;
+            };
+            events.add(new AlifeEvent(type, "director", "alife", px, py, pz, choice.kind().name()));
+        }
         for (var entry : economies.entrySet()) {
             var economy = entry.getValue();
             boolean starving = economy.tick(1, 1);
