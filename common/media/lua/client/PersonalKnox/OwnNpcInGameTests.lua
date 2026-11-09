@@ -452,6 +452,10 @@ function Tests.run(player)
             and api:alifeWorldSilent("outpost1", 2) == true
             and api:alifeEncounterCount() >= 1
     end)
+    check("alife-bodies", function()
+        local count = api:ownAlifeMaterialize(player, 4)
+        return count ~= nil and count >= 0
+    end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
         return string.find(plan, "windows=2", 1, true) ~= nil

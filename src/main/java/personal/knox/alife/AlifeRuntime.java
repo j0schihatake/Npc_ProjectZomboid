@@ -80,6 +80,7 @@ public final class AlifeRuntime {
 
     public String silenceOutpost(String id, int day, int days) { return world.silenceOutpost(id, day, days); }
     public boolean outpostSilent(String id, int day) { return world.outpostSilent(id, day); }
+    public java.util.List<Squad> squads() { return world.squads(); }
     public int stateCount() { return world.stateCount(); }
     public int encounterCount() { return world.encounters().size(); }
     public String operation(int attackers, int defenders, int power, int roll, int day, String faction, String outpost) {

@@ -351,7 +351,7 @@ local intervalSpecs = {
     {"alarmDecaySeconds", "Спад тревоги, сек", 5, 300, 5, 60},
     {"journalMax", "Журнал, записей", 8, 128, 8, 32},
     {"guardPatrolRadius", "Патруль, клеток", 2, 40, 2, 12},
-    {"medicThreshold", "Порог медика, %", 10, 90, 5, 60},
+    {"medicThreshold", "Порог медика, процент", 10, 90, 5, 60},
 }
 if page then
     for _, spec in ipairs(intervalSpecs) do

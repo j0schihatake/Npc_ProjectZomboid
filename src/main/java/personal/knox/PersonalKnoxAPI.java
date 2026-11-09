@@ -808,6 +808,33 @@ public final class PersonalKnoxAPI {
 
     public int alifeOutposts() { return alife.outpostCount(); }
     public String alifeSilence(String id, int day, int days) { return alife.silence(id, day, days); }
+    public int ownAlifeMaterialize(Object player, int max) {
+        if (player == null) return 0;
+        try {
+            double px = ((Number) player.getClass().getMethod("getX").invoke(player)).doubleValue();
+            double py = ((Number) player.getClass().getMethod("getY").invoke(player)).doubleValue();
+            double pz = ((Number) player.getClass().getMethod("getZ").invoke(player)).doubleValue();
+            var near = new java.util.HashSet<String>();
+            int count = 0;
+            for (var squad : alife.squads()) {
+                if (count >= Math.max(0, Math.min(8, max))) break;
+                if (squad.distanceTo(px, py) > 80) continue;
+                String id = "alife-" + squad.id();
+                near.add(id);
+                if (ownLayer.agent(id) == null) {
+                    var state = new personal.knox.npc.NpcState(100, 0.3, 0.3, 0.3, 70, false, false,
+                            personal.knox.npc.NpcState.Role.GUARD, personal.knox.npc.NpcState.Task.GUARD);
+                    ownLayer.spawn(new personal.knox.npc.own.OwnNpcAgent(id, squad.factionId(),
+                            squad.x(), squad.y(), pz, squad.targetX(), squad.targetY(), squad.supplies(), state));
+                }
+                count++;
+            }
+            for (var agent : ownLayer.agents())
+                if (agent.id().startsWith("alife-") && !near.contains(agent.id())) ownLayer.remove(agent.id());
+            return count;
+        } catch (Throwable error) { return 0; }
+    }
+
     public int alifeStateCount() { return alife.stateCount(); }
     public int alifeEncounterCount() { return alife.encounterCount(); }
     public String alifeWorldSilence(String id, int day, int days) { return alife.silenceOutpost(id, day, days); }

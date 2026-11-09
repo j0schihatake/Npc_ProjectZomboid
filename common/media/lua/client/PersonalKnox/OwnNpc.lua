@@ -12,6 +12,7 @@ local lastCorpseClean = 0
 local lastBaseProduce = 0
 local lastBaseDaily = 0
 local lastRules = 0
+local lastAlife = 0
 local pendingBase = nil
 
 local function saveState()
@@ -55,6 +56,11 @@ local function tick()
     api:ownTick(0.01, 32)
     local active = api:ownActive()
     local bodies = api:ownBodiesSync()
+    if now - lastAlife >= 10000 then
+        lastAlife = now
+        local ok, count = pcall(function() return api:ownAlifeMaterialize(player, 4) end)
+        if ok and count and count > 0 then print("[PersonalKnox][alife-bodies] " .. tostring(count)) end
+    end
     if now - lastRules >= 5000 then
         lastRules = now
         for _, key in ipairs({"foodCap","waterCap","medsCap","materialsCap","fuelCap","ammoCap","farmYield","cookMeals","waterYield","fishYield","huntYield","scavengeFood","scavengeMeds","moraleGain","moraleLoss","healAmount","buildRate","generatorHoursPerFuel","vehicleKmPerFuel","dailyWater"}) do
