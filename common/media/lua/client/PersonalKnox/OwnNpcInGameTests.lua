@@ -581,6 +581,41 @@ function Tests.run(player)
         print("[PersonalKnox][ingame-test] own-medic-field result=" .. tostring(result))
         return result == "splint"
     end)
+    check("worldgen-write", function()
+        local worldgen = PersonalWorldGenAPI.getInstance()
+        local cell = getCell()
+        local px, py, pz = player:getX(), player:getY(), player:getZ()
+        local target = nil
+        for _, d in ipairs({{30,0},{-30,0},{0,30},{0,-30},{20,20},{-20,20},{20,-20},{-20,-20}}) do
+            local sq = cell and cell:getGridSquare(px + d[1], py + d[2], pz)
+            if sq and sq:isFree(false) then
+                target = {px + d[1], py + d[2]}
+                break
+            end
+        end
+        if not target then
+            print("[PersonalKnox][ingame-test] worldgen-write no-free-square")
+            return false
+        end
+        local ok, result = pcall(function()
+            player:setX(target[1])
+            player:setY(target[2])
+            player:setZ(pz)
+            local text = worldgen:generateTestSite(player)
+            player:setX(px)
+            player:setY(py)
+            player:setZ(pz)
+            return text
+        end)
+        if not ok then
+            pcall(function() player:setX(px); player:setY(py); player:setZ(pz) end)
+            print("[PersonalKnox][ingame-test] worldgen-write error=" .. tostring(result))
+            return false
+        end
+        print("[PersonalKnox][ingame-test] worldgen-write " .. tostring(result))
+        return tostring(result):find("worldWrites=", 1, true) ~= nil
+            and tostring(result):find("worldWrites=0", 1, true) == nil
+    end)
     check("worldgen-registry", function()
         local api = PersonalWorldGenAPI.getInstance()
         api:restoreGenerated("wg-a,wg-b,wg-a")

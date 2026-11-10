@@ -5160,6 +5160,16 @@ python3 tools/export_profile.py
   `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
 - Статус: подтверждено в игре.
 
+## PWG-GAME-001 — реальная запись тестового участка
+
+- Причина: `worldgen-plan` подтверждал только данные; реальные camp/road/
+  building-записи в игре не проверялись.
+- Реализация: dev-тест `worldgen-write` уводит игрока на свободную клетку,
+  вызывает `generateTestSite`, проверяет `worldWrites>0`, возвращает игрока.
+- Критерии: запись только в disposable dev-копии, worldWrites>0, нет Lua/Java
+  ошибок; пользовательский сейв не затрагивается.
+- Статус: в работе.
+
 ## PK-BUG-001 — один unloaded NPC не отключает весь adapter
 
 - Симптом: `Own body adapter unavailable: NPC spawn square is not loaded`
