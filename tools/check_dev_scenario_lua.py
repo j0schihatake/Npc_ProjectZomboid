@@ -9,14 +9,16 @@ local function event(k)
  events[k]={};return {Add=function(fn)table.insert(events[k],fn)end,Remove=function(fn)
  for i=#events[k],1,-1 do if events[k][i]==fn then table.remove(events[k],i)end end end}
 end
-Events={OnMainMenuEnter=event('menu'),OnGameStart=event('start'),OnTick=event('tick'),OnTickEvenPaused=event('paused')}
+Events={OnMainMenuEnter=event('menu'),OnGameStart=event('start'),OnTick=event('tick'),OnTickEvenPaused=event('paused'),OnRenderTick=event('render')}
 function fire(k)local copy={};for i,f in ipairs(events[k])do copy[i]=f end;for _,f in ipairs(copy)do f()end end
 function getFileReader(p)local s=files[p];if not s then return end;local rows={};for r in s:gmatch('[^\\n]+')do table.insert(rows,r)end
  local i=0;return {readLine=function()i=i+1;return rows[i]end,close=function()end}end
 function getFileWriter(p)local s='';return {write=function(_,v)s=s..v end,close=function()files[p]=s end}end
-function getWorld()return {getGameMode=function()return 'Sandbox'end,getWorld=function()return world end}end
+GameMode={SANDBOX='Sandbox'}
+function getWorld()return {getGameMode=function()return 'Sandbox'end,getWorld=function()return world end,setGameMode=function(self,mode)gameMode=mode end,setWorld=function(self,name)world=name end}end
 function getTimestampMs()return now end
 function setGameSpeed(n)speed=n end
+function getGameSpeed()return speed end
 function saveGame()saved=saved+1 end
 modData={}
 function getSpecificPlayer()return {isDead=function()return false end,getModData=function()return modData end}end
@@ -33,7 +35,8 @@ SurvivalGuide={instance=panel()}
 function SurvivalGuide.instance:onClose()self.visible=false;setGameSpeed(1)end
 errorDialog=panel()
 PersonalKnoxAPI={getInstance=function()return {}end}
-MainScreen={instance={},continueLatestSave=function(mode,name)assert(mode=='Sandbox');loaded=loaded+1;world=name end}
+MainScreen={instance={},continueLatestSave=function(mode,name)assert(mode=='Sandbox');loaded=loaded+1;world=name end,continueLatestSaveAux=function(mode,second)loaded=loaded+1 end}
+function MainScreen.instance:setDefaultSandboxVars()end
 local api={isGenerated=function()return ready end,getSurvivorCount=function()return 12 end}
 KnoxEventLoader={getAPI=function(k)assert(k=='procGen');return api end}
 function knoxUI()
@@ -50,6 +53,7 @@ lua.execute('arm()');lua.execute(script.read_text())
 lua.execute('''
 fire('menu');fire('menu');assert(loaded==1,'Load exactly once')
 fire('start');knoxUI();fire('paused');assert(generated==1 and exported==0)
+assert(speed==1,'Paused dev load must auto-unpause')
 for _,p in ipairs(inventories)do assert(not p.visible and not p.infoRichText.visible)end
 for _,p in ipairs(loots)do assert(not p.visible)end
 assert(not SurvivalGuide.instance.visible and errorDialog.visible,'Close welcome, preserve error dialogs')
@@ -59,10 +63,10 @@ SurvivalGuide.instance.visible=true
 now=1000;fire('paused');assert(generated==1,'Do not generate twice')
 assert(not SurvivalGuide.instance.visible)
 now=2000;ready=true;fire('paused');assert(exported==1 and speed==1)
-now=3000;fire('tick');assert(saved==0)
-now=11000;fire('tick');assert(saved==1)
+now=3000;fire('paused');assert(saved==0)
+now=11000;fire('paused');assert(saved==1)
 assert(files['PersonalKnox-dev-scenario-result.json']:find('"status":"OK"',1,true))
-fire('tick');assert(saved==1,'One shot completion')
+fire('paused');assert(saved==1,'One shot completion')
 inventories[1].visible=true;SurvivalGuide.instance.visible=true
 now=12000;fire('paused')
 assert(inventories[1].visible and SurvivalGuide.instance.visible,'After completion leave manually opened windows alone')
@@ -78,7 +82,7 @@ lua.execute('''
 fire('menu');fire('start');knoxUI();fire('paused')
 assert(files['PersonalKnox-dev-scenario-result.json']:find('startup_ui_cleanup_failed',1,true))
 assert(generated==1,'Cleanup failure must stop further generation actions')
-now=30000;fire('tick');fire('paused');assert(saved==1,'A failed scenario must not turn into a later OK')
+now=30000;fire('paused');assert(saved==1,'A failed scenario must not turn into a later OK')
 ''')
 print('Lua scenario passed: one-shot load, paused Knox setup, inventory/welcome cleanup, preserved error dialogs, late welcome, no cleanup after OK and terminal cleanup errors.')
 
@@ -108,16 +112,16 @@ def npc_case(token, succeeds, restore=False, empty=False, active=2):
         if empty:
             lua.execute("modData.PersonalKnoxOwnNpc=''")
     lua.execute(script.read_text())
-    lua.execute("fire('menu');fire('start');fire('paused');now=100;fire('tick')")
+    lua.execute("fire('menu');fire('start');fire('paused');now=100;fire('paused')")
     expected=0 if restore else 1
     assert lua.globals().createdBodies==expected
     if empty or (restore and active!=2):
         lua.execute("assert(files['PersonalKnox-dev-scenario-result.json']:find('own_npc_spawn_failed',1,true))")
         return
     if succeeds:
-        lua.execute("bodyReady=true;now=11000;fire('tick');fire('tick');fire('tick');assert(modData.PersonalKnoxOwnNpc=='npc-snapshot');assert(files['PersonalKnox-dev-scenario-result.json']:find('model_saved',1,true))")
+        lua.execute("bodyReady=true;now=11000;fire('paused');fire('paused');fire('paused');assert(modData.PersonalKnoxOwnNpc=='npc-snapshot');assert(files['PersonalKnox-dev-scenario-result.json']:find('model_saved',1,true))")
     else:
-        lua.execute("now=20000;fire('tick');assert(files['PersonalKnox-dev-scenario-result.json']:find('own_npc_spawn_failed',1,true))")
+        lua.execute("now=20000;fire('paused');assert(files['PersonalKnox-dev-scenario-result.json']:find('own_npc_spawn_failed',1,true))")
     assert lua.globals().createdBodies==expected, 'Restore completion must never spawn a replacement'
 npc_case('c',True)
 npc_case('d',False)

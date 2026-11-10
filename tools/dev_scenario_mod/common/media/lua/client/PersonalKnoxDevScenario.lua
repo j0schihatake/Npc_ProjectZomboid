@@ -25,6 +25,20 @@ local function result(status,reason)
     w:close()
     print('[PersonalKnox][dev-scenario] run='..config.nonce..' status='..status..' reason='..reason)
 end
+-- The window can lose focus and pause before OnGameStart; keep the dev load alive.
+local earlyPulse
+earlyPulse=function()
+    if config.state~='loading' then Events.OnTickEvenPaused.Remove(earlyPulse);return end
+    if getGameSpeed and getGameSpeed()==0 then
+        pcall(function()
+            setGameSpeed(1)
+            if getGameTime and getGameTime() then getGameTime():setMultiplier(1) end
+        end)
+    end
+    local demo=ISDemoPopup and ISDemoPopup.instance
+    if demo then pcall(function() demo:removeSelf() end) end
+end
+Events.OnTickEvenPaused.Add(earlyPulse)
 local function inWorld()
     local w=getWorld()
     return w and w:getGameMode()=='Sandbox' and w:getWorld()==config.world
@@ -48,6 +62,8 @@ local function closeStartupUI()
     end
     local guide=SurvivalGuide and SurvivalGuide.instance
     if guide and guide:isVisible() then guide:onClose();closed=closed+1 end
+    local demo=ISDemoPopup and ISDemoPopup.instance
+    if demo then demo:removeSelf();closed=closed+1 end
     if closed>0 then
         print('[PersonalKnox][dev-scenario] run='..config.nonce..' startup_ui_closed='..closed)
     end
@@ -112,6 +128,7 @@ Events.OnGameStart.Add(function()
     local npcStarted=nil
 
     local nextUI=0
+    local unpausedLogged=false
     local cleanUI
     cleanUI=function()
         if not inWorld() or config.state~='loading' then
@@ -123,6 +140,16 @@ Events.OnGameStart.Add(function()
         end
         if now<nextUI then return end
         nextUI=now+500
+        if getGameSpeed and getGameSpeed()==0 then
+            pcall(function()
+                setGameSpeed(1)
+                if getGameTime and getGameTime() then getGameTime():setMultiplier(1) end
+            end)
+            if not unpausedLogged then
+                unpausedLogged=true
+                print('[PersonalKnox][dev-scenario] run='..config.nonce..' auto_unpaused=true')
+            end
+        end
         local ok=pcall(closeStartupUI)
         if not ok then
             Events.OnTickEvenPaused.Remove(cleanUI)
@@ -173,11 +200,11 @@ Events.OnGameStart.Add(function()
     Events.OnTickEvenPaused.Add(setup)
     local poll
     poll=function()
-        if config.state~='loading' then Events.OnTick.Remove(poll);return end
+        if config.state~='loading' then Events.OnTickEvenPaused.Remove(poll);return end
         local player=getSpecificPlayer(0)
         if not player then return end
-        if not inWorld() then Events.OnTick.Remove(poll);result('FAIL','world_changed');return end
-        if player:isDead() then Events.OnTick.Remove(poll);result('FAIL','player_dead');return end
+        if not inWorld() then Events.OnTickEvenPaused.Remove(poll);result('FAIL','world_changed');return end
+        if player:isDead() then Events.OnTickEvenPaused.Remove(poll);result('FAIL','player_dead');return end
         ticks=ticks+1
         if testNpc then
             local ok,err=pcall(function()
@@ -214,12 +241,12 @@ Events.OnGameStart.Add(function()
             end)
             if not ok then
                 print('[PersonalKnox][dev-scenario] npc_failure='..tostring(err))
-                Events.OnTick.Remove(poll);result('FAIL','own_npc_spawn_failed');return
+                Events.OnTickEvenPaused.Remove(poll);result('FAIL','own_npc_spawn_failed');return
             end
             if npcReadyTicks<3 then return end
         end
         if getTimestampMs()-started<config.seconds*1000 then return end
-        Events.OnTick.Remove(poll)
+        Events.OnTickEvenPaused.Remove(poll)
         local ok,api=pcall(function() return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() end)
         if not ok or not api or ticks<2 then result('FAIL','api_or_ticks_missing');return end
         local cleared=pcall(closeStartupUI)
@@ -240,6 +267,6 @@ Events.OnGameStart.Add(function()
         end
         result('OK',restoreNpc and 'own_npc_restored_model_saved' or (testNpc and 'own_npc_registered_model_saved' or 'world_player_api_ticks_knox_saved'))
     end
-    Events.OnTick.Add(poll)
+    Events.OnTickEvenPaused.Add(poll)
     print('[PersonalKnox][dev-scenario] run='..config.nonce..' world_started=true')
 end)
