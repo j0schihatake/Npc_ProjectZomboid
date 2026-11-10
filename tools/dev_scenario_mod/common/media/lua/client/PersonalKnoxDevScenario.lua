@@ -240,6 +240,18 @@ Events.OnGameStart.Add(function()
             end)
             print('[PersonalKnox][visual] target='..tostring(chosen and (chosen[1]..','..chosen[2]) or 'blocked')
                 ..' at='..string.format('%.1f,%.1f',tx,ty))
+            pcall(function()
+                local zs=cell:getZombieList()
+                local removed=0
+                for i=#zs,1,-1 do
+                    local z=zs[i]
+                    if z and math.hypot(z:getX()-px,z:getY()-py)<=60 then
+                        z:removeFromWorld()
+                        removed=removed+1
+                    end
+                end
+                print('[PersonalKnox][visual] zombies_cleared='..removed)
+            end)
             visualStart={}
             for i=0,api:ownCount()-1 do
                 local id=api:ownId(i)
