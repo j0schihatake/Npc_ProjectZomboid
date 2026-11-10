@@ -5156,9 +5156,9 @@ python3 tools/export_profile.py
 - Реализация: `OwnNpcLayer` при `FOLLOW` строит кольцо целей вокруг игрока
   (радиус 2.0–4.4) по индексу в schedule; одиночный NPC сохраняет прямую цель.
 - Критерии: 4 NPC получают разные цели; визуальный follow стабильно >2 клеток.
-- Unit-тест: 4 NPC получают разные цели, JAR собран. Игровой прогон 22:45
-  завершился на asset loading до мира; визуальная проверка формирования
-  остаётся ожидающей. Статус: код готов, визуал не подтверждён.
+- Подтверждено 11.11.2026: 4 NPC получают разные цели (unit); игровой follow
+  `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
+- Статус: подтверждено в игре.
 
 ## PK-VIS-003 — визуальный бой собственного NPC
 
@@ -5332,6 +5332,19 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №6 — 113/0, планирование WorldGen
 ## Визуальная проверка 11.11.2026 — follow
 ## Визуальная проверка 11.11.2026 №2 — follow 3.93
+## Игровая проверка 11.11.2026 №7 — 113/0, formation, combat, settlement
+
+- Мир: `PersonalKnox-scenario-a027ebac5aa42a6cf8be009f7292dc27`.
+- `[PersonalKnox][hint] shown=true`.
+- `PASS worldgen-registry`; `worldgen-plan x=7999 y=11765 campOps=8
+  buildingOps=768 roadPoints=77 protected=false worldWrites=0`.
+- `visual follow_started bodies=41`; `follow_moved=2.58` за 10 секунд.
+- `visual combat spawned=zombie=reused health=100.0 before=100 after=92 damaged=true`.
+- `summary passed=113 failed=0`; `status=OK`; exit code 0.
+- JAR: PersonalKnox `f446601f…40db`, PersonalWorldGen `b7b205af…4983` (1.18.5).
+- Viewpoint первичную настройку сохранил и перезапустился; нормальный
+  `ProjectZomboid64.json` содержит `-javaagent:ZombieBuddy.jar`.
+
 
 - `[PersonalKnox][visual] follow_started command=true bodies=41`.
 - `[PersonalKnox][visual] follow_moved=3.93` за 10 секунд.
