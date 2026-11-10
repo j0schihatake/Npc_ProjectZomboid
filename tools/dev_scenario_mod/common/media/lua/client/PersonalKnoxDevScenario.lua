@@ -288,7 +288,7 @@ Events.OnGameStart.Add(function()
                 part:setFractureTime(30)
                 part:setSplint(false,0)
                 local OwnNpcMedic=require('PersonalKnox/OwnNpcMedic')
-                local result=OwnNpcMedic.tick(patientId, medicId)
+                local result=OwnNpcMedic.tick(patientId, medicId, true)
                 print('[PersonalKnox][visual] medic='..tostring(result))
             end)
             if not okMedic then

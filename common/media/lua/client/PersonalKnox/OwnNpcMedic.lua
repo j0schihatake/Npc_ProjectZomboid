@@ -93,8 +93,8 @@ local function findSplint(patientId, patient, bodies, onlyMedicId)
     return best, bestSplint, bestSheet, bestPlank, bestDistance
 end
 
-function OwnNpcMedic.tick(onlyId, onlyMedicId)
-    if isClient() or not Settings.autoMedic() or Perf.skip() then return nil end
+function OwnNpcMedic.tick(onlyId, onlyMedicId, force)
+    if isClient() or not Settings.autoMedic() or (not force and Perf.skip()) then return nil end
     if not PersonalKnoxAPI then return nil end
     local api = PersonalKnoxAPI.getInstance()
     if not api then return nil end
