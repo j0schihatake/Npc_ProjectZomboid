@@ -44,7 +44,9 @@ public final class OwnNpcBodyAdapter {
             Object cell = currentCell();
             if (cell == null) return 0;
             var seen = new HashSet<String>();
-            var zombies = zombieSnapshot(cell);
+            double[] playerPos = playerPosition();
+            var zombies = playerPos == null ? zombieSnapshot(cell)
+                    : zombieSnapshotNear(cell, playerPos[0], playerPos[1], 40);
             if (layer.alarm() > 0) {
                 groupAlert = true;
                 try { layer.guardBase(); } catch (Throwable ignored) { }
@@ -1212,6 +1214,35 @@ public final class OwnNpcBodyAdapter {
                 System.out.println("[PersonalKnox][own-loot] " + id + " items=" + moved);
             }
         } catch (Throwable ignored) { }
+    }
+
+    private static double[] playerPosition() {
+        try {
+            Object player = Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
+            if (player == null) return null;
+            return new double[]{
+                    ((Number) player.getClass().getMethod("getX").invoke(player)).doubleValue(),
+                    ((Number) player.getClass().getMethod("getY").invoke(player)).doubleValue()};
+        } catch (Throwable ignored) { return null; }
+    }
+
+    private static java.util.List<Object[]> zombieSnapshotNear(Object cell, double px, double py, double radius) {
+        var result = new java.util.ArrayList<Object[]>();
+        double radiusSq = radius * radius;
+        try {
+            Object zombies = cell.getClass().getMethod("getZombieList").invoke(cell);
+            int size = (int) zombies.getClass().getMethod("size").invoke(zombies);
+            for (int i = 0; i < size; i++) {
+                Object zombie = zombies.getClass().getMethod("get", int.class).invoke(zombies, i);
+                if (zombie == null || !zombie.getClass().getName().equals("zombie.characters.IsoZombie")) continue;
+                double x = ((Number) zombie.getClass().getMethod("getX").invoke(zombie)).doubleValue();
+                double y = ((Number) zombie.getClass().getMethod("getY").invoke(zombie)).doubleValue();
+                double dx = x - px, dy = y - py;
+                if (dx * dx + dy * dy > radiusSq) continue;
+                result.add(new Object[]{zombie, x, y});
+            }
+        } catch (Throwable ignored) { }
+        return result;
     }
 
     private static java.util.List<Object[]> zombieSnapshot(Object cell) {
