@@ -85,7 +85,13 @@ public final class OwnNpcBodyAdapter {
                     continue;
                 }
                 if (body == null) {
-                    body = create(cell, agent.id(), (int) agent.x(), (int) agent.y(), (int) agent.z(), agent.factionId());
+                    try {
+                        body = create(cell, agent.id(), (int) agent.x(), (int) agent.y(), (int) agent.z(), agent.factionId());
+                    } catch (Throwable spawnError) {
+                        System.out.println("[PersonalKnox] Own body spawn skipped " + agent.id()
+                                + ": " + spawnError.getMessage());
+                        continue;
+                    }
                     if (body == null) continue;
                     bodies.put(agent.id(), body);
                 }
