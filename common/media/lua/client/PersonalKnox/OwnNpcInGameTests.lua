@@ -115,6 +115,19 @@ function Tests.run(player)
         api:ownDebugZombieClear()
         return damaged and ammo == 4
     end)
+    check("mobility-plan-craft", function()
+        local plan = api:mobilityPlan(20, true, false, 0.4, true, true,
+            "Base.Plank=2;Base.RippedSheets=2;Base.Nails=3", true, true, true, 0)
+        return string.find(plan, "action=CRAFT", 1, true) ~= nil
+            and string.find(plan, "PersonalKnox.Crutch", 1, true) ~= nil
+            and string.find(plan, "projected=45", 1, true) ~= nil
+    end)
+    check("mobility-plan-ready", function()
+        local plan = api:mobilityPlan(20, true, false, 0.4, true, true,
+            "PersonalKnox.Crutch=1;Base.Plank=2", false, true, true, 0)
+        return string.find(plan, "action=USE_READY", 1, true) ~= nil
+            and string.find(plan, "PersonalKnox.Crutch", 1, true) ~= nil
+    end)
     check("upkeep-repair", function() return api:upkeepNeedsRepair(1, 10) end)
     check("upkeep-ammo", function() return api:upkeepAmmo(0, 30) > 0 end)
     check("durability-setting", function() return Settings.infiniteDurability() == true end)

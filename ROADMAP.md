@@ -5204,7 +5204,7 @@ python3 tools/export_profile.py
 | Связанный коммит | `a53f7cb` |
 | Результат игровой проверки | Ожидается; проверена только доменная Java-модель |
 
-**Прогресс 11.11.2026:** добавлены `PatientMobilityAssessment`, `MobilityAidCatalog` и `MedicalSupplyPlanner`; `FieldMobilityTest` проверяет костыль, готовый предмет, отмену при угрозе, отсутствие инструмента/материалов, трость, шину и резерв. Добавлен Java/Lua-мост `PersonalKnoxAPI.mobilityPlan(...)` с разбором строки запасов и тестами `CRAFT`/`USE_READY`/`ABORT_DANGER`. Все Java-тесты и сборка JAR прошли. Игровая интеграция, сканирование инвентаря, анимация применения и сценарий на вылазке — следующие шаги.
+**Прогресс 11.11.2026:** добавлены `PatientMobilityAssessment`, `MobilityAidCatalog` и `MedicalSupplyPlanner`; `FieldMobilityTest` проверяет костыль, готовый предмет, отмену при угрозе, отсутствие инструмента/материалов, трость, шину и резерв. Добавлен Java/Lua-мост `PersonalKnoxAPI.mobilityPlan(...)` с разбором строки запасов и тестами `CRAFT`/`USE_READY`/`ABORT_DANGER`; в игровой сценарий добавлены проверки моста `mobility-plan-craft` и `mobility-plan-ready`. Все Java-тесты и сборка JAR прошли. Игровая интеграция, сканирование инвентаря, анимация применения и сценарий на вылазке — следующие шаги.
 
 ### Обязательное поведение
 
