@@ -4,6 +4,8 @@
   "UI_PersonalKnox_ShowStartHint": "Show control hint",
   "UI_PersonalKnox_ActiveBodyLimit": "Active NPC bodies per group",
   "UI_PersonalKnox_BodyMoveBudget": "NPC move budget per sync",
+  "UI_PersonalKnox_BodySyncBudget": "Body sync budget (ms)",
+  "UI_PersonalKnox_BodySyncBudgetHint": "Time budget per sync; lower means smoother frames",
   "UI_PersonalKnox_BodyMoveBudgetHint": "Lower means fewer pathfinding calls and better FPS",
   "UI_PersonalKnox_ActiveBodyLimitHint": "Caps rendered bodies; strategic population stays intact",
   "UI_PersonalKnox_ShowStartHintHint": "Shows F7/right-click hint once at game start",

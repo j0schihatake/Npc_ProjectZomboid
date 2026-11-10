@@ -527,6 +527,7 @@ public final class PersonalKnoxAPI {
 
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
     public void ownSetMoveBudget(int value) { ownBodies.setMoveBudget(value); }
+    public void ownSetSyncBudget(int value) { ownBodies.setSyncBudgetMs(value); }
     public double ownCombatDamage(int weaponLevel, int skill, int condition, int conditionMax, boolean ranged) {
         return personal.knox.npc.own.OwnNpcCombat.damage(weaponLevel, skill, condition, conditionMax, ranged);
     }

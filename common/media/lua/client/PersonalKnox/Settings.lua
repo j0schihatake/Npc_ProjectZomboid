@@ -41,6 +41,10 @@ if ok and PZAPI and PZAPI.ModOptions then
         page:addSlider("bodyMoveBudget", getText("UI_PersonalKnox_BodyMoveBudget"), 2, 32, 2, 8,
             getText("UI_PersonalKnox_BodyMoveBudgetHint"))
     end
+    if page and not page:getOption("bodySyncBudgetMs") then
+        page:addSlider("bodySyncBudgetMs", getText("UI_PersonalKnox_BodySyncBudget"), 2, 50, 2, 8,
+            getText("UI_PersonalKnox_BodySyncBudgetHint"))
+    end
     ensure("matchPlayerClothes", "UI_PersonalKnox_MatchPlayerClothes", false, "UI_PersonalKnox_MatchPlayerClothesHint")
     ensure("inGameTests", "UI_PersonalKnox_InGameTests", false, "UI_PersonalKnox_InGameTestsHint")
     if page and not page:getOption("ammoMode") then
@@ -214,6 +218,12 @@ function Settings.matchPlayerClothes()
 end
 
 function Settings.showStartHint() return value("showStartHint", true) end
+
+function Settings.bodySyncBudgetMs()
+    local option = page and page:getOption("bodySyncBudgetMs")
+    local value = option and option:getValue() or 8
+    return type(value) == "number" and math.max(2, math.min(50, value)) or 8
+end
 
 function Settings.bodyMoveBudget()
     local option = page and page:getOption("bodyMoveBudget")

@@ -52,6 +52,7 @@ local function tick()
     local ownActive = api:ownActive()
     if ownActive > members then members = ownActive end
     local px, py, pz = player:getX(), player:getY(), player:getZ()
+    api:ownSetSyncBudget(Settings.bodySyncBudgetMs())
     local runtime = api:ownRuntimeTick(player, members, Settings.activeBodyLimit(),
         Settings.bodyMoveBudget(), 80)
     if now - lastAlifeSettings >= 10000 then

@@ -13,6 +13,8 @@
   "UI_PersonalKnox_ShowStartHint": "Показывать подсказку управления",
   "UI_PersonalKnox_ActiveBodyLimit": "Активных тел NPC на группу",
   "UI_PersonalKnox_BodyMoveBudget": "Бюджет движения NPC за синк",
+  "UI_PersonalKnox_BodySyncBudget": "Бюджет синка тел (мс)",
+  "UI_PersonalKnox_BodySyncBudgetHint": "Лимит времени на синк; меньше — плавнее кадры",
   "UI_PersonalKnox_BodyMoveBudgetHint": "Меньше — меньше pathfinding и выше FPS",
   "UI_PersonalKnox_ActiveBodyLimitHint": "Ограничивает отрисованные тела; стратегическое население сохраняется",
   "UI_PersonalKnox_ShowStartHintHint": "Показывает подсказку F7/ПКМ один раз при старте",

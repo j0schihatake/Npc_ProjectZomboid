@@ -31,6 +31,8 @@ public final class OwnNpcBodyAdapter {
     private long lastSyncLog;
     private int moveBudget = 8;
     private int moveSkip;
+    private int syncBudgetMs = 8;
+    private int syncCursor;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
 
@@ -51,9 +53,17 @@ public final class OwnNpcBodyAdapter {
                 groupAlert = true;
                 try { layer.guardBase(); } catch (Throwable ignored) { }
             }
-            int agentIndex = 0;
-            for (var agent : layer.agents()) {
-                seen.add(agent.id());
+            var agents = layer.agents();
+            for (var agent : agents) seen.add(agent.id());
+            int totalAgents = agents.size();
+            int startAgent = totalAgents == 0 ? 0 : syncCursor % totalAgents;
+            int processed = 0;
+            long budgetNanos = syncBudgetMs * 1_000_000L;
+            for (int k = 0; k < totalAgents; k++) {
+                if (processed > 0 && System.nanoTime() - syncStarted >= budgetNanos) break;
+                var agent = agents.get((startAgent + k) % totalAgents);
+                int agentIndex = k;
+                processed++;
                 Object body = bodies.get(agent.id());
                 if (body != null) {
                     rememberWeapon(agent.id(), body);
@@ -124,9 +134,9 @@ public final class OwnNpcBodyAdapter {
                     move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, targetZ);
                     moveNs += System.nanoTime() - moveStarted;
                 }
-                agentIndex++;
             }
-            if (agentIndex > 0) moveSkip = (moveSkip + Math.min(moveBudget, agentIndex)) % agentIndex;
+            if (totalAgents > 0) syncCursor = (startAgent + processed) % totalAgents;
+            if (processed > 0) moveSkip = (moveSkip + Math.min(moveBudget, processed)) % processed;
             boolean anyThreat = !lastAim.isEmpty();
             if (anyThreat && !groupAlert) {
                 groupAlert = true;
@@ -171,6 +181,7 @@ public final class OwnNpcBodyAdapter {
                 lastSyncLog = System.currentTimeMillis();
                 System.out.println("[PersonalKnox][perf] bodySyncMs=" + elapsedMs
                         + " moveMs=" + (moveNs / 1_000_000L)
+                        + " processed=" + processed
                         + " bodies=" + bodies.size());
             }
             return bodies.size();
@@ -183,6 +194,7 @@ public final class OwnNpcBodyAdapter {
 
     public int count() { return bodies.size(); }
     public void setMoveBudget(int value) { moveBudget = Math.max(1, Math.min(64, value)); }
+    public void setSyncBudgetMs(int value) { syncBudgetMs = Math.max(2, Math.min(50, value)); }
     public String nearbyObstacle(String id) {
         Object body = bodies.get(id);
         if (body == null) return "";
