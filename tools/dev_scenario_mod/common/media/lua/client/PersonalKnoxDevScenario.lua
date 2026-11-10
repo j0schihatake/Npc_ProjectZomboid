@@ -235,11 +235,19 @@ Events.OnGameStart.Add(function()
                     break
                 end
             end
+            local movedPlayer=pcall(function()
+                player:setX(tx)
+                player:setY(ty)
+                player:setZ(pz)
+            end)
+            local commandCount=nil
             local okCmd=pcall(function()
-                api:ownCommandAll("FOLLOW", tx, ty, pz)
+                commandCount=api:ownCommandAll("FOLLOW", tx, ty, pz)
             end)
             print('[PersonalKnox][visual] target='..tostring(chosen and (chosen[1]..','..chosen[2]) or 'blocked')
-                ..' at='..string.format('%.1f,%.1f',tx,ty))
+                ..' at='..string.format('%.1f,%.1f',tx,ty)
+                ..' player_moved='..tostring(movedPlayer)
+                ..' command_count='..tostring(commandCount))
             pcall(function()
                 local zs=cell:getZombieList()
                 local removed=0
