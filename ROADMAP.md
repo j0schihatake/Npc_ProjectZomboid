@@ -5149,6 +5149,15 @@ python3 tools/export_profile.py
   `/home/j0schi/Zomboid-dev/PersonalKnox/attic`, но dev-загрузчик их не видит.
 - Связанные коммиты: `e2b6ee3` (постановка задачи).
 
+## Дефект 0.77.15 — own-medic тест зависел от дистанции спавна
+
+- Симптом: прогон 19:29 с `worldgen-registry` — `passed=110 failed=2`;
+  `own-medic result=nil`, `own-medic-field result=nil`.
+- Причина: тест создавал patient/medic подряд, но не гарантировал, что медик
+  окажется в 6 клетках; при большем составе отряда спавн-позиции разъехались.
+- Исправление: тест телепортирует медика в позицию пациента перед `tick`.
+- Статус: исправлено локально, игровой прогон 112 ожидается.
+
 ## Дефект 0.77.14 — PZ ScriptManager не грузит media/scripts из symlink-мода
 
 - Симптом: `PersonalKnox.Crutch` и `MakeCrutch` не загружаются; в `console.txt`
