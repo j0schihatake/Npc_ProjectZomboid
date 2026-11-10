@@ -39,6 +39,7 @@ public final class OwnNpcBodyAdapter {
         if (pathCache.size() > 128) pathCache.clear();
         if (unavailable) return 0;
         long syncStarted = System.nanoTime();
+        long moveNs = 0;
         try {
             Object cell = currentCell();
             if (cell == null) return 0;
@@ -55,11 +56,18 @@ public final class OwnNpcBodyAdapter {
                 if (body != null) {
                     rememberWeapon(agent.id(), body);
                     syncHealth(layer, agent.id(), body);
-                    autoCare(agent.id(), body, layer);
-                    attack(agent.id(), body, zombies);
-                    autoWeapon(agent.id(), lastAim.containsKey(agent.id()) || groupAlert);
-                    retreat(layer, agent.id(), body, agent);
-                    autoConsume(layer, agent.id(), body, agent);
+                    boolean threatened = groupAlert || lastAim.containsKey(agent.id());
+                    if (agent.state().bleeding() || agent.state().health() < 99) {
+                        autoCare(agent.id(), body, layer);
+                    }
+                    if (threatened) {
+                        attack(agent.id(), body, zombies);
+                        autoWeapon(agent.id(), true);
+                        retreat(layer, agent.id(), body, agent);
+                    }
+                    if (agent.state().hunger() >= 0.6 || agent.state().thirst() >= 0.6) {
+                        autoConsume(layer, agent.id(), body, agent);
+                    }
                 }
                 if (dismantles.containsKey(agent.id())) {
                     String state = tickDismantle(agent.id(), 2.0);
@@ -101,8 +109,12 @@ public final class OwnNpcBodyAdapter {
                     tx += Math.cos(angle) * 1.4;
                     ty += Math.sin(angle) * 1.4;
                 }
-                if (agentIndex >= moveSkip && agentIndex < moveSkip + moveBudget) {
-                    move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, layer.targetZ(agent.id()));
+                double targetZ = layer.targetZ(agent.id());
+                if ((Math.hypot(tx - agent.x(), ty - agent.y()) > 0.05 || Math.abs(targetZ - agent.z()) > 0.4)
+                        && agentIndex >= moveSkip && agentIndex < moveSkip + moveBudget) {
+                    long moveStarted = System.nanoTime();
+                    move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, targetZ);
+                    moveNs += System.nanoTime() - moveStarted;
                 }
                 agentIndex++;
             }
@@ -150,6 +162,7 @@ public final class OwnNpcBodyAdapter {
             if (elapsedMs >= 20 || System.currentTimeMillis() - lastSyncLog >= 60_000L) {
                 lastSyncLog = System.currentTimeMillis();
                 System.out.println("[PersonalKnox][perf] bodySyncMs=" + elapsedMs
+                        + " moveMs=" + (moveNs / 1_000_000L)
                         + " bodies=" + bodies.size());
             }
             return bodies.size();
