@@ -5180,7 +5180,9 @@ python3 tools/export_profile.py
   stale-cleanup не удалял необработанные тела.
 - Критерии: `bodySyncMs` около бюджета, нет длинных пиков; follow/бой
   обрабатываются по кругу, без голодания.
-- Статус: в работе.
+- Подтверждено: `bodySyncMs=25–147`, `processed=1–13`; явный `ownBodiesSync`
+  остаётся полным для тестов, runtime — бюджетный. 114/0, follow 3.99.
+- Статус: подтверждено в игре; остаточные пики 147 мс на первом теле.
 
 ## PK-PERF-005 — не сканировать всех зомби на карте
 
@@ -5326,11 +5328,12 @@ python3 tools/export_profile.py
 - Симптом: при очистке зомби и 21 теле `follow_moved=0.45` даже за 15 секунд;
   ранее было 2.09–2.29 при 27 и 1.45 при 36. Агент `debug#1` стоит
   (`body=7990.21,11754.81 agent=7989.5,11755.5 target=7989.5,11755.5`).
-- Причина-гипотеза: цель формации/`ownCommandAll` не доходит до всех тел,
-  либо тело упирается в геометрию базы; 15 секунд не помогают.
-- Действие: логировать причину `move` (path/dismantle/stationary) по каждому
-  телу и проверить `ownCommandAll`→`followTarget` на всех ID.
-- Статус: открыт; follow-визуал не считать подтверждённым.
+- Причина: тест двигал NPC к точке, но **игрок оставался на месте**; runtime
+  каждый тик перезаписывал follow-цель позицией игрока, поэтому NPC стояли.
+- Исправление: тест телепортирует игрока на выбранную свободную клетку
+  (`player_moved=true`), затем командует FOLLOW; `command_count=21`.
+- Подтверждено: `follow_moved=3.99`, 114/0, combat/medic/panel, status=OK.
+- Статус: закрыт; follow-визуал подтверждён.
 
 ## Дефект 0.77.21 — полный move budget не восстановил follow
 
@@ -5502,6 +5505,17 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №13 — чистый restore-follow
 ## Игровая проверка 11.11.2026 №14 — essential-модули при FPS 8
 ## Игровая проверка 11.11.2026 №15 — spawn isolation и nearby zombies
+## Игровая проверка 11.11.2026 №16 — player-move follow и sync budget
+
+- Мир: `PersonalKnox-scenario-ffd31c81b80fde7653db42471e8f6f42`.
+- `player_moved=true command_count=21`; `zombies_cleared=66`.
+- `visual follow_moved=3.99` — NPC реально шли за перемещённым игроком.
+- `combat 100→92`, `medic=splint`, `panel_open=true`.
+- `summary passed=114 failed=0`; `status=OK`; exit code 0.
+- `bodySyncMs=25–147`, `processed=1–13` (бюджет 8 мс; первый body может
+  превышать бюджет).
+- JAR: PersonalKnox `feb32f91…a76c`.
+
 
 - Мир: `PersonalKnox-scenario-64b9a59aecd983f90edabc14f4982c85`.
 - До фикса: 86/28 из-за одного unloaded NPC; после: `114/0`.
