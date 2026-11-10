@@ -75,11 +75,11 @@ local function findBandage(patientId, patient, bodies)
     return best, bestItem, bestDistance
 end
 
-local function findSplint(patientId, patient, bodies)
+local function findSplint(patientId, patient, bodies, onlyMedicId)
     local best, bestSplint, bestSheet, bestPlank, bestDistance = nil, nil, nil, nil, math.huge
     for _, other in ipairs(otherBodies(patientId, bodies)) do
         local distance = distanceSq(other.body, patient)
-        if distance <= 36 and distance < bestDistance then
+        if (not onlyMedicId or other.id == onlyMedicId) and distance <= 36 and distance < bestDistance then
             local splint = findItem(other.body, "Base.Splint")
             local sheet = findItem(other.body, "Base.RippedSheets")
             local plank = findItem(other.body, "Base.Plank")
@@ -92,7 +92,7 @@ local function findSplint(patientId, patient, bodies)
     return best, bestSplint, bestSheet, bestPlank, bestDistance
 end
 
-function OwnNpcMedic.tick(onlyId)
+function OwnNpcMedic.tick(onlyId, onlyMedicId)
     if isClient() or not Settings.autoMedic() or Perf.skip() then return nil end
     if not PersonalKnoxAPI then return nil end
     local api = PersonalKnoxAPI.getInstance()
@@ -125,7 +125,7 @@ function OwnNpcMedic.tick(onlyId)
         if (not onlyId or id == onlyId) and not patient:isDead() and not patient:hasTimedActions() then
             local part = fracturedLeg(patient)
             if part then
-                local medic, splint, sheet, plank, distance = findSplint(id, patient, bodies)
+                local medic, splint, sheet, plank, distance = findSplint(id, patient, bodies, onlyMedicId)
                 if medic and ISSplint and ISTimedActionQueue then
                     local action
                     if splint then

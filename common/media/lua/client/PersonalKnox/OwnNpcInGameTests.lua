@@ -554,6 +554,23 @@ function Tests.run(player)
             .. " fracture=" .. tostring(part:getFractureTime()))
         return result == "splint"
     end)
+    check("own-medic-field-splint", function()
+        local patientId = api:ownCreateCompanion(player)
+        local medicId = api:ownCreateCompanion(player)
+        api:ownBodiesSync()
+        local patientBody = api:ownBodyObject(patientId)
+        local medicBody = api:ownBodyObject(medicId)
+        if not patientBody or not medicBody then return false end
+        medicBody:getInventory():AddItem("Base.RippedSheets")
+        medicBody:getInventory():AddItem("Base.Plank")
+        local part = patientBody:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L)
+        part:setFractureTime(30)
+        part:setSplint(false, 0)
+        local OwnNpcMedic = require "PersonalKnox/OwnNpcMedic"
+        local result = OwnNpcMedic.tick(patientId, medicId)
+        print("[PersonalKnox][ingame-test] own-medic-field result=" .. tostring(result))
+        return result == "splint"
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
