@@ -5179,9 +5179,11 @@ python3 tools/export_profile.py
 - PWG: `WriteBudget.remaining/reset`, `remaining` в статусе и результатах.
 - PWG: unit-тесты remaining/reset и бюджета.
 - PK: Russian-first генерация имён (60% RU), API и unit-тест.
+- PK: русские пулы расширены до 48 имён/48 фамилий на пол (96 имён в тесте).
 - PK: Mod Options `identityRussianFirst`, применение в Client.
 - PK: `worldgenWrites`/`worldgenBudget` и guard уже в 0.78.0.
-- Следующие 40: PWG protected-write guard, PK Java-миграция и тесты.
+- PWG: `placeRealWall` учитывает write budget; build-скрипты используют writable `build-new`.
+- Следующие ~25: protected-write guard, PK Java-миграция и тесты.
 
 ## PWG-GAME-001 — реальная запись тестового участка
 

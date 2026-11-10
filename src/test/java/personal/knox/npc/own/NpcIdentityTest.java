@@ -23,7 +23,7 @@ public final class NpcIdentityTest {
                 : "Both Russian and international names must be present";
         assert NpcIdentityDatabase.cultures().size() >= 7 : "RU, PL, EN, ES, FR, DE and IT pools";
         var namesByCulture = NpcIdentityDatabase.namesForTest();
-        assert namesByCulture.get("ru").size() >= 64 : "Russian pool must be the largest";
+        assert namesByCulture.get("ru").size() >= 96 : "Russian pool must be the largest";
         for (var entry : namesByCulture.entrySet()) {
             assert entry.getValue().size() >= 32 : "Each culture needs many forenames: " + entry.getKey();
         }
