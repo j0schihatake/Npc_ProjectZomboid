@@ -5155,7 +5155,9 @@ python3 tools/export_profile.py
   и отдельные свежие patient/medic NPC в тесте.
 - Повторный игровой прогон 11.11.2026: `passed=110 failed=0`, `PASS own-medic-splint`,
   `[own-medic] splint id=debug#5 item=Base.Splint distance=1`, `status=OK`.
-- Статус: подтверждено в игре.
+- Полевая шина 11.11.2026: `PASS own-medic-field-splint`, `passed=111 failed=0`,
+  `[own-medic] splint id=debug#7 item=field distance=1`, exit code 0.
+- Статус: подтверждено в игре (готовая и полевая шина).
 
 ## Дефект 0.77.12 — запуск упал до мира: X server out of memory
 
@@ -5205,6 +5207,16 @@ python3 tools/export_profile.py
 
 ## Игровая проверка 11.11.2026 №2 — 109 проверок и новый JAR
 ## Игровая проверка 11.11.2026 №3 — OwnNpcMedic, 110/0
+## Игровая проверка 11.11.2026 №4 — полевая шина, 111/0
+
+- Мир: `PersonalKnox-scenario-6b499f4aaf30aca1a66dd1af5497cd90`.
+- `PASS own-medic-splint`; `[own-medic] splint id=debug#5 item=Base.Splint distance=1`.
+- `PASS own-medic-field-splint`; `[own-medic] splint id=debug#7 item=field distance=1`.
+- `summary passed=111 failed=0`; `status=OK`; `scenario_verification.exit_code=0`.
+- JAR: PersonalKnox `7522099c…9495d`.
+- Полевая пара `Base.RippedSheets` + `Base.Plank` проверена реальным `ISSplint`.
+- Отдельный предмет-костыль `PersonalKnox.Crutch` и его рецепт ещё не реализованы.
+
 
 - Мир: `PersonalKnox-scenario-8008800bf09d50cf9136422244134c66`.
 - `PASS own-medic-splint`; лог: `[PersonalKnox][own-medic] splint id=debug#5 item=Base.Splint distance=1`.
@@ -5263,7 +5275,7 @@ python3 tools/export_profile.py
 | Компоненты | Java: `PatientMobilityAssessment`, `MobilityAidCatalog`, `MedicalSupplyPlanner`, `FieldCraftAction`, `MedicSquadBehavior`; Lua: только игровые действия, анимации, контекстное меню и мост к инвентарю |
 | Критерии готовности | Медик определяет хромоту/травму ноги; при доступных материалах и инструментах создаёт и применяет костыль, трость, шину или иное доступное приспособление; раненый действительно начинает передвигаться быстрее/без опоры на товарища; предмет и расход материалов видны в инвентаре; помощь работает в полевых условиях и в составе отряда на вылазке; нет циклов крафта, потери управления и конфликтов с Viewpoint |
 | План тестирования | Модульные тесты выбора рецепта, резервирования материалов, приоритетов, отмены при угрозе и защиты от повторов; интеграционный тест «раненый в отряде вне базы»; игровой сценарий с хромым NPC на вылазке, проверка `console.txt`, инвентаря, скорости и FPS |
-| Статус | IN PROGRESS — Java-модель, API-мост и OwnNpcMedic с Base.Splint проверены в игре (110/0); отдельный костыль и крафт ещё не реализованы |
+| Статус | IN PROGRESS — Java-модель, API-мост и OwnNpcMedic (готовая и полевая шина) проверены в игре (111/0); отдельный костыль и крафт ещё не реализованы |
 | Связанный коммит | `a53f7cb` (Java/Lua-мост), `0b8c20c` (splint-адаптер), `3149229` (ванильный рецепт) |
 | Результат игровой проверки | Ожидается; проверена только доменная Java-модель |
 
