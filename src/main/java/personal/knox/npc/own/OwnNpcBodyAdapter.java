@@ -36,7 +36,10 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
 
-    public int sync(OwnNpcLayer layer) {
+    public int sync(OwnNpcLayer layer) { return syncInternal(layer, false); }
+    public int syncBudgeted(OwnNpcLayer layer) { return syncInternal(layer, true); }
+
+    private int syncInternal(OwnNpcLayer layer, boolean budgeted) {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
         if (pathCache.size() > 128) pathCache.clear();
         if (unavailable) return 0;
@@ -72,7 +75,7 @@ public final class OwnNpcBodyAdapter {
             int processed = 0;
             long budgetNanos = syncBudgetMs * 1_000_000L;
             for (int k = 0; k < totalAgents; k++) {
-                if (processed > 0 && System.nanoTime() - syncStarted >= budgetNanos) break;
+                if (budgeted && processed > 0 && System.nanoTime() - syncStarted >= budgetNanos) break;
                 var agent = agents.get((startAgent + k) % totalAgents);
                 int agentIndex = k;
                 processed++;

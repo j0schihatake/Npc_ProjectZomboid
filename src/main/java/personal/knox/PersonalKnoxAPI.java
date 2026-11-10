@@ -518,7 +518,7 @@ public final class PersonalKnoxAPI {
             ownFollowTarget3(px, py, pz);
             ownTick(0.01, 32);
             ownBodies.setMoveBudget(Math.max(1, Math.min(64, moveBudget)));
-            int bodies = ownBodies.sync(ownLayer);
+            int bodies = ownBodies.syncBudgeted(ownLayer);
             return "active=" + ownLayer.count() + " bodies=" + bodies;
         } catch (ReflectiveOperationException error) {
             return "player-probe-failed=" + error.getClass().getSimpleName();
