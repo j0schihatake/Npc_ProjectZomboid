@@ -475,6 +475,15 @@ Events.OnGameStart.Add(function()
     if ok and panel then panel.toggle(player) end
 end)
 Events.OnGameStart.Add(function()
+    local player = getSpecificPlayer(0)
+    if player and HaloTextHelper then
+        pcall(function()
+            HaloTextHelper.addGoodText(player, getText("UI_PersonalKnox_StartHint"))
+            print("[PersonalKnox][hint] shown=true")
+        end)
+    end
+end)
+Events.OnGameStart.Add(function()
     if not Settings.inGameTests() then return end
     local player = getSpecificPlayer(0)
     if not player then return end
