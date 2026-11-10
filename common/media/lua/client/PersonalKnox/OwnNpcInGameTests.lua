@@ -617,12 +617,14 @@ function Tests.run(player)
             print("[PersonalKnox][ingame-test] worldgen-write error=" .. tostring(result))
             return false
         end
+        local used = tonumber(tostring(result):match("used=(%d+)"))
         print("[PersonalKnox][ingame-test] worldgen-write " .. tostring(result)
-            .. " default=" .. tostring(settingsBefore))
+            .. " default=" .. tostring(settingsBefore) .. " used=" .. tostring(used))
         return tostring(settingsBefore):find("writes=off", 1, true) ~= nil
             and tostring(result):find("worldWrites=", 1, true) ~= nil
             and tostring(result):find("worldWrites=0", 1, true) == nil
             and tostring(result):find("budget=8", 1, true) ~= nil
+            and used ~= nil and used <= 8
     end)
     check("worldgen-registry", function()
         local api = PersonalWorldGenAPI.getInstance()
