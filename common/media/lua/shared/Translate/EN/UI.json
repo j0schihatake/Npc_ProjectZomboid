@@ -1,6 +1,8 @@
 {
   "UI_optionscreen_binding_PersonalKnoxKeys": "PersonalKnox — our squad",
   "UI_PersonalKnox_StartHint": "PersonalKnox: F7 — squad panel; right-click — orders",
+  "UI_PersonalKnox_ShowStartHint": "Show control hint",
+  "UI_PersonalKnox_ShowStartHintHint": "Shows F7/right-click hint once at game start",
   "UI_optionscreen_binding_PersonalKnoxRecall": "Recall companions: stop tasks and follow",
   "UI_PersonalKnox_SettingsTitle": "PersonalKnox — our squad",
   "UI_PersonalKnox_Speech": "PersonalKnox NPC speech",

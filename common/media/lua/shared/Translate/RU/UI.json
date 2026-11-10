@@ -10,6 +10,8 @@
   "UI_ZB_SuppressSandboxLog_desc": "Скрывает стандартный вывод всех настроек песочницы в журнал при запуске.",
   "UI_optionscreen_binding_PersonalKnoxKeys": "PersonalKnox — наш отряд",
   "UI_PersonalKnox_StartHint": "PersonalKnox: F7 — окно отряда; ПКМ — приказы",
+  "UI_PersonalKnox_ShowStartHint": "Показывать подсказку управления",
+  "UI_PersonalKnox_ShowStartHintHint": "Показывает подсказку F7/ПКМ один раз при старте",
   "UI_optionscreen_binding_PersonalKnoxRecall": "Все ко мне: прекратить занятия и следовать",
   "UI_PersonalKnox_SettingsTitle": "PersonalKnox — наш отряд",
   "UI_PersonalKnox_Speech": "Реплики NPC от PersonalKnox",

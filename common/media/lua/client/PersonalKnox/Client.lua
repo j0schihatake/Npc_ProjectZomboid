@@ -476,7 +476,7 @@ Events.OnGameStart.Add(function()
 end)
 Events.OnGameStart.Add(function()
     local player = getSpecificPlayer(0)
-    if player and HaloTextHelper then
+    if player and HaloTextHelper and Settings.showStartHint() then
         pcall(function()
             HaloTextHelper.addGoodText(player, getText("UI_PersonalKnox_StartHint"))
             print("[PersonalKnox][hint] shown=true")
