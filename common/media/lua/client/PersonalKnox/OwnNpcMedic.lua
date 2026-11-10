@@ -53,19 +53,20 @@ local function distanceSq(a, b)
     return dx * dx + dy * dy
 end
 
-local function otherBodies(patientId, bodies)
+local function otherBodies(patientId, bodies, includeBusyId)
     local result = {}
     for id, body in pairs(bodies) do
-        if id ~= patientId and body and not body:isDead() and not body:hasTimedActions() then
+        if id ~= patientId and body and not body:isDead()
+                and (id == includeBusyId or not body:hasTimedActions()) then
             result[#result + 1] = {id = id, body = body}
         end
     end
     return result
 end
 
-local function findBandage(patientId, patient, bodies)
+local function findBandage(patientId, patient, bodies, onlyMedicId)
     local best, bestItem, bestDistance = nil, nil, math.huge
-    for _, other in ipairs(otherBodies(patientId, bodies)) do
+    for _, other in ipairs(otherBodies(patientId, bodies, onlyMedicId)) do
         local distance = distanceSq(other.body, patient)
         if distance <= 25 and distance < bestDistance then
             local item = cleanBandage(other.body)
@@ -77,7 +78,7 @@ end
 
 local function findSplint(patientId, patient, bodies, onlyMedicId)
     local best, bestSplint, bestSheet, bestPlank, bestDistance = nil, nil, nil, nil, math.huge
-    for _, other in ipairs(otherBodies(patientId, bodies)) do
+    for _, other in ipairs(otherBodies(patientId, bodies, onlyMedicId)) do
         local distance = distanceSq(other.body, patient)
         if (not onlyMedicId or other.id == onlyMedicId) and distance <= 36 and distance < bestDistance then
             local splint = findItem(other.body, "Base.Splint")
@@ -106,10 +107,11 @@ function OwnNpcMedic.tick(onlyId, onlyMedicId)
         end
     end
     for id, patient in pairs(bodies) do
-        if (not onlyId or id == onlyId) and not patient:isDead() and not patient:hasTimedActions() then
+        if (not onlyId or id == onlyId) and not patient:isDead()
+                and (onlyId or not patient:hasTimedActions()) then
             local part = bleedingPart(patient)
             if part then
-                local medic, bandage, distance = findBandage(id, patient, bodies)
+                local medic, bandage, distance = findBandage(id, patient, bodies, onlyMedicId)
                 if medic and bandage and ISApplyBandage and ISTimedActionQueue then
                     ISTimedActionQueue.add(ISApplyBandage:new(medic, patient, bandage, part, true))
                     if Settings.diagnosticsEnabled() then
@@ -122,7 +124,8 @@ function OwnNpcMedic.tick(onlyId, onlyMedicId)
         end
     end
     for id, patient in pairs(bodies) do
-        if (not onlyId or id == onlyId) and not patient:isDead() and not patient:hasTimedActions() then
+        if (not onlyId or id == onlyId) and not patient:isDead()
+                and (onlyId or not patient:hasTimedActions()) then
             local part = fracturedLeg(patient)
             if part then
                 local medic, splint, sheet, plank, distance = findSplint(id, patient, bodies, onlyMedicId)

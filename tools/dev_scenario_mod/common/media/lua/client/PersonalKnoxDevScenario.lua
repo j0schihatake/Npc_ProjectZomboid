@@ -217,8 +217,11 @@ Events.OnGameStart.Add(function()
         if player:isDead() then Events.OnTickEvenPaused.Remove(poll);result('FAIL','player_dead');return end
         ticks=ticks+1
         local nowMs=getTimestampMs()
-        if not visualStart and nowMs-started>=6000 and PersonalKnoxAPI then
-            local api=PersonalKnoxAPI.getInstance()
+        local testsDone=player:getModData().PersonalKnoxTestsDone
+        local visualApi=PersonalKnoxAPI and PersonalKnoxAPI.getInstance() or nil
+        if not visualStart and nowMs-started>=8000 and testsDone and visualApi
+                and visualApi:ownActive()>=20 then
+            local api=visualApi
             local okCmd=pcall(function()
                 api:ownCommandAll("FOLLOW", player:getX()+5, player:getY(), player:getZ())
             end)
@@ -230,7 +233,7 @@ Events.OnGameStart.Add(function()
                     visualStart[id]={x=body:getX(),y=body:getY()}
                 end
             end
-            visualAt=nowMs+5000
+            visualAt=nowMs+10000
             print('[PersonalKnox][visual] follow_started command='..tostring(okCmd)
                 ..' bodies='..tostring(api:ownCount()))
         elseif visualStart and not visualDone and nowMs>=visualAt then

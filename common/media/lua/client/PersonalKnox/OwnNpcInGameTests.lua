@@ -595,6 +595,7 @@ function Tests.run(player)
         return api:ownActive() == before - 1
     end)
     check("alife-squads", function() return api:alifeSquads() >= 1 end)
+    if player then player:getModData().PersonalKnoxTestsDone = getTimestampMs() end
     print("[PersonalKnox][ingame-test] summary passed=" .. tostring(passed) .. " failed=" .. tostring(failed))
     return failed == 0
 end
