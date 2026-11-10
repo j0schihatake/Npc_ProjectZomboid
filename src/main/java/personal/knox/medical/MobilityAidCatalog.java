@@ -7,7 +7,7 @@ import java.util.Map;
 public final class MobilityAidCatalog {
     public static final String CRUTCH = "PersonalKnox.Crutch";
     public static final String CANE = "PersonalKnox.Cane";
-    public static final String SPLINT = "PersonalKnox.Splint";
+    public static final String SPLINT = "Base.Splint";
     public static final String SUPPORT = "PersonalKnox.ImprovisedSupport";
 
     public record Aid(String itemId, int mobilityBoost, int minMobility, int maxMobility,
@@ -49,8 +49,8 @@ public final class MobilityAidCatalog {
                     Map.of("Base.Plank", 1, "Base.RippedSheets", 1, "Base.Nails", 2)),
             new Aid(CANE, 15, 35, 75, false, true, false,
                     Map.of("Base.Stick", 1, "Base.RippedSheets", 1)),
-            new Aid(SPLINT, 18, 0, 50, true, true, true,
-                    Map.of("Base.Plank", 2, "Base.RippedSheets", 2, "Base.DuctTape", 1)),
+            new Aid(SPLINT, 18, 0, 50, true, true, false,
+                    Map.of("Base.Plank", 1, "Base.RippedSheets", 1)),
             new Aid(SUPPORT, 10, 20, 65, false, true, false,
                     Map.of("Base.Stick", 2, "Base.Rope", 1))
     );

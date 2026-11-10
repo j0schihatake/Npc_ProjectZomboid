@@ -34,9 +34,16 @@ public final class FieldMobilityTest {
                 new MedicalSupplyPlanner.Policy(false, true, 0));
         assert danger.action() == MedicalSupplyPlanner.Action.ABORT_DANGER : "Danger aborts crafting";
 
-        var noTool = MedicalSupplyPlanner.plan(severe, supplies, false,
+        var noTool = MedicalSupplyPlanner.plan(patient(20, false, true, true), supplies, false,
                 new MedicalSupplyPlanner.Policy(true, true, 0));
         assert noTool.action() == MedicalSupplyPlanner.Action.NO_TOOL : "Missing tool is explicit";
+
+        var fieldSplint = MedicalSupplyPlanner.plan(severe,
+                Map.of("Base.Plank", 1, "Base.RippedSheets", 1), false,
+                new MedicalSupplyPlanner.Policy(true, true, 0));
+        assert fieldSplint.action() == MedicalSupplyPlanner.Action.CRAFT
+                && fieldSplint.aidId().equals(MobilityAidCatalog.SPLINT)
+                : "Vanilla splint recipe must work without a tool in the field";
 
         var mild = patient(60, false, true, true);
         var cane = MedicalSupplyPlanner.plan(mild,
@@ -62,6 +69,9 @@ public final class FieldMobilityTest {
                 new MedicalSupplyPlanner.Policy(true, true, 0));
         assert splint.action() == MedicalSupplyPlanner.Action.CRAFT : "Non-walking patient gets a splint";
         assert splint.aidId().equals(MobilityAidCatalog.SPLINT);
+        assert MobilityAidCatalog.SPLINT.equals("Base.Splint") : "Use the vanilla splint item";
+        assert splint.cost().equals(Map.of("Base.Plank", 1, "Base.RippedSheets", 1))
+                : "Splint recipe must match vanilla MakeSplint";
 
         try { new PatientMobilityAssessment(-1, true, false, 0, true, false); throw new AssertionError("Bad mobility accepted"); }
         catch (IllegalArgumentException expected) { }
