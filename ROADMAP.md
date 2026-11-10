@@ -5149,7 +5149,14 @@ python3 tools/export_profile.py
   `own-medic-splint` (игровая) и `check_own_npc_medic.py` (готовая шина,
   полевые материалы, перевязка). Связанный коммит: `2a498e6`.
 - Статус: реализовано локально; игровая проверка 110 ожидается.
-- Первый игровой прогон 11.11.2026: `passed=109 failed=1`, `FAIL own-medic-splint`.\n  Причина: тест использовал `debug#1`, а `OwnNpcMedic` обходил всех собственных NPC\n  и мог выбрать другого пациента/перевязку. Исправление: адресный `tick(patientId)`\n  и отдельные свежие patient/medic NPC в тесте.\n
+- Первый игровой прогон 11.11.2026: `passed=109 failed=1`, `FAIL own-medic-splint`.
+- Причина: тест использовал `debug#1`, а `OwnNpcMedic` обходил всех собственных NPC
+  и мог выбрать другого пациента/перевязку. Исправление: адресный `tick(patientId)`
+  и отдельные свежие patient/medic NPC в тесте.
+- Повторный игровой прогон 11.11.2026: `passed=110 failed=0`, `PASS own-medic-splint`,
+  `[own-medic] splint id=debug#5 item=Base.Splint distance=1`, `status=OK`.
+- Статус: подтверждено в игре.
+
 ## Дефект 0.77.12 — запуск упал до мира: X server out of memory
 
 - Симптом: прогон 11.11.2026 18:10 стартовал, загрузил мир и `GameWindow.save()`,
@@ -5197,6 +5204,17 @@ python3 tools/export_profile.py
 > проверка ещё не выполнена из-за `0.77.12` (X server out of memory).
 
 ## Игровая проверка 11.11.2026 №2 — 109 проверок и новый JAR
+## Игровая проверка 11.11.2026 №3 — OwnNpcMedic, 110/0
+
+- Мир: `PersonalKnox-scenario-8008800bf09d50cf9136422244134c66`.
+- `PASS own-medic-splint`; лог: `[PersonalKnox][own-medic] splint id=debug#5 item=Base.Splint distance=1`.
+- `[PersonalKnox][ingame-test] own-medic result=splint fracture=30`.
+- `summary passed=110 failed=0`; `status=OK`; `scenario_verification.exit_code=0`.
+- JAR: PersonalKnox `7522099c…9495d`.
+- Проверено реальное действие: собственный NPC-пациент с переломом, второй собственный NPC
+  с `Base.Splint`, `ISSplint` поставлен в очередь на расстоянии 1 клетка.
+- Полевая пара `Base.RippedSheets` + `Base.Plank` пока покрыта только mocked-тестом.
+
 
 - Запуск: существующий `tools/launch_dev.sh --profile both --trust-local-builds --restart --detach --no-debug --nosteam --scenario-seconds 15`.
 - Мир: `PersonalKnox-scenario-1050c23a1e806702ec0aed2730ae15a3`.
@@ -5245,7 +5263,7 @@ python3 tools/export_profile.py
 | Компоненты | Java: `PatientMobilityAssessment`, `MobilityAidCatalog`, `MedicalSupplyPlanner`, `FieldCraftAction`, `MedicSquadBehavior`; Lua: только игровые действия, анимации, контекстное меню и мост к инвентарю |
 | Критерии готовности | Медик определяет хромоту/травму ноги; при доступных материалах и инструментах создаёт и применяет костыль, трость, шину или иное доступное приспособление; раненый действительно начинает передвигаться быстрее/без опоры на товарища; предмет и расход материалов видны в инвентаре; помощь работает в полевых условиях и в составе отряда на вылазке; нет циклов крафта, потери управления и конфликтов с Viewpoint |
 | План тестирования | Модульные тесты выбора рецепта, резервирования материалов, приоритетов, отмены при угрозе и защиты от повторов; интеграционный тест «раненый в отряде вне базы»; игровой сценарий с хромым NPC на вылазке, проверка `console.txt`, инвентаря, скорости и FPS |
-| Статус | IN PROGRESS — Java-модель и API-мост проверены в игре (109/0); splint-адаптер проверен mocked-тестом; отдельный костыль и его крафт ещё не реализованы |
+| Статус | IN PROGRESS — Java-модель, API-мост и OwnNpcMedic с Base.Splint проверены в игре (110/0); отдельный костыль и крафт ещё не реализованы |
 | Связанный коммит | `a53f7cb` (Java/Lua-мост), `0b8c20c` (splint-адаптер), `3149229` (ванильный рецепт) |
 | Результат игровой проверки | Ожидается; проверена только доменная Java-модель |
 
