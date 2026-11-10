@@ -5350,6 +5350,15 @@ Checkpoint 11.11.2026 (не финальный релиз):
 - Критерии: зомби переключается на NPC, NPC получает урон/бой.
 - Статус: код готов; игровой прогон в 0.79.0.
 
+## PK-DB-001 — SQLite на каждое сохранение
+
+- Реализация: Java `ModDatabase` в `getSaveFolder()/PersonalKnox.db`, fallback
+  в `Lua/PersonalKnox.db`; `schema.sql`/`seed.sql` в ресурсах; таблицы
+  `settings`, `data`, `names`, `professions`; Lua Settings читает БД при старте
+  и пишет её на Apply.
+- Unit: `Mod database tests passed: settings upsert, settings dump and data round-trip.`
+- Статус: код и unit PASS в staging-копии; игровой прогон не выполнен.
+
 ## PK-UI-003 — контекстное меню своих NPC
 
 - Причина: меню было только для 1–2 Knox-членов; «Проверить состояние» не
