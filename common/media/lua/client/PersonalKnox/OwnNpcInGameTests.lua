@@ -533,6 +533,20 @@ function Tests.run(player)
         local b = api:ownPosition(api:ownId(1))
         return a ~= nil and b ~= nil and a ~= b
     end)
+    check("own-medic-splint", function()
+        local medicId = api:ownCreateCompanion(player)
+        api:ownBodiesSync()
+        local patientBody = api:ownBodyObject(id)
+        local medicBody = api:ownBodyObject(medicId)
+        if not patientBody or not medicBody then return false end
+        medicBody:getInventory():AddItem("Base.Splint")
+        local part = patientBody:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L)
+        part:setFractureTime(30)
+        part:setSplint(false, 0)
+        local OwnNpcMedic = require "PersonalKnox/OwnNpcMedic"
+        local result = OwnNpcMedic.tick()
+        return result == "splint"
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)

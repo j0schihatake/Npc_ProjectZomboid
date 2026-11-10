@@ -31,6 +31,7 @@ local NpcReload = require "PersonalKnox/NpcReload"
 local NpcMagazine = require "PersonalKnox/NpcMagazine"
 local NpcUpkeep = require "PersonalKnox/NpcUpkeep"
 local NpcMedic = require "PersonalKnox/NpcMedic"
+local OwnNpcMedic = require "PersonalKnox/OwnNpcMedic"
 local NpcStock = require "PersonalKnox/NpcStock"
 local NpcFinds = require "PersonalKnox/NpcFinds"
 local Ask = require "PersonalKnox/Ask"
@@ -492,6 +493,7 @@ NpcReload.install({roster=roster,say=say})
 NpcMagazine.install({roster=roster,say=say})
 NpcUpkeep.install({roster=roster,say=say})
 NpcMedic.install({roster=roster,say=say})
+OwnNpcMedic.install()
 NpcStock.install({roster=roster,say=say})
 NpcFinds.install({roster=roster,say=say})
 Ask.install({roster=roster,say=say})

@@ -699,6 +699,8 @@ public final class PersonalKnoxAPI {
     }
     public boolean ownBodyReady(String id) { return ownBodies.ready(id); }
     public String ownBodyInspect(String id) { return ownBodies.inspect(id); }
+    /** Dev/game adapter hook: the real IsoPlayer body for an own agent, or null. */
+    public Object ownBodyObject(String id) { return ownBodies.body(id); }
 
     public String ownBodyWorn(String id) { return ownBodies.worn(id); }
 
