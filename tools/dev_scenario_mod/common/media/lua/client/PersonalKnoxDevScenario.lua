@@ -42,7 +42,9 @@ end
 Events.OnTickEvenPaused.Add(earlyPulse)
 local function inWorld()
     local w=getWorld()
-    if not w or w:getGameMode()~='Sandbox' then return false end
+    if not w then return false end
+    local mode=tostring(w:getGameMode()):lower()
+    if mode~='sandbox' then return false end
     local name=tostring(w:getWorld())
     return name==config.world or (config.nonce and name:find(config.nonce,1,true)~=nil)
 end
@@ -119,7 +121,7 @@ Events.OnGameStart.Add(function()
     local w=getWorld()
     print('[PersonalKnox][dev-scenario] world_check mode='..tostring(w and w:getGameMode())
         ..' name='..tostring(w and w:getWorld())..' expected='..tostring(config.world)
-        ..' match='..tostring(inWorld()))
+        ..' nonce='..tostring(config.nonce)..' match='..tostring(inWorld()))
     if not inWorld() then return end
     local current=read()
     if not current or current.nonce~=config.nonce or current.state~='loading' then return end
