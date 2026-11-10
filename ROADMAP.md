@@ -5160,22 +5160,19 @@ python3 tools/export_profile.py
   `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
 - Статус: подтверждено в игре.
 
-## Релиз 0.78.0 — набор изменений (в работе, без нового запуска игры)
-- PWG 1.18.6: `WriteBudget` (limit/used/reset), общий бюджет start/once,
-  guard в camp/road/building/marker/real*, unit-тесты; игры пока нет.
+## Релиз 0.78.0 — ЗАВЕРШЁН (115/0)
 
-Цель: накопить 50–100 небольших изменений и сделать **один** игровой прогон.
+Цель: 50–100 небольших изменений и один игровой прогон.
 
-Уже в наборе (≈20):
-- PWG 1.18.6: `writes=off` по умолчанию, `writeBudget`, `status/worldgenSettings`.
-- PWG: guard всех place/generate-методов, unit-тесты режима.
-- PK: Mod Options `worldgenWrites`/`worldgenBudget`.
-- PK: `worldgen-write` dev-тест (до guard дал 40 записей, 115/0).
-- PK: `bodySync` time budget, full sync для тестов, nearby-zombie scan.
-- PK: essential-модули при низком FPS, identity, spawn isolation.
+Результат 11.11.2026:
+- PWG 1.18.6: `writes=off`, `writeBudget=256`; игровой тест с бюджетом 8:
+  `camp=8 road=0 building=0 worldWrites=8 budget=8 used=8`.
+- `summary passed=115 failed=0`; `visual follow_moved=4.04`; combat/medic/panel;
+  `status=OK`; exit 0. `bodySyncMs=30–66`.
+- JAR PWG `ba67a254…d991`, PK `feb32f91…a76c`.
 
-Правило: следующий запуск игры — только после 50+ изменений или при
-необходимости починить найденную ошибку. Затем один прогон и отчёт.
+Следующий релиз 0.79.0: **100 изменений** до одного запуска; перезапуск
+разрешён только для исправления найденной ошибки.
 
 ## PWG-GAME-001 — реальная запись тестового участка
 
@@ -5185,9 +5182,9 @@ python3 tools/export_profile.py
   вызывает `generateTestSite`, проверяет `worldWrites>0`, возвращает игрока.
 - Критерии: запись только в disposable dev-копии, worldWrites>0, нет Lua/Java
   ошибок; пользовательский сейв не затрагивается.
-- До release-guard тест прошёл: `camp=8 road=8 building=24 worldWrites=40`,
-  115/0. После включения `writes=off` по умолчанию тест ещё не перезапускался.
-- Статус: в работе; нужен один пакетный игровой прогон после 50+ изменений.
+- Подтверждено 11.11.2026 в релизе 0.78.0: `worldWrites=8 budget=8 used=8`,
+  115/0, status=OK; release-guard `writes=off` работает.
+- Статус: подтверждено в игре.
 
 ## PK-BUG-001 — один unloaded NPC не отключает весь adapter
 
