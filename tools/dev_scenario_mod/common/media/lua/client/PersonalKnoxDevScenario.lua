@@ -222,9 +222,24 @@ Events.OnGameStart.Add(function()
         if not visualStart and nowMs-started>=8000 and testsDone and visualApi
                 and visualApi:ownActive()>=20 then
             local api=visualApi
+            local px,py,pz=player:getX(),player:getY(),player:getZ()
+            local tx,ty=px+5,py
+            local dirs={{5,0},{-5,0},{0,5},{0,-5},{3,3},{-3,3},{3,-3},{-3,-3}}
+            local cell=getCell()
+            local chosen=nil
+            for _,d in ipairs(dirs) do
+                local sq=cell and cell:getGridSquare(px+d[1],py+d[2],pz)
+                if sq and sq:isFree(false) then
+                    tx,ty=px+d[1],py+d[2]
+                    chosen=d
+                    break
+                end
+            end
             local okCmd=pcall(function()
-                api:ownCommandAll("FOLLOW", player:getX()+5, player:getY(), player:getZ())
+                api:ownCommandAll("FOLLOW", tx, ty, pz)
             end)
+            print('[PersonalKnox][visual] target='..tostring(chosen and (chosen[1]..','..chosen[2]) or 'blocked')
+                ..' at='..string.format('%.1f,%.1f',tx,ty))
             visualStart={}
             for i=0,api:ownCount()-1 do
                 local id=api:ownId(i)

@@ -32,6 +32,19 @@ public final class OwnNpcLayerTest {
 
         layer.order("n1", 50, 0);
         assert layer.agent("n1").targetX() == 50;
+        var formation = new OwnNpcLayer();
+        var formationIds = new String[4];
+        for (int i = 0; i < formationIds.length; i++) {
+            formationIds[i] = formation.debugSpawn(i, 0, 0).agentId();
+            formation.order(formationIds[i], OwnNpcOrder.FOLLOW, 20, 20);
+        }
+        formation.followTarget(20, 20);
+        formation.tick(0.01, 32);
+        var targets = new java.util.HashSet<String>();
+        for (var id : formationIds) {
+            targets.add(Math.round(formation.agent(id).targetX()) + "," + Math.round(formation.agent(id).targetY()));
+        }
+        assert targets.size() > 1 : "Follow targets must form a spread, not one pile";
         var healer = new OwnNpcAgent("n4", "own", 0, 0, 0, 0, 0, 2,
                 new NpcState(50, 0.1, 0.1, 0.1, 0.5, false, false, NpcState.Role.GUARD, NpcState.Task.GUARD));
         layer.spawn(healer);

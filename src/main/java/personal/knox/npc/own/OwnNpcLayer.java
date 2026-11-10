@@ -760,8 +760,16 @@ public final class OwnNpcLayer {
             var order = orders.getOrDefault(agent.id(), OwnNpcOrder.HOLD);
             if (order == OwnNpcOrder.FOLLOW) {
                 double followDistance = Math.hypot(followX - agent.x(), followY - agent.y());
+                double targetX = followX, targetY = followY;
+                if (schedule.size() > 1) {
+                    int formationIndex = schedule.indexOf(id);
+                    double angle = 2 * Math.PI * formationIndex / schedule.size();
+                    double radius = 2.0 + 0.8 * (formationIndex % 4);
+                    targetX += Math.cos(angle) * radius;
+                    targetY += Math.sin(angle) * radius;
+                }
                 agent = followDistance > 2.5
-                        ? agent.withTarget(followX, followY)
+                        ? agent.withTarget(targetX, targetY)
                         : agent.withTarget(agent.x(), agent.y());
                 agents.put(agent.id(), agent);
             } else if (order == OwnNpcOrder.HOLD || order == OwnNpcOrder.REST) {
