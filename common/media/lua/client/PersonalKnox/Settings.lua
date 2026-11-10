@@ -30,6 +30,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("npcFinds", "UI_PersonalKnox_NpcFinds", true, "UI_PersonalKnox_NpcFindsHint")
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
+    ensure("worldgenWrites", "UI_PersonalKnox_WorldGenWrites", false, "UI_PersonalKnox_WorldGenWritesHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
     ensure("showStartHint", "UI_PersonalKnox_ShowStartHint", true, "UI_PersonalKnox_ShowStartHintHint")
@@ -40,6 +41,10 @@ if ok and PZAPI and PZAPI.ModOptions then
     if page and not page:getOption("bodyMoveBudget") then
         page:addSlider("bodyMoveBudget", getText("UI_PersonalKnox_BodyMoveBudget"), 2, 32, 2, 8,
             getText("UI_PersonalKnox_BodyMoveBudgetHint"))
+    end
+    if page and not page:getOption("worldgenBudget") then
+        page:addSlider("worldgenBudget", getText("UI_PersonalKnox_WorldGenBudget"), 1, 512, 16, 32,
+            getText("UI_PersonalKnox_WorldGenBudgetHint"))
     end
     if page and not page:getOption("bodySyncBudgetMs") then
         page:addSlider("bodySyncBudgetMs", getText("UI_PersonalKnox_BodySyncBudget"), 2, 50, 2, 8,
@@ -191,6 +196,14 @@ function Settings.npcBandageStock() return value("npcBandageStock", true) end
 function Settings.autoReload() return Settings.reloadMode() == 2 end
 function Settings.npcItemAsks() return value("npcItemAsks", true) end
 function Settings.performanceMode() return value("performanceMode", false) end
+
+function Settings.worldgenWrites() return value("worldgenWrites", false) end
+
+function Settings.worldgenBudget()
+    local option = page and page:getOption("worldgenBudget")
+    local value = option and option:getValue() or 32
+    return type(value) == "number" and math.max(1, math.min(512, value)) or 32
+end
 function Settings.chatterFrequency()
     local option = page and page:getOption("chatterFrequency")
     if not option then return 3 end

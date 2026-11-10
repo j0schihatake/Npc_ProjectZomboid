@@ -597,6 +597,8 @@ function Tests.run(player)
             print("[PersonalKnox][ingame-test] worldgen-write no-free-square")
             return false
         end
+        local settingsBefore = worldgen:worldgenSettings()
+        worldgen:setWritesEnabled(true)
         local ok, result = pcall(function()
             player:setX(target[1])
             player:setY(target[2])
@@ -607,13 +609,16 @@ function Tests.run(player)
             player:setZ(pz)
             return text
         end)
+        worldgen:setWritesEnabled(false)
         if not ok then
             pcall(function() player:setX(px); player:setY(py); player:setZ(pz) end)
             print("[PersonalKnox][ingame-test] worldgen-write error=" .. tostring(result))
             return false
         end
-        print("[PersonalKnox][ingame-test] worldgen-write " .. tostring(result))
-        return tostring(result):find("worldWrites=", 1, true) ~= nil
+        print("[PersonalKnox][ingame-test] worldgen-write " .. tostring(result)
+            .. " default=" .. tostring(settingsBefore))
+        return tostring(settingsBefore):find("writes=off", 1, true) ~= nil
+            and tostring(result):find("worldWrites=", 1, true) ~= nil
             and tostring(result):find("worldWrites=0", 1, true) == nil
     end)
     check("worldgen-registry", function()

@@ -463,6 +463,14 @@ local function applyWeaponSetting()
         pcall(function() api:ownSetFactionChances(Settings.factionRanged(), Settings.factionMelee()) end)
     end
 end
+local function applyWorldGenSettings()
+    if not PersonalWorldGenAPI then return end
+    local api = PersonalWorldGenAPI.getInstance()
+    api:setWritesEnabled(Settings.worldgenWrites())
+    api:setWriteBudget(Settings.worldgenBudget())
+    print("[PersonalKnox][worldgen] " .. tostring(api:worldgenSettings()))
+end
+Events.OnGameStart.Add(applyWorldGenSettings)
 Events.OnGameStart.Add(applyWeaponSetting)
 
 OwnNpcDebug.install()
