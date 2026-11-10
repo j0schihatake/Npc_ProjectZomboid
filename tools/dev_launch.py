@@ -19,7 +19,7 @@ from dev_scenario import choose_save, prepare_scenario, wait_scenario, build_age
 
 ROOT = Path(__file__).resolve().parents[1]
 GAME = Path('/home/j0schi/SteamLibrary/steamapps/common/ProjectZomboid')
-MINIMAL = ['ZombieBuddy','Viewpoint','KnoxEventExpandedNpc','KnoxEventExpandedNpcRU','PersonalKnox']
+MINIMAL = ['ZombieBuddy','Viewpoint','PersonalKnox']
 MARKER = 'PersonalKnoxDevLauncher1'
 
 
