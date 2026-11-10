@@ -468,6 +468,9 @@ local function applyWorldGenSettings()
     local api = PersonalWorldGenAPI.getInstance()
     api:setWritesEnabled(Settings.worldgenWrites())
     api:setWriteBudget(Settings.worldgenBudget())
+    if PersonalKnoxAPI then
+        PersonalKnoxAPI.getInstance():ownSetIdentityRussianFirst(Settings.identityRussianFirst())
+    end
     print("[PersonalKnox][worldgen] " .. tostring(api:worldgenSettings()))
 end
 Events.OnGameStart.Add(applyWorldGenSettings)

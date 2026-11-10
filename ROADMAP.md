@@ -5174,6 +5174,15 @@ python3 tools/export_profile.py
 Следующий релиз 0.79.0: **100 изменений** до одного запуска; перезапуск
 разрешён только для исправления найденной ошибки.
 
+### 0.79.0 — в работе (≈60/100, игры пока нет)
+
+- PWG: `WriteBudget.remaining/reset`, `remaining` в статусе и результатах.
+- PWG: unit-тесты remaining/reset и бюджета.
+- PK: Russian-first генерация имён (60% RU), API и unit-тест.
+- PK: Mod Options `identityRussianFirst`, применение в Client.
+- PK: `worldgenWrites`/`worldgenBudget` и guard уже в 0.78.0.
+- Следующие 40: PWG protected-write guard, PK Java-миграция и тесты.
+
 ## PWG-GAME-001 — реальная запись тестового участка
 
 - Причина: `worldgen-plan` подтверждал только данные; реальные camp/road/
@@ -5281,6 +5290,17 @@ python3 tools/export_profile.py
 - Критерии: количество тел не превышает лимит, население не теряется.
 - Подтверждено 11.11.2026: `bodies=21` при лимите 24, 114/0, status OK.
 - Статус: подтверждено в игре.
+
+## PK-ID-002 — Russian-first имена NPC
+
+- Причина: пользователь просил больше русских имён; случайный выбор 7 культур
+  даёт только ~1/7 русских.
+- Реализация: `NpcIdentityDatabase.generate(id, preferRussian)` (60% RU),
+  API `ownSetIdentityRussianFirst`, Mod Options `identityRussianFirst`.
+- Критерии: детерминизм сохраняется, доля RU ≥ 120/300, сохранённые личности
+  не меняются.
+- Unit-тест PASS; игровой прогон — в пакете 0.79.0.
+- Статус: код готов, игра ожидает пакет.
 
 ## PK-ID-001 — случайная личность собственного NPC
 

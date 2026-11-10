@@ -4,6 +4,8 @@
   "UI_PersonalKnox_ShowStartHint": "Show control hint",
   "UI_PersonalKnox_ActiveBodyLimit": "Active NPC bodies per group",
   "UI_PersonalKnox_WorldGenWrites": "Allow WorldGen writes",
+  "UI_PersonalKnox_IdentityRussianFirst": "Russian-first NPC names",
+  "UI_PersonalKnox_IdentityRussianFirstHint": "60% Russian names, otherwise mixed",
   "UI_PersonalKnox_WorldGenWritesHint": "Off by default; writes only in a disposable test world",
   "UI_PersonalKnox_WorldGenBudget": "WorldGen write budget",
   "UI_PersonalKnox_WorldGenBudgetHint": "Maximum objects per explicit write",

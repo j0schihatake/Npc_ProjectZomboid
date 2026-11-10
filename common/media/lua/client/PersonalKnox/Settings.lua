@@ -31,6 +31,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("npcVoices", "UI_PersonalKnox_NpcVoices", true, "UI_PersonalKnox_NpcVoicesHint")
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("worldgenWrites", "UI_PersonalKnox_WorldGenWrites", false, "UI_PersonalKnox_WorldGenWritesHint")
+    ensure("identityRussianFirst", "UI_PersonalKnox_IdentityRussianFirst", false, "UI_PersonalKnox_IdentityRussianFirstHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
     ensure("showStartHint", "UI_PersonalKnox_ShowStartHint", true, "UI_PersonalKnox_ShowStartHintHint")
@@ -198,6 +199,8 @@ function Settings.npcItemAsks() return value("npcItemAsks", true) end
 function Settings.performanceMode() return value("performanceMode", false) end
 
 function Settings.worldgenWrites() return value("worldgenWrites", false) end
+
+function Settings.identityRussianFirst() return value("identityRussianFirst", false) end
 
 function Settings.worldgenBudget()
     local option = page and page:getOption("worldgenBudget")

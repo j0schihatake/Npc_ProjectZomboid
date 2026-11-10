@@ -33,6 +33,7 @@ public final class OwnNpcBodyAdapter {
     private int moveSkip;
     private int syncBudgetMs = 8;
     private int syncCursor;
+    private boolean preferRussianNames = false;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
 
@@ -200,6 +201,7 @@ public final class OwnNpcBodyAdapter {
     public int count() { return bodies.size(); }
     public void setMoveBudget(int value) { moveBudget = Math.max(1, Math.min(64, value)); }
     public void setSyncBudgetMs(int value) { syncBudgetMs = Math.max(2, Math.min(50, value)); }
+    public void setPreferRussianNames(boolean value) { preferRussianNames = value; }
     public String nearbyObstacle(String id) {
         Object body = bodies.get(id);
         if (body == null) return "";
@@ -987,7 +989,7 @@ public final class OwnNpcBodyAdapter {
         Class<?> playerClass = Class.forName("zombie.characters.IsoPlayer");
         Class<?> factory = Class.forName("zombie.characters.SurvivorFactory");
         Object desc = factory.getMethod("CreateSurvivor").invoke(null);
-        var identity = identities.computeIfAbsent(id, NpcIdentityDatabase::generate);
+        var identity = identities.computeIfAbsent(id, key -> NpcIdentityDatabase.generate(key, preferRussianNames));
         applyIdentity(desc, identity);
         Constructor<?> ctor = null;
         for (var candidate : OwnNpcBodyType.forBase(playerClass).getConstructors()) {

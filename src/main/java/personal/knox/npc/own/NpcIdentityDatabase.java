@@ -69,15 +69,20 @@ public final class NpcIdentityDatabase {
 
     private NpcIdentityDatabase() {}
 
-    public static NpcIdentity generate(String id) {
+    public static NpcIdentity generate(String id) { return generate(id, false); }
+
+    public static NpcIdentity generate(String id, boolean preferRussian) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("Missing id");
         long seed = id.hashCode() * 0x9E3779B97F4A7C15L + id.length() * 0x100000001B3L;
-        return generate(seed);
+        return generate(seed, preferRussian);
     }
 
-    public static NpcIdentity generate(long seed) {
+    public static NpcIdentity generate(long seed) { return generate(seed, false); }
+
+    public static NpcIdentity generate(long seed, boolean preferRussian) {
         var random = new SplittableRandom(seed);
-        var pool = POOLS.get(random.nextInt(POOLS.size()));
+        var pool = preferRussian && random.nextInt(100) < 60
+                ? POOLS.get(0) : POOLS.get(random.nextInt(POOLS.size()));
         boolean female = random.nextBoolean();
         var names = female ? pool.female() : pool.male();
         var surnames = female ? pool.femaleSurnames() : pool.maleSurnames();

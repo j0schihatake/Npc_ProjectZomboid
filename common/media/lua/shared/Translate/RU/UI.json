@@ -13,6 +13,8 @@
   "UI_PersonalKnox_ShowStartHint": "Показывать подсказку управления",
   "UI_PersonalKnox_ActiveBodyLimit": "Активных тел NPC на группу",
   "UI_PersonalKnox_WorldGenWrites": "Разрешить запись WorldGen",
+  "UI_PersonalKnox_IdentityRussianFirst": "Русские имена NPC в приоритете",
+  "UI_PersonalKnox_IdentityRussianFirstHint": "60% русских имён, остальные — смешанные",
   "UI_PersonalKnox_WorldGenWritesHint": "По умолчанию выключено; только в тестовом мире",
   "UI_PersonalKnox_WorldGenBudget": "Бюджет записи WorldGen",
   "UI_PersonalKnox_WorldGenBudgetHint": "Максимум объектов на одну явную запись",

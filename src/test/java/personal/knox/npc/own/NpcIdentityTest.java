@@ -27,6 +27,11 @@ public final class NpcIdentityTest {
         for (var entry : namesByCulture.entrySet()) {
             assert entry.getValue().size() >= 32 : "Each culture needs many forenames: " + entry.getKey();
         }
+        int russian = 0;
+        for (int i = 0; i < 300; i++) {
+            if ("ru".equals(NpcIdentityDatabase.generate("ru-first#" + i, true).culture())) russian++;
+        }
+        assert russian >= 120 : "Russian-first must select Russian names often";
         var adapter = new OwnNpcBodyAdapter();
         var sample = NpcIdentityDatabase.generate("persist#1");
         assert adapter.restoreIdentities("persist#1|" + sample.csv()) == 1;
