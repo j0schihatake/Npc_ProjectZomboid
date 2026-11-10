@@ -22,6 +22,11 @@ public final class NpcIdentityTest {
         assert cultures.contains("ru") && cultures.stream().anyMatch(c -> !c.equals("ru"))
                 : "Both Russian and international names must be present";
         assert NpcIdentityDatabase.cultures().size() >= 5;
+        var adapter = new OwnNpcBodyAdapter();
+        var sample = NpcIdentityDatabase.generate("persist#1");
+        assert adapter.restoreIdentities("persist#1|" + sample.csv()) == 1;
+        assert sample.equals(adapter.identity("persist#1")) : "Identity must survive adapter snapshot";
+        assert adapter.identitySnapshot().contains("persist#1|") : "Snapshot must contain the id";
         try { NpcIdentity.parse("bad"); throw new AssertionError("Bad identity accepted"); }
         catch (IllegalArgumentException expected) { }
         System.out.println("NPC identity tests passed: deterministic names, RU/international pools, professions, skills and CSV.");
