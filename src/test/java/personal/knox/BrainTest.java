@@ -140,6 +140,7 @@ public final class BrainTest {
         personal.knox.npc.own.OwnNpcSpawnerTest.run();
         personal.knox.npc.own.NpcIdentityTest.run();
         personal.knox.npc.ZombiePathPolicyTest.run();
+        try { personal.knox.db.ModDatabaseTest.run(); } catch (Exception e) { throw new RuntimeException(e); }
         personal.knox.economy.ResourceBagTest.run();
         SurrenderPolicyTest.run();
         BetrayalRiskTest.run();

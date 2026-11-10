@@ -21,6 +21,7 @@ public final class PersonalKnoxAPI {
     private final personal.knox.npc.own.OwnNpcLayer ownLayer = new personal.knox.npc.own.OwnNpcLayer();
     private final personal.knox.npc.own.OwnNpcBodyAdapter ownBodies = new personal.knox.npc.own.OwnNpcBodyAdapter();
     private final personal.knox.npc.ZombiePathPolicy zombiePath = new personal.knox.npc.ZombiePathPolicy();
+    private final personal.knox.db.ModDatabase database = personal.knox.db.ModDatabase.getInstance();
 
     public void ownGroup(String id, String faction, int members, double x, double y) {
         int effective = members;
@@ -87,6 +88,12 @@ public final class PersonalKnoxAPI {
             catch (Throwable ignored2) { }
         }
     }
+
+    public String dbSetting(String key, String fallback) { return database.getSetting(key, fallback); }
+    public void dbSetSetting(String key, String value) { database.setSetting(key, value); }
+    public String dbSettings() { return database.allSettings(); }
+    public String dbData(String kind, String id, String fallback) { return database.getData(kind, id, fallback); }
+    public void dbPutData(String kind, String id, String value) { database.putData(kind, id, value); }
 
     public void zombiePathMode(String mode) { zombiePath.setMode(mode); }
     public String zombieRetarget(Object zombie) {
