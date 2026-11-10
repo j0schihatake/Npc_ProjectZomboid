@@ -10,6 +10,9 @@ public final class OwnNpcLayerTest {
         assert spawnLayer.agent(first).x()==10.5 && spawnLayer.agent(first).z()==2;
         spawnLayer.remove(first);
         String replacement=spawnLayer.debugSpawn(12.5,20.5,2).agentId();
+        spawnLayer.profession(first, "DOCTOR,FARMER");
+        assert "DOCTOR".equals(spawnLayer.profession(first)) : "Primary profession must be first";
+        assert "DOCTOR,FARMER".equals(spawnLayer.professions(first)) : "Multi-professions must be kept";
         assert !replacement.equals(second) && spawnLayer.count()==2 : "Deleting a body must not cause duplicate IDs";
 
         var layer = new OwnNpcLayer();

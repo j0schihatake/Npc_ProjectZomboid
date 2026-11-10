@@ -13,6 +13,11 @@ end
 function OwnNpcPanel:createChildren()
     ISCollapsableWindow.createChildren(self)
     self:addChild(ISLabel:new(10, 8, 20, "Squad", 1, 1, 1, 1, UIFont.Medium, false))
+    local base = ISButton:new(self.width - 80, 8, 64, 20, "Base", self, function()
+        local panel = require "PersonalKnox/OwnNpcBasePanel"
+        panel.toggle(self.player)
+    end)
+    base:initialise(); self:addChild(base)
     local a = api()
     if not a then return end
     self.rowLabels = {}
@@ -20,7 +25,9 @@ function OwnNpcPanel:createChildren()
     for i = 0, a:ownCount() - 1 do
         local id = a:ownId(i)
         if id and id ~= "" then
-            local label = ISLabel:new(10, y, 20, tostring(a:ownSummary(id)), 1, 1, 1, 1, UIFont.Small, false)
+            local identity = tostring(a:ownIdentity(id))
+            if identity == "" then identity = id end
+            local label = ISLabel:new(10, y, 20, identity, 1, 1, 1, 1, UIFont.Small, false)
             self:addChild(label)
             self.rowLabels[id] = label
             local x = self.width - 300
@@ -60,8 +67,8 @@ function OwnNpcPanel:update()
     local a = api()
     if not a or not self.rowLabels then return end
     for id, label in pairs(self.rowLabels) do
-        local summary = a:ownSummary(id)
-        if summary and summary ~= "" then label:setName(summary) end
+        local identity = a:ownIdentity(id)
+        if identity and identity ~= "" then label:setName(identity) end
     end
 end
 
@@ -85,7 +92,7 @@ function OwnNpcPanel.toggle(player)
         return
     end
     local screenWidth = getCore():getScreenWidth()
-    local panel = OwnNpcPanel:new(screenWidth - 600, 100, 560, 120)
+    local panel = OwnNpcPanel:new(screenWidth - 780, 100, 740, 120)
     panel.player = player
     panel:setTitle("Squad")
     panel:setResizable(false)

@@ -188,6 +188,7 @@ public final class OwnNpcLayer {
 
     private final java.util.Map<String, double[]> groupMissions = new java.util.HashMap<>();
     private final java.util.Map<String, String> professions = new java.util.HashMap<>();
+    private final java.util.Map<String, java.util.LinkedHashSet<String>> professionSets = new java.util.HashMap<>();
     private int baseFood = 0;
     private int baseMeals = 0;
     private int baseWater = 0;
@@ -243,8 +244,8 @@ public final class OwnNpcLayer {
             out.append("bp=").append(blueprint.width()).append(',').append(blueprint.height())
                     .append(',').append(blueprint.done()).append(',').append(blueprint.work()).append(';');
         }
-        for (var entry : professions.entrySet())
-            out.append("prof=").append(entry.getKey()).append(':').append(entry.getValue()).append(';');
+        for (var entry : professionSets.entrySet())
+            out.append("prof=").append(entry.getKey()).append(':').append(String.join(",", entry.getValue())).append(';');
         return out.toString();
     }
 
@@ -675,10 +676,25 @@ public final class OwnNpcLayer {
 
     public void profession(String id, String value) {
         if (agent(id) == null || value == null || value.isBlank()) return;
-        professions.put(id, value.trim().toUpperCase(java.util.Locale.ROOT));
+        var parts = value.trim().toUpperCase(java.util.Locale.ROOT).split(",");
+        var set = new java.util.LinkedHashSet<String>();
+        for (var part : parts) if (!part.isBlank()) set.add(part.trim());
+        if (set.isEmpty()) return;
+        professions.put(id, set.iterator().next());
+        professionSets.put(id, set);
     }
 
     public String profession(String id) { return professions.getOrDefault(id, "NONE"); }
+
+    public String professions(String id) {
+        var set = professionSets.get(id);
+        return set == null || set.isEmpty() ? profession(id) : String.join(",", set);
+    }
+
+    public String assignProfessions(String id, String csv) {
+        profession(id, csv);
+        return professions(id);
+    }
 
     public void groupMission(String groupId, double x, double y, double z) {
         groupMissions.put(groupId, new double[]{x, y, z});
