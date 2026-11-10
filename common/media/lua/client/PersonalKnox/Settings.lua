@@ -1,6 +1,41 @@
 -- Native B42 options; no polling, extra dependency or writes outside Apply.
 local Settings = {}
 local page
+
+local DB_KEYS = {"speech","diagnostics","autoMedic","autoDrink","autoEat","infiniteDurability","autoUnstick","careSearchBags","npcSearchContainers","npcBandageStock","npcStock","npcFinds","npcVoices","performanceMode","worldgenWrites","identityRussianFirst","zombieAttackOwnNpc","npcItemAsks","openSquad","showStartHint","matchPlayerClothes","inGameTests","activeBodyLimit","bodyMoveBudget","bodySyncBudgetMs","worldgenBudget","worldgenProtection","zombiePathMode","ammoMode","reloadMode","ammoWeight","squadWindowKey","baseWindowKey","factionCount","factionMembers","factionSupplies","outpostGarrison","outpostSupplies","factionDistance","factionRanged","factionMelee","companionCount","raidMax","raidFrequency","raidIntervalMinutes","npcNeedRate","helpFrequency"}
+
+local function dbApi()
+    return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() or nil
+end
+
+local function loadDbSettings()
+    local api = dbApi()
+    if not api or not page then return end
+    local ok, text = pcall(function() return api:dbSettings() end)
+    if not ok or not text then return end
+    for line in tostring(text):gmatch("[^\n]+") do
+        local key, value = line:match("^([^\t]+)\t(.+)$")
+        local option = key and page:getOption(key)
+        if option then
+            local current = option:getValue()
+            local parsed = value
+            if type(current) == "boolean" then parsed = value == "true"
+            elseif type(current) == "number" then parsed = tonumber(value) or current end
+            pcall(function() option:setValue(parsed) end)
+        end
+    end
+end
+
+local function saveDbSettings()
+    local api = dbApi()
+    if not api or not page then return end
+    for _, key in ipairs(DB_KEYS) do
+        local option = page:getOption(key)
+        if option then
+            pcall(function() api:dbSetSetting(key, tostring(option:getValue())) end)
+        end
+    end
+end
 local ok = pcall(require, "PZAPI/ModOptions")
 if ok and PZAPI and PZAPI.ModOptions then
     page = PZAPI.ModOptions:getOptions("PersonalKnox")
@@ -506,3 +541,12 @@ function Settings.baseRule(key)
 end
 
 return Settings
+
+if page then
+    local previousApply = page.apply
+    function page:apply()
+        if previousApply then previousApply(self) end
+        saveDbSettings()
+    end
+    loadDbSettings()
+end
