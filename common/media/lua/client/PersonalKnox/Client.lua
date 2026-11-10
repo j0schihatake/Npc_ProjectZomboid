@@ -476,6 +476,8 @@ end
 Events.OnGameStart.Add(applyWorldGenSettings)
 Events.OnGameStart.Add(applyWeaponSetting)
 
+local Keybinds = require "PersonalKnox/Keybinds"
+Keybinds.install()
 OwnNpcDebug.install()
 TextFix.install()
 Events.OnGameStart.Add(function()

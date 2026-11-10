@@ -34,6 +34,14 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("identityRussianFirst", "UI_PersonalKnox_IdentityRussianFirst", false, "UI_PersonalKnox_IdentityRussianFirstHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
+    if page and not page:getOption("squadWindowKey") then
+        page:addKeyBind("squadWindowKey", getText("UI_PersonalKnox_SquadWindowKey"),
+            Keyboard.KEY_INSERT, getText("UI_PersonalKnox_SquadWindowKeyHint"))
+    end
+    if page and not page:getOption("baseWindowKey") then
+        page:addKeyBind("baseWindowKey", getText("UI_PersonalKnox_BaseWindowKey"),
+            Keyboard.KEY_DELETE, getText("UI_PersonalKnox_BaseWindowKeyHint"))
+    end
     ensure("showStartHint", "UI_PersonalKnox_ShowStartHint", true, "UI_PersonalKnox_ShowStartHintHint")
     if page and not page:getOption("activeBodyLimit") then
         page:addSlider("activeBodyLimit", getText("UI_PersonalKnox_ActiveBodyLimit"), 4, 64, 4, 24,
@@ -256,6 +264,16 @@ end
 function Settings.openSquad()
     return value("openSquad", true)
 end
+function Settings.squadKey()
+    local option = page and page:getOption("squadWindowKey")
+    return option and option:getValue() or Keyboard.KEY_INSERT
+end
+
+function Settings.baseKey()
+    local option = page and page:getOption("baseWindowKey")
+    return option and option:getValue() or Keyboard.KEY_DELETE
+end
+
 function Settings.factionMembers()
     local option = page and page:getOption("factionMembers")
     if not option then return 3 end
