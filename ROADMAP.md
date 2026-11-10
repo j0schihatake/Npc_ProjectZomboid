@@ -5160,6 +5160,17 @@ python3 tools/export_profile.py
   `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
 - Статус: подтверждено в игре.
 
+## PK-BUG-001 — один unloaded NPC не отключает весь adapter
+
+- Симптом: `Own body adapter unavailable: NPC spawn square is not loaded`
+  для дальней группы → `bodies=0` и 28 из 114 проверок FAIL.
+- Причина: исключение `create` для одного тела попадало в общий catch `sync`
+  и выставляло `unavailable=true` для всех.
+- Реализация: spawn обёрнут в отдельный try/catch; проблемный NPC пропускается
+  до следующего синка, остальные тела работают.
+- Подтверждено 11.11.2026: 86/28 → 114/0, status=OK, exit 0.
+- Статус: подтверждено в игре.
+
 ## PK-PERF-005 — не сканировать всех зомби на карте
 
 - Причина: `zombieSnapshot(cell)` каждый синк обходил весь `getZombieList`
@@ -5168,7 +5179,9 @@ python3 tools/export_profile.py
 - Реализация: для runtime-синка список ограничен радиусом 40 вокруг игрока;
   отладочный `ownDebugAttack` по-прежнему может использовать полный список.
 - Критерии: `bodySyncMs`/аллокации ниже, атака ближних зомби не меняется.
-- Статус: в работе.
+- Подтверждено 11.11.2026: при 36 телах `bodySyncMs=50–72` (было 83–342),
+  но `follow_moved=1.45`; визуальный follow в этом прогоне ниже порога.
+- Статус: частично; нужен повторный follow-тест без боя.
 
 ## PK-PERF-004 — низкий FPS не должен отключать медицину/снабжение
 
@@ -5466,6 +5479,15 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №12 — restore 45 NPC
 ## Игровая проверка 11.11.2026 №13 — чистый restore-follow
 ## Игровая проверка 11.11.2026 №14 — essential-модули при FPS 8
+## Игровая проверка 11.11.2026 №15 — spawn isolation и nearby zombies
+
+- Мир: `PersonalKnox-scenario-64b9a59aecd983f90edabc14f4982c85`.
+- До фикса: 86/28 из-за одного unloaded NPC; после: `114/0`.
+- `status=OK`, exit code 0.
+- `bodySyncMs=50–72` при 36 телах; `follow_moved=1.45` — ниже порога,
+  сцена была с зомби/боем.
+- JAR: PersonalKnox `fb418d67…4dce`.
+
 
 - Мир: `PersonalKnox-scenario-2f78343b274bb8e17dbf491ab6fe4010`.
 - FPS: 52 → 8, `performance=false`.
