@@ -27,7 +27,7 @@ local function poll(player, roster, isMember)
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
-    if Perf.skip() then return end
+    if Perf.essentialSkip() then return end
     for _, npc in ipairs(roster(player)) do
         local body = npc:getWorldObject()
         if body and not body:isDead() and isMember(player, npc) and follows(npc) and not busy(body) then

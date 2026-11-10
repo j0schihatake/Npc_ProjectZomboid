@@ -29,7 +29,7 @@ local function tick()
     local now = getTimestampMs()
     if now - last < INTERVAL_MS then return end
     last = now
-    if Perf.skip() then return end
+    if Perf.essentialSkip() then return end
     local api = PersonalKnoxAPI.getInstance()
     local seen = {}
     for i = 0, api:ownCount() - 1 do

@@ -6,7 +6,7 @@ local INTERVAL_MS, MAX_NPCS = 5000, 2
 local lastCheck, deps = 0, nil
 
 local function poll(player)
-    if isClient() or not deps or Perf.skip() or not Settings.infiniteMagazine() then return end
+    if isClient() or not deps or Perf.essentialSkip() or not Settings.infiniteMagazine() then return end
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now

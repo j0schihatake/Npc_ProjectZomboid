@@ -5160,6 +5160,16 @@ python3 tools/export_profile.py
   `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
 - Статус: подтверждено в игре.
 
+## PK-PERF-004 — низкий FPS не должен отключать медицину/снабжение
+
+- Причина: `Perf.skip()` при FPS<25 отключал не только фоновый шум, но и
+  NpcMedic/NpcCare/Reload/Stock/Finds/Upkeep/OwnNpcMedic/Stuck.
+- Реализация: `Perf.essentialSkip()` (только явный performanceMode); essential
+  модули переведены на него; chatter/negotiation остаются на `Perf.skip()`.
+- Критерии: при FPS<25 медик, уход, перезарядка и снабжение продолжают работать;
+  performanceMode по-прежнему отключает всё.
+- Статус: в работе.
+
 ## PK-PERF-003 — низкий FPS не должен замораживать NPC
 
 - Причина: `OwnNpc.tick` вызывал `Perf.skip()`, а `Perf.skip` истинен при FPS<25.

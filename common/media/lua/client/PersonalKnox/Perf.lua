@@ -11,6 +11,12 @@ function Perf.skip()
     return Settings.performanceMode() or Perf.lowFps()
 end
 
+-- Essential survival/medical loops must not freeze at low FPS; only explicit
+-- performance mode disables them. Background chatter keeps Perf.skip().
+function Perf.essentialSkip()
+    return Settings.performanceMode()
+end
+
 function Perf.install()
     local last = 0
     Events.OnPlayerUpdate.Add(function()

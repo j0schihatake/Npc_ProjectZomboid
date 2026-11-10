@@ -7,7 +7,7 @@ local INTERVAL_MS = 1000
 local lastCheck = 0
 
 local function poll(player)
-    if isClient() or Perf.skip() or Settings.infiniteMagazine() or not Settings.autoReload() then return end
+    if isClient() or Perf.essentialSkip() or Settings.infiniteMagazine() or not Settings.autoReload() then return end
     local now = getTimestampMs()
     if now - lastCheck < INTERVAL_MS then return end
     lastCheck = now
