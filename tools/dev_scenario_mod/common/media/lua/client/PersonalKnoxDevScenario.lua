@@ -61,9 +61,39 @@ if config.state=='armed' then
             result('FAIL','menu_blocked');return
         end
         state('loading')
-        local ok=pcall(MainScreen.continueLatestSave,'Sandbox',config.world)
-        if not ok then result('FAIL','load_failed')
-        elseif MainScreen.instance.checkSavefileModal then result('FAIL','save_validation_blocked') end
+        local ok=pcall(function()
+            getWorld():setGameMode(GameMode.SANDBOX)
+            getWorld():setWorld(config.world)
+            MainScreen.instance:setDefaultSandboxVars()
+            MainScreen.continueLatestSaveAux(false,false)
+        end)
+        if not ok then result('FAIL','load_failed') end
+
+        local procGenPoll
+        procGenPoll=function()
+            if config.state~='loading' then Events.OnRenderTick.Remove(procGenPoll);return end
+            local ui=NpcProcGenWorldMap_instance
+            if not ui then return end
+            local ok,generated=pcall(function()
+                local proc=KnoxEventLoader and KnoxEventLoader.getAPI('procGen')
+                if not proc then return false end
+                if not proc:isGenerated() then
+                    if not ui.controlWindow.procgenStarted then
+                        ui.controlWindow.procgenStarted=true
+                        ui.controlWindow:doGenerate()
+                    end
+                    return false
+                end
+                return true
+            end)
+            if not ok then Events.OnRenderTick.Remove(procGenPoll);result('FAIL','knox_generate_failed');return end
+            if generated then
+                pcall(function() ui:close() end)
+                Events.OnRenderTick.Remove(procGenPoll)
+            end
+        end
+        Events.OnRenderTick.Add(procGenPoll)
+
     end)
 end
 Events.OnGameStart.Add(function()

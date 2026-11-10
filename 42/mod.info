@@ -1,8 +1,8 @@
 name=Personal Knox — наш отряд
 id=PersonalKnox
-modversion=0.76.0
+modversion=0.77.0
 versionMin=42.21
-versionMax=42.21
+versionMax=42.22
 require=\ZombieBuddy
 javaJarFile=media/java/client/PersonalKnox.jar
 javaPkgName=personal.knox

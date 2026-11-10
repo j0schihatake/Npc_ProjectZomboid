@@ -853,6 +853,14 @@ public final class PersonalKnoxAPI {
     public String alifeRadioCall(String faction, int day, int standing) { return alife.radioCall(faction, day, standing); }
     public String alifeSetting(String key, int value) { return alife.setting(key, value); }
     public String alifeSettings() { return alife.settings(); }
+    public String ownAlifeInteraction(int standing) {
+        var r = personal.knox.alife.AlifePlayerInteraction.decide(standing, true, true);
+        return "greeting=" + r.greeting() + " hostile=" + r.hostile()
+                + " trade=" + personal.knox.alife.AlifePlayerInteraction.trade(standing, true)
+                + " help=" + personal.knox.alife.AlifePlayerInteraction.help(standing, true)
+                + " " + personal.knox.alife.AlifePlayerInteraction.tribute(1, 1, 1);
+    }
+
     public String alifeDirector(int seed, int day) { return alife.director(seed, day); }
     public boolean alifeDirectorReady(int day) { return alife.directorReady(day); }
     public void alifeDirectorDay(int day) { alife.directorDay(day); }

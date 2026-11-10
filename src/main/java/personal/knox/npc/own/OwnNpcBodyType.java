@@ -14,7 +14,7 @@ final class OwnNpcBodyType {
     private static final ClassValue<Class<?>> TYPES = new ClassValue<>() {
         @Override protected Class<?> computeValue(Class<?> base) {
             synchronized (OwnNpcBodyType.class) {
-                String name=base.getName()+"$PersonalKnoxNpc";
+                String name="personal.knox.npc.own.generated.PersonalKnoxNpc_"+base.getSimpleName()+"_"+Integer.toHexString(base.getName().hashCode());
                 try {
                     Class<?> existing=Class.forName(name,false,base.getClassLoader());
                     if(existing.getSuperclass()!=base) throw new IllegalStateException("Unexpected NPC body type: "+name);
@@ -26,7 +26,7 @@ final class OwnNpcBodyType {
                             .method(ElementMatchers.named("updateLOS").or(ElementMatchers.named("updateAlpha")))
                             .intercept(StubMethod.INSTANCE)
                             .make()
-                            .load(base.getClassLoader(),ClassLoadingStrategy.Default.INJECTION)
+                            .load(OwnNpcBodyType.class.getClassLoader(),ClassLoadingStrategy.Default.INJECTION)
                             .getLoaded();
                 }
             }

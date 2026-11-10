@@ -417,7 +417,7 @@ function Tests.run(player)
     check("alife-core", function()
         local demo = api:ownAlifeCoreDemo()
         return demo ~= nil and string.find(demo, "winner=", 1, true) ~= nil
-            and string.find(demo, "roster=12", 1, true) ~= nil
+            and string.find(demo, "roster=32", 1, true) ~= nil
     end)
     check("alife-operation", function()
         local result = api:ownAlifeOperation(7)
@@ -475,6 +475,13 @@ function Tests.run(player)
     check("alife-director", function()
         local choice = api:alifeDirector(4, 10)
         return choice ~= nil and string.find(choice, "situation=", 1, true) ~= nil
+    end)
+    check("alife-interaction", function()
+        local good = api:ownAlifeInteraction(60)
+        local bad = api:ownAlifeInteraction(-60)
+        return good ~= nil and bad ~= nil
+            and string.find(good, "hostile=false", 1, true) ~= nil
+            and string.find(bad, "hostile=true", 1, true) ~= nil
     end)
     check("base-defense-plan", function()
         local plan = api:ownBaseDefensePlan(4, 6, 2)
