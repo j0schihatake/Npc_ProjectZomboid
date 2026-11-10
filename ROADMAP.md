@@ -5198,6 +5198,19 @@ python3 tools/export_profile.py
   показывают движение более 2 клеток. Бой/меню/лечение/Viewpoint ещё нет.
 - Статус: follow подтверждён; остальное запланировано.
 
+## Дефект 0.77.17 — обычный запуск падает на DGVViewpointEyes
+
+- Симптом: `/home/j0schi/Zomboid/console.txt` 22:29, `LuaManager.init` →
+  `NoClassDefFoundError: zombie/util/list/PZArrayList` при
+  `Exposer.exposeLikeJavaRecursively`.
+- Причина: `dgveyes.DGVEReach` из `DGVViewpointEyes 1.3k` содержит статические
+  `PZArrayList<HitInfo>`; ZombieBuddy пытается экспонировать класс в Lua, и
+  Java 25 classloader не находит `zombie.util.list.PZArrayList`.
+- Наши моды не при чём: в normal-профиле 25 модов, PersonalKnox и
+  PersonalWorldGen в Java-списке отсутствуют. Dev-профиль (5 модов) не грузит DGV.
+- Обход: отключить `DGVViewpointEyes` или обновить его; скрипты запуска не менять.
+- Статус: внешний конфликт, не код PersonalKnox.
+
 ## Дефект 0.77.15 — own-medic тест зависел от дистанции спавна
 
 - Симптом: прогон 19:29 с `worldgen-registry` — `passed=110 failed=2`;
