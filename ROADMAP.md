@@ -5220,9 +5220,8 @@ python3 tools/export_profile.py
   X-сессии/машины и закрытие лишних GPU-приложений.
 - Новый JAR PersonalWorldGen 1.18.0 в этом прогоне загрузился: `Java core 1.18.0
   loaded`; проверка `worldgen-registry` не выполнена.
-- 11.11.2026 20:00: добавлена проверка `worldgen-plan`, но прогон снова завершился
-  на загрузке моделей/анимаций до мира. `112/0` остаётся последним подтверждённым;
-  `worldgen-plan` ожидает следующего чистого GPU-прогона.
+- 11.11.2026 20:04: прогон дошёл до мира; `PASS worldgen-plan`, `summary passed=113
+  failed=0`, `status=OK`, exit code 0. Предыдущие падения были средовыми.
 - Связанный коммит: не требуется.
 
 ## Дефект 0.77.11 — сценарий не стартовал, хотя тесты PersonalKnox прошли
@@ -5261,6 +5260,15 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №3 — OwnNpcMedic, 110/0
 ## Игровая проверка 11.11.2026 №4 — полевая шина, 111/0
 ## Игровая проверка 11.11.2026 №5 — 112/0 и WorldGen 1.18.1
+## Игровая проверка 11.11.2026 №6 — 113/0, планирование WorldGen
+
+- Мир: `PersonalKnox-scenario-5e57d937f5418d30e95f42341595e59f`.
+- `PASS worldgen-plan`:
+  `x=7999 y=11765 campOps=8 protected=false worldWrites=0`.
+- `summary passed=113 failed=0`; `status=OK`; exit code 0.
+- JAR: PersonalKnox `7522099c…9495d`, PersonalWorldGen `62416030…4ed2f`.
+- Это подтверждает `planNearPlayer` на реальном мире без записи в мир.
+
 
 - Мир: `PersonalKnox-scenario-9c92216946a5f190f38505b6dda49392`.
 - `PASS own-medic-splint`; `[own-medic] splint id=debug#5 item=Base.Splint distance=0`.
