@@ -5160,6 +5160,21 @@ python3 tools/export_profile.py
   `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
 - Статус: подтверждено в игре.
 
+## Релиз 0.78.0 — набор изменений (в работе, без нового запуска игры)
+
+Цель: накопить 50–100 небольших изменений и сделать **один** игровой прогон.
+
+Уже в наборе (≈20):
+- PWG 1.18.6: `writes=off` по умолчанию, `writeBudget`, `status/worldgenSettings`.
+- PWG: guard всех place/generate-методов, unit-тесты режима.
+- PK: Mod Options `worldgenWrites`/`worldgenBudget`.
+- PK: `worldgen-write` dev-тест (до guard дал 40 записей, 115/0).
+- PK: `bodySync` time budget, full sync для тестов, nearby-zombie scan.
+- PK: essential-модули при низком FPS, identity, spawn isolation.
+
+Правило: следующий запуск игры — только после 50+ изменений или при
+необходимости починить найденную ошибку. Затем один прогон и отчёт.
+
 ## PWG-GAME-001 — реальная запись тестового участка
 
 - Причина: `worldgen-plan` подтверждал только данные; реальные camp/road/
