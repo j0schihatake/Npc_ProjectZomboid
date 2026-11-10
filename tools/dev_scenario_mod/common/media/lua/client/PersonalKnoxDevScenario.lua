@@ -248,6 +248,20 @@ Events.OnGameStart.Add(function()
                 end
             end
             print('[PersonalKnox][visual] follow_moved='..string.format('%.2f',moved))
+            local combatId=api:ownId(0)
+            local okCombat,combatErr=pcall(function()
+                local spawned=api:ownDebugZombie(combatId)
+                local before=api:ownDebugZombieHealth()
+                local attack=api:ownDebugAttack(combatId)
+                local after=api:ownDebugZombieHealth()
+                print('[PersonalKnox][visual] combat spawned='..tostring(spawned)
+                    ..' before='..tostring(before)..' after='..tostring(after)
+                    ..' attack='..tostring(attack)..' damaged='..tostring(after<before))
+                api:ownDebugZombieClear()
+            end)
+            if not okCombat then
+                print('[PersonalKnox][visual] combat_error='..tostring(combatErr))
+            end
         end
         if testNpc then
             local ok,err=pcall(function()
