@@ -5168,7 +5168,9 @@ python3 tools/export_profile.py
 - Реализация: `Perf.skip` убран из `OwnNpc.tick`; блокирует только явный
   `Settings.performanceMode()`. Низкий FPS замедляет цикл, но не замораживает.
 - Критерии: follow двигается при FPS<25; performanceMode по-прежнему отключает.
-- Статус: в работе.
+- Подтверждено 11.11.2026: FPS падал до 11, но `visual follow_moved=2.09`,
+  combat 100→92, medic=splint, panel_open=true; 114/0, status=OK.
+- Статус: подтверждено в игре; причина заморозки устранена.
 
 ## PK-PERF-002 — не двигать стоящие тела
 
@@ -5437,6 +5439,16 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №7 — 113/0, formation, combat, settlement
 ## Игровая проверка 11.11.2026 №8 — medic и squad panel
 ## Игровая проверка 11.11.2026 №10 — gating bodySync
+## Игровая проверка 11.11.2026 №11 — low-FPS follow restored
+
+- Мир: `PersonalKnox-scenario-7cbe33f4a56bd208177abdde2d570acd`.
+- FPS: 43 в начале, 11 на длинном хвосте (`performance=false`).
+- `visual follow_moved=2.09` при 27 телах — NPC больше не заморожены `Perf.skip`.
+- `combat health=100→92`, `medic=splint`, `panel_open=true`.
+- `summary passed=114 failed=0`; `status=OK`; exit code 0.
+- `bodySyncMs=53–137` при 15–36 телах; `moveMs` 0–28.
+- JAR: PersonalKnox `46342a2e…d064`, PersonalWorldGen 1.18.5.
+
 
 - `identity=Даниил Антонов [Fisherman] ...`, `PASS identity`.
 - `summary passed=114 failed=0`; `status=OK`; exit code 0.
