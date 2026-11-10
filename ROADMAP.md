@@ -5156,7 +5156,9 @@ python3 tools/export_profile.py
 - Причина: тест создавал patient/medic подряд, но не гарантировал, что медик
   окажется в 6 клетках; при большем составе отряда спавн-позиции разъехались.
 - Исправление: тест телепортирует медика в позицию пациента перед `tick`.
-- Статус: исправлено локально, игровой прогон 112 ожидается.
+- Повторный прогон 11.11.2026: `passed=112 failed=0`, оба own-medic PASS,
+  `distance=0`; `status=OK`, exit code 0.
+- Статус: подтверждено в игре.
 
 ## Дефект 0.77.14 — PZ ScriptManager не грузит media/scripts из symlink-мода
 
@@ -5251,6 +5253,18 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №2 — 109 проверок и новый JAR
 ## Игровая проверка 11.11.2026 №3 — OwnNpcMedic, 110/0
 ## Игровая проверка 11.11.2026 №4 — полевая шина, 111/0
+## Игровая проверка 11.11.2026 №5 — 112/0 и WorldGen 1.18.1
+
+- Мир: `PersonalKnox-scenario-9c92216946a5f190f38505b6dda49392`.
+- `PASS own-medic-splint`; `[own-medic] splint id=debug#5 item=Base.Splint distance=0`.
+- `PASS own-medic-field-splint`; `[own-medic] splint id=debug#7 item=field distance=0`.
+- `PASS worldgen-registry` — `PersonalWorldGenAPI.restoreGenerated/generatedRegions` в игре.
+- `summary passed=112 failed=0`; `status=OK`; `scenario_verification.exit_code=0`.
+- JAR: PersonalKnox `7522099c…9495d`, PersonalWorldGen `62416030…4ed2f`
+  (в логе `Java core 1.18.1 loaded`).
+- Причина прошлого `110/2`: медик спавнился дальше 6 клеток; тест теперь ставит его
+  в позицию пациента. Это была флейка теста, не логики лечения.
+
 
 - Мир: `PersonalKnox-scenario-6b499f4aaf30aca1a66dd1af5497cd90`.
 - `PASS own-medic-splint`; `[own-medic] splint id=debug#5 item=Base.Splint distance=1`.
