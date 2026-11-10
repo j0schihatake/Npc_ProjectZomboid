@@ -5168,7 +5168,9 @@ python3 tools/export_profile.py
   модули переведены на него; chatter/negotiation остаются на `Perf.skip()`.
 - Критерии: при FPS<25 медик, уход, перезарядка и снабжение продолжают работать;
   performanceMode по-прежнему отключает всё.
-- Статус: в работе.
+- Подтверждено 11.11.2026 при FPS=8: 114/0, follow 2.29, combat/medic/panel,
+  status=OK. `bodySyncMs=83–342` при 27–36 телах — ещё есть что оптимизировать.
+- Статус: подтверждено в игре.
 
 ## PK-PERF-003 — низкий FPS не должен замораживать NPC
 
@@ -5453,6 +5455,18 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №11 — low-FPS follow restored
 ## Игровая проверка 11.11.2026 №12 — restore 45 NPC
 ## Игровая проверка 11.11.2026 №13 — чистый restore-follow
+## Игровая проверка 11.11.2026 №14 — essential-модули при FPS 8
+
+- Мир: `PersonalKnox-scenario-2f78343b274bb8e17dbf491ab6fe4010`.
+- FPS: 52 → 8, `performance=false`.
+- `zombies_cleared=66`, `follow_moved=2.29`.
+- `combat 100→92`, `medic=splint`, `panel_open=true`.
+- `summary passed=114 failed=0`; `status=OK`; exit code 0.
+- Essential-модули (медик, уход, перезарядка, снабжение, Stuck) больше не
+  отключаются `Perf.skip` при низком FPS.
+- `bodySyncMs=83–342` при 27–36 телах; оптимизация продолжается.
+- JAR: PersonalKnox `46342a2e…d064`, PersonalWorldGen 1.18.5.
+
 
 - Мир: `PersonalKnox-scenario-73c43e4667ec0d042323f57f17b4ebc3`.
 - `npc_restored=45` ID, `bodies=45`.
