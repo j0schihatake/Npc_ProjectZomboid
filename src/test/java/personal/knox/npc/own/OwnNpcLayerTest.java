@@ -54,6 +54,17 @@ public final class OwnNpcLayerTest {
             maxMoved = Math.max(maxMoved, Math.hypot(a.x() - 0, a.y() - 0));
         }
         assert maxMoved > 2 : "Follow formation must actually move agents over ticks";
+        var close = new OwnNpcLayer();
+        var closeIds = new String[2];
+        for (int i = 0; i < closeIds.length; i++) {
+            closeIds[i] = close.debugSpawn(10 + i, 10, 0).agentId();
+            close.order(closeIds[i], OwnNpcOrder.FOLLOW, 10, 10);
+        }
+        close.followTarget(10, 10);
+        close.tick(0.01, 32);
+        assert Math.hypot(close.agent(closeIds[0]).targetX() - 10,
+                close.agent(closeIds[0]).targetY() - 10) > 0.5
+                : "A close follower must still move to its formation slot";
         var healer = new OwnNpcAgent("n4", "own", 0, 0, 0, 0, 0, 2,
                 new NpcState(50, 0.1, 0.1, 0.1, 0.5, false, false, NpcState.Role.GUARD, NpcState.Task.GUARD));
         layer.spawn(healer);
