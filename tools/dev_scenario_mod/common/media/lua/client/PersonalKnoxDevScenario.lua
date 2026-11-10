@@ -243,8 +243,8 @@ Events.OnGameStart.Add(function()
             pcall(function()
                 local zs=cell:getZombieList()
                 local removed=0
-                for i=#zs,1,-1 do
-                    local z=zs[i]
+                for i=zs:size()-1,0,-1 do
+                    local z=zs:get(i)
                     if z and math.hypot(z:getX()-px,z:getY()-py)<=60 then
                         z:removeFromWorld()
                         removed=removed+1
