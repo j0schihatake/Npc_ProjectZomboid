@@ -20,6 +20,7 @@ public final class PersonalKnoxAPI {
     private final personal.knox.npc.own.OwnNpcPopulation ownPopulation = new personal.knox.npc.own.OwnNpcPopulation();
     private final personal.knox.npc.own.OwnNpcLayer ownLayer = new personal.knox.npc.own.OwnNpcLayer();
     private final personal.knox.npc.own.OwnNpcBodyAdapter ownBodies = new personal.knox.npc.own.OwnNpcBodyAdapter();
+    private final personal.knox.npc.ZombiePathPolicy zombiePath = new personal.knox.npc.ZombiePathPolicy();
 
     public void ownGroup(String id, String faction, int members, double x, double y) {
         int effective = members;
@@ -87,7 +88,40 @@ public final class PersonalKnoxAPI {
         }
     }
 
+    public void zombiePathMode(String mode) { zombiePath.setMode(mode); }
+    public String zombieRetarget(Object zombie) {
+        if (zombie == null) return "no-zombie";
+        try {
+            double zx = ((Number) zombie.getClass().getMethod("getX").invoke(zombie)).doubleValue();
+            double zy = ((Number) zombie.getClass().getMethod("getY").invoke(zombie)).doubleValue();
+            double zz = ((Number) zombie.getClass().getMethod("getZ").invoke(zombie)).doubleValue();
+            Object current = zombie.getClass().getMethod("getTarget").invoke(zombie);
+            Object player = Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
+            Object body = ownBodies.nearestBody(zx, zy, zz, 12);
+            if (body == null) return "";
+            if (player != null) {
+                double px = ((Number) player.getClass().getMethod("getX").invoke(player)).doubleValue();
+                double py = ((Number) player.getClass().getMethod("getY").invoke(player)).doubleValue();
+                double playerDistance = Math.hypot(px - zx, py - zy);
+                double bodyDistance = Math.hypot(
+                        ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue() - zx,
+                        ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue() - zy);
+                if (playerDistance + 1.0 < bodyDistance) return "";
+            }
+            if (current == body) return "already";
+            zombie.getClass().getMethod("setTarget", Class.forName("zombie.iso.IsoMovingObject")).invoke(zombie, body);
+            zombie.getClass().getMethod("pathToCharacter", Class.forName("zombie.characters.IsoGameCharacter")).invoke(zombie, body);
+            return "target=" + ownBodies.bodyId(body);
+        } catch (Throwable error) {
+            return "retarget-error=" + error.getClass().getSimpleName();
+        }
+    }
+
+    public String zombiePathStatus() { return zombiePath.status(); }
+    public boolean zombiePathAllows(String id, boolean crawling) { return zombiePath.ropeAllowed(id, crawling); }
+
     public String ownIdentity(String id) { return ownBodies.identitySummary(id); }
+    public String ownBodyId(Object body) { return ownBodies.bodyId(body); }
     public String ownIdentitySnapshot() { return ownBodies.identitySnapshot(); }
     public int ownRestoreIdentities(String snapshot) { return ownBodies.restoreIdentities(snapshot); }
 

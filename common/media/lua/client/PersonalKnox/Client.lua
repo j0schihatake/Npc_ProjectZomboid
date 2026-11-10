@@ -468,6 +468,7 @@ local function applyWorldGenSettings()
     local api = PersonalWorldGenAPI.getInstance()
     api:setWritesEnabled(Settings.worldgenWrites())
     api:setWriteBudget(Settings.worldgenBudget())
+    api:setProtectedPadding(Settings.worldgenProtection())
     if PersonalKnoxAPI then
         PersonalKnoxAPI.getInstance():ownSetIdentityRussianFirst(Settings.identityRussianFirst())
     end
@@ -478,6 +479,10 @@ Events.OnGameStart.Add(applyWeaponSetting)
 
 local Keybinds = require "PersonalKnox/Keybinds"
 Keybinds.install()
+local ZombiePath = require "PersonalKnox/ZombiePath"
+ZombiePath.install()
+local ZombieAggro = require "PersonalKnox/ZombieAggro"
+ZombieAggro.install()
 OwnNpcDebug.install()
 TextFix.install()
 Events.OnGameStart.Add(function()

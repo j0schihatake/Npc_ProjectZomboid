@@ -891,6 +891,29 @@ public final class OwnNpcBodyAdapter {
 
     public NpcIdentity identity(String id) { return id == null ? null : identities.get(id); }
 
+    public String bodyId(Object body) {
+        if (body == null) return "";
+        for (var entry : bodies.entrySet()) if (entry.getValue() == body) return entry.getKey();
+        return "";
+    }
+
+    public Object nearestBody(double x, double y, double z, double radius) {
+        Object best = null;
+        double bestDistance = radius * radius;
+        try {
+            for (var body : bodies.values()) {
+                double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+                double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+                double bz = ((Number) body.getClass().getMethod("getZ").invoke(body)).doubleValue();
+                if (Math.abs(bz - z) > 0.6) continue;
+                double dx = bx - x, dy = by - y;
+                double distance = dx * dx + dy * dy;
+                if (distance < bestDistance) { best = body; bestDistance = distance; }
+            }
+        } catch (Throwable ignored) { }
+        return best;
+    }
+
     public String identitySummary(String id) {
         var value = identity(id);
         return value == null ? "" : value.summary();
@@ -1135,6 +1158,8 @@ public final class OwnNpcBodyAdapter {
                 bodyVisual.getClass().getMethod("setSkinColor", colorType).invoke(bodyVisual, skin);
                 bodyVisual.getClass().getMethod("setHairColor", colorType).invoke(bodyVisual, skin);
                 bodyVisual.getClass().getMethod("setNaturalHairColor", colorType).invoke(bodyVisual, skin);
+                bodyVisual.getClass().getMethod("setBeardColor", colorType).invoke(bodyVisual, skin);
+                bodyVisual.getClass().getMethod("setNaturalBeardColor", colorType).invoke(bodyVisual, skin);
                 System.out.println("[PersonalKnox] Own body clothed and tinted " + id);
                 return;
             }

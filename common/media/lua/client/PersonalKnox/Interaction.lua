@@ -10,8 +10,18 @@ local function nearTarget(player, npc)
     return dx * dx + dy * dy <= 100 and player:CanSee(body)
 end
 
+local function ownBodyId(npc)
+    if not PersonalKnoxAPI or not npc then return "" end
+    local ok, body = pcall(function() return npc:getWorldObject() end)
+    if not ok or not body then return "" end
+    local okId, id = pcall(function() return PersonalKnoxAPI.getInstance():ownBodyId(body) end)
+    return okId and id or ""
+end
+
 local function eligible(player, npc)
-    return PersonalKnoxAPI and nearTarget(player, npc) and deps.isMember(player, npc)
+    if not PersonalKnoxAPI or not nearTarget(player, npc) then return false end
+    local ok, member = pcall(deps.isMember, player, npc)
+    return (ok and member) or ownBodyId(npc) ~= ""
 end
 
 local function popup(player)
@@ -23,12 +33,38 @@ local function popup(player)
     return menu
 end
 
+local function openOwn(menu, player, id)
+    local api = PersonalKnoxAPI.getInstance()
+    menu:addOption(getText("ContextMenu_PersonalKnox_CheckStatus"), player, function(p)
+        p:Say(tostring(api:ownSummary(id)))
+    end)
+    menu:addOption(getText("ContextMenu_PersonalKnox_Squad"), player, function()
+        local panel = require "PersonalKnox/OwnNpcPanel"
+        panel.toggle(player)
+    end)
+    menu:addOption(getText("ContextMenu_PersonalKnox_Base"), player, function()
+        local panel = require "PersonalKnox/OwnNpcBasePanel"
+        panel.toggle(player)
+    end)
+    menu:addOption(getText("ContextMenu_PersonalKnox_Follow"), player, function(p)
+        api:ownOrderMode(id, "FOLLOW", p:getX(), p:getY())
+    end)
+    menu:addOption(getText("ContextMenu_PersonalKnox_Hold"), player, function(p)
+        api:ownOrderMode(id, "HOLD", p:getX(), p:getY())
+    end)
+end
+
 function Interaction.open(player, npc)
     -- Recheck on selection: the target can leave or die while a menu is open.
     if not eligible(player, npc) then return end
     local menu = popup(player)
-    deps.reactions(menu, player)
-    deps.fill(menu, player, npc)
+    local id = ownBodyId(npc)
+    if id ~= "" then
+        openOwn(menu, player, id)
+    else
+        deps.reactions(menu, player)
+        deps.fill(menu, player, npc)
+    end
 end
 
 local function nativeActions(player, npc)

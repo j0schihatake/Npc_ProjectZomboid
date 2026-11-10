@@ -32,6 +32,7 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("performanceMode", "UI_PersonalKnox_PerformanceMode", false, "UI_PersonalKnox_PerformanceModeHint")
     ensure("worldgenWrites", "UI_PersonalKnox_WorldGenWrites", false, "UI_PersonalKnox_WorldGenWritesHint")
     ensure("identityRussianFirst", "UI_PersonalKnox_IdentityRussianFirst", false, "UI_PersonalKnox_IdentityRussianFirstHint")
+    ensure("zombieAttackOwnNpc", "UI_PersonalKnox_ZombieAttackOwnNpc", true, "UI_PersonalKnox_ZombieAttackOwnNpcHint")
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
     if page and not page:getOption("squadWindowKey") then
@@ -54,6 +55,10 @@ if ok and PZAPI and PZAPI.ModOptions then
     if page and not page:getOption("worldgenBudget") then
         page:addSlider("worldgenBudget", getText("UI_PersonalKnox_WorldGenBudget"), 1, 512, 16, 32,
             getText("UI_PersonalKnox_WorldGenBudgetHint"))
+    end
+    if page and not page:getOption("worldgenProtection") then
+        page:addSlider("worldgenProtection", getText("UI_PersonalKnox_WorldGenProtection"), 0, 16, 1, 0,
+            getText("UI_PersonalKnox_WorldGenProtectionHint"))
     end
     if page and not page:getOption("bodySyncBudgetMs") then
         page:addSlider("bodySyncBudgetMs", getText("UI_PersonalKnox_BodySyncBudget"), 2, 50, 2, 8,
@@ -82,6 +87,13 @@ if ok and PZAPI and PZAPI.ModOptions then
         combo:addItem("UI_PersonalKnox_AmmoWeightZero")
         combo:addItem("UI_PersonalKnox_AmmoWeightHalf")
         combo:addItem("UI_PersonalKnox_AmmoWeightFull", true)
+    end
+    if page and not page:getOption("zombiePathMode") then
+        local combo = page:addComboBox("zombiePathMode", getText("UI_PersonalKnox_ZombiePathMode"),
+            getText("UI_PersonalKnox_ZombiePathModeHint"))
+        combo:addItem("UI_PersonalKnox_ZombiePathNoRope", true)
+        combo:addItem("UI_PersonalKnox_ZombiePathWithRope")
+        combo:addItem("UI_PersonalKnox_ZombiePathRandom")
     end
     if page and not page:getOption("factionDistance") then
         page:addSlider("factionDistance", getText("UI_PersonalKnox_FactionDistance"), 20, 200, 10, 80,
@@ -209,6 +221,19 @@ function Settings.performanceMode() return value("performanceMode", false) end
 function Settings.worldgenWrites() return value("worldgenWrites", false) end
 
 function Settings.identityRussianFirst() return value("identityRussianFirst", false) end
+function Settings.zombieAttackOwnNpc() return value("zombieAttackOwnNpc", true) end
+
+function Settings.zombiePathMode()
+    local option = page and page:getOption("zombiePathMode")
+    local choice = option and option:getValue() or 1
+    return choice == 2 and "WITH_ROPE" or choice == 3 and "RANDOM" or "NO_ROPE"
+end
+
+function Settings.worldgenProtection()
+    local option = page and page:getOption("worldgenProtection")
+    local value = option and option:getValue() or 0
+    return type(value) == "number" and math.max(0, math.min(16, value)) or 0
+end
 
 function Settings.worldgenBudget()
     local option = page and page:getOption("worldgenBudget")

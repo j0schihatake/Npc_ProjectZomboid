@@ -43,6 +43,12 @@ function Tests.run(player)
                 and string.find(worn, "Trousers", 1, true) ~= nil
                 and string.find(worn, "Shoes", 1, true) ~= nil
     end)
+    check("own-body-id", function()
+        local body = api:ownBodyObject(id)
+        local mapped = body and api:ownBodyId(body) or ""
+        print("[PersonalKnox][ingame-test] own-body-id=" .. tostring(mapped))
+        return mapped == id
+    end)
     check("identity", function()
         local text = api:ownIdentity(id)
         print("[PersonalKnox][ingame-test] identity=" .. tostring(text))
