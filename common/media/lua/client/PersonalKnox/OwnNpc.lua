@@ -41,7 +41,7 @@ local function tick()
     if okFps and type(fps) == "number" and fps > 0 and fps < 30 then interval = 5000 end
     if now - last < interval then return end
     last = now
-    if Perf.skip() then return end
+    if Settings.performanceMode() then return end
     local api = PersonalKnoxAPI.getInstance()
     local members = api:knoxGroupMembers(player)
     if members == 0 then
