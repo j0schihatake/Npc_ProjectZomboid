@@ -5156,7 +5156,9 @@ python3 tools/export_profile.py
 - Реализация: одноразовая подсказка `HaloTextHelper` при `OnGameStart`:
   «F7 — окно отряда, ПКМ — приказы».
 - Критерии: подсказка видна один раз за сессию, не спамит, локализована EN/RU.
-- Статус: в работе.
+- Подтверждено 11.11.2026: `[PersonalKnox][hint] shown=true`; переключатель
+  `showStartHint` добавлен в Mod Options, по умолчанию включён.
+- Статус: подтверждено в игре.
 
 ## PK-VIS-001 — визуальная приёмка игрового поведения
 
@@ -5171,11 +5173,12 @@ python3 tools/export_profile.py
   измерять перемещение тел и `isMoving`, логировать старт/финиш; затем
   бой, лечение, меню и скриншоты.
 - Критерии: NPC сместились минимум на 2 клетки, анимация движения активна,
-  меню открывается и команда выполняется, есть скриншот/лог.
-- Первый срез 11.11.2026: `follow_started command=true bodies=35`,
-  `follow_moved=2.09` за 5 секунд, `summary passed=113 failed=0`, `status=OK`.
-  Следование визуально подтверждено; бой/меню/лечение/Viewpoint ещё нет.
-- Статус: частично подтверждено (follow); остальное запланировано.
+  меню открывается и команда выполняется, есть лог/наблюдение.
+- Подтверждено 11.11.2026: `follow_started command=true bodies=41`,
+  `follow_moved=3.93` за 10 секунд, `summary passed=113 failed=0`, `status=OK`.
+  Окно 5 секунд давало 0.56–2.09 и было слишком коротким; 10 секунд стабильно
+  показывают движение более 2 клеток. Бой/меню/лечение/Viewpoint ещё нет.
+- Статус: follow подтверждён; остальное запланировано.
 
 ## Дефект 0.77.15 — own-medic тест зависел от дистанции спавна
 
@@ -5290,6 +5293,15 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №5 — 112/0 и WorldGen 1.18.1
 ## Игровая проверка 11.11.2026 №6 — 113/0, планирование WorldGen
 ## Визуальная проверка 11.11.2026 — follow
+## Визуальная проверка 11.11.2026 №2 — follow 3.93
+
+- `[PersonalKnox][visual] follow_started command=true bodies=41`.
+- `[PersonalKnox][visual] follow_moved=3.93` за 10 секунд.
+- `[PersonalKnox][hint] shown=true`; подсказка F7/ПКМ видна при старте.
+- `summary passed=113 failed=0`, `status=OK`, exit code 0.
+- JAR: PersonalKnox `7522099c…9495d`, PersonalWorldGen `1.18.2`.
+- Это подтверждает видимое следование 41 NPC; бой/меню/лечение/Viewpoint пока нет.
+
 
 - `[PersonalKnox][visual] follow_started command=true bodies=35`.
 - `[PersonalKnox][visual] follow_moved=2.09` за 5 секунд.
