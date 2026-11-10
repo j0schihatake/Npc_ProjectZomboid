@@ -11,6 +11,7 @@ local function read()
 end
 local config=read()
 if not config or (config.state~='armed' and config.state~='loading') then return end
+print('[PersonalKnox][dev-scenario] loaded state='..tostring(config.state)..' world='..tostring(config.world))
 local function state(value)
     local w=getFileWriter('PersonalKnox-dev-scenario.txt',true,false)
     w:write(table.concat({'PersonalKnoxDevScenario1',config.world,config.nonce,tostring(config.seconds),value},'\n')..'\n')
