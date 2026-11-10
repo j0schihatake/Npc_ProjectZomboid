@@ -5166,7 +5166,9 @@ python3 tools/export_profile.py
 - Реализация: dev-сценарий после боя ставит шину реальному NPC через
   `OwnNpcMedic.tick` и открывает `OwnNpcPanel`; логи `medic=`, `panel_open=`.
 - Критерии: `medic=splint`, `panel_open=true`; окно видно игроку.
-- Статус: в работе.
+- Подтверждено 11.11.2026: follow 2.58, combat 100→92, `medic=splint`,
+  `panel_open=true`, 113/0, `status=OK`.
+- Статус: подтверждено в игре.
 
 ## PK-VIS-003 — визуальный бой собственного NPC
 
@@ -5341,6 +5343,15 @@ python3 tools/export_profile.py
 ## Визуальная проверка 11.11.2026 — follow
 ## Визуальная проверка 11.11.2026 №2 — follow 3.93
 ## Игровая проверка 11.11.2026 №7 — 113/0, formation, combat, settlement
+## Игровая проверка 11.11.2026 №8 — medic и squad panel
+
+- Мир: `PersonalKnox-scenario-20b62575fddac478487fe48d461cb6eb`.
+- `visual follow_moved=2.58` (bodies=35), `combat health=100→92`.
+- `visual medic=splint` — реальный `OwnNpcMedic` поставил шину.
+- `visual panel_open=true` — окно отряда открылось.
+- `summary passed=113 failed=0`; `status=OK`; exit code 0.
+- JAR: PersonalKnox `f446601f…40db`, PersonalWorldGen `b7b205af…4983`.
+
 
 - Мир: `PersonalKnox-scenario-a027ebac5aa42a6cf8be009f7292dc27`.
 - `[PersonalKnox][hint] shown=true`.
