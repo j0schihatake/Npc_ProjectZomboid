@@ -54,7 +54,19 @@ public final class OwnNpcBodyAdapter {
                 try { layer.guardBase(); } catch (Throwable ignored) { }
             }
             var agents = layer.agents();
-            for (var agent : agents) seen.add(agent.id());
+            for (var agent : agents) {
+                seen.add(agent.id());
+                if (bodies.get(agent.id()) == null) {
+                    try {
+                        Object created = create(cell, agent.id(), (int) agent.x(), (int) agent.y(),
+                                (int) agent.z(), agent.factionId());
+                        if (created != null) bodies.put(agent.id(), created);
+                    } catch (Throwable spawnError) {
+                        System.out.println("[PersonalKnox] Own body spawn skipped " + agent.id()
+                                + ": " + spawnError.getMessage());
+                    }
+                }
+            }
             int totalAgents = agents.size();
             int startAgent = totalAgents == 0 ? 0 : syncCursor % totalAgents;
             int processed = 0;
@@ -94,17 +106,7 @@ public final class OwnNpcBodyAdapter {
                     dismantles.remove(agent.id());
                     continue;
                 }
-                if (body == null) {
-                    try {
-                        body = create(cell, agent.id(), (int) agent.x(), (int) agent.y(), (int) agent.z(), agent.factionId());
-                    } catch (Throwable spawnError) {
-                        System.out.println("[PersonalKnox] Own body spawn skipped " + agent.id()
-                                + ": " + spawnError.getMessage());
-                        continue;
-                    }
-                    if (body == null) continue;
-                    bodies.put(agent.id(), body);
-                }
+                if (body == null) continue;
                 if (layer.orderOf(agent.id()) == OwnNpcOrder.LOOT) {
                     double[] loot = findLoot(cell, agent.x(), agent.y(), agent.z(), agent.id());
                     if (loot != null) {
