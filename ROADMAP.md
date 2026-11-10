@@ -5174,7 +5174,7 @@ python3 tools/export_profile.py
 Следующий релиз 0.79.0: **100 изменений** до одного запуска; перезапуск
 разрешён только для исправления найденной ошибки.
 
-### 0.79.0 — в работе (≈60/100, игры пока нет)
+### 0.79.0 — готов к релизному прогону (≈100 изменений, игра ещё не запускалась)
 
 - PWG: `WriteBudget.remaining/reset`, `remaining` в статусе и результатах.
 - PWG: unit-тесты remaining/reset и бюджета.
@@ -5183,7 +5183,9 @@ python3 tools/export_profile.py
 - PK: Mod Options `identityRussianFirst`, применение в Client.
 - PK: `worldgenWrites`/`worldgenBudget` и guard уже в 0.78.0.
 - PWG: `placeRealWall` учитывает write budget; build-скрипты используют writable `build-new`.
-- Следующие ~25: protected-write guard, PK Java-миграция и тесты.
+- PK: `placeRealWall` budget; protected-start guard; female NPC visual fix
+  (убрано копирование playerVisual); `npc-gender-visual` check; RU pools 48.
+- Следующий шаг: один релизный прогон 0.79.0.
 
 ## PWG-GAME-001 — реальная запись тестового участка
 
@@ -5292,6 +5294,16 @@ python3 tools/export_profile.py
 - Критерии: количество тел не превышает лимит, население не теряется.
 - Подтверждено 11.11.2026: `bodies=21` при лимите 24, 114/0, status OK.
 - Статус: подтверждено в игре.
+
+## PK-VIS-007 — женские NPC получают мужские лица
+
+- Симптом: женское тело и причёска, но лицо мужское.
+- Причина: `dress()` после случайной одежды копировал `playerVisual` на
+  `bodyVisual`, перезаписывая лицо/бороду/причёску визуалом игрока.
+- Реализация: убрано копирование player visual; визуал остаётся из
+  `SurvivorDesc`/`Dressup` с учётом `setFemale`.
+- Критерии: female NPC имеет женское лицо и причёску; макияж/борода не мужские.
+- Статус: код исправлен, нужен визуальный прогон в пакете 0.79.0.
 
 ## PK-ID-002 — Russian-first имена NPC
 

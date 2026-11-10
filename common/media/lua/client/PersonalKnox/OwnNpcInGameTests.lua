@@ -581,6 +581,22 @@ function Tests.run(player)
         print("[PersonalKnox][ingame-test] own-medic-field result=" .. tostring(result))
         return result == "splint"
     end)
+    check("npc-gender-visual", function()
+        local female, mismatch = 0, 0
+        for i = 0, api:ownCount() - 1 do
+            local body = api:ownBodyObject(api:ownId(i))
+            if body then
+                local desc = body:getDescriptor()
+                local visual = body:getHumanVisual()
+                if desc and visual and desc:isFemale() then
+                    female = female + 1
+                    if not visual:isFemale() then mismatch = mismatch + 1 end
+                end
+            end
+        end
+        print("[PersonalKnox][ingame-test] npc-gender female=" .. female .. " mismatch=" .. mismatch)
+        return female > 0 and mismatch == 0
+    end)
     check("worldgen-write", function()
         local worldgen = PersonalWorldGenAPI.getInstance()
         local cell = getCell()

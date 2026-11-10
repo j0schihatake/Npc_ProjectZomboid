@@ -1124,10 +1124,7 @@ public final class OwnNpcBodyAdapter {
         try {
             Object player = Class.forName("zombie.characters.IsoPlayer").getMethod("getInstance").invoke(null);
             if (player != null) {
-                Object playerVisual = player.getClass().getMethod("getHumanVisual").invoke(player);
                 Object bodyVisual = body.getClass().getMethod("getHumanVisual").invoke(body);
-                Class<?> base = Class.forName("zombie.core.skinnedmodel.visual.BaseVisual");
-                bodyVisual.getClass().getMethod("copyFrom", base).invoke(bodyVisual, playerVisual);
                 int seed = id.hashCode();
                 Class<?> colorType = Class.forName("zombie.core.ImmutableColor");
                 java.lang.reflect.Constructor<?> color = colorType.getConstructor(float.class, float.class, float.class);
