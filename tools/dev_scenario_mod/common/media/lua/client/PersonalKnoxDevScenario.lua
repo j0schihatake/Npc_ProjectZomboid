@@ -245,7 +245,8 @@ Events.OnGameStart.Add(function()
                 local removed=0
                 for i=zs:size()-1,0,-1 do
                     local z=zs:get(i)
-                    if z and math.hypot(z:getX()-px,z:getY()-py)<=60 then
+                    local dx,dy=z and z:getX()-px or 0,z and z:getY()-py or 0
+                    if z and math.sqrt(dx*dx+dy*dy)<=60 then
                         z:removeFromWorld()
                         removed=removed+1
                     end
