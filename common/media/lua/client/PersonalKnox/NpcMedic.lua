@@ -26,6 +26,52 @@ local function bleedingPart(body)
     return nil
 end
 
+local function fracturedLeg(body)
+    local parts = body:getBodyDamage():getBodyParts()
+    for i = 0, parts:size() - 1 do
+        local part = parts:get(i)
+        local kind = part:getType()
+        if (kind == BodyPartType.LowerLeg_L or kind == BodyPartType.LowerLeg_R
+                or kind == BodyPartType.UpperLeg_L or kind == BodyPartType.UpperLeg_R)
+                and part:getFractureTime() > 0 and part:getSplintFactor() == 0 then
+            return part
+        end
+    end
+    return nil
+end
+
+local function findItem(body, fullType)
+    local items = body:getInventory():getItems()
+    for i = 0, items:size() - 1 do
+        local item = items:get(i)
+        if item:getFullType() == fullType then return item end
+    end
+    return nil
+end
+
+local function findSplintMedic(patientNpc, patient, roster)
+    local bestMedic, bestSplint, bestSheet, bestPlank, bestDistance = nil, nil, nil, nil, math.huge
+    for _, medicNpc in ipairs(roster) do
+        if medicNpc ~= patientNpc then
+            local medic = medicNpc:getWorldObject()
+            if medic and not medic:isDead() and not medic:hasTimedActions() then
+                local dx, dy = medic:getX() - patient:getX(), medic:getY() - patient:getY()
+                local distance = dx * dx + dy * dy
+                if distance <= 36 and distance < bestDistance then
+                    local splint = findItem(medic, "Base.Splint")
+                    local sheet = findItem(medic, "Base.RippedSheets")
+                    local plank = findItem(medic, "Base.Plank")
+                    if splint or (sheet and plank) then
+                        bestMedic, bestSplint, bestSheet, bestPlank, bestDistance =
+                            medic, splint, sheet, plank, distance
+                    end
+                end
+            end
+        end
+    end
+    return bestMedic, bestSplint, bestSheet, bestPlank, bestDistance
+end
+
 local function poll(player)
     if isClient() or not deps or Perf.skip() or not Settings.autoMedic() then return end
     local now = getTimestampMs()
@@ -59,6 +105,32 @@ local function poll(player)
                     if Settings.diagnosticsEnabled() then
                         print("[PersonalKnox][npc-medic] bandage patient=" .. tostring(patient)
                             .. " distance=" .. tostring(bestDistance))
+                    end
+                    return
+                end
+            end
+        end
+    end
+    -- A fractured leg gets a real splint, including in the field: use a ready
+    -- Base.Splint or the vanilla sheet+plank combination consumed by ISSplint.
+    for _, patientNpc in ipairs(roster) do
+        local patient = patientNpc:getWorldObject()
+        if patient and not patient:isDead() and not patient:hasTimedActions() then
+            local part = fracturedLeg(patient)
+            if part then
+                local medic, splint, sheet, plank, distance = findSplintMedic(patientNpc, patient, roster)
+                if medic and ISSplint and ISTimedActionQueue then
+                    local action
+                    if splint then
+                        action = ISSplint:new(medic, patient, nil, splint, part, true)
+                    else
+                        action = ISSplint:new(medic, patient, sheet, plank, part, true)
+                    end
+                    ISTimedActionQueue.add(action)
+                    if Settings.diagnosticsEnabled() then
+                        print("[PersonalKnox][npc-medic] splint patient=" .. tostring(patient)
+                            .. " item=" .. tostring(splint and "Base.Splint" or "field")
+                            .. " distance=" .. tostring(distance))
                     end
                     return
                 end
