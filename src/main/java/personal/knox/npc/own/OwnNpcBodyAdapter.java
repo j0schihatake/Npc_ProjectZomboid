@@ -28,6 +28,7 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, Long> lastCare = new java.util.concurrent.ConcurrentHashMap<>();
 
     private long lastMoveLog;
+    private long lastSyncLog;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
 
@@ -35,6 +36,7 @@ public final class OwnNpcBodyAdapter {
         if (layer == null) throw new IllegalArgumentException("Missing layer");
         if (pathCache.size() > 128) pathCache.clear();
         if (unavailable) return 0;
+        long syncStarted = System.nanoTime();
         try {
             Object cell = currentCell();
             if (cell == null) return 0;
@@ -136,6 +138,12 @@ public final class OwnNpcBodyAdapter {
                 dismantles.remove(id);
                 var body = bodies.remove(id);
                 call(body, "removeFromWorld");
+            }
+            long elapsedMs = (System.nanoTime() - syncStarted) / 1_000_000L;
+            if (elapsedMs >= 20 || System.currentTimeMillis() - lastSyncLog >= 60_000L) {
+                lastSyncLog = System.currentTimeMillis();
+                System.out.println("[PersonalKnox][perf] bodySyncMs=" + elapsedMs
+                        + " bodies=" + bodies.size());
             }
             return bodies.size();
         } catch (Throwable error) {

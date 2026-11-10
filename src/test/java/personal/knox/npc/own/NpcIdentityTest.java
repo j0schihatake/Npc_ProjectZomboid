@@ -21,7 +21,12 @@ public final class NpcIdentityTest {
         assert aliases.size() > 200 : "Name pool must produce varied names";
         assert cultures.contains("ru") && cultures.stream().anyMatch(c -> !c.equals("ru"))
                 : "Both Russian and international names must be present";
-        assert NpcIdentityDatabase.cultures().size() >= 5;
+        assert NpcIdentityDatabase.cultures().size() >= 7 : "RU, PL, EN, ES, FR, DE and IT pools";
+        var namesByCulture = NpcIdentityDatabase.namesForTest();
+        assert namesByCulture.get("ru").size() >= 64 : "Russian pool must be the largest";
+        for (var entry : namesByCulture.entrySet()) {
+            assert entry.getValue().size() >= 32 : "Each culture needs many forenames: " + entry.getKey();
+        }
         var adapter = new OwnNpcBodyAdapter();
         var sample = NpcIdentityDatabase.generate("persist#1");
         assert adapter.restoreIdentities("persist#1|" + sample.csv()) == 1;
