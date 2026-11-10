@@ -5182,6 +5182,19 @@ python3 tools/export_profile.py
 > После выравнивания каталога шины текущий JAR — `69de103f…47aa`; его игровая
 > проверка ещё не выполнена из-за `0.77.12` (X server out of memory).
 
+## Игровая проверка 11.11.2026 №2 — 109 проверок и новый JAR
+
+- Запуск: существующий `tools/launch_dev.sh --profile both --trust-local-builds --restart --detach --no-debug --nosteam --scenario-seconds 15`.
+- Мир: `PersonalKnox-scenario-1050c23a1e806702ec0aed2730ae15a3`.
+- `world_check ... match=true`, `world_started=true`.
+- `PASS mobility-plan-craft`, `PASS mobility-plan-ready`.
+- `[PersonalKnox][ingame-test] summary passed=109 failed=0`.
+- `[PersonalKnox][dev-scenario] status=OK reason=own_npc_registered_model_saved`.
+- `dev-launch.json`: `scenario_verification.exit_code=0`.
+- JAR: PersonalKnox `69de103f…47aa` (ванильный `Base.Splint`), PersonalWorldGen `d47e7296…ab5ec`.
+- Предыдущий прогон падал на `XIO error 12`; после восстановления X-сервера повторный прогон прошёл без изменений кода. `0.77.12` остаётся средовым дефектом.
+- Важно: в этом прогоне проверены `mobility-plan-craft`/`mobility-plan-ready` (Java-мост), а не само применение шины к сломанной ноге. Реальный `NpcMedic` splint-адаптер покрыт отдельным mocked-тестом; игровой сценарий с переломом ещё нужен.
+
 ## Игровая проверка 11.11.2026 — сценарий впервые завершился OK
 
 - Запуск: существующий `tools/launch_dev.sh --profile both --trust-local-builds --restart --detach --no-debug --nosteam --scenario-seconds 15`.
@@ -5218,7 +5231,7 @@ python3 tools/export_profile.py
 | Компоненты | Java: `PatientMobilityAssessment`, `MobilityAidCatalog`, `MedicalSupplyPlanner`, `FieldCraftAction`, `MedicSquadBehavior`; Lua: только игровые действия, анимации, контекстное меню и мост к инвентарю |
 | Критерии готовности | Медик определяет хромоту/травму ноги; при доступных материалах и инструментах создаёт и применяет костыль, трость, шину или иное доступное приспособление; раненый действительно начинает передвигаться быстрее/без опоры на товарища; предмет и расход материалов видны в инвентаре; помощь работает в полевых условиях и в составе отряда на вылазке; нет циклов крафта, потери управления и конфликтов с Viewpoint |
 | План тестирования | Модульные тесты выбора рецепта, резервирования материалов, приоритетов, отмены при угрозе и защиты от повторов; интеграционный тест «раненый в отряде вне базы»; игровой сценарий с хромым NPC на вылазке, проверка `console.txt`, инвентаря, скорости и FPS |
-| Статус | IN PROGRESS — Java-модель, API-мост и ванильный splint-адаптер готовы; игровая проверка шины и костыля ожидается |
+| Статус | IN PROGRESS — Java-модель и API-мост проверены в игре (109/0); splint-адаптер проверен mocked-тестом; отдельный костыль и его крафт ещё не реализованы |
 | Связанный коммит | `a53f7cb` (Java/Lua-мост), `0b8c20c` (splint-адаптер), `3149229` (ванильный рецепт) |
 | Результат игровой проверки | Ожидается; проверена только доменная Java-модель |
 
