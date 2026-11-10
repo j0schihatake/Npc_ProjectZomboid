@@ -261,7 +261,7 @@ Events.OnGameStart.Add(function()
                     visualStart[id]={x=body:getX(),y=body:getY()}
                 end
             end
-            visualAt=nowMs+15000
+            visualAt=nowMs+10000
             print('[PersonalKnox][visual] follow_started command='..tostring(okCmd)
                 ..' bodies='..tostring(api:ownCount()))
         elseif visualStart and not visualDone and nowMs>=visualAt then
