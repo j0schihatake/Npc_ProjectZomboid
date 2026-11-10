@@ -583,6 +583,12 @@ function Tests.run(player)
         local csv = api:generatedRegions()
         return csv:find("wg-a", 1, true) ~= nil and csv:find("wg-b", 1, true) ~= nil
     end)
+    check("worldgen-plan", function()
+        local plan = PersonalWorldGenAPI.getInstance():planNearPlayer(player, 42)
+        print("[PersonalKnox][ingame-test] worldgen-plan " .. tostring(plan))
+        return plan ~= nil and plan:find("worldWrites=0", 1, true) ~= nil
+            and (plan:find("campOps=", 1, true) ~= nil or plan:find("protected=true", 1, true) ~= nil)
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
