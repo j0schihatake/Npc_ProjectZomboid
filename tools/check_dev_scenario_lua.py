@@ -15,7 +15,7 @@ function getFileReader(p)local s=files[p];if not s then return end;local rows={}
  local i=0;return {readLine=function()i=i+1;return rows[i]end,close=function()end}end
 function getFileWriter(p)local s='';return {write=function(_,v)s=s..v end,close=function()files[p]=s end}end
 GameMode={SANDBOX='Sandbox'}
-function getWorld()return {getGameMode=function()return 'Sandbox'end,getWorld=function()return world end,setGameMode=function(self,mode)gameMode=mode end,setWorld=function(self,name)world=name end}end
+function getWorld()return {getGameMode=function()return 'Sandbox'end,getWorld=function()return world end,setGameMode=function(self,mode)gameMode=mode end,setWorld=function(self,name)world='wrapper-'..name end}end
 function getTimestampMs()return now end
 function setGameSpeed(n)speed=n end
 function getGameSpeed()return speed end

@@ -41,7 +41,9 @@ end
 Events.OnTickEvenPaused.Add(earlyPulse)
 local function inWorld()
     local w=getWorld()
-    return w and w:getGameMode()=='Sandbox' and w:getWorld()==config.world
+    if not w or w:getGameMode()~='Sandbox' then return false end
+    local name=tostring(w:getWorld())
+    return name==config.world or (config.nonce and name:find(config.nonce,1,true)~=nil)
 end
 local function closeStartupUI()
     local closed=0
@@ -113,6 +115,10 @@ if config.state=='armed' then
     end)
 end
 Events.OnGameStart.Add(function()
+    local w=getWorld()
+    print('[PersonalKnox][dev-scenario] world_check mode='..tostring(w and w:getGameMode())
+        ..' name='..tostring(w and w:getWorld())..' expected='..tostring(config.world)
+        ..' match='..tostring(inWorld()))
     if not inWorld() then return end
     local current=read()
     if not current or current.nonce~=config.nonce or current.state~='loading' then return end
