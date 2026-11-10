@@ -3,6 +3,8 @@
   "UI_PersonalKnox_StartHint": "PersonalKnox: F7 — squad panel; right-click — orders",
   "UI_PersonalKnox_ShowStartHint": "Show control hint",
   "UI_PersonalKnox_ActiveBodyLimit": "Active NPC bodies per group",
+  "UI_PersonalKnox_BodyMoveBudget": "NPC move budget per sync",
+  "UI_PersonalKnox_BodyMoveBudgetHint": "Lower means fewer pathfinding calls and better FPS",
   "UI_PersonalKnox_ActiveBodyLimitHint": "Caps rendered bodies; strategic population stays intact",
   "UI_PersonalKnox_ShowStartHintHint": "Shows F7/right-click hint once at game start",
   "UI_optionscreen_binding_PersonalKnoxRecall": "Recall companions: stop tasks and follow",

@@ -52,12 +52,8 @@ local function tick()
     local ownActive = api:ownActive()
     if ownActive > members then members = ownActive end
     local px, py, pz = player:getX(), player:getY(), player:getZ()
-    api:ownGroup("player-squad", "own", members, px, py)
-    api:ownSync(px, py, 80, Settings.activeBodyLimit())
-    api:ownFollowTarget3(px, py, pz)
-    api:ownTick(0.01, 32)
-    local active = api:ownActive()
-    local bodies = api:ownBodiesSync()
+    local runtime = api:ownRuntimeTick(player, members, Settings.activeBodyLimit(),
+        Settings.bodyMoveBudget(), 80)
     if now - lastAlifeSettings >= 10000 then
         lastAlifeSettings = now
         for _, key in ipairs({"factionCount","patrolCount","eventFrequency","raidFrequency","ambushChance","checkpointChance","sniperChance","punitiveChance","baseRaidChance","nearRadius","farRadius","budgetMs","maxSquads","memoryDays","warningChance","leaveChance","regroupMorale","woundedPercent","radioRange","diagnostics"}) do
@@ -136,10 +132,10 @@ local function tick()
     if not logged then
         logged = true
         print("[PersonalKnox][knox-roster] " .. tostring(api:knoxMemberSnapshot(player)))
-        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies) .. " " .. tostring(api:knoxStatus()))
+        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " " .. tostring(runtime) .. " " .. tostring(api:knoxStatus()))
     elseif Settings.diagnosticsEnabled() and now - lastLog >= LOG_MS then
         lastLog = now
-        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " active=" .. tostring(active) .. " bodies=" .. tostring(bodies) .. " " .. tostring(api:knoxStatus()))
+        print("[PersonalKnox][own-npc] members=" .. tostring(members) .. " " .. tostring(runtime) .. " " .. tostring(api:knoxStatus()))
     end
 end
 

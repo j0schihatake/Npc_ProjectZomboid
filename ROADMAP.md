@@ -5160,6 +5160,17 @@ python3 tools/export_profile.py
   `bodies=41`, `follow_moved=2.58` за 10 секунд; `visual combat` 100→92.
 - Статус: подтверждено в игре.
 
+## PK-JAVA-001 — перенос runtime-оркестрации NPC в Java
+
+- Причина: `OwnNpc.tick` делает 5+ Lua→Java вызовов каждый цикл и дублирует
+  оркестрацию; пользователь требует Java-first и меньше bridge-накладных.
+- Реализация: `PersonalKnoxAPI.ownRuntimeTick(player, members, bodyLimit,
+  moveBudget, radius)` выполняет group/sync/follow/tick/bodies одним вызовом;
+  Lua остаётся только событием и UI.
+- Критерии: один bridge-вызов на цикл, поведение и лимиты сохраняются,
+  `bodySyncMs`/FPS не хуже.
+- Статус: в работе.
+
 ## PK-PERF-001 — лимит активных тел NPC
 
 - Причина: после restore 45 тел и `ownSync(...,members)` держали все 45 активными,

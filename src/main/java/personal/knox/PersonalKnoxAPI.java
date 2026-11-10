@@ -507,7 +507,26 @@ public final class PersonalKnoxAPI {
     }
 
 
+    public String ownRuntimeTick(Object player, int members, int bodyLimit, int moveBudget, double radius) {
+        if (player == null) return "no-player";
+        try {
+            double px = ((Number) player.getClass().getMethod("getX").invoke(player)).doubleValue();
+            double py = ((Number) player.getClass().getMethod("getY").invoke(player)).doubleValue();
+            double pz = ((Number) player.getClass().getMethod("getZ").invoke(player)).doubleValue();
+            ownGroup("player-squad", "own", Math.max(1, members), px, py);
+            ownSync(px, py, radius, Math.max(1, bodyLimit));
+            ownFollowTarget3(px, py, pz);
+            ownTick(0.01, 32);
+            ownBodies.setMoveBudget(Math.max(1, Math.min(64, moveBudget)));
+            int bodies = ownBodies.sync(ownLayer);
+            return "active=" + ownLayer.count() + " bodies=" + bodies;
+        } catch (ReflectiveOperationException error) {
+            return "player-probe-failed=" + error.getClass().getSimpleName();
+        }
+    }
+
     public int ownBodiesSync() { return ownBodies.sync(ownLayer); }
+    public void ownSetMoveBudget(int value) { ownBodies.setMoveBudget(value); }
     public double ownCombatDamage(int weaponLevel, int skill, int condition, int conditionMax, boolean ranged) {
         return personal.knox.npc.own.OwnNpcCombat.damage(weaponLevel, skill, condition, conditionMax, ranged);
     }

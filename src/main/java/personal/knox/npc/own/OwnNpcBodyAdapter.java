@@ -29,6 +29,8 @@ public final class OwnNpcBodyAdapter {
 
     private long lastMoveLog;
     private long lastSyncLog;
+    private int moveBudget = 8;
+    private int moveSkip;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
 
@@ -46,6 +48,7 @@ public final class OwnNpcBodyAdapter {
                 groupAlert = true;
                 try { layer.guardBase(); } catch (Throwable ignored) { }
             }
+            int agentIndex = 0;
             for (var agent : layer.agents()) {
                 seen.add(agent.id());
                 Object body = bodies.get(agent.id());
@@ -98,8 +101,12 @@ public final class OwnNpcBodyAdapter {
                     tx += Math.cos(angle) * 1.4;
                     ty += Math.sin(angle) * 1.4;
                 }
-                move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, layer.targetZ(agent.id()));
+                if (agentIndex >= moveSkip && agentIndex < moveSkip + moveBudget) {
+                    move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, layer.targetZ(agent.id()));
+                }
+                agentIndex++;
             }
+            if (agentIndex > 0) moveSkip = (moveSkip + Math.min(moveBudget, agentIndex)) % agentIndex;
             boolean anyThreat = !lastAim.isEmpty();
             if (anyThreat && !groupAlert) {
                 groupAlert = true;
@@ -154,6 +161,7 @@ public final class OwnNpcBodyAdapter {
     }
 
     public int count() { return bodies.size(); }
+    public void setMoveBudget(int value) { moveBudget = Math.max(1, Math.min(64, value)); }
     public String nearbyObstacle(String id) {
         Object body = bodies.get(id);
         if (body == null) return "";
