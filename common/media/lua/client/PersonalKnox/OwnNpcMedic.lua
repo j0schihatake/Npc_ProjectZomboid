@@ -92,7 +92,7 @@ local function findSplint(patientId, patient, bodies)
     return best, bestSplint, bestSheet, bestPlank, bestDistance
 end
 
-function OwnNpcMedic.tick()
+function OwnNpcMedic.tick(onlyId)
     if isClient() or not Settings.autoMedic() or Perf.skip() then return nil end
     if not PersonalKnoxAPI then return nil end
     local api = PersonalKnoxAPI.getInstance()
@@ -106,7 +106,7 @@ function OwnNpcMedic.tick()
         end
     end
     for id, patient in pairs(bodies) do
-        if not patient:isDead() and not patient:hasTimedActions() then
+        if (not onlyId or id == onlyId) and not patient:isDead() and not patient:hasTimedActions() then
             local part = bleedingPart(patient)
             if part then
                 local medic, bandage, distance = findBandage(id, patient, bodies)
@@ -122,7 +122,7 @@ function OwnNpcMedic.tick()
         end
     end
     for id, patient in pairs(bodies) do
-        if not patient:isDead() and not patient:hasTimedActions() then
+        if (not onlyId or id == onlyId) and not patient:isDead() and not patient:hasTimedActions() then
             local part = fracturedLeg(patient)
             if part then
                 local medic, splint, sheet, plank, distance = findSplint(id, patient, bodies)
