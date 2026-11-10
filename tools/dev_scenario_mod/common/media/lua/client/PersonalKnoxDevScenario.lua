@@ -277,6 +277,31 @@ Events.OnGameStart.Add(function()
             if not okCombat then
                 print('[PersonalKnox][visual] combat_error='..tostring(combatErr))
             end
+            local okMedic,medicErr=pcall(function()
+                local patientId=api:ownId(0)
+                local medicId=api:ownId(1)
+                local patient=api:ownBodyObject(patientId)
+                local medic=api:ownBodyObject(medicId)
+                if not patient or not medic then error('missing own body') end
+                medic:getInventory():AddItem("Base.Splint")
+                local part=patient:getBodyDamage():getBodyPart(BodyPartType.LowerLeg_L)
+                part:setFractureTime(30)
+                part:setSplint(false,0)
+                local OwnNpcMedic=require('PersonalKnox/OwnNpcMedic')
+                local result=OwnNpcMedic.tick(patientId, medicId)
+                print('[PersonalKnox][visual] medic='..tostring(result))
+            end)
+            if not okMedic then
+                print('[PersonalKnox][visual] medic_error='..tostring(medicErr))
+            end
+            local okPanel,panelErr=pcall(function()
+                local panel=require('PersonalKnox/OwnNpcPanel')
+                panel.toggle(player)
+                print('[PersonalKnox][visual] panel_open='..tostring(panel.isOpen()))
+            end)
+            if not okPanel then
+                print('[PersonalKnox][visual] panel_error='..tostring(panelErr))
+            end
         end
         if testNpc then
             local ok,err=pcall(function()
