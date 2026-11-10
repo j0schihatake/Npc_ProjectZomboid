@@ -581,6 +581,24 @@ function Tests.run(player)
         print("[PersonalKnox][ingame-test] own-medic-field result=" .. tostring(result))
         return result == "splint"
     end)
+    check("multi-profession", function()
+        local before = api:ownProfessions(id)
+        api:ownAssignProfessions(id, "DOCTOR,FARMER")
+        local combined = api:ownProfessions(id)
+        local hasFarmer = api:ownHasProfession("FARMER")
+        api:ownAssignProfessions(id, before ~= "" and before or "NONE")
+        print("[PersonalKnox][ingame-test] multi-profession=" .. tostring(combined)
+            .. " farmer=" .. tostring(hasFarmer))
+        return combined == "DOCTOR,FARMER" and hasFarmer
+    end)
+    check("base-panel", function()
+        local ok, panel = pcall(require, "PersonalKnox/OwnNpcBasePanel")
+        if not ok or not panel then return false end
+        panel.toggle(player)
+        local opened = panel.isOpen()
+        panel.closeOpen()
+        return opened
+    end)
     check("npc-gender-visual", function()
         local female, mismatch = 0, 0
         for i = 0, api:ownCount() - 1 do

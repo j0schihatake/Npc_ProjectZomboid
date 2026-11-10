@@ -312,7 +312,7 @@ public final class OwnNpcLayer {
     public int guardCount() {
         int guards = 0;
         for (var agent : agents())
-            if (isGuard(profession(agent.id()))) guards++;
+            if (hasProfession(agent.id(), "GUARD")) guards++;
         return guards;
     }
 
@@ -689,6 +689,13 @@ public final class OwnNpcLayer {
     public String professions(String id) {
         var set = professionSets.get(id);
         return set == null || set.isEmpty() ? profession(id) : String.join(",", set);
+    }
+
+    public boolean hasProfession(String id, String value) {
+        if (value == null) return false;
+        var target = value.trim().toUpperCase(java.util.Locale.ROOT);
+        for (var part : professions(id).split(",")) if (part.equals(target)) return true;
+        return false;
     }
 
     public String assignProfessions(String id, String csv) {

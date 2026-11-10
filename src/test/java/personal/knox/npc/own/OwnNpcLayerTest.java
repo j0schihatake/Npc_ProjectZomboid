@@ -13,6 +13,7 @@ public final class OwnNpcLayerTest {
         spawnLayer.profession(first, "DOCTOR,FARMER");
         assert "DOCTOR".equals(spawnLayer.profession(first)) : "Primary profession must be first";
         assert "DOCTOR,FARMER".equals(spawnLayer.professions(first)) : "Multi-professions must be kept";
+        assert spawnLayer.hasProfession(first, "FARMER") : "Combined profession must be actionable";
         assert !replacement.equals(second) && spawnLayer.count()==2 : "Deleting a body must not cause duplicate IDs";
 
         var layer = new OwnNpcLayer();

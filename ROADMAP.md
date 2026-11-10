@@ -5318,7 +5318,9 @@ Checkpoint 11.11.2026 (не финальный релиз):
   (можно включить несколько), случайная комбинация 1–3 на персонажа,
   `Random`/`Assign random to all`; Java API `ownProfessions/ownAssignProfessions`.
 - Критерии: имена видны, профессии комбинируются и сохраняются в snapshot.
-- Статус: код + unit multi-profession PASS; игровой прогон в пакете 0.79.0.
+- Подтверждено unit: primary/multi профессии и `hasProfession`; добавлены
+  игровые проверки `multi-profession` и `base-panel` (117+), ожидают пакет.
+- Статус: код + unit PASS; игровой прогон ещё не выполнен.
 
 ## PK-VIS-007 — женские NPC получают мужские лица
 

@@ -362,7 +362,7 @@ public final class PersonalKnoxAPI {
     public boolean ownHasProfession(String profession) {
         if (profession == null) return false;
         for (var agent : ownLayer.agents())
-            if (profession.equalsIgnoreCase(ownLayer.profession(agent.id()))) return true;
+            if (ownLayer.hasProfession(agent.id(), profession)) return true;
         return false;
     }
 
