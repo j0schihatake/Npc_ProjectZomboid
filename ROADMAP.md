@@ -5145,8 +5145,23 @@ python3 tools/export_profile.py
   готовой шине и ставит его через `ISSplint`.
 - Критерии: предмет и рецепт загружаются игрой; костыль можно добавить/скрафтить;
   медик применяет его раненому NPC; есть mocked- и игровая проверка.
-- Статус: в работе.
-- Связанные коммиты: будут добавлены после реализации.
+- Статус: заблокировано дефектом `0.77.14`; item/recipe написаны и лежат в
+  `/home/j0schi/Zomboid-dev/PersonalKnox/attic`, но dev-загрузчик их не видит.
+- Связанные коммиты: `e2b6ee3` (постановка задачи).
+
+## Дефект 0.77.14 — PZ ScriptManager не грузит media/scripts из symlink-мода
+
+- Симптом: `PersonalKnox.Crutch` и `MakeCrutch` не загружаются; в `console.txt`
+  `ScriptManager.Load> Exception thrown` и `FileNotFoundException` на путь
+  `/home/j0schi/Zomboid-dev/PersonalKnox/mods/home/j0schi/zomboid-dev/personalknox/mods/_pkdev_.../common/media/scripts/personalknox_items.txt`.
+- Причина: dev-мод подключён симлинком; PZ склеивает `mods/` с уже абсолютным
+  каноническим путём (с понижением регистра), файл не находится.
+- Проверка: игровой прогон с item/recipe — `passed=110 failed=3`
+  (`crutch-item-recipe`, `own-medic-crutch`); после переноса скриптов из
+  `media/scripts` игра снова проходит `111/0`.
+- Статус: dev-блокер. Для production нужен тест с реальным каталогом мода,
+  а не симлинком. Скрипты сохранены в `attic`; JAR откатан к `7522099c…9495d`.
+- Связанный коммит: `e2b6ee3` (постановка PK-MED-006.1).
 
 ## Дефект 0.77.13 — медик не видит собственный NPC-слой
 
