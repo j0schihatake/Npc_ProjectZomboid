@@ -138,6 +138,7 @@ public final class BrainTest {
         personal.knox.npc.own.OwnNpcPopulationTest.run();
         personal.knox.npc.own.OwnNpcPromotionTest.run();
         personal.knox.npc.own.OwnNpcSpawnerTest.run();
+        personal.knox.npc.own.NpcIdentityTest.run();
         personal.knox.economy.ResourceBagTest.run();
         SurrenderPolicyTest.run();
         BetrayalRiskTest.run();

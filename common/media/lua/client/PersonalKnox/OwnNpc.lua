@@ -27,6 +27,7 @@ local function saveState()
     data.PersonalKnoxOwnPopulation=population
     data.PersonalKnoxTargetZ=targetZ
     data.PersonalKnoxEquipment=api:ownEquipmentSnapshot()
+    data.PersonalKnoxIdentities=api:ownIdentitySnapshot()
     data.PersonalKnoxBase=api:ownBaseSnapshot()
 end
 
@@ -52,7 +53,7 @@ local function tick()
     if ownActive > members then members = ownActive end
     local px, py, pz = player:getX(), player:getY(), player:getZ()
     api:ownGroup("player-squad", "own", members, px, py)
-    api:ownSync(px, py, 80, members)
+    api:ownSync(px, py, 80, Settings.activeBodyLimit())
     api:ownFollowTarget3(px, py, pz)
     api:ownTick(0.01, 32)
     local active = api:ownActive()
@@ -167,6 +168,9 @@ function OwnNpc.install(adapters)
         if not player or not PersonalKnoxAPI then return end
         local data = player:getModData() or {}
         pendingEquipment = data.PersonalKnoxEquipment
+        pcall(function()
+            PersonalKnoxAPI.getInstance():ownRestoreIdentities(data.PersonalKnoxIdentities or "")
+        end)
         pendingBase = data.PersonalKnoxBase
         local ok, result = pcall(function()
             return PersonalKnoxAPI.getInstance():ownBootstrap(

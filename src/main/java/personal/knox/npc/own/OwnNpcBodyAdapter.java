@@ -9,6 +9,7 @@ import java.util.Map;
 /** Java-side body adapter via reflection: no compile-time dependency on Java 25 game classes. */
 public final class OwnNpcBodyAdapter {
     private final Map<String, Object> bodies = new HashMap<>();
+    private final Map<String, NpcIdentity> identities = new HashMap<>();
     private record PathState(double tx, double ty, java.util.List<OwnNpcPathfinder.Point> points, int index) { }
     private boolean unavailable;
     private boolean matchPlayerClothes;
@@ -832,6 +833,81 @@ public final class OwnNpcBodyAdapter {
         };
     }
 
+    public NpcIdentity identity(String id) { return id == null ? null : identities.get(id); }
+
+    public String identitySummary(String id) {
+        var value = identity(id);
+        return value == null ? "" : value.summary();
+    }
+
+    public String identitySnapshot() {
+        var text = new StringBuilder();
+        for (var entry : new java.util.TreeMap<>(identities).entrySet()) {
+            text.append(entry.getKey()).append('|').append(entry.getValue().csv()).append('\n');
+        }
+        return text.toString();
+    }
+
+    public int restoreIdentities(String snapshot) {
+        if (snapshot == null || snapshot.isBlank()) return 0;
+        int restored = 0;
+        for (var line : snapshot.split("\\R")) {
+            int split = line.indexOf('|');
+            if (split <= 0 || split == line.length() - 1) continue;
+            try {
+                identities.put(line.substring(0, split), NpcIdentity.parse(line.substring(split + 1)));
+                restored++;
+            } catch (IllegalArgumentException ignored) { }
+        }
+        return restored;
+    }
+
+    private static String professionConstant(String key) {
+        return switch (key) {
+            case "doctor" -> "DOCTOR";
+            case "carpenter" -> "CARPENTER";
+            case "farmer" -> "FARMER";
+            case "mechanic" -> "MECHANICS";
+            case "police" -> "POLICE_OFFICER";
+            case "veteran" -> "VETERAN";
+            case "chef" -> "CHEF";
+            case "fisher" -> "FISHERMAN";
+            case "guard" -> "SECURITY_GUARD";
+            default -> "UNEMPLOYED";
+        };
+    }
+
+    private static void applyIdentity(Object desc, NpcIdentity identity) {
+        try {
+            desc.getClass().getMethod("setForename", String.class).invoke(desc, identity.forename());
+            desc.getClass().getMethod("setSurname", String.class).invoke(desc, identity.surname());
+            desc.getClass().getMethod("setFemale", boolean.class).invoke(desc, "female".equals(identity.gender()));
+            Class<?> professionClass = Class.forName("zombie.scripting.objects.CharacterProfession");
+            Object profession = professionClass.getField(professionConstant(identity.professionKey())).get(null);
+            desc.getClass().getMethod("setCharacterProfession", professionClass).invoke(desc, profession);
+            Class<?> definitionClass = Class.forName("zombie.characters.professions.CharacterProfessionDefinition");
+            Object definition = definitionClass.getMethod("getCharacterProfessionDefinition", professionClass)
+                    .invoke(null, profession);
+            if (definition != null) {
+                desc.getClass().getMethod("setProfessionSkills", definitionClass).invoke(desc, definition);
+            }
+        } catch (Throwable ignored) { }
+    }
+
+    private static void applySkills(Object body, NpcIdentity identity) {
+        try {
+            Object xp = body.getClass().getMethod("getXp").invoke(body);
+            Class<?> perkClass = Class.forName("zombie.characters.skills.PerkFactory$Perk");
+            Class<?> factory = Class.forName("zombie.characters.skills.PerkFactory");
+            var lookup = factory.getMethod("getPerkFromName", String.class);
+            var setter = xp.getClass().getMethod("setXPToLevel", perkClass, int.class);
+            for (var entry : identity.skills().entrySet()) {
+                Object perk = lookup.invoke(null, entry.getKey());
+                if (perk != null) setter.invoke(xp, perk, entry.getValue());
+            }
+        } catch (Throwable ignored) { }
+    }
+
     private Object create(Object cell, String id, int x, int y, int z, String faction) throws Exception {
         Class<?> squareClass=Class.forName("zombie.iso.IsoGridSquare");
         Object square=cell.getClass().getMethod("getGridSquare",int.class,int.class,int.class).invoke(cell,x,y,z);
@@ -857,6 +933,8 @@ public final class OwnNpcBodyAdapter {
         Class<?> playerClass = Class.forName("zombie.characters.IsoPlayer");
         Class<?> factory = Class.forName("zombie.characters.SurvivorFactory");
         Object desc = factory.getMethod("CreateSurvivor").invoke(null);
+        var identity = identities.computeIfAbsent(id, NpcIdentityDatabase::generate);
+        applyIdentity(desc, identity);
         Constructor<?> ctor = null;
         for (var candidate : OwnNpcBodyType.forBase(playerClass).getConstructors()) {
             var p = candidate.getParameterTypes();
@@ -871,7 +949,8 @@ public final class OwnNpcBodyAdapter {
             body.getClass().getField("serverPlayerIndex").setInt(body, 1);
         } catch (Throwable ignored) { }
         invoke(body, "setBlockMovement", new Class<?>[]{boolean.class}, false);
-        invoke(body, "setUsername", new Class<?>[]{String.class}, "PK-" + id);
+        invoke(body, "setUsername", new Class<?>[]{String.class}, identity.displayName());
+        applySkills(body, identity);
         try {
             try {
             Object inventory = body.getClass().getMethod("getInventory").invoke(body);

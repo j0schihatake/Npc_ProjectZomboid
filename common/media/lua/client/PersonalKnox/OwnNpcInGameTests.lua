@@ -43,6 +43,12 @@ function Tests.run(player)
                 and string.find(worn, "Trousers", 1, true) ~= nil
                 and string.find(worn, "Shoes", 1, true) ~= nil
     end)
+    check("identity", function()
+        local text = api:ownIdentity(id)
+        print("[PersonalKnox][ingame-test] identity=" .. tostring(text))
+        return text ~= nil and text:find("[", 1, true) ~= nil
+            and text:find(":", 1, true) ~= nil
+    end)
     check("follow-order", function()
         api:ownCommand(id, "FOLLOW", x, y, z)
         return string.find(api:ownSummary(id), "order=FOLLOW", 1, true) ~= nil

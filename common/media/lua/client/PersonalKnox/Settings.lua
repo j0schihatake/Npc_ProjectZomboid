@@ -33,6 +33,10 @@ if ok and PZAPI and PZAPI.ModOptions then
     ensure("npcItemAsks", "UI_PersonalKnox_NpcItemAsks", true, "UI_PersonalKnox_NpcItemAsksHint")
     ensure("openSquad", "UI_PersonalKnox_OpenSquad", false, "UI_PersonalKnox_OpenSquadHint")
     ensure("showStartHint", "UI_PersonalKnox_ShowStartHint", true, "UI_PersonalKnox_ShowStartHintHint")
+    if page and not page:getOption("activeBodyLimit") then
+        page:addSlider("activeBodyLimit", getText("UI_PersonalKnox_ActiveBodyLimit"), 4, 64, 4, 24,
+            getText("UI_PersonalKnox_ActiveBodyLimitHint"))
+    end
     ensure("matchPlayerClothes", "UI_PersonalKnox_MatchPlayerClothes", false, "UI_PersonalKnox_MatchPlayerClothesHint")
     ensure("inGameTests", "UI_PersonalKnox_InGameTests", false, "UI_PersonalKnox_InGameTestsHint")
     if page and not page:getOption("ammoMode") then
@@ -206,6 +210,12 @@ function Settings.matchPlayerClothes()
 end
 
 function Settings.showStartHint() return value("showStartHint", true) end
+
+function Settings.activeBodyLimit()
+    local option = page and page:getOption("activeBodyLimit")
+    local value = option and option:getValue() or 24
+    return type(value) == "number" and math.max(4, math.min(64, value)) or 24
+end
 
 function Settings.openSquad()
     return value("openSquad", true)

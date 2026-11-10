@@ -87,12 +87,17 @@ public final class PersonalKnoxAPI {
         }
     }
 
+    public String ownIdentity(String id) { return ownBodies.identitySummary(id); }
+    public String ownIdentitySnapshot() { return ownBodies.identitySnapshot(); }
+    public int ownRestoreIdentities(String snapshot) { return ownBodies.restoreIdentities(snapshot); }
+
     public String ownSummary(String id) {
         var agent = ownLayer.agents().stream().filter(a -> a.id().equals(id)).findFirst().orElse(null);
         if (agent == null) return "";
         var tools = new StringBuilder();
         for (var tool : ownBodies.tools(id)) tools.append(tool.name()).append(';');
-        return "id=" + id + " order=" + ownLayer.orderOf(id)
+        var identity = ownBodies.identitySummary(id);
+        return (identity.isEmpty() ? "" : identity + " ") + "id=" + id + " order=" + ownLayer.orderOf(id)
                 + " task=" + agent.state().task()
                 + " health=" + String.format(java.util.Locale.ROOT, "%.0f", agent.state().health())
                 + " supplies=" + agent.supplies()
