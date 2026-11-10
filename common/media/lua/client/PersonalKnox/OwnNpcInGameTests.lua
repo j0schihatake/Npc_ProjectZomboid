@@ -598,6 +598,7 @@ function Tests.run(player)
             return false
         end
         local settingsBefore = worldgen:worldgenSettings()
+        worldgen:setWriteBudget(8)
         worldgen:setWritesEnabled(true)
         local ok, result = pcall(function()
             player:setX(target[1])
@@ -610,6 +611,7 @@ function Tests.run(player)
             return text
         end)
         worldgen:setWritesEnabled(false)
+        worldgen:setWriteBudget(32)
         if not ok then
             pcall(function() player:setX(px); player:setY(py); player:setZ(pz) end)
             print("[PersonalKnox][ingame-test] worldgen-write error=" .. tostring(result))
@@ -620,6 +622,7 @@ function Tests.run(player)
         return tostring(settingsBefore):find("writes=off", 1, true) ~= nil
             and tostring(result):find("worldWrites=", 1, true) ~= nil
             and tostring(result):find("worldWrites=0", 1, true) == nil
+            and tostring(result):find("budget=8", 1, true) ~= nil
     end)
     check("worldgen-registry", function()
         local api = PersonalWorldGenAPI.getInstance()
