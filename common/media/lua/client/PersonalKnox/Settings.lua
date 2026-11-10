@@ -38,7 +38,7 @@ if ok and PZAPI and PZAPI.ModOptions then
             getText("UI_PersonalKnox_ActiveBodyLimitHint"))
     end
     if page and not page:getOption("bodyMoveBudget") then
-        page:addSlider("bodyMoveBudget", getText("UI_PersonalKnox_BodyMoveBudget"), 2, 32, 2, 32,
+        page:addSlider("bodyMoveBudget", getText("UI_PersonalKnox_BodyMoveBudget"), 2, 32, 2, 8,
             getText("UI_PersonalKnox_BodyMoveBudgetHint"))
     end
     ensure("matchPlayerClothes", "UI_PersonalKnox_MatchPlayerClothes", false, "UI_PersonalKnox_MatchPlayerClothesHint")
@@ -217,8 +217,8 @@ function Settings.showStartHint() return value("showStartHint", true) end
 
 function Settings.bodyMoveBudget()
     local option = page and page:getOption("bodyMoveBudget")
-    local value = option and option:getValue() or 32
-    return type(value) == "number" and math.max(2, math.min(32, value)) or 32
+    local value = option and option:getValue() or 8
+    return type(value) == "number" and math.max(2, math.min(32, value)) or 8
 end
 
 function Settings.activeBodyLimit()

@@ -29,7 +29,7 @@ public final class OwnNpcBodyAdapter {
 
     private long lastMoveLog;
     private long lastSyncLog;
-    private int moveBudget = 32;
+    private int moveBudget = 8;
     private int moveSkip;
     private final Map<String, DismantleTask> dismantles = new HashMap<>();
     private record DismantleTask(OwnNpcDismantleJob job, Object object, double x, double y) { }
