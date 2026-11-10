@@ -2282,3 +2282,11 @@ Project A-Life 1.4.6 (Workshop 3803984183, B42.21) — самостоятель�
 - Проверка: запуск без Knox, собственные NPC и 107 тестов должны работать;
   недостающие Knox-системы сценарий пропускает.
 - Статус: в работе.
+
+### Результат проверки без Knox — 10.11.2026
+
+- `mods/default.txt`: только `ZombieBuddy`, `Viewpoint`, `PersonalKnox`, `PersonalKnoxDevScenario`.
+- В `console.txt` нет загрузки `KnoxEventExpandedNpc`/`RU`.
+- Игровой прогон: `[PersonalKnox][ingame-test] summary passed=107 failed=0`.
+- Собственное тело: `registered=true square=true squareMember=true model=true render=true`.
+- Статус: подтверждено в игре.
