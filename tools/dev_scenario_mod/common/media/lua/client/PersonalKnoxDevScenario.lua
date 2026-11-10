@@ -179,7 +179,7 @@ Events.OnGameStart.Add(function()
         if not inWorld() then Events.OnTick.Remove(poll);result('FAIL','world_changed');return end
         if player:isDead() then Events.OnTick.Remove(poll);result('FAIL','player_dead');return end
         ticks=ticks+1
-        if testNpc and knoxReady then
+        if testNpc then
             local ok,err=pcall(function()
                 local api=PersonalKnoxAPI.getInstance()
                 if not npcId then
@@ -218,7 +218,7 @@ Events.OnGameStart.Add(function()
             end
             if npcReadyTicks<3 then return end
         end
-        if not knoxReady or getTimestampMs()-started<config.seconds*1000 then return end
+        if getTimestampMs()-started<config.seconds*1000 then return end
         Events.OnTick.Remove(poll)
         local ok,api=pcall(function() return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() end)
         if not ok or not api or ticks<2 then result('FAIL','api_or_ticks_missing');return end
