@@ -992,6 +992,44 @@ public final class PersonalKnoxAPI {
                 rain, dark, corpses, hunger, thirst, fatigue);
     }
 
+    /** Java-side bridge for PK-MED-006; Lua only supplies inventory counts and game state. */
+    public String mobilityPlan(double mobility, boolean legInjured, boolean bleeding, double pain,
+                               boolean canWalk, boolean onSortie, String supplies, boolean hasTool,
+                               boolean safe, boolean allowImprovised, int reserveMaterialsPercent) {
+        if (supplies == null) throw new IllegalArgumentException("Missing supplies");
+        var stock = new java.util.LinkedHashMap<String, Integer>();
+        for (var part : supplies.split(";")) {
+            if (part.isBlank()) continue;
+            int split = part.indexOf('=');
+            if (split <= 0 || split == part.length() - 1)
+                throw new IllegalArgumentException("Invalid supply entry");
+            String id = part.substring(0, split).trim();
+            int count;
+            try { count = Integer.parseInt(part.substring(split + 1).trim()); }
+            catch (NumberFormatException error) { throw new IllegalArgumentException("Invalid supply count", error); }
+            stock.merge(id, count, Integer::sum);
+        }
+        var patient = new personal.knox.medical.PatientMobilityAssessment(
+                mobility, legInjured, bleeding, pain, canWalk, onSortie);
+        var plan = personal.knox.medical.MedicalSupplyPlanner.plan(patient, stock, hasTool,
+                new personal.knox.medical.MedicalSupplyPlanner.Policy(safe, allowImprovised,
+                        reserveMaterialsPercent));
+        var text = new StringBuilder("action=").append(plan.action().name())
+                .append(" aid=").append(plan.aidId() == null ? "" : plan.aidId())
+                .append(" projected=").append(plan.projectedMobility())
+                .append(" reason=").append(plan.reason());
+        if (!plan.cost().isEmpty()) {
+            text.append(" cost=");
+            boolean first = true;
+            for (var entry : plan.cost().entrySet()) {
+                if (!first) text.append(',');
+                text.append(entry.getKey()).append('=').append(entry.getValue());
+                first = false;
+            }
+        }
+        return text.toString();
+    }
+
     public String careAction(double nowMillis, double health, int bleedingParts, double pain,
             double thirst, double hunger, boolean busy, boolean danger,
             boolean medic, boolean drink, boolean eat, boolean armed) {

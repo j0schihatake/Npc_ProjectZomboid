@@ -82,6 +82,17 @@ public final class BrainTest {
         assert api.groupChoice(1, 5, 1, 1).equals("attack") : "Leader override";
         assert api.itemObjection(0, 0.7, 0.1, 100, 2, 0) > 0 : "Hungry NPC objects";
         assert api.itemObjection(0, 0.7, 0.1, 100, 0, 0) == 0 : "Full slots do not object";
+        var mobility = api.mobilityPlan(20, true, false, 0.4, true, true,
+                "Base.Plank=2;Base.RippedSheets=2;Base.Nails=3", true, true, true, 0);
+        assert mobility.startsWith("action=CRAFT aid=PersonalKnox.Crutch projected=45 reason=field_craft") : mobility;
+        var mobilityReady = api.mobilityPlan(20, true, false, 0.4, true, true,
+                "PersonalKnox.Crutch=1;Base.Plank=2", false, true, true, 0);
+        assert mobilityReady.startsWith("action=USE_READY aid=PersonalKnox.Crutch") : mobilityReady;
+        var mobilityBlocked = api.mobilityPlan(20, true, false, 0.4, true, true,
+                "Base.Plank=2;Base.RippedSheets=2;Base.Nails=3", true, false, true, 0);
+        assert mobilityBlocked.startsWith("action=ABORT_DANGER") : mobilityBlocked;
+        try { api.mobilityPlan(20, true, false, 0.4, true, true, "bad", true, true, true, 0); throw new AssertionError("Bad supply accepted"); }
+        catch (IllegalArgumentException expected) { }
         ReactionTest.run();
         SupplyEligibilityTest.run();
         KnoxTransferProbeTest.run();
@@ -102,6 +113,7 @@ public final class BrainTest {
         DiplomacyTest.run();
         EvacuationPolicyTest.run();
         personal.knox.base.BaseTest.run();
+        personal.knox.medical.FieldMobilityTest.run();
         personal.knox.quest.QuestTest.run();
         personal.knox.quest.QuestLogTest.run();
         personal.knox.quest.SiegePolicyTest.run();
@@ -131,6 +143,6 @@ public final class BrainTest {
         BetrayalRiskTest.run();
         personal.knox.alife.AlifeTest.run();
         personal.knox.npc.NpcTest.run();
-        System.out.println("Java tests passed: squad policy, Russian dialogues, floor/range classification, supply priorities.");
+        System.out.println("Java tests passed: squad policy, Russian dialogues, floor/range classification, supply priorities, field mobility aids and bridge.");
     }
 }
