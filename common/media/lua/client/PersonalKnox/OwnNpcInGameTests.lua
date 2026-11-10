@@ -571,6 +571,12 @@ function Tests.run(player)
         print("[PersonalKnox][ingame-test] own-medic-field result=" .. tostring(result))
         return result == "splint"
     end)
+    check("worldgen-registry", function()
+        local api = PersonalWorldGenAPI.getInstance()
+        api:restoreGenerated("wg-a,wg-b,wg-a")
+        local csv = api:generatedRegions()
+        return csv:find("wg-a", 1, true) ~= nil and csv:find("wg-b", 1, true) ~= nil
+    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
