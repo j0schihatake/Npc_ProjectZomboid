@@ -45,6 +45,15 @@ public final class OwnNpcLayerTest {
             targets.add(Math.round(formation.agent(id).targetX()) + "," + Math.round(formation.agent(id).targetY()));
         }
         assert targets.size() > 1 : "Follow targets must form a spread, not one pile";
+        formation.tick(0.01, 32);
+        formation.tick(0.01, 32);
+        formation.tick(0.01, 32);
+        double maxMoved = 0;
+        for (var id : formationIds) {
+            var a = formation.agent(id);
+            maxMoved = Math.max(maxMoved, Math.hypot(a.x() - 0, a.y() - 0));
+        }
+        assert maxMoved > 2 : "Follow formation must actually move agents over ticks";
         var healer = new OwnNpcAgent("n4", "own", 0, 0, 0, 0, 0, 2,
                 new NpcState(50, 0.1, 0.1, 0.1, 0.5, false, false, NpcState.Role.GUARD, NpcState.Task.GUARD));
         layer.spawn(healer);
