@@ -5187,6 +5187,20 @@ python3 tools/export_profile.py
   (убрано копирование playerVisual); `npc-gender-visual` check; RU pools 48.
 - Следующий шаг: один релизный прогон 0.79.0.
 
+## Релиз 0.79.0 — цель 300 изменений (checkpoint 116/0)
+
+Цель пользователя: 300 изменений до финального релиза.
+
+Checkpoint 11.11.2026 (не финальный релиз):
+- `summary passed=116 failed=0`; `npc-gender female=9 mismatch=0`.
+- PWG: `worldgen-write camp=8 road=0 building=0 worldWrites=8 budget=8 used=8`,
+  `writes=off` по умолчанию.
+- `visual follow_moved=4.00`, combat/medic/panel, `status=OK`, exit 0.
+- `bodySyncMs=23–109`; JAR PK `47c1c30a…baab`, PWG `922efc03…9538`.
+
+Дальше: набрать ещё ~184 изменения, затем один прогон. Запуски только для
+исправления ошибок.
+
 ## PWG-GAME-001 — реальная запись тестового участка
 
 - Причина: `worldgen-plan` подтверждал только данные; реальные camp/road/
@@ -5303,7 +5317,10 @@ python3 tools/export_profile.py
 - Реализация: убрано копирование player visual; визуал остаётся из
   `SurvivorDesc`/`Dressup` с учётом `setFemale`.
 - Критерии: female NPC имеет женское лицо и причёску; макияж/борода не мужские.
-- Статус: код исправлен, нужен визуальный прогон в пакете 0.79.0.
+- Подтверждено структурно 11.11.2026: `npc-gender female=9 mismatch=0`,
+  116/0, status=OK. Автоматическая проверка флага пола PASS; фактический
+  внешний вид лица ещё требует визуального осмотра.
+- Статус: код исправлен, структурный тест PASS.
 
 ## PK-ID-002 — Russian-first имена NPC
 
