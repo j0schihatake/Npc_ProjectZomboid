@@ -5302,10 +5302,10 @@ python3 tools/export_profile.py
   но `visual follow_moved=0.47` за 10 секунд (до restore было 2.58–3.76).
 - Причина-гипотеза: 45 тел восстановлены плотной группой у игрока; общая цель
   и коллизии/проходимость не дают им выйти из толпы за 10 секунд.
-- Действие: после low-FPS фикса follow вырос 0.47→0.88, но 45 тел и бой
-  faction-юнитов (retreat/attack) всё ещё мешают чистой проверке.
+- Действие: после low-FPS фикса и очистки зомби в dev-копии (66 удалено)
+  чистый restore-follow: `follow_moved=2.13` при 45 телах.
 - Save/load подтверждён: 45/45, `status=OK`, combat/medic/panel работают.
-- Статус: открыт только для чистого restore-follow без угрозы.
+- Статус: закрыт; причина была в заморозке Perf.skip, а не в потере restore.
 
 ## Дефект 0.77.17 — обычный запуск падает на DGVViewpointEyes
 
@@ -5442,6 +5442,16 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №10 — gating bodySync
 ## Игровая проверка 11.11.2026 №11 — low-FPS follow restored
 ## Игровая проверка 11.11.2026 №12 — restore 45 NPC
+## Игровая проверка 11.11.2026 №13 — чистый restore-follow
+
+- Мир: `PersonalKnox-scenario-73c43e4667ec0d042323f57f17b4ebc3`.
+- `npc_restored=45` ID, `bodies=45`.
+- `zombies_cleared=66` в dev-копии; чистая сцена без боя.
+- `visual follow_moved=2.13` — restore-follow подтверждён.
+- `combat 100→92`, `medic=splint`, `panel_open=true`.
+- `status=OK reason=own_npc_restored_model_saved`, exit code 0.
+- JAR: PersonalKnox `46342a2e…d064`, PersonalWorldGen 1.18.5.
+
 
 - Мир: `PersonalKnox-scenario-0231403502bf5ec4dbd97810d82446c9`.
 - `npc_restored=45` IDs, `bodies=45`.
