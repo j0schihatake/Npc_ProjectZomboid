@@ -5132,8 +5132,9 @@ python3 tools/export_profile.py
   after OK and terminal cleanup errors`; `Own NPC scenario passed`. Добавлен assertion
   `Paused dev load must auto-unpause`. Это проверяет логику без окна игры.
 - Связанный коммит исправления: `998f3fb`.
-- Игровая проверка автоматического снятия паузы остаётся обязательной; предыдущий
-  повторный запуск не дошёл до мира и не считается PASS.
+- Игровая проверка 11.11.2026: сценарий дошёл до мира и завершился без ручного
+  вмешательства; `auto_unpaused` не потребовался, потому что окно не ушло в паузу.
+  Сам auto-unpause остаётся покрыт mocked-regression, но в этом прогоне не срабатывал.
 
 ## Дефект 0.77.11 — сценарий не стартовал, хотя тесты PersonalKnox прошли
 
@@ -5146,8 +5147,8 @@ python3 tools/export_profile.py
 - Исправление: нормализовать `getGameMode()`/`getWorld()` через `tostring` и `lower`,
   сравнивать имя по nonce; добавлена диагностика `nonce`.
 - Проверка: локальный mocked-сценарий с префиксом имени мира; затем игровой прогон.
-- Статус: исправление внесено, локальный regression PASS, игровая проверка ожидается.
-- Связанный коммит исправления: `2f06a29`.
+- Статус: подтверждено в игре 11.11.2026.
+- Связанный коммит исправления: `2f06a29`, нормализация режима/имени — `03a61c5`.
 - Локальная проверка 11.11.2026: mocked-мир с префиксом `wrapper-...` проходит
   `world_started=true`; вывод `Lua scenario passed` и `Own NPC scenario passed`.
   Игровой прогон, где 107 тестов прошли без сценария, этим не реабилитируется.
@@ -5162,6 +5163,17 @@ python3 tools/export_profile.py
 - Проверка: запуск без Knox, собственные NPC и 107 тестов должны работать;
   недостающие Knox-системы сценарий пропускает.
 - Статус: в работе.
+
+## Игровая проверка 11.11.2026 — сценарий впервые завершился OK
+
+- Запуск: существующий `tools/launch_dev.sh --profile both --trust-local-builds --restart --detach --no-debug --nosteam --scenario-seconds 15`.
+- Мир: `PersonalKnox-scenario-0430a48f5767978bd7af73576fafc85c`.
+- `world_check mode=Sandbox ... match=true`, `world_started=true`.
+- `[PersonalKnox][ingame-test] summary passed=107 failed=0`.
+- `[PersonalKnox][dev-scenario] status=OK reason=own_npc_registered_model_saved`.
+- `dev-launch.json`: `scenario_verification.exit_code=0`.
+- JAR: PersonalKnox `ebc50a59…b24a1c`, PersonalWorldGen `d47e7296…ab5ec`, ZombieBuddy `eb79b987…f6cf2`, Viewpoint `67f83b05…2625e`.
+- Ручное вмешательство не потребовалось; окно не ушло в паузу, поэтому `auto_unpaused` не печатался.
 
 ### Результат проверки без Knox — 10.11.2026
 
