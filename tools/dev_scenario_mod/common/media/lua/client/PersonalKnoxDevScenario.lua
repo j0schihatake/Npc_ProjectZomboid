@@ -127,6 +127,7 @@ Events.OnGameStart.Add(function()
     if not current or current.nonce~=config.nonce or current.state~='loading' then return end
     setGameSpeed(1)
     local started=getTimestampMs();local ticks=0
+    local visualStart,visualAt,visualDone=nil,0,false
     local npcReader=getFileReader('PersonalKnox-dev-npc.txt',false)
     local testNpc=npcReader and npcReader:readLine()==config.nonce
     local restoreNpc=testNpc and npcReader:readLine()=='own-restore'
@@ -215,6 +216,36 @@ Events.OnGameStart.Add(function()
         if not inWorld() then Events.OnTickEvenPaused.Remove(poll);result('FAIL','world_changed');return end
         if player:isDead() then Events.OnTickEvenPaused.Remove(poll);result('FAIL','player_dead');return end
         ticks=ticks+1
+        local nowMs=getTimestampMs()
+        if not visualStart and nowMs-started>=6000 and PersonalKnoxAPI then
+            local api=PersonalKnoxAPI.getInstance()
+            local okCmd=pcall(function()
+                api:ownCommandAll("FOLLOW", player:getX()+5, player:getY(), player:getZ())
+            end)
+            visualStart={}
+            for i=0,api:ownCount()-1 do
+                local id=api:ownId(i)
+                local okBody,body=pcall(function() return api:ownBodyObject(id) end)
+                if okBody and body then
+                    visualStart[id]={x=body:getX(),y=body:getY()}
+                end
+            end
+            visualAt=nowMs+5000
+            print('[PersonalKnox][visual] follow_started command='..tostring(okCmd)
+                ..' bodies='..tostring(api:ownCount()))
+        elseif visualStart and not visualDone and nowMs>=visualAt then
+            visualDone=true
+            local api=PersonalKnoxAPI.getInstance()
+            local moved=0
+            for id,pos in pairs(visualStart) do
+                local okBody,body=pcall(function() return api:ownBodyObject(id) end)
+                if okBody and body then
+                    local d=math.sqrt((body:getX()-pos.x)^2+(body:getY()-pos.y)^2)
+                    if d>moved then moved=d end
+                end
+            end
+            print('[PersonalKnox][visual] follow_moved='..string.format('%.2f',moved))
+        end
         if testNpc then
             local ok,err=pcall(function()
                 local api=PersonalKnoxAPI.getInstance()

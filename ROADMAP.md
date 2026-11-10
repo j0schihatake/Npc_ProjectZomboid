@@ -5163,7 +5163,10 @@ python3 tools/export_profile.py
   бой, лечение, меню и скриншоты.
 - Критерии: NPC сместились минимум на 2 клетки, анимация движения активна,
   меню открывается и команда выполняется, есть скриншот/лог.
-- Статус: запланировано.
+- Первый срез 11.11.2026: `follow_started command=true bodies=35`,
+  `follow_moved=2.09` за 5 секунд, `summary passed=113 failed=0`, `status=OK`.
+  Следование визуально подтверждено; бой/меню/лечение/Viewpoint ещё нет.
+- Статус: частично подтверждено (follow); остальное запланировано.
 
 ## Дефект 0.77.15 — own-medic тест зависел от дистанции спавна
 
@@ -5277,6 +5280,15 @@ python3 tools/export_profile.py
 ## Игровая проверка 11.11.2026 №4 — полевая шина, 111/0
 ## Игровая проверка 11.11.2026 №5 — 112/0 и WorldGen 1.18.1
 ## Игровая проверка 11.11.2026 №6 — 113/0, планирование WorldGen
+## Визуальная проверка 11.11.2026 — follow
+
+- `[PersonalKnox][visual] follow_started command=true bodies=35`.
+- `[PersonalKnox][visual] follow_moved=2.09` за 5 секунд.
+- `summary passed=113 failed=0`, `status=OK`, exit code 0.
+- JAR: PersonalKnox `7522099c…9495d`, PersonalWorldGen `1.18.2` (`Java core 1.18.2 loaded`).
+- Это подтверждает, что NPC не просто стоят: по команде FOLLOW они реально смещаются
+  в мире. Скорость/анимация и остальные визуальные сценарии ещё требуют проверки.
+
 
 - Мир: `PersonalKnox-scenario-5e57d937f5418d30e95f42341595e59f`.
 - `PASS worldgen-plan`:
