@@ -5167,7 +5167,10 @@ python3 tools/export_profile.py
 - Реализация: `move` только если цель отличается от позиции агента более чем
   на 0.05/0.4 по Z; отдельный замер `moveMs` в `bodySyncMs`.
 - Критерии: `bodySyncMs` и `moveMs` заметно ниже, визуальный follow не хуже.
-- Статус: в работе.
+- Подтверждено 11.11.2026: типичный `bodySyncMs=25–35` при 16 телах вместо
+  84–306; пики 271–361 остаются на тестах с 36 телами. `moveMs=0–78`.
+  114/0, status=OK. Визуальный follow в этом прогоне не логировался.
+- Статус: частично; пики и follow ещё требуют работы.
 
 ## PK-JAVA-001 — перенос runtime-оркестрации NPC в Java
 
@@ -5413,6 +5416,16 @@ python3 tools/export_profile.py
 ## Визуальная проверка 11.11.2026 №2 — follow 3.93
 ## Игровая проверка 11.11.2026 №7 — 113/0, formation, combat, settlement
 ## Игровая проверка 11.11.2026 №8 — medic и squad panel
+## Игровая проверка 11.11.2026 №10 — gating bodySync
+
+- `identity=Даниил Антонов [Fisherman] ...`, `PASS identity`.
+- `summary passed=114 failed=0`; `status=OK`; exit code 0.
+- `bodySyncMs`: 25–35 на 16 телах, пики 271–361 на тестах с 36 телами;
+  `moveMs` 0–78.
+- JAR: PersonalKnox `…`, PersonalWorldGen 1.18.5.
+- Вывод: gating убрал типичную дорогую per-body работу, но пики на создании
+  тестовых тел и визуальный follow после move budget ещё не закрыты.
+
 
 - Мир: `PersonalKnox-scenario-20b62575fddac478487fe48d461cb6eb`.
 - `visual follow_moved=2.58` (bodies=35), `combat health=100→92`.
