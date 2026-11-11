@@ -803,6 +803,12 @@ public final class PersonalKnoxAPI {
         return event.agentId();
     }
 
+    public float gameFps() {
+        try {
+            return Class.forName("zombie.GameWindow").getField("averageFPS").getFloat(null);
+        } catch (Throwable ignored) { return -1f; }
+    }
+
     public double ownBodyDistance(String id) {
         var body = ownBodies.body(id);
         var agent = ownLayer.agent(id);

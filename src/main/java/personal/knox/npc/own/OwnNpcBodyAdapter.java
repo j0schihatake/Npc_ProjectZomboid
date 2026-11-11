@@ -191,7 +191,8 @@ public final class OwnNpcBodyAdapter {
                 System.out.println("[PersonalKnox][perf] bodySyncMs=" + elapsedMs
                         + " moveMs=" + (moveNs / 1_000_000L)
                         + " processed=" + processed
-                        + " bodies=" + bodies.size());
+                        + " bodies=" + bodies.size()
+                        + " fps=" + fps());
             }
             return bodies.size();
         } catch (Throwable error) {
@@ -1696,6 +1697,11 @@ public final class OwnNpcBodyAdapter {
             double delta = agent.state().health() - health;
             if (delta > 0.5) layer.damage(id, delta);
         } catch (Throwable ignored) { }
+    }
+
+    private float fps() {
+        try { return Class.forName("zombie.GameWindow").getField("averageFPS").getFloat(null); }
+        catch (Throwable ignored) { return -1f; }
     }
 
     private double bodyDistance(Object body, double x, double y) {
