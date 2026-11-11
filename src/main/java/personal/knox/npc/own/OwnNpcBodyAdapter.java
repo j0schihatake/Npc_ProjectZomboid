@@ -677,9 +677,12 @@ public final class OwnNpcBodyAdapter {
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
             if (attached != null) {
                 var get = attached.getClass().getMethod("getItem", String.class);
-                for (String location : new String[]{"Belt", "Back"}) {
+                for (String location : new String[]{"Belt", "belt", "Back", "back"}) {
                     Object item = get.invoke(attached, location);
-                    if (item != null) out.append(location).append('=')
+                    if (item == null) continue;
+                    String label = "belt".equals(location) ? "Belt" : "back".equals(location) ? "Back" : location;
+                    if (out.indexOf(label + "=") >= 0) continue;
+                    out.append(label).append('=')
                             .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
                 }
             }
