@@ -298,7 +298,8 @@ function Settings.ammoWeightFactor()
     return 1
 end
 function Settings.inGameTests()
-    return value("inGameTests", PersonalKnoxDevScenarioActive == true)
+    if PersonalKnoxDevScenarioActive == true then return true end
+    return value("inGameTests", false)
 end
 
 function Settings.matchPlayerClothes()
