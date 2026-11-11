@@ -218,7 +218,7 @@ function Tests.run(player)
         local result = api:ownDebugLoot(id)
         local supplies = api:ownSupplies(id)
         print("[PersonalKnox][ingame-test][loot] placed="..tostring(placed).." result="..tostring(result).." supplies="..tostring(supplies))
-        return placed == "placed" and result ~= nil and result ~= "no-container" and supplies >= 1
+        return placed == "placed" and result == "looted"
     end)
     check("bandage", function()
         api:ownDamage(id, 20)
