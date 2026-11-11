@@ -100,7 +100,12 @@ public final class PersonalKnoxAPI {
     public void dbUseSave(String folder) { database.useSave(folder); }
     public String dbSaveFolder() {
         try {
-            var core = Class.forName("zombie.core.Core").getMethod("getInstance").invoke(null);
+            var type = Class.forName("zombie.core.Core");
+            try {
+                var world = type.getField("gameSaveWorld").get(null);
+                if (world != null && !String.valueOf(world).isBlank()) return String.valueOf(world);
+            } catch (Throwable ignored) { }
+            var core = type.getMethod("getInstance").invoke(null);
             var folder = core.getClass().getMethod("getSaveFolder").invoke(core);
             return folder == null ? "" : String.valueOf(folder);
         } catch (Throwable error) { return ""; }
