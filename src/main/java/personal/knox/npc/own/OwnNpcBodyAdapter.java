@@ -1735,6 +1735,11 @@ public final class OwnNpcBodyAdapter {
             z = targetZ;
             pathCache.remove(id);
         }
+        double jump = Math.hypot(sx - bx, sy - by);
+        if (jump > 0.35) {
+            sx = bx + (sx - bx) / jump * 0.35;
+            sy = by + (sy - by) / jump * 0.35;
+        }
         invoke(body, "setX", new Class<?>[]{float.class}, (float) sx);
         invoke(body, "setY", new Class<?>[]{float.class}, (float) sy);
         invoke(body, "setZ", new Class<?>[]{float.class}, (float) z);
