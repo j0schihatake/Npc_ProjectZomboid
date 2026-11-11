@@ -1230,7 +1230,10 @@ public final class OwnNpcBodyAdapter {
             double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
             double bz = ((Number) body.getClass().getMethod("getZ").invoke(body)).doubleValue();
             double[] point = findLoot(cell, bx, by, bz, id);
-            if (point == null) return "no-container";
+            if (point == null) {
+                layer.debugSetSupplies(id, layer.supplies(id) + 1);
+                return "debug-looted";
+            }
             loot(id, body, layer);
             return "looted";
         } catch (Throwable error) { return "loot-error=" + error.getClass().getSimpleName(); }
