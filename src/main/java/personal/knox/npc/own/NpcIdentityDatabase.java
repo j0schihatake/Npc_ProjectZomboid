@@ -135,8 +135,10 @@ public final class NpcIdentityDatabase {
     public static NpcIdentity generate(long seed, boolean preferRussian) {
         var random = new SplittableRandom(seed);
         var pools = pools();
-        var pool = preferRussian && random.nextInt(100) < 60
-                ? pools.get(0) : pools.get(random.nextInt(pools.size()));
+        Pool russian = null;
+        for (var candidate : pools) if ("ru".equals(candidate.culture())) { russian = candidate; break; }
+        var pool = preferRussian && russian != null && random.nextInt(100) < 60
+                ? russian : pools.get(random.nextInt(pools.size()));
         boolean female = random.nextBoolean();
         var names = female ? pool.female() : pool.male();
         var surnames = female ? pool.femaleSurnames() : pool.maleSurnames();
