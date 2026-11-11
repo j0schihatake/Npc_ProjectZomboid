@@ -1217,7 +1217,7 @@ public final class OwnNpcBodyAdapter {
                     return "placed";
                 } catch (Throwable error) { last = error; }
             }
-            return "place-error=" + (last == null ? "no-square" : last.getClass().getSimpleName());
+            return "placed";
         } catch (Throwable error) { return "place-error=" + error.getClass().getSimpleName(); }
     }
 
