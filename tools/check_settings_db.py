@@ -20,6 +20,7 @@ PersonalKnoxAPI = {getInstance=function() return {
   dbSettings=function() return "performanceMode\ttrue\nzombieAttackOwnNpc\tfalse\n" end,
   dbSetSetting=function(k,v) Saved[k]=v end,
 } end}
+Saved = {}
 ''')
 path = Path(__file__).resolve().parents[1] / 'common/media/lua/client/PersonalKnox/Settings.lua'
 chunk = lua.eval('loadstring')(path.read_text(), str(path))
@@ -27,4 +28,7 @@ settings = chunk()
 assert settings is not None
 assert settings.performanceMode() is True
 assert settings.zombieAttackOwnNpc() is False
+lua.execute('TEST_PAGE():getOption(\'performanceMode\'):setValue(false)')
+settings.saveToDatabase()
+assert lua.eval('Saved.performanceMode') == 'false'
 print('Settings DB tests passed: SQLite values override option defaults.')

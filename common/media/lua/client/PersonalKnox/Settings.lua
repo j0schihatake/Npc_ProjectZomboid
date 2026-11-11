@@ -36,6 +36,10 @@ local function saveDbSettings()
         end
     end
 end
+function Settings.saveToDatabase()
+    saveDbSettings()
+end
+
 local ok = pcall(require, "PZAPI/ModOptions")
 if ok and PZAPI and PZAPI.ModOptions then
     page = PZAPI.ModOptions:getOptions("PersonalKnox")
@@ -544,7 +548,7 @@ if page then
     local previousApply = page.apply
     function page:apply()
         if previousApply then previousApply(self) end
-        saveDbSettings()
+        Settings.saveToDatabase()
     end
     loadDbSettings()
     Events.OnGameStart.Add(loadDbSettings)
