@@ -507,7 +507,9 @@ Events.OnGameStart.Add(function()
     end
 end)
 Events.OnGameStart.Add(function()
-    if not Settings.inGameTests() then return end
+    local dev = getFileReader and getFileReader("PersonalKnox-dev-scenario.txt", false)
+    if dev then pcall(function() dev:close() end) end
+    if not Settings.inGameTests() and not dev then return end
     local player = getSpecificPlayer(0)
     if not player then return end
     local due = getTimestampMs() + 2000
