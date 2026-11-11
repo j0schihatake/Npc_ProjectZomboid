@@ -1,3 +1,4 @@
+PersonalKnoxDevScenarioActive = true
 -- Launcher-only harness. Never enabled in the normal mod profile.
 local function read()
     local r=getFileReader('PersonalKnox-dev-scenario.txt',false)
