@@ -5350,6 +5350,16 @@ Checkpoint 11.11.2026 (не финальный релиз):
 - Критерии: зомби переключается на NPC, NPC получает урон/бой.
 - Статус: код готов; игровой прогон в 0.79.0.
 
+## Релиз 0.79.1 — per-save SQLite проверен в игре
+
+- `--source/--build` staging JAR: PASS.
+- Ingame: `summary passed=118 failed=1`; единственный fail — `loot-container` (нет контейнера/флак).
+- `Saves/Sandbox/<world>/PersonalKnox.db` создан;
+- `Saves/Sandbox/<world>/PersonalWorldGen.db` создан;
+- `.bak` для обеих БД создан;
+- `Core.gameSaveWorld` + `Saves/Sandbox` дают per-save путь.
+- Игра после теста закрыта.
+
 ## Релиз 0.79.0 — SQLite checkpoint (без игрового прогона)
 
 Сделано в staging:
