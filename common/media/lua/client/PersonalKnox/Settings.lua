@@ -561,6 +561,9 @@ local function onGameStartDb()
     local folder = api and api:dbSaveFolder() or nil
     print("[PersonalKnox][db] saveFolder="..tostring(folder))
     if api and folder and folder ~= "" then pcall(function() api:dbUseSave(folder) end) end
+    if folder and folder ~= "" and PersonalWorldGenAPI then
+        pcall(function() PersonalWorldGenAPI.getInstance():worldDbUseSave(folder) end)
+    end
     loadDbSettings()
 end
 
