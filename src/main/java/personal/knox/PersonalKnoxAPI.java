@@ -799,6 +799,7 @@ public final class PersonalKnoxAPI {
         var event = ownLayer.debugSpawn(x, y, z);
         ownLayer.order(event.agentId(), personal.knox.npc.own.OwnNpcOrder.FOLLOW, x + 3, y);
         ownLayer.followTarget(x, y);
+        ownBodies.sync(ownLayer);
         return event.agentId();
     }
 
