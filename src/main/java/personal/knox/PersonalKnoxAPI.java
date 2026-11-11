@@ -666,8 +666,15 @@ public final class PersonalKnoxAPI {
                     break;
                 }
             }
-            if (zombie == null) return "no-exact-zombie";
             Class<?> zombieClass = Class.forName("zombie.characters.IsoZombie");
+            if (zombie == null) {
+                try {
+                    zombie = zombieClass.getConstructor(cell.getClass()).newInstance(cell);
+                    zombieList.getClass().getMethod("add", Object.class).invoke(zombieList, zombie);
+                } catch (Throwable createError) {
+                    return "no-exact-zombie=" + createError.getClass().getSimpleName();
+                }
+            }
             float x = ((Number) body.getClass().getMethod("getX").invoke(body)).floatValue() + 0.6f;
             float y = ((Number) body.getClass().getMethod("getY").invoke(body)).floatValue();
             float z = ((Number) body.getClass().getMethod("getZ").invoke(body)).floatValue();
