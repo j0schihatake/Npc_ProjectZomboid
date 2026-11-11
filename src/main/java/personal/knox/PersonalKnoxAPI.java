@@ -103,7 +103,20 @@ public final class PersonalKnoxAPI {
             var type = Class.forName("zombie.core.Core");
             try {
                 var world = type.getField("gameSaveWorld").get(null);
-                if (world != null && !String.valueOf(world).isBlank()) return String.valueOf(world);
+                if (world != null && !String.valueOf(world).isBlank()) {
+                    var name = String.valueOf(world);
+                    try {
+                        var cache = String.valueOf(type.getMethod("getLuaCacheDir").invoke(null));
+                        var candidate = java.nio.file.Path.of(cache).getParent().resolve("Saves").resolve("Sandbox").resolve(name);
+                        if (java.nio.file.Files.isDirectory(candidate)) return candidate.toString();
+                    } catch (Throwable ignored) { }
+                    try {
+                        var docs = String.valueOf(type.getMethod("getMyDocumentFolder").invoke(null));
+                        var candidate = java.nio.file.Path.of(docs).resolve("Saves").resolve("Sandbox").resolve(name);
+                        if (java.nio.file.Files.isDirectory(candidate)) return candidate.toString();
+                    } catch (Throwable ignored) { }
+                    return name;
+                }
             } catch (Throwable ignored) { }
             var core = type.getMethod("getInstance").invoke(null);
             var folder = core.getClass().getMethod("getSaveFolder").invoke(core);
