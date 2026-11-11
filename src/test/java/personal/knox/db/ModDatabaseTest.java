@@ -20,6 +20,11 @@ public final class ModDatabaseTest {
         assert "Иван|Иванов".equals(db.allData("identity").get("npc#1"));
         assert db.allSettings().contains("speech\ttrue");
         assert "2".equals(db.schemaVersion());
+        assert !db.names("ru", "male", "forename").isEmpty() : "RU male forename seed";
+        assert !db.names("ru", "female", "forename").isEmpty() : "RU female forename seed";
+        assert !db.names("ru", "male", "surname").isEmpty() : "RU surname seed";
+        assert !db.names("en", "male", "forename").isEmpty() : "EN forename seed";
+        assert db.professionRows().size() >= 10 : "profession seed";
         System.out.println("Mod database tests passed: settings upsert, settings dump and data round-trip.");
     }
 }
