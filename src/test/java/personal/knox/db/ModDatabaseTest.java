@@ -6,6 +6,10 @@ public final class ModDatabaseTest {
     public static void run() throws Exception {
         var dir = Files.createTempDirectory("personal-knox-db");
         var path = dir.resolve("test.db");
+        assert ModDatabase.class.getResourceAsStream("/personal/knox/db/schema.sql") != null
+                : "SQL schema must ship in the jar";
+        assert ModDatabase.class.getResourceAsStream("/personal/knox/db/seed.sql") != null
+                : "SQL seed must ship in the jar";
         var db = new ModDatabase(path);
         assert "fallback".equals(db.getSetting("missing", "fallback"));
         db.setSetting("speech", "false");
