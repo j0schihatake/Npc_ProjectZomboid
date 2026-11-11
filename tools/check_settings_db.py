@@ -29,6 +29,6 @@ settings = chunk()
 assert settings is not None
 assert settings.performanceMode() is True
 assert settings.zombieAttackOwnNpc() is False
-lua.eval('TEST_PAGE()')().apply(lua.eval('TEST_PAGE()')())
+lua.execute('TEST_PAGE():apply()')
 assert lua.eval('Saved.performanceMode') == 'true'
 print('Settings DB tests passed: SQLite values override option defaults.')
