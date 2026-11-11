@@ -18,7 +18,7 @@ public final class ModDatabaseMigrationTest {
             statement.execute("INSERT INTO meta(key,value) VALUES('schema_version','1')");
         }
         var db = new ModDatabase(path);
-        assert "false".equals(db.getSetting("speech", "true"));
+        assert "false".equals(db.getSetting("speech", "true")) : "speech=" + db.getSetting("speech", "true");
         assert !db.names("ru", "male", "forename").isEmpty() : "migration must reseed names";
         assert Files.exists(path.resolveSibling(path.getFileName() + ".v1.bak")) : "migration must back up v1";
         System.out.println("Mod database tests passed: settings upsert, settings dump and data round-trip.\nMod database migration passed: v1 backup and name reseed.");
