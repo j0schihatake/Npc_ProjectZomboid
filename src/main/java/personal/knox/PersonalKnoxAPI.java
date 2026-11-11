@@ -803,6 +803,17 @@ public final class PersonalKnoxAPI {
         return event.agentId();
     }
 
+    public double ownBodyDistance(String id) {
+        var body = ownBodies.body(id);
+        var agent = ownLayer.agent(id);
+        if (body == null || agent == null) return -1;
+        try {
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            return Math.hypot(bx - agent.x(), by - agent.y());
+        } catch (Throwable ignored) { return -1; }
+    }
+
     public int ownDebugBodySync() { return ownBodies.sync(ownLayer); }
     public String ownCreateCompanion(Object player) {
         double[] p=personal.knox.npc.own.OwnNpcBodyAdapter.spawnPosition(player, ownLayer.count());
