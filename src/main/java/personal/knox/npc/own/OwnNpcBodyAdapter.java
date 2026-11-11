@@ -671,7 +671,10 @@ public final class OwnNpcBodyAdapter {
         Object body = bodies.get(id);
         if (body == null) return "no-body";
         try {
+            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, ""); }
+            catch (Throwable ignored) { }
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
+            if (attached == null) return "no-attached-items";
             var get = attached.getClass().getMethod("getItem", String.class);
             StringBuilder out = new StringBuilder();
             for (String location : new String[]{"Belt", "Back"}) {
@@ -687,7 +690,10 @@ public final class OwnNpcBodyAdapter {
         try {
             Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
             int size = (int) items.getClass().getMethod("size").invoke(items);
+            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, ""); }
+            catch (Throwable ignored) { }
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
+            if (attached == null) return;
             var set = attached.getClass().getMethod("setItem", String.class,
                     Class.forName("zombie.inventory.InventoryItem"));
             boolean belt = false, back = false;
