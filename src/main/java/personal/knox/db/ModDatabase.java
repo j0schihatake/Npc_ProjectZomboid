@@ -210,5 +210,16 @@ public final class ModDatabase {
         } catch (Exception ignored) { }
     }
 
+    public synchronized boolean backup(Path target) {
+        if (target == null) return false;
+        try {
+            if (connection != null) connection.close();
+            connection = null;
+            Files.createDirectories(target.getParent());
+            Files.copy(path, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            return true;
+        } catch (Exception ignored) { return false; }
+    }
+
     public Path path() { return path; }
 }
