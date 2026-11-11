@@ -28,6 +28,7 @@ local function saveState()
     data.PersonalKnoxTargetZ=targetZ
     data.PersonalKnoxEquipment=api:ownEquipmentSnapshot()
     data.PersonalKnoxIdentities=api:ownIdentitySnapshot()
+    pcall(function() api:ownPersistIdentities() end)
     data.PersonalKnoxBase=api:ownBaseSnapshot()
 end
 
@@ -166,7 +167,9 @@ function OwnNpc.install(adapters)
         local data = player:getModData() or {}
         pendingEquipment = data.PersonalKnoxEquipment
         pcall(function()
-            PersonalKnoxAPI.getInstance():ownRestoreIdentities(data.PersonalKnoxIdentities or "")
+            local api = PersonalKnoxAPI.getInstance()
+            api:ownRestoreIdentities(data.PersonalKnoxIdentities or "")
+            api:ownLoadIdentities()
         end)
         pendingBase = data.PersonalKnoxBase
         local ok, result = pcall(function()

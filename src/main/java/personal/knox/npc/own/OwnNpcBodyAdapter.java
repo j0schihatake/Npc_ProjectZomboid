@@ -919,6 +919,30 @@ public final class OwnNpcBodyAdapter {
         return value == null ? "" : value.summary();
     }
 
+    public int persistIdentities() {
+        int count = 0;
+        for (var entry : identities.entrySet()) {
+            try {
+                personal.knox.db.ModDatabase.getInstance().putData("identity", entry.getKey(), entry.getValue().csv());
+                count++;
+            } catch (Throwable ignored) { }
+        }
+        return count;
+    }
+
+    public int loadIdentities() {
+        int count = 0;
+        try {
+            for (var entry : personal.knox.db.ModDatabase.getInstance().allData("identity").entrySet()) {
+                try {
+                    identities.put(entry.getKey(), NpcIdentity.parse(entry.getValue()));
+                    count++;
+                } catch (IllegalArgumentException ignored) { }
+            }
+        } catch (Throwable ignored) { }
+        return count;
+    }
+
     public String identitySnapshot() {
         var text = new StringBuilder();
         for (var entry : new java.util.TreeMap<>(identities).entrySet()) {

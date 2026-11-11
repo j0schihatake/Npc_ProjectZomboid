@@ -129,6 +129,9 @@ public final class PersonalKnoxAPI {
 
     public String ownIdentity(String id) { return ownBodies.identitySummary(id); }
     public String ownBodyId(Object body) { return ownBodies.bodyId(body); }
+    public int ownPersistIdentities() { return ownBodies.persistIdentities(); }
+    public int ownLoadIdentities() { return ownBodies.loadIdentities(); }
+
     public String ownIdentitySnapshot() { return ownBodies.identitySnapshot(); }
     public int ownRestoreIdentities(String snapshot) { return ownBodies.restoreIdentities(snapshot); }
 

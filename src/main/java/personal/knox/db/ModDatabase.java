@@ -153,6 +153,16 @@ public final class ModDatabase {
         } catch (Exception ignored) { return fallback; }
     }
 
+    public synchronized java.util.Map<String,String> allData(String kind) {
+        var result = new java.util.LinkedHashMap<String,String>();
+        if (kind == null) return result;
+        try (PreparedStatement s = connection().prepareStatement("SELECT id,value FROM data WHERE kind=? ORDER BY id")) {
+            s.setString(1, kind);
+            try (ResultSet rows = s.executeQuery()) { while (rows.next()) result.put(rows.getString(1), rows.getString(2)); }
+        } catch (Exception ignored) { }
+        return result;
+    }
+
     public synchronized void putData(String kind, String id, String value) {
         if (kind == null || id == null || value == null) return;
         try (PreparedStatement statement = connection().prepareStatement(
