@@ -22,6 +22,8 @@ public final class OwnNpcBodyAdapter {
     private final Map<String, String> pendingEquipment = new HashMap<>();
     private final Map<String, String> lastWeapon = new HashMap<>();
     private volatile String startingWeapon = "melee";
+    private volatile String pathGoal = "";
+    private volatile long lastPathAt = 0L;
     private volatile int factionRangedChance = 40;
     private volatile int factionMeleeChance = 40;
     private volatile boolean groupAlert = false;
@@ -1745,17 +1747,18 @@ public final class OwnNpcBodyAdapter {
             z = targetZ;
             pathCache.remove(id);
         }
-        double jump = Math.hypot(sx - bx, sy - by);
-        if (jump > 0.35) {
-            sx = bx + (sx - bx) / jump * 0.35;
-            sy = by + (sy - by) / jump * 0.35;
-        }
-        invoke(body, "setX", new Class<?>[]{float.class}, (float) sx);
-        invoke(body, "setY", new Class<?>[]{float.class}, (float) sy);
-        invoke(body, "setZ", new Class<?>[]{float.class}, (float) z);
-        double dx = tx - sx;
-        double dy = ty - sy;
-        if (Math.hypot(dx, dy) > 0.15) {
+        double dx = tx - bx;
+        double dy = ty - by;
+        if (Math.hypot(dx, dy) > 0.6) {
+            long now = System.currentTimeMillis();
+            String key = id + "|" + String.format(java.util.Locale.ROOT, "%.1f,%.1f", tx, ty);
+            if (!key.equals(pathGoal) || now - lastPathAt > 1500L) {
+                try { body.getClass().getMethod("pathToLocationF", float.class, float.class, float.class)
+                        .invoke(body, (float) tx, (float) ty, (float) targetZ); }
+                catch (Throwable ignored) { }
+                pathGoal = key;
+                lastPathAt = now;
+            }
             invoke(body, "setDirectionAngle", new Class<?>[]{float.class}, (float) Math.toDegrees(Math.atan2(dy, dx)));
             invoke(body, "setMoving", new Class<?>[]{boolean.class}, true);
             invoke(body, "setAnimated", new Class<?>[]{boolean.class}, true);
