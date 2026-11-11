@@ -11,6 +11,22 @@ local function api()
     return PersonalKnoxAPI and PersonalKnoxAPI.getInstance() or nil
 end
 
+local function saveTags()
+    local a = api()
+    if not a then return end
+    local out = {}
+    for _, tag in ipairs(TAGS) do if randomTag[tag] then out[#out + 1] = tag end end
+    pcall(function() a:dbPutData("ui", "basePanelTags", table.concat(out, ",")) end)
+end
+
+local function loadTags()
+    local a = api()
+    if not a then return end
+    local ok, csv = pcall(function() return a:dbData("ui", "basePanelTags", "") end)
+    if not ok or not csv or csv == "" then return end
+    for tag in tostring(csv):gmatch("[^,]+") do randomTag[tag] = true end
+end
+
 local function randomCsv()
     local picked = {}
     for _, tag in ipairs(TAGS) do
@@ -32,6 +48,7 @@ function OwnNpcBasePanel:createChildren()
     self.rowLabels = {}
     self.profButtons = {}
     self.selected = {}
+    loadTags()
     self:addChild(ISLabel:new(10, 8, 20, "Base roster", 1, 1, 1, 1, UIFont.Medium, false))
     local x, y = 10, 32
     for _, tag in ipairs(TAGS) do
@@ -73,6 +90,7 @@ function OwnNpcBasePanel:toggleTag(tag)
     self.selected[tag] = not self.selected[tag]
     local button = self.profButtons[tag]
     if button then button:setTitle((self.selected[tag] and "[x] " or "[ ] ") .. tag) end
+    saveTags()
 end
 
 function OwnNpcBasePanel:assignOne(id)
