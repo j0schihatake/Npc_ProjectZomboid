@@ -5378,6 +5378,14 @@ Checkpoint 11.11.2026 (не финальный релиз):
 Игровой прогон не выполнен; до 300 изменений запуск запрещён.
 Следующий шаг: набрать пакет, затем один прогон staging.
 
+## [ ] PK-NPC-SLOT-001 — стартовое оружие NPC в Belt/Back
+
+- Реализовано в staging: attach через `AttachedItems`, `setWornItem`, `InventoryItem.attachedSlotType`.
+- Игра: attach-логи `Belt=Base.Hammer` есть, но `ownWeaponSlots` возвращает `none`;
+  `weapon-slots` FAIL, общий `119/1`.
+- Причина: тестовый body/спавн синхронно не получает слоты; нужно доработать привязку и тест.
+- Статус: [ ] не принято.
+
 ## [x] PK-DB-001 — SQLite на каждое сохранение
 
 - Реализация: Java `ModDatabase` в `getSaveFolder()/PersonalKnox.db`, fallback
