@@ -755,7 +755,10 @@ public final class OwnNpcBodyAdapter {
                 String full = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
                 String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
                 if (!"Weapon".equalsIgnoreCase(category) && !full.contains("Pistol")
-                        && !full.contains("Rifle") && !full.contains("Shotgun")) continue;
+                        && !full.contains("Rifle") && !full.contains("Shotgun")
+                        && !full.contains("BaseballBat") && !full.contains("Axe")
+                        && !full.contains("Knife") && !full.contains("Machete")
+                        && !full.contains("Spear")) continue;
                 boolean ranged = full.contains("Pistol") || full.contains("Rifle") || full.contains("Shotgun");
                 String location = ranged ? "Back" : "Belt";
                 if ((ranged && back) || (!ranged && belt)) continue;
