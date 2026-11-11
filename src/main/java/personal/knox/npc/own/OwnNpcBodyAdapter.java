@@ -667,6 +667,49 @@ public final class OwnNpcBodyAdapter {
         } catch (Throwable ignored) { }
     }
 
+    public String weaponSlots(String id) {
+        Object body = bodies.get(id);
+        if (body == null) return "no-body";
+        try {
+            Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
+            var get = attached.getClass().getMethod("getItem", String.class);
+            StringBuilder out = new StringBuilder();
+            for (String location : new String[]{"Belt", "Back"}) {
+                Object item = get.invoke(attached, location);
+                if (item != null) out.append(location).append('=')
+                        .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
+            }
+            return out.toString();
+        } catch (Throwable error) { return "slots-error=" + error.getClass().getSimpleName(); }
+    }
+
+    private void attachWeaponSlots(Object body, Object inventory) {
+        try {
+            Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+            int size = (int) items.getClass().getMethod("size").invoke(items);
+            Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
+            var set = attached.getClass().getMethod("setItem", String.class,
+                    Class.forName("zombie.inventory.InventoryItem"));
+            boolean belt = false, back = false;
+            for (int i = 0; i < size && (!belt || !back); i++) {
+                Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                if (item == null) continue;
+                String full = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
+                String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
+                if (!"Weapon".equalsIgnoreCase(category) && !full.contains("Pistol")
+                        && !full.contains("Rifle") && !full.contains("Shotgun")) continue;
+                boolean ranged = full.contains("Pistol") || full.contains("Rifle") || full.contains("Shotgun");
+                String location = ranged ? "Back" : "Belt";
+                if ((ranged && back) || (!ranged && belt)) continue;
+                try {
+                    set.invoke(attached, location, item);
+                    if (ranged) back = true; else belt = true;
+                    System.out.println("[PersonalKnox] Own body weapon slot " + location + "=" + full);
+                } catch (Throwable ignored) { }
+            }
+        } catch (Throwable ignored) { }
+    }
+
     private void rememberWeapon(String id, Object body) {
         try {
             Object item = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
@@ -1088,6 +1131,7 @@ public final class OwnNpcBodyAdapter {
                 }
                 System.out.println("[PersonalKnox] Own body starting weapon " + weapon);
             }
+            attachWeaponSlots(body, inventory);
             System.out.println("[PersonalKnox] Own body starting tools added");
         } catch (Throwable ignored) { }
         if (!matchPlayerClothes || !dressLikePlayer(body)) {

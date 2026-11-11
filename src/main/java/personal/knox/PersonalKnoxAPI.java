@@ -530,6 +530,8 @@ public final class PersonalKnoxAPI {
         } catch (Throwable error) { return "add-error=" + error.getClass().getSimpleName(); }
     }
 
+    public String ownWeaponSlots(String id) { return ownBodies.weaponSlots(id); }
+
     public String ownPrimaryItem(String id) {
         Object body = ownBodies.body(id);
         if (body == null) return "";

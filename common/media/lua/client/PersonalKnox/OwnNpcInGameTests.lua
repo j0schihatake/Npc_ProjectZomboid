@@ -257,6 +257,11 @@ function Tests.run(player)
             and empty == "" and string.find(drawn, "drawn ", 1, true) ~= nil
             and hand ~= ""
     end)
+    check("weapon-slots", function()
+        local slots = api:ownWeaponSlots(id)
+        print("[PersonalKnox][ingame-test][weapon-slots] " .. tostring(slots))
+        return slots ~= nil and (slots:find("Belt=", 1, true) ~= nil or slots:find("Back=", 1, true) ~= nil)
+    end)
     check("auto-weapon", function()
         api:ownHolster(id)
         local drawn = api:ownAutoWeapon(id, true)
