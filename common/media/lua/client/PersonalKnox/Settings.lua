@@ -549,4 +549,5 @@ if page then
         saveDbSettings()
     end
     loadDbSettings()
+    Events.OnGameStart.Add(loadDbSettings)
 end
