@@ -731,7 +731,47 @@ public final class OwnNpcBodyAdapter {
                 }
             } catch (Throwable ignored) { }
         }
+        if (out.length() == 0) {
+            try {
+                Object hand = body.getClass().getMethod("getPrimaryHandItem").invoke(body);
+                if (hand != null) {
+                    String full = String.valueOf(hand.getClass().getMethod("getFullType").invoke(hand));
+                    boolean ranged = full.contains("Pistol") || full.contains("Rifle") || full.contains("Shotgun");
+                    String location = ranged ? "Back" : "Belt";
+                    if (attachWeaponItem(body, hand, location)) {
+                        out.append(location).append('=').append(full).append(';');
+                    }
+                }
+            } catch (Throwable ignored) { }
+        }
         return out.length() == 0 ? "none" : out.toString();
+    }
+
+    private boolean attachWeaponItem(Object body, Object item, String location) {
+        if (body == null || item == null) return false;
+        try {
+            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, "Human"); }
+            catch (Throwable ignored) { }
+            Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
+            if (attached != null) {
+                attached.getClass().getMethod("setItem", String.class,
+                        Class.forName("zombie.inventory.InventoryItem")).invoke(attached, location, item);
+                return true;
+            }
+        } catch (Throwable ignored) { }
+        try {
+            Class<?> locationType = Class.forName("zombie.scripting.objects.ItemBodyLocation");
+            Object bodyLocation = locationType.getField(location.toUpperCase(java.util.Locale.ROOT)).get(null);
+            body.getClass().getMethod("setWornItem", locationType,
+                    Class.forName("zombie.inventory.InventoryItem")).invoke(body, bodyLocation, item);
+            return true;
+        } catch (Throwable ignored) { }
+        try {
+            item.getClass().getMethod("setAttachedSlotType", String.class).invoke(item, location);
+            item.getClass().getMethod("setAttachedToModel", boolean.class).invoke(item, true);
+            return true;
+        } catch (Throwable ignored) { }
+        return false;
     }
 
     private void attachWeaponSlots(Object body, Object inventory) {
