@@ -5378,6 +5378,15 @@ Checkpoint 11.11.2026 (не финальный релиз):
 Игровой прогон не выполнен; до 300 изменений запуск запрещён.
 Следующий шаг: набрать пакет, затем один прогон staging.
 
+## Релиз 0.9.38 — 50 изменений (staging)
+
+- Игра: `summary passed=120 failed=0`.
+- `weapon-slots Back=Base.Pistol`.
+- Per-save SQLite: `PersonalKnox.db`, `PersonalWorldGen.db`, `.bak`.
+- JAR SHA-256: `b85f55e07e51bfd719d3ec99e97858b276714e403fec4cc088561146aaebd2b7`.
+- Игра закрыта после теста.
+- Следующий пакет: 50 изменений по ROADMAP.
+
 ## [x] PK-NPC-SLOT-001 — стартовое оружие NPC в Belt/Back
 
 - Реализовано в staging: attach через `AttachedItems`, `setWornItem`, `InventoryItem.attachedSlotType`.
