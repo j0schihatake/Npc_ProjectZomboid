@@ -13,6 +13,10 @@ import personal.knox.ItemNeedPolicy;
 public final class PersonalKnoxAPI {
     private record Dialogue(int id, String topic, String condition, String text) {}
     private static final PersonalKnoxAPI INSTANCE = new PersonalKnoxAPI();
+
+    static {
+        personal.knox.npc.own.TraitBootstrap.register();
+    }
     private final List<Dialogue> dialogues;
     private final ReactionDirector reactions = new ReactionDirector();
     private final PlayerCare care = new PlayerCare();
