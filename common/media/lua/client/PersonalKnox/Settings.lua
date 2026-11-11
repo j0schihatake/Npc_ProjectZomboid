@@ -10,9 +10,10 @@ end
 
 local function loadDbSettings()
     local api = dbApi()
-    if not api or not page then return end
+    if not api then return end
     local ok, text = pcall(function() return api:dbSettings() end)
     if not ok or not text then return end
+    if not page then return end
     for line in tostring(text):gmatch("[^\n]+") do
         local key, value = line:match("^([^\t]+)\t(.+)$")
         local option = key and page:getOption(key)
