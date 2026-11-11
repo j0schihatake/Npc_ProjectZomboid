@@ -67,6 +67,7 @@ public final class ModDatabase {
         }
         runResource("schema.sql");
         seedOnce();
+        migrate();
         return connection;
     }
 
@@ -78,6 +79,20 @@ public final class ModDatabase {
                 for (String part : sql.split(";")) {
                     if (!part.isBlank()) statement.execute(part);
                 }
+            }
+        }
+    }
+
+    private void migrate() throws Exception {
+        int version = 0;
+        try (Statement statement = connection.createStatement();
+             ResultSet rows = statement.executeQuery("SELECT value FROM meta WHERE key='schema_version'")) {
+            if (rows.next()) version = Integer.parseInt(rows.getString(1));
+        }
+        if (version < 2) {
+            runResource("seed.sql");
+            try (Statement statement = connection.createStatement()) {
+                statement.execute("INSERT OR REPLACE INTO meta(key,value) VALUES('schema_version','2')");
             }
         }
     }
