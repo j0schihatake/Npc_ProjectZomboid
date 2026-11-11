@@ -707,11 +707,24 @@ public final class OwnNpcBodyAdapter {
                 boolean ranged = full.contains("Pistol") || full.contains("Rifle") || full.contains("Shotgun");
                 String location = ranged ? "Back" : "Belt";
                 if ((ranged && back) || (!ranged && belt)) continue;
+                boolean attachedOk = false;
                 try {
                     set.invoke(attached, location, item);
+                    attachedOk = true;
+                } catch (Throwable ignored) { }
+                if (!attachedOk) {
+                    try {
+                        Class<?> locationType = Class.forName("zombie.scripting.objects.ItemBodyLocation");
+                        Object bodyLocation = locationType.getField(location.toUpperCase(java.util.Locale.ROOT)).get(null);
+                        body.getClass().getMethod("setWornItem", locationType,
+                                Class.forName("zombie.inventory.InventoryItem")).invoke(body, bodyLocation, item);
+                        attachedOk = true;
+                    } catch (Throwable ignored) { }
+                }
+                if (attachedOk) {
                     if (ranged) back = true; else belt = true;
                     System.out.println("[PersonalKnox] Own body weapon slot " + location + "=" + full);
-                } catch (Throwable ignored) { }
+                }
             }
         } catch (Throwable ignored) { }
     }
