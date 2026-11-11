@@ -15,6 +15,7 @@ function page:addSlider(k,l,a,b,c,d) local o={value=d}; function o:getValue() re
 function page:addComboBox(k,l,h) local o={value=1}; function o:addItem() end; function o:getValue() return self.value end; function o:setValue(v) self.value=v end; options[k]=o; return o end
 function page:addKeyBind(k,l,d) local o={value=d}; function o:getValue() return self.value end; function o:setValue(v) self.value=v end; options[k]=o; return o end
 PZAPI = {ModOptions={getOptions=function() return page end,create=function() return page end}}
+package.preload['PZAPI/ModOptions'] = function() return PZAPI.ModOptions end
 PersonalKnoxAPI = {getInstance=function() return {
   dbSettings=function() return "performanceMode\ttrue\nzombieAttackOwnNpc\tfalse\n" end,
   dbSetSetting=function() end,
