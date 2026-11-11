@@ -672,7 +672,7 @@ public final class OwnNpcBodyAdapter {
         if (body == null) return "no-body";
         StringBuilder out = new StringBuilder();
         try {
-            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, ""); }
+            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, "Human"); }
             catch (Throwable ignored) { }
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
             if (attached != null) {
@@ -738,7 +738,7 @@ public final class OwnNpcBodyAdapter {
         try {
             Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
             int size = (int) items.getClass().getMethod("size").invoke(items);
-            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, ""); }
+            try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, "Human"); }
             catch (Throwable ignored) { }
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
             java.lang.reflect.Method set = null;
