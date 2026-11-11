@@ -11,7 +11,7 @@
   "UI_PersonalKnox_IdentityRussianFirst": "Russian-first NPC names",
   "UI_PersonalKnox_ZombieAttackOwnNpc": "Zombies attack own NPCs",
   "UI_PersonalKnox_ZombieAttackOwnNpcHint": "Retarget nearby zombies from the player to a closer NPC",
-  "UI_PersonalKnox_IdentityRussianFirstHint": "60% Russian names, otherwise mixed",
+  "UI_PersonalKnox_IdentityRussianFirstHint": "60%% Russian names, otherwise mixed",
   "UI_PersonalKnox_WorldGenWritesHint": "Off by default; writes only in a disposable test world",
   "UI_PersonalKnox_WorldGenBudget": "WorldGen write budget",
   "UI_PersonalKnox_WorldGenProtection": "WorldGen protection padding",

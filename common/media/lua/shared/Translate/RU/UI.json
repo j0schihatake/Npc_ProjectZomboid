@@ -20,7 +20,7 @@
   "UI_PersonalKnox_IdentityRussianFirst": "Русские имена NPC в приоритете",
   "UI_PersonalKnox_ZombieAttackOwnNpc": "Зомби атакуют своих NPC",
   "UI_PersonalKnox_ZombieAttackOwnNpcHint": "Перенацеливать ближних зомби с игрока на более близкого NPC",
-  "UI_PersonalKnox_IdentityRussianFirstHint": "60% русских имён, остальные — смешанные",
+  "UI_PersonalKnox_IdentityRussianFirstHint": "60%% русских имён, остальные — смешанные",
   "UI_PersonalKnox_WorldGenWritesHint": "По умолчанию выключено; только в тестовом мире",
   "UI_PersonalKnox_WorldGenBudget": "Бюджет записи WorldGen",
   "UI_PersonalKnox_WorldGenProtection": "Отступ защиты WorldGen",
