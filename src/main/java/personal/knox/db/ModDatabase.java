@@ -16,6 +16,7 @@ public final class ModDatabase {
     private static volatile String activeSave = "";
     private final Path path;
     private Connection connection;
+    private final java.util.Map<String, String> settingsCache = new java.util.concurrent.ConcurrentHashMap<>();
 
     public ModDatabase(Path path) { this.path = path; }
 
@@ -113,10 +114,19 @@ public final class ModDatabase {
 
     public synchronized String getSetting(String key, String fallback) {
         if (key == null || key.isBlank()) return fallback;
+        var cached = settingsCache.get(key);
+        if (cached != null) return cached;
         try (PreparedStatement statement = connection().prepareStatement("SELECT value FROM settings WHERE key=?")) {
             statement.setString(1, key);
-            try (ResultSet rows = statement.executeQuery()) { return rows.next() ? rows.getString(1) : fallback; }
-        } catch (Exception ignored) { return fallback; }
+            try (ResultSet rows = statement.executeQuery()) {
+                if (rows.next()) {
+                    var value = rows.getString(1);
+                    settingsCache.put(key, value);
+                    return value;
+                }
+            }
+        } catch (Exception ignored) { }
+        return fallback;
     }
 
     public synchronized void setSetting(String key, String value) {
@@ -126,6 +136,7 @@ public final class ModDatabase {
             statement.setString(1, key);
             statement.setString(2, value);
             statement.executeUpdate();
+            settingsCache.put(key, value);
         } catch (Exception ignored) { }
     }
 
