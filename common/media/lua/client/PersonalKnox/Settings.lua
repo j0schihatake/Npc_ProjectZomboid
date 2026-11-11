@@ -10,9 +10,11 @@ end
 
 local function loadDbSettings()
     local api = dbApi()
-    if not api then return end
+    if not api then print("[PersonalKnox][db] no api") return end
     local ok, text = pcall(function() return api:dbSettings() end)
-    if not ok or not text then return end
+    if not ok then print("[PersonalKnox][db] load error "..tostring(text)) return end
+    if not text then return end
+    print("[PersonalKnox][db] loaded "..tostring(#text))
     if not page then return end
     for line in tostring(text):gmatch("[^\n]+") do
         local key, value = line:match("^([^\t]+)\t(.+)$")
