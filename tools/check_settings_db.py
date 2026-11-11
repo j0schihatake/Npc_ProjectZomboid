@@ -18,7 +18,7 @@ function TEST_PAGE() return page end
 PZAPI = {ModOptions={getOptions=function() return page end,create=function() return page end}}
 package.preload['PZAPI/ModOptions'] = function() return PZAPI.ModOptions end
 PersonalKnoxAPI = {getInstance=function() return {
-  dbSettings=function() return "performanceMode\ttrue\nzombieAttackOwnNpc\tfalse\n" end,
+  dbSettings=function() return "performanceMode\ttrue\nzombieAttackOwnNpc\tfalse\nactiveBodyLimit\t12\n" end,
   dbSetSetting=function(k,v) Saved[k]=v end,
 } end}
 Saved = {}
@@ -29,4 +29,5 @@ settings = chunk()
 assert settings is not None
 assert settings.performanceMode() is True
 assert settings.zombieAttackOwnNpc() is False
+assert settings.activeBodyLimit() == 12
 print('Settings DB tests passed: SQLite values override option defaults.')
