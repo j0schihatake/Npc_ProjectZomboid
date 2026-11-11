@@ -1,46 +1,46 @@
-module PersonalKnox
+module personalknox
 {
-    character_trait_definition PersonalKnox:Companions1
+    character_trait_definition personalknox:companions1
     {
         IsProfessionTrait = false,
         DisabledInMultiplayer = false,
-        CharacterTrait = PersonalKnox:Companions1,
+        CharacterTrait = personalknox:companions1,
         Cost = 1,
         UIName = UI_trait_PersonalCompanions1,
         UIDescription = UI_trait_PersonalCompanions1Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions2; PersonalKnox:Companions3; PersonalKnox:Companions4,
+        MutuallyExclusiveTraits = personalknox:companions2; personalknox:companions3; personalknox:companions4,
     }
 
-    character_trait_definition PersonalKnox:Companions2
+    character_trait_definition personalknox:companions2
     {
         IsProfessionTrait = false,
         DisabledInMultiplayer = false,
-        CharacterTrait = PersonalKnox:Companions2,
+        CharacterTrait = personalknox:companions2,
         Cost = 2,
         UIName = UI_trait_PersonalCompanions2,
         UIDescription = UI_trait_PersonalCompanions2Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions3; PersonalKnox:Companions4,
+        MutuallyExclusiveTraits = personalknox:companions1; personalknox:companions3; personalknox:companions4,
     }
 
-    character_trait_definition PersonalKnox:Companions3
+    character_trait_definition personalknox:companions3
     {
         IsProfessionTrait = false,
         DisabledInMultiplayer = false,
-        CharacterTrait = PersonalKnox:Companions3,
+        CharacterTrait = personalknox:companions3,
         Cost = 3,
         UIName = UI_trait_PersonalCompanions3,
         UIDescription = UI_trait_PersonalCompanions3Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions2; PersonalKnox:Companions4,
+        MutuallyExclusiveTraits = personalknox:companions1; personalknox:companions2; personalknox:companions4,
     }
 
-    character_trait_definition PersonalKnox:Companions4
+    character_trait_definition personalknox:companions4
     {
         IsProfessionTrait = false,
         DisabledInMultiplayer = false,
-        CharacterTrait = PersonalKnox:Companions4,
+        CharacterTrait = personalknox:companions4,
         Cost = 3,
         UIName = UI_trait_PersonalCompanions4,
         UIDescription = UI_trait_PersonalCompanions4Desc,
-        MutuallyExclusiveTraits = PersonalKnox:Companions1; PersonalKnox:Companions2; PersonalKnox:Companions3,
+        MutuallyExclusiveTraits = personalknox:companions1; personalknox:companions2; personalknox:companions3,
     }
 }
