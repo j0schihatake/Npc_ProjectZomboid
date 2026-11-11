@@ -557,9 +557,8 @@ if page then
 end
 
 local function onGameStartDb()
-    local core = getCore and getCore() or nil
-    local folder = core and core.getSaveFolder and core:getSaveFolder() or nil
     local api = dbApi()
+    local folder = api and api:dbSaveFolder() or nil
     print("[PersonalKnox][db] saveFolder="..tostring(folder))
     if api and folder and folder ~= "" then pcall(function() api:dbUseSave(folder) end) end
     loadDbSettings()

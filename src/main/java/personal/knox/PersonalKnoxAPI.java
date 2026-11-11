@@ -98,6 +98,13 @@ public final class PersonalKnoxAPI {
     public String dbSettings() { return database.allSettings(); }
     public String dbPath() { return database.path().toString(); }
     public void dbUseSave(String folder) { database.useSave(folder); }
+    public String dbSaveFolder() {
+        try {
+            var core = Class.forName("zombie.core.Core").getMethod("getInstance").invoke(null);
+            var folder = core.getClass().getMethod("getSaveFolder").invoke(core);
+            return folder == null ? "" : String.valueOf(folder);
+        } catch (Throwable error) { return ""; }
+    }
     public String dbCounts() { return database.counts(); }
     public boolean dbBackup(String target) { return database.backup(java.nio.file.Path.of(target)); }
     public boolean dbBackupNow() { return database.backupNow(); }
