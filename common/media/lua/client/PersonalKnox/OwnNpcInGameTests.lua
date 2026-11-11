@@ -108,7 +108,7 @@ function Tests.run(player)
     check("factions", function() return api:alifeOutposts() >= 1 end)
     check("combat", function()
         local spawned = api:ownDebugZombie(id)
-        if string.find(spawned, "health=", 1, true) == nil then return false end
+        if string.find(spawned, "health=", 1, true) == nil then print("[PersonalKnox][ingame-test][combat] spawn="..tostring(spawned)) return false end
         local before = api:ownDebugZombieHealth()
         api:ownDebugAttack(id)
         local damaged = api:ownDebugZombieHealth() < before
@@ -119,7 +119,7 @@ function Tests.run(player)
         local spawned = api:ownDebugZombie(id)
         if string.find(spawned, "health=", 1, true) == nil then return false end
         local equip = api:ownDebugEquip(id, "Base.Pistol", 5)
-        if string.find(equip, "equipped=", 1, true) == nil then return false end
+        if string.find(equip, "equipped=", 1, true) == nil then print("[PersonalKnox][ingame-test][ranged] equip="..tostring(equip)) return false end
         local before = api:ownDebugZombieHealth()
         api:ownDebugAttack(id)
         local damaged = api:ownDebugZombieHealth() < before
@@ -235,6 +235,7 @@ function Tests.run(player)
         api:ownDebugPlayerItem(player, "Base.Pistol")
         local gave = api:ownGiveWeapon(id, player)
         local hand = api:ownPrimaryItem(id)
+        print("[PersonalKnox][ingame-test][give-weapon] gave="..tostring(gave).." hand="..tostring(hand))
         return gave ~= nil and string.find(gave, "Base.Pistol", 1, true) ~= nil
             and string.find(hand, "Base.Pistol", 1, true) ~= nil
     end)
@@ -304,7 +305,7 @@ function Tests.run(player)
     end)
     check("corpse-cleanup", function()
         local spawned = api:ownDebugZombie(id)
-        if string.find(spawned, "health=", 1, true) == nil then return false end
+        if string.find(spawned, "health=", 1, true) == nil then print("[PersonalKnox][ingame-test][corpse] spawn="..tostring(spawned)) return false end
         api:ownDebugKillZombie()
         api:ownBodiesSync()
         local cleaned = api:ownCleanCorpses(20)
