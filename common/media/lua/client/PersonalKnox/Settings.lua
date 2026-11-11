@@ -556,7 +556,15 @@ if page then
     end
 end
 
+local function onGameStartDb()
+    local core = getCore and getCore() or nil
+    local folder = core and core.getSaveFolder and core:getSaveFolder() or nil
+    local api = dbApi()
+    if api and folder and folder ~= "" then pcall(function() api:dbUseSave(folder) end) end
+    loadDbSettings()
+end
+
 loadDbSettings()
-Events.OnGameStart.Add(loadDbSettings)
+Events.OnGameStart.Add(onGameStartDb)
 
 return Settings

@@ -14,7 +14,7 @@ import java.sql.Statement;
 public final class ModDatabase {
     private static volatile ModDatabase instance;
     private static volatile String activeSave = "";
-    private final Path path;
+    private volatile Path path;
     private Connection connection;
     private final java.util.Map<String, String> settingsCache = new java.util.concurrent.ConcurrentHashMap<>();
 
@@ -229,6 +229,21 @@ public final class ModDatabase {
 
     public synchronized boolean backupNow() {
         return backup(path.resolveSibling(path.getFileName() + ".bak"));
+    }
+
+    public synchronized void useSave(String folder) {
+        if (folder == null || folder.isBlank()) return;
+        var target = Path.of(folder).resolve("PersonalKnox.db");
+        if (!target.isAbsolute()) return;
+        if (target.equals(path)) return;
+        close();
+        path = target;
+        activeSave = folder;
+        settingsCache.clear();
+        System.out.println("[PersonalKnox][db] switch " + target);
+        try { connection(); } catch (Exception error) {
+            System.out.println("[PersonalKnox][db] switch failed " + error);
+        }
     }
 
     public synchronized boolean backup(Path target) {
