@@ -30,6 +30,9 @@ local function saveState()
     data.PersonalKnoxIdentities=api:ownIdentitySnapshot()
     pcall(function() api:ownPersistIdentities() end)
     pcall(function() api:dbBackupNow() end)
+    pcall(function()
+        if PersonalWorldGenAPI then PersonalWorldGenAPI.getInstance():worldDbBackupNow() end
+    end)
     data.PersonalKnoxBase=api:ownBaseSnapshot()
 end
 
