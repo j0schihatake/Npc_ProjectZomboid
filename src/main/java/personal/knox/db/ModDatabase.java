@@ -108,6 +108,12 @@ public final class ModDatabase {
         } catch (Exception ignored) { }
     }
 
+    public synchronized String schemaVersion() {
+        try (PreparedStatement s = connection().prepareStatement("SELECT value FROM meta WHERE key='schema_version'")) {
+            try (ResultSet rows = s.executeQuery()) { return rows.next() ? rows.getString(1) : "0"; }
+        } catch (Exception ignored) { return "0"; }
+    }
+
     public synchronized java.util.List<String> names(String culture, String gender, String kind) {
         var result = new java.util.ArrayList<String>();
         if (culture == null || gender == null || kind == null) return result;

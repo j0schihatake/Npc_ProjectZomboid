@@ -14,6 +14,7 @@ public final class ModDatabaseTest {
         db.putData("identity", "npc#1", "Иван|Иванов");
         assert "Иван|Иванов".equals(db.getData("identity", "npc#1", ""));
         assert db.allSettings().contains("speech\ttrue");
+        assert "1".equals(db.schemaVersion());
         System.out.println("Mod database tests passed: settings upsert, settings dump and data round-trip.");
     }
 }
