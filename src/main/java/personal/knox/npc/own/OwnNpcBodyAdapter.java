@@ -824,11 +824,11 @@ public final class OwnNpcBodyAdapter {
                 if (item == null) continue;
                 String category = String.valueOf(item.getClass().getMethod("getCategory").invoke(item));
                 String fullType = String.valueOf(item.getClass().getMethod("getFullType").invoke(item));
-                if ("Weapon".equalsIgnoreCase(category) || fullType.contains("Pistol")
-                        || fullType.contains("Rifle") || fullType.contains("Shotgun")) {
+                if (fullType.contains("Pistol") || fullType.contains("Rifle") || fullType.contains("Shotgun")) {
                     chosen = item;
                     break;
                 }
+                if (chosen == null && "Weapon".equalsIgnoreCase(category)) chosen = item;
             }
             if (chosen == null) return "no-weapon-in-player";
             Object inventory = body.getClass().getMethod("getInventory").invoke(body);

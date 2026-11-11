@@ -552,8 +552,9 @@ if page then
         if previousApply then previousApply(self) end
         Settings.saveToDatabase()
     end
-    loadDbSettings()
-    Events.OnGameStart.Add(loadDbSettings)
 end
+
+loadDbSettings()
+Events.OnGameStart.Add(loadDbSettings)
 
 return Settings

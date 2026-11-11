@@ -657,7 +657,6 @@ public final class PersonalKnoxAPI {
             Object square = body.getClass().getMethod("getCurrentSquare").invoke(body);
             Object zombieList = cell.getClass().getMethod("getZombieList").invoke(cell);
             int size = (int) zombieList.getClass().getMethod("size").invoke(zombieList);
-            if (size == 0) return "no-zombies";
             Object zombie = null;
             for (int i = 0; i < size; i++) {
                 Object candidate = zombieList.getClass().getMethod("get", int.class).invoke(zombieList, i);
