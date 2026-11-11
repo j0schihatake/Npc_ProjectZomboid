@@ -670,20 +670,32 @@ public final class OwnNpcBodyAdapter {
     public String weaponSlots(String id) {
         Object body = bodies.get(id);
         if (body == null) return "no-body";
+        StringBuilder out = new StringBuilder();
         try {
             try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, ""); }
             catch (Throwable ignored) { }
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
-            if (attached == null) return "no-attached-items";
-            var get = attached.getClass().getMethod("getItem", String.class);
-            StringBuilder out = new StringBuilder();
+            if (attached != null) {
+                var get = attached.getClass().getMethod("getItem", String.class);
+                for (String location : new String[]{"Belt", "Back"}) {
+                    Object item = get.invoke(attached, location);
+                    if (item != null) out.append(location).append('=')
+                            .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
+                }
+            }
+        } catch (Throwable ignored) { }
+        try {
+            Class<?> locationType = Class.forName("zombie.scripting.objects.ItemBodyLocation");
+            var getWorn = body.getClass().getMethod("getWornItem", locationType);
             for (String location : new String[]{"Belt", "Back"}) {
-                Object item = get.invoke(attached, location);
+                if (out.indexOf(location + "=") >= 0) continue;
+                Object bodyLocation = locationType.getField(location.toUpperCase(java.util.Locale.ROOT)).get(null);
+                Object item = getWorn.invoke(body, bodyLocation);
                 if (item != null) out.append(location).append('=')
                         .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
             }
-            return out.toString();
-        } catch (Throwable error) { return "slots-error=" + error.getClass().getSimpleName(); }
+        } catch (Throwable ignored) { }
+        return out.length() == 0 ? "none" : out.toString();
     }
 
     private void attachWeaponSlots(Object body, Object inventory) {
