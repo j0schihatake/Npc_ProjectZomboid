@@ -472,6 +472,7 @@ local function applyWorldGenSettings()
     api:worldDbSetSetting("writesEnabled", tostring(Settings.worldgenWrites()))
     api:worldDbSetSetting("writeBudget", tostring(Settings.worldgenBudget()))
     api:worldDbSetSetting("protectedPadding", tostring(Settings.worldgenProtection()))
+    pcall(function() api:worldDbLoadRegions() end)
     if PersonalKnoxAPI then
         PersonalKnoxAPI.getInstance():ownSetIdentityRussianFirst(Settings.identityRussianFirst())
     end
