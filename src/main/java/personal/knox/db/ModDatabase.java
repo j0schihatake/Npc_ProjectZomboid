@@ -18,7 +18,15 @@ public final class ModDatabase {
     private Connection connection;
     private final java.util.Map<String, String> settingsCache = new java.util.concurrent.ConcurrentHashMap<>();
 
-    public ModDatabase(Path path) { this.path = path; }
+    public ModDatabase(Path path) {
+        this.path = path;
+        try {
+            connection();
+            System.out.println("[PersonalKnox][db] ready " + path);
+        } catch (Exception error) {
+            System.out.println("[PersonalKnox][db] open failed " + path + ": " + error);
+        }
+    }
 
     public static ModDatabase getInstance() {
         var save = currentSave();
