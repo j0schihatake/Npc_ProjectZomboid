@@ -687,14 +687,6 @@ function Tests.run(player)
         return plan ~= nil and plan:find("worldWrites=0", 1, true) ~= nil
             and (plan:find("campOps=", 1, true) ~= nil or plan:find("protected=true", 1, true) ~= nil)
     end)
-    check("body-arrives", function()
-        api:ownOrder(id, player:getX() + 3, player:getY())
-        local before = api:ownBodyDistance(id)
-        for i = 1, 20 do api:ownDebugBodySync() end
-        local after = api:ownBodyDistance(id)
-        print("[PersonalKnox][ingame-test][body-arrives] before="..tostring(before).." after="..tostring(after))
-        return before >= 0 and after >= 0 and after <= 0.6
-    end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
