@@ -134,7 +134,8 @@ public final class OwnNpcBodyAdapter {
                     ty += Math.sin(angle) * 1.4;
                 }
                 double targetZ = layer.targetZ(agent.id());
-                if ((Math.hypot(tx - agent.x(), ty - agent.y()) > 0.05 || Math.abs(targetZ - agent.z()) > 0.4)
+                if ((Math.hypot(tx - agent.x(), ty - agent.y()) > 0.05
+                        || Math.abs(targetZ - agent.z()) > 0.4 || bodyDistance(body, agent.x(), agent.y()) > 0.05)
                         && agentIndex >= moveSkip && agentIndex < moveSkip + moveBudget) {
                     long moveStarted = System.nanoTime();
                     move(agent.id(), body, agent.x(), agent.y(), agent.z(), tx, ty, targetZ);
@@ -1693,6 +1694,14 @@ public final class OwnNpcBodyAdapter {
             double delta = agent.state().health() - health;
             if (delta > 0.5) layer.damage(id, delta);
         } catch (Throwable ignored) { }
+    }
+
+    private double bodyDistance(Object body, double x, double y) {
+        try {
+            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            return Math.hypot(bx - x, by - y);
+        } catch (Throwable ignored) { return 0; }
     }
 
     private void move(String id, Object body, double x, double y, double z, double tx, double ty, double targetZ) {
