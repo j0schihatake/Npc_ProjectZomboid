@@ -669,7 +669,7 @@ public final class PersonalKnoxAPI {
             Class<?> zombieClass = Class.forName("zombie.characters.IsoZombie");
             if (zombie == null) {
                 try {
-                    zombie = zombieClass.getConstructor(cell.getClass()).newInstance(cell);
+                    zombie = zombieClass.getConstructor(Class.forName("zombie.iso.IsoCell")).newInstance(cell);
                     zombieList.getClass().getMethod("add", Object.class).invoke(zombieList, zombie);
                 } catch (Throwable createError) {
                     return "no-exact-zombie=" + createError.getClass().getSimpleName();
