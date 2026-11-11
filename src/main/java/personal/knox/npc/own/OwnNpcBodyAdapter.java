@@ -701,6 +701,21 @@ public final class OwnNpcBodyAdapter {
         if (out.length() == 0) {
             try {
                 Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+                attachWeaponSlots(body, inventory);
+                try {
+                    Object attached2 = body.getClass().getMethod("getAttachedItems").invoke(body);
+                    if (attached2 != null) {
+                        var get2 = attached2.getClass().getMethod("getItem", String.class);
+                        for (String location : new String[]{"Belt", "belt", "Back", "back"}) {
+                            Object item = get2.invoke(attached2, location);
+                            if (item == null) continue;
+                            String label = "belt".equals(location) ? "Belt" : "back".equals(location) ? "Back" : location;
+                            if (out.indexOf(label + "=") >= 0) continue;
+                            out.append(label).append('=')
+                                    .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
+                        }
+                    }
+                } catch (Throwable ignored) { }
                 Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
                 int size = (int) items.getClass().getMethod("size").invoke(items);
                 for (int i = 0; i < size; i++) {
