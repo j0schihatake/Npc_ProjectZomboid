@@ -43,10 +43,7 @@ module personalknox
         UIDescription = UI_trait_PersonalCompanions4Desc,
         MutuallyExclusiveTraits = personalknox:companions1; personalknox:companions2; personalknox:companions3,
     }
-}
 
-module personalknox
-{
     character_trait_definition PersonalKnox:Companions1
     {
         IsProfessionTrait = false,
