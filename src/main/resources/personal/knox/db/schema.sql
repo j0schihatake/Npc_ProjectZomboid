@@ -4,3 +4,5 @@ CREATE TABLE IF NOT EXISTS names(culture TEXT NOT NULL, gender TEXT NOT NULL, ki
 CREATE TABLE IF NOT EXISTS professions(key TEXT PRIMARY KEY, label TEXT NOT NULL, perks TEXT NOT NULL, levels TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
 INSERT OR IGNORE INTO meta(key,value) VALUES('schema_version','2');
+CREATE INDEX IF NOT EXISTS names_lookup ON names(culture,gender,kind);
+CREATE INDEX IF NOT EXISTS data_kind ON data(kind);
