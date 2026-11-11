@@ -71,6 +71,32 @@ public final class NpcIdentityDatabase {
             new Profession("unemployed", "Unemployed", new String[]{"Strength","Fitness"}, new int[]{1,1})
     );
 
+    private static volatile java.util.List<Pool> DB_POOLS;
+
+    private static java.util.List<Pool> pools() {
+        var cached = DB_POOLS;
+        if (cached != null) return cached;
+        synchronized (NpcIdentityDatabase.class) {
+            if (DB_POOLS != null) return DB_POOLS;
+            var loaded = new java.util.ArrayList<Pool>();
+            try {
+                var db = personal.knox.db.ModDatabase.getInstance();
+                for (var culture : db.cultures()) {
+                    var male = db.names(culture, "male", "forename");
+                    var female = db.names(culture, "female", "forename");
+                    var maleSurnames = db.names(culture, "male", "surname");
+                    var femaleSurnames = db.names(culture, "female", "surname");
+                    if (male.size() >= 4 && female.size() >= 4 && maleSurnames.size() >= 4 && femaleSurnames.size() >= 4) {
+                        loaded.add(new Pool(culture, male.toArray(String[]::new), female.toArray(String[]::new),
+                                maleSurnames.toArray(String[]::new), femaleSurnames.toArray(String[]::new)));
+                    }
+                }
+            } catch (Throwable ignored) { }
+            DB_POOLS = loaded.isEmpty() ? POOLS : java.util.List.copyOf(loaded);
+            return DB_POOLS;
+        }
+    }
+
     private NpcIdentityDatabase() {}
 
     public static NpcIdentity generate(String id) { return generate(id, false); }
@@ -85,8 +111,9 @@ public final class NpcIdentityDatabase {
 
     public static NpcIdentity generate(long seed, boolean preferRussian) {
         var random = new SplittableRandom(seed);
+        var pools = pools();
         var pool = preferRussian && random.nextInt(100) < 60
-                ? POOLS.get(0) : POOLS.get(random.nextInt(POOLS.size()));
+                ? pools.get(0) : pools.get(random.nextInt(pools.size()));
         boolean female = random.nextBoolean();
         var names = female ? pool.female() : pool.male();
         var surnames = female ? pool.femaleSurnames() : pool.maleSurnames();
@@ -100,13 +127,13 @@ public final class NpcIdentityDatabase {
 
     public static List<String> cultures() {
         var result = new ArrayList<String>();
-        for (var pool : POOLS) result.add(pool.culture());
+        for (var pool : pools()) result.add(pool.culture());
         return List.copyOf(result);
     }
 
     public static Map<String, List<String>> namesForTest() {
         var result = new LinkedHashMap<String, List<String>>();
-        for (var pool : POOLS) {
+        for (var pool : pools()) {
             var names = new ArrayList<String>();
             names.addAll(List.of(pool.male()));
             names.addAll(List.of(pool.female()));

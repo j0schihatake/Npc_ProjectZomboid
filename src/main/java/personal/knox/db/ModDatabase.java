@@ -108,6 +108,26 @@ public final class ModDatabase {
         } catch (Exception ignored) { }
     }
 
+    public synchronized java.util.List<String> names(String culture, String gender, String kind) {
+        var result = new java.util.ArrayList<String>();
+        if (culture == null || gender == null || kind == null) return result;
+        try (PreparedStatement s = connection().prepareStatement(
+                "SELECT value FROM names WHERE culture=? AND gender=? AND kind=? ORDER BY rowid")) {
+            s.setString(1, culture); s.setString(2, gender); s.setString(3, kind);
+            try (ResultSet rows = s.executeQuery()) { while (rows.next()) result.add(rows.getString(1)); }
+        } catch (Exception ignored) { }
+        return result;
+    }
+
+    public synchronized java.util.List<String> cultures() {
+        var result = new java.util.ArrayList<String>();
+        try (Statement s = connection().createStatement();
+             ResultSet rows = s.executeQuery("SELECT DISTINCT culture FROM names ORDER BY culture")) {
+            while (rows.next()) result.add(rows.getString(1));
+        } catch (Exception ignored) { }
+        return result;
+    }
+
     public synchronized String allSettings() {
         var text = new StringBuilder();
         try (Statement statement = connection().createStatement();
