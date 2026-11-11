@@ -5350,6 +5350,23 @@ Checkpoint 11.11.2026 (не финальный релиз):
 - Критерии: зомби переключается на NPC, NPC получает урон/бой.
 - Статус: код готов; игровой прогон в 0.79.0.
 
+## Релиз 0.79.0 — SQLite checkpoint (без игрового прогона)
+
+Сделано в staging:
+
+- `PersonalKnox.db` и `PersonalWorldGen.db` на каждое сохранение;
+- `settings`, `data`, `names`, `professions`, `regions`, `plans`, `writes`, `meta`;
+- seed `schema.sql`/`seed.sql`, 576 имён, 10 профессий;
+- миграция `schema_version=2`, backup до миграции и на `OnSave`;
+- Java API count/backup/identities/world settings;
+- Lua Settings читает/пишет БД, Base-panel tags в БД;
+- `profile.tsv` включён в PWG JAR;
+- unit PASS:
+  `Mod database tests passed`, `World database tests passed`.
+
+Игровой прогон не выполнен; до 300 изменений запуск запрещён.
+Следующий шаг: набрать пакет, затем один прогон staging.
+
 ## PK-DB-001 — SQLite на каждое сохранение
 
 - Реализация: Java `ModDatabase` в `getSaveFolder()/PersonalKnox.db`, fallback
