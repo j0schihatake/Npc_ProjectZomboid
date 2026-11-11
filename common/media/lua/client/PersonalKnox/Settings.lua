@@ -14,7 +14,7 @@ local function loadDbSettings()
     local ok, text = pcall(function() return api:dbSettings() end)
     if not ok then print("[PersonalKnox][db] load error "..tostring(text)) return end
     if not text then return end
-    print("[PersonalKnox][db] loaded "..tostring(#text))
+    print("[PersonalKnox][db] loaded "..tostring(#text).." path="..tostring(api:dbPath()))
     if not page then return end
     for line in tostring(text):gmatch("[^\n]+") do
         local key, value = line:match("^([^\t]+)\t(.+)$")

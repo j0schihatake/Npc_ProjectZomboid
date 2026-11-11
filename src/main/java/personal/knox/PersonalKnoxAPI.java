@@ -96,6 +96,7 @@ public final class PersonalKnoxAPI {
     public String dbSetting(String key, String fallback) { return database.getSetting(key, fallback); }
     public void dbSetSetting(String key, String value) { database.setSetting(key, value); }
     public String dbSettings() { return database.allSettings(); }
+    public String dbPath() { return database.path().toString(); }
     public String dbCounts() { return database.counts(); }
     public boolean dbBackup(String target) { return database.backup(java.nio.file.Path.of(target)); }
     public boolean dbBackupNow() { return database.backupNow(); }
