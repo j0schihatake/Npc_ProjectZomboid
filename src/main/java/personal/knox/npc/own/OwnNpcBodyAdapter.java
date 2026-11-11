@@ -705,9 +705,13 @@ public final class OwnNpcBodyAdapter {
             try { body.getClass().getMethod("initAttachedItems", String.class).invoke(body, ""); }
             catch (Throwable ignored) { }
             Object attached = body.getClass().getMethod("getAttachedItems").invoke(body);
-            if (attached == null) return;
-            var set = attached.getClass().getMethod("setItem", String.class,
-                    Class.forName("zombie.inventory.InventoryItem"));
+            java.lang.reflect.Method set = null;
+            if (attached != null) {
+                try {
+                    set = attached.getClass().getMethod("setItem", String.class,
+                            Class.forName("zombie.inventory.InventoryItem"));
+                } catch (Throwable ignored) { }
+            }
             boolean belt = false, back = false;
             for (int i = 0; i < size && (!belt || !back); i++) {
                 Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
@@ -720,10 +724,12 @@ public final class OwnNpcBodyAdapter {
                 String location = ranged ? "Back" : "Belt";
                 if ((ranged && back) || (!ranged && belt)) continue;
                 boolean attachedOk = false;
-                try {
-                    set.invoke(attached, location, item);
-                    attachedOk = true;
-                } catch (Throwable ignored) { }
+                if (set != null) {
+                    try {
+                        set.invoke(attached, location, item);
+                        attachedOk = true;
+                    } catch (Throwable ignored) { }
+                }
                 if (!attachedOk) {
                     try {
                         Class<?> locationType = Class.forName("zombie.scripting.objects.ItemBodyLocation");
