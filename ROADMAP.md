@@ -5377,14 +5377,17 @@ Checkpoint 11.11.2026 (не финальный релиз):
 Игровой прогон не выполнен; до 300 изменений запуск запрещён.
 Следующий шаг: набрать пакет, затем один прогон staging.
 
-## PK-DB-001 — SQLite на каждое сохранение
+## [x] PK-DB-001 — SQLite на каждое сохранение
 
 - Реализация: Java `ModDatabase` в `getSaveFolder()/PersonalKnox.db`, fallback
   в `Lua/PersonalKnox.db`; `schema.sql`/`seed.sql` в ресурсах; таблицы
   `settings`, `data`, `names`, `professions`; Lua Settings читает БД при старте
   и пишет её на Apply.
 - Unit: `Mod database tests passed: settings upsert, settings dump and data round-trip.`
-- Статус: код и unit PASS в staging-копии; игровой прогон не выполнен.
+- Игра 2026-11-11: `summary passed=119 failed=0`.
+- Подтверждены файлы `Saves/Sandbox/<world>/PersonalKnox.db`, `.db.bak`;
+  log `[PersonalKnox][db] switch .../PersonalKnox.db`.
+- Статус: [x] реализовано и проверено в игре.
 
 ## PK-UI-003 — контекстное меню своих NPC
 
