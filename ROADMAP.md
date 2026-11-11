@@ -5387,6 +5387,14 @@ Checkpoint 11.11.2026 (не финальный релиз):
 - Игра закрыта после теста.
 - Следующий пакет: 50 изменений по ROADMAP.
 
+## [ ] PK-SAVE-002 — PlayerDB NPE на старом сохранении
+
+- Игра: `summary passed=120 failed=0`, но `PlayerDB.loadPlayer` NPE остаётся.
+- Причина dev-запуска: ScriptManager не находит `42/media/scripts/personalknox/traits.txt`
+  через symlink-путь `mods/home/...`; custom traits не регистрируются.
+- Не влияет на 120 тестов, но ломает загрузку старых сохранений с trait-ссылками.
+- Нужно: корректный ScriptManager path/approval или миграция старых trait-ссылок.
+
 ## [x] PK-MOVE-001 — NPC не телепортируется, доходит до цели
 
 - Исправлено в staging: шаг body ограничен 0.35 клетки, добавляется catch-up, если agent уже на target.
