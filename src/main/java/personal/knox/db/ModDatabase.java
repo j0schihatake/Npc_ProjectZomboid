@@ -211,6 +211,10 @@ public final class ModDatabase {
         } catch (Exception ignored) { }
     }
 
+    public synchronized boolean backupNow() {
+        return backup(path.resolveSibling(path.getFileName() + ".bak"));
+    }
+
     public synchronized boolean backup(Path target) {
         if (target == null) return false;
         try {

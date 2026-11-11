@@ -29,6 +29,7 @@ local function saveState()
     data.PersonalKnoxEquipment=api:ownEquipmentSnapshot()
     data.PersonalKnoxIdentities=api:ownIdentitySnapshot()
     pcall(function() api:ownPersistIdentities() end)
+    pcall(function() api:dbBackupNow() end)
     data.PersonalKnoxBase=api:ownBaseSnapshot()
 end
 
