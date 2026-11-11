@@ -695,6 +695,24 @@ public final class OwnNpcBodyAdapter {
                         .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
             }
         } catch (Throwable ignored) { }
+        if (out.length() == 0) {
+            try {
+                Object inventory = body.getClass().getMethod("getInventory").invoke(body);
+                Object items = inventory.getClass().getMethod("getItems").invoke(inventory);
+                int size = (int) items.getClass().getMethod("size").invoke(items);
+                for (int i = 0; i < size; i++) {
+                    Object item = items.getClass().getMethod("get", int.class).invoke(items, i);
+                    if (item == null) continue;
+                    try {
+                        String slot = String.valueOf(item.getClass().getMethod("getAttachedSlotType").invoke(item));
+                        if ("Belt".equals(slot) || "Back".equals(slot)) {
+                            out.append(slot).append('=')
+                                    .append(item.getClass().getMethod("getFullType").invoke(item)).append(';');
+                        }
+                    } catch (Throwable ignored) { }
+                }
+            } catch (Throwable ignored) { }
+        }
         return out.length() == 0 ? "none" : out.toString();
     }
 
@@ -736,6 +754,13 @@ public final class OwnNpcBodyAdapter {
                         Object bodyLocation = locationType.getField(location.toUpperCase(java.util.Locale.ROOT)).get(null);
                         body.getClass().getMethod("setWornItem", locationType,
                                 Class.forName("zombie.inventory.InventoryItem")).invoke(body, bodyLocation, item);
+                        attachedOk = true;
+                    } catch (Throwable ignored) { }
+                }
+                if (!attachedOk) {
+                    try {
+                        item.getClass().getMethod("setAttachedSlotType", String.class).invoke(item, location);
+                        item.getClass().getMethod("setAttachedToModel", boolean.class).invoke(item, true);
                         attachedOk = true;
                     } catch (Throwable ignored) { }
                 }
