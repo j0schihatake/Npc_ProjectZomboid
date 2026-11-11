@@ -123,6 +123,17 @@ public final class ModDatabase {
         } catch (Exception ignored) { }
     }
 
+    public synchronized String counts() {
+        try (Statement s = connection().createStatement()) {
+            long settings = 0, data = 0, names = 0, professions = 0;
+            try (ResultSet rows = s.executeQuery("SELECT COUNT(*) FROM settings")) { if (rows.next()) settings = rows.getLong(1); }
+            try (ResultSet rows = s.executeQuery("SELECT COUNT(*) FROM data")) { if (rows.next()) data = rows.getLong(1); }
+            try (ResultSet rows = s.executeQuery("SELECT COUNT(*) FROM names")) { if (rows.next()) names = rows.getLong(1); }
+            try (ResultSet rows = s.executeQuery("SELECT COUNT(*) FROM professions")) { if (rows.next()) professions = rows.getLong(1); }
+            return "settings=" + settings + " data=" + data + " names=" + names + " professions=" + professions;
+        } catch (Exception ignored) { return "counts=error"; }
+    }
+
     public synchronized String schemaVersion() {
         try (PreparedStatement s = connection().prepareStatement("SELECT value FROM meta WHERE key='schema_version'")) {
             try (ResultSet rows = s.executeQuery()) { return rows.next() ? rows.getString(1) : "0"; }
