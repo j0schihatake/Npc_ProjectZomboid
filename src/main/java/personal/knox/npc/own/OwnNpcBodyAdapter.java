@@ -1697,10 +1697,11 @@ public final class OwnNpcBodyAdapter {
 
     private void move(String id, Object body, double x, double y, double z, double tx, double ty, double targetZ) {
         double sx = x, sy = y;
+        double bx = 0, by = 0;
         try {
             Object cell = currentCell();
-            double bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
-            double by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
+            bx = ((Number) body.getClass().getMethod("getX").invoke(body)).doubleValue();
+            by = ((Number) body.getClass().getMethod("getY").invoke(body)).doubleValue();
             if (Math.abs(targetZ - z) > 0.4) {
                 double[] stair = findStairs(cell, bx, by, z);
                 if (stair != null) {
