@@ -73,6 +73,29 @@ public final class NpcIdentityDatabase {
 
     private static volatile java.util.List<Pool> DB_POOLS;
 
+    private static volatile java.util.List<Profession> DB_PROFESSIONS;
+
+    private static java.util.List<Profession> professions() {
+        var cached = DB_PROFESSIONS;
+        if (cached != null) return cached;
+        synchronized (NpcIdentityDatabase.class) {
+            if (DB_PROFESSIONS != null) return DB_PROFESSIONS;
+            var loaded = new java.util.ArrayList<Profession>();
+            try {
+                for (var row : personal.knox.db.ModDatabase.getInstance().professionRows()) {
+                    var perks = row[2].split(",");
+                    var levels = row[3].split(",");
+                    if (perks.length != levels.length || perks.length == 0) continue;
+                    var values = new int[levels.length];
+                    for (int i = 0; i < levels.length; i++) values[i] = Integer.parseInt(levels[i]);
+                    loaded.add(new Profession(row[0], row[1], perks, values));
+                }
+            } catch (Throwable ignored) { }
+            DB_PROFESSIONS = loaded.isEmpty() ? PROFESSIONS : java.util.List.copyOf(loaded);
+            return DB_PROFESSIONS;
+        }
+    }
+
     private static java.util.List<Pool> pools() {
         var cached = DB_POOLS;
         if (cached != null) return cached;
@@ -117,7 +140,8 @@ public final class NpcIdentityDatabase {
         boolean female = random.nextBoolean();
         var names = female ? pool.female() : pool.male();
         var surnames = female ? pool.femaleSurnames() : pool.maleSurnames();
-        var profession = PROFESSIONS.get(random.nextInt(PROFESSIONS.size()));
+        var professionList = professions();
+        var profession = professionList.get(random.nextInt(professionList.size()));
         var skills = new LinkedHashMap<String, Integer>();
         for (int i = 0; i < profession.perks().length; i++) skills.put(profession.perks()[i], profession.levels()[i]);
         return new NpcIdentity(pool.culture(), female ? "female" : "male",

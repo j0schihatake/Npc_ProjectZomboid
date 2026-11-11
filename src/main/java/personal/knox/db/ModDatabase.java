@@ -140,6 +140,16 @@ public final class ModDatabase {
         return result;
     }
 
+    public synchronized java.util.List<String[]> professionRows() {
+        var result = new java.util.ArrayList<String[]>();
+        try (Statement s = connection().createStatement();
+             ResultSet rows = s.executeQuery("SELECT key,label,perks,levels FROM professions ORDER BY key")) {
+            while (rows.next()) result.add(new String[]{
+                    rows.getString(1), rows.getString(2), rows.getString(3), rows.getString(4)});
+        } catch (Exception ignored) { }
+        return result;
+    }
+
     public synchronized java.util.List<String> cultures() {
         var result = new java.util.ArrayList<String>();
         try (Statement s = connection().createStatement();
