@@ -89,8 +89,13 @@ public final class ModDatabase {
              ResultSet rows = statement.executeQuery("SELECT value FROM meta WHERE key='schema_version'")) {
             if (rows.next()) version = Integer.parseInt(rows.getString(1));
         }
-        if (version < 2) {
-            backup(path.resolveSibling(path.getFileName() + ".v1.bak"));
+        long names = 0;
+        try (Statement statement = connection.createStatement();
+             ResultSet rows = statement.executeQuery("SELECT COUNT(*) FROM names")) {
+            if (rows.next()) names = rows.getLong(1);
+        }
+        if (version < 2 || names == 0) {
+            if (version < 2) backup(path.resolveSibling(path.getFileName() + ".v1.bak"));
             runResource("seed.sql");
             try (Statement statement = connection.createStatement()) {
                 statement.execute("INSERT OR REPLACE INTO meta(key,value) VALUES('schema_version','2')");
