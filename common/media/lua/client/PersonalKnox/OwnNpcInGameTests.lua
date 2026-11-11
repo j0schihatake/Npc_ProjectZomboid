@@ -687,6 +687,7 @@ function Tests.run(player)
         return plan ~= nil and plan:find("worldWrites=0", 1, true) ~= nil
             and (plan:find("campOps=", 1, true) ~= nil or plan:find("protected=true", 1, true) ~= nil)
     end)
+    check("fps-api", function() return api:gameFps() >= 0 end)
     check("remove", function()
         local before = api:ownActive()
         api:ownRemove(id)
