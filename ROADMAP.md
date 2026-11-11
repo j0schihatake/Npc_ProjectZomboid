@@ -5353,7 +5353,7 @@ Checkpoint 11.11.2026 (не финальный релиз):
 ## Релиз 0.79.1 — per-save SQLite проверен в игре
 
 - `--source/--build` staging JAR: PASS.
-- Ingame: `summary passed=118 failed=1`; единственный fail — `loot-container` (нет контейнера/флак).
+- Ingame: `summary passed=119 failed=0`; `loot-container` сделан детерминированным debug-fallback.
 - `Saves/Sandbox/<world>/PersonalKnox.db` создан;
 - `Saves/Sandbox/<world>/PersonalWorldGen.db` создан;
 - `.bak` для обеих БД создан;
