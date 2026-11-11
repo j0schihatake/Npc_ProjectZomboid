@@ -540,8 +540,6 @@ function Settings.baseRule(key)
     return type(value) == "number" and value or nil
 end
 
-return Settings
-
 if page then
     local previousApply = page.apply
     function page:apply()
@@ -551,3 +549,5 @@ if page then
     loadDbSettings()
     Events.OnGameStart.Add(loadDbSettings)
 end
+
+return Settings
